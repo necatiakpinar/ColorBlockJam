@@ -5,4 +5,7 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 
 ## Cases
 
-_Added with each task's acceptance criteria. See [tasks.md](../Case/tasks.md)._
+- [ ] ⚙ Home shows the saved level — `HomeFlowTests.Start_ShouldShowCurrentLevel_WhenSceneStarts`
+- [ ] ⚙ The level button opens Gameplay — `HomeFlowTests.LevelButton_ShouldNavigateToGameplay_WhenTapped`
+
+Layout, top UI and tab bar cases arrive with T-23.

@@ -1,6 +1,6 @@
-# Splash → Gameplay QA
+# Navigation QA
 
-Verifies [splash-boot.md](../General/splash-boot.md) §1–§2. `⚙` = automated (test named), `👁` = manual.
+Verifies [splash-boot.md](../General/splash-boot.md) §1–§2 and the Home ⇄ Gameplay routes. `⚙` = automated (test named), `👁` = manual.
 
 ## Test harness
 
@@ -20,7 +20,10 @@ Verifies [splash-boot.md](../General/splash-boot.md) §1–§2. `⚙` = automate
 
 - [ ] ⚙ Build starts in Splash — `BuildSettingsTests.BuildSettings_ShouldStartWithSplash_WhenAppLaunches`
 - [ ] ⚙ Every scene id is a build scene — `BuildSettingsTests.BuildSettings_ShouldContainEverySceneId_WhenLoaderNamesIt`
-- [ ] ⚙ Splash reaches Gameplay — `SplashToGameplayTests.Splash_ShouldReachGameplayAndShowLevel_WhenAppBoots`
+- [ ] ⚙ Splash reaches Home — `NavigationFlowTests.Splash_ShouldReachHomeAndShowLevel_WhenAppBoots`
+- [ ] ⚙ Level button opens Gameplay at the same level — `NavigationFlowTests.LevelButton_ShouldOpenGameplayShowingTheSameLevel_WhenTappedOnHome`
+- [ ] ⚙ Gameplay Home button returns to Home — `NavigationFlowTests.HomeButton_ShouldReturnToHome_WhenTappedInGameplay`
+- [ ] ⚙ A double tap starts one load only — `NavigationServiceTests.GoToGameplay_ShouldBeIgnored_WhenALoadIsRunning`
 
 ## §2 Sequence
 
@@ -29,7 +32,8 @@ Verifies [splash-boot.md](../General/splash-boot.md) §1–§2. `⚙` = automate
 - [ ] 👁 Splash stays at least `MinimumDisplaySeconds` on a fast device.
 - [ ] ⚙ Gameplay HUD shows "Level N" for the saved level — `GameplayFlowTests.Start_ShouldFireLevelStartedWithCurrentLevel_WhenSceneStarts`
 - [ ] 👁 The HUD reveals with a short fade and scale.
-- [ ] 👁 Pressing Play with Gameplay open in the editor still boots through Splash.
+- [ ] 👁 Pressing Play with Home or Gameplay open in the editor still boots through Splash.
+- [ ] 👁 Ten Home ⇄ Gameplay round trips leave one RootLifetimeScope and no console errors.
 
 ## Residual gaps
 

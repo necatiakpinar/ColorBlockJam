@@ -90,7 +90,7 @@ Priority: **must** (explicit in the brief), **should** (evaluation criterion or 
    (door 2 units wide, floor tile 1.95, block parts a quarter cell). They are imported at scale 0.5 so one
    cell is one world unit ([art-pipeline.md](../General/art-pipeline.md) §3). Level data, board model,
    rules and the level editor work in cell coordinates only. The cell-to-world conversion lives in one
-   class, `IBoardSpace`, and reads `BoardViewConfig.CellSize`; no code assumes a cell is 1 unit. **Why:**
+   class, `BoardSpace`, and reads `BoardViewConfig.CellSize`; no code assumes a cell is 1 unit. **Why:**
    the art convention stays an import detail, the world size is one tunable, and changing either never
    touches data or rules. The submission README states this decision (T-40).
 
@@ -114,9 +114,9 @@ task is marked `Dropped`, never deleted. Detail per task: [tasks.md](tasks.md).
 | T-01 | 0 | Pin the project to Unity 2022.3.62f2 | Project opens in 2022.3.62f2 with no errors; all tests green | — | Done |
 | T-02 | 0 | Player, Android and quality settings | Portrait-locked, IL2CPP ARM64 APK builds; mobile URP only | T-01 | In progress |
 | T-03 | 0 | Import and configure the supplied assets | UI as sprites, models and materials ready; asset issues logged | T-01 | Done |
-| T-04 | 1 | Home scene and scene routing | Splash → Home → Gameplay → Home works; tests green | T-01 | Todo |
-| T-05 | 1 | UI kit: safe area, button feedback, popup service | Every button scales on press; one popup at a time; layout fits 20:9 | T-04 | Todo |
-| T-06 | 1 | Board input and camera service | Press, drag and release on board cells arrive as events, no polling | T-04 | Todo |
+| T-04 | 1 | Home scene and scene routing | Splash → Home → Gameplay → Home works; tests green | T-01 | Done |
+| T-05 | 1 | UI kit: safe area, button feedback, popup service | Every button scales on press; one popup at a time; layout fits 20:9 | T-04 | Done |
+| T-06 | 1 | Board input and board space | Press, drag and release on board cells arrive as events, no polling | T-04 | Done |
 | T-07 | 1 | Persistence: wallet, settings, progress | Coins, settings and level survive restart and app background | T-01 | Todo |
 | T-08 | 2 | Level data format and catalog | `LevelDefinition` asset holds width, height, timer, blocks, doors | T-01 | Todo |
 | T-09 | 2 | Board model (pure rules) | Move, block, exit and win rules pass Edit Mode tests | T-08 | Todo |

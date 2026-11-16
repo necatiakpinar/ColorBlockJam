@@ -11,7 +11,7 @@ The index of every page is [Docs/README.md](Docs/README.md).
 ## Project Overview
 
 A Unity 2022.3 LTS mobile game built as a hiring case study. Its foundation is a production-shaped
-skeleton: dependency-injected boot from **Splash** to **Gameplay**,
+skeleton: dependency-injected boot from **Splash** to **Home** and **Gameplay**,
 a typed signal bus, data-driven configs, separated animations, and Edit Mode + Play Mode tests.
 
 - **Target:** mobile, portrait, URP (Mobile renderer). 60 FPS target via `ApplicationConfig`.
@@ -84,8 +84,8 @@ Core never references Game. A new feature goes in Game unless it is reusable inf
 
 - **RootLifetimeScope** — prefab assigned in `VContainerSettings`, spawned before the first scene and
   kept for the session. Registers app-wide services through `CoreServicesInstaller`.
-- **SplashLifetimeScope**, **GameplayLifetimeScope** — one per scene; the root becomes their parent
-  automatically.
+- **SplashLifetimeScope**, **HomeLifetimeScope**, **GameplayLifetimeScope** — one per scene; the root
+  becomes their parent automatically. Scenes change only through `INavigationService`.
 - **Installers (`IInstaller`) hold plain service registrations; entry points are registered by the
   scope.** That keeps every installer buildable in an Edit Mode test (`InstallerResolutionTests`).
 - Constructor injection for plain classes; `[Inject] public void Construct(...)` for MonoBehaviours.
@@ -112,8 +112,13 @@ the result. Never gate a data write on an animation or a flow finishing.
 
 Splash runs a `BootSequence` of `IBootStep`s (registered in `SplashInstaller`, executed in registration
 order, weighted for the loading bar), waits for the minimum display time and the bar, then loads
-Gameplay. **Read [splash-boot.md](Docs/General/splash-boot.md) before touching `Splash/`, `Boot/`,
+Home. **Read [splash-boot.md](Docs/General/splash-boot.md) before touching `Splash/`, `Boot/`,
 `SceneLoader` or the build scene list.**
+
+### Gameplay
+
+**Read [gameplay.md](Docs/General/gameplay.md) before touching `Scripts/Game/Gameplay/` or the Gameplay
+scene.** Level data and rules work in cells; `BoardSpace` is the only cell ↔ world conversion.
 
 ## Coding Standards
 
@@ -154,6 +159,8 @@ no string building (use `TMP_Text.SetText(format, value)`), no per-frame `new`, 
 `GetComponent`. Pool recyclable objects instead of `Instantiate`/`Destroy` churn.
 
 ### UI
+
+**Read [ui.md](Docs/General/ui.md) before adding or changing a canvas, a button or a popup.**
 
 - **UI is authored, never built in code**: hierarchies live in scenes or prefabs; scripts bind serialized
   references, text, sprites and `SetActive`.

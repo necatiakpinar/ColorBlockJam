@@ -7,11 +7,11 @@ skeleton so the case itself can be built on a clean, tested foundation.
 
 - **Dependency injection with VContainer**: a session-wide root scope plus one scope per scene;
   installers are unit-tested by building them into a real container.
-- **Weighted boot pipeline**: Splash runs `IBootStep`s with a progress bar, then hands over to Gameplay.
+- **Weighted boot pipeline**: Splash runs `IBootStep`s with a progress bar, then hands over to Home.
 - **Typed signal bus**: `readonly struct` signals, subscription at construction, re-entrancy safe.
 - **Separated animation layer**: stateless DOTween recipes (`IAnimation<TConfig>`), awaited with UniTask.
 - **Data-driven tuning**: every tunable lives in a ScriptableObject config.
-- **Tests**: Edit Mode (logic, DI wiring, build settings) and Play Mode (real Splash → Gameplay boot).
+- **Tests**: Edit Mode (logic, DI wiring, build settings) and Play Mode (real boot through Splash, Home and Gameplay).
 - **Documented rules**: [CLAUDE.md](CLAUDE.md) (also [AGENTS.md](AGENTS.md)) and [Docs/](Docs/README.md),
   plus repository-local agent workflows in `.claude/skills/`.
 

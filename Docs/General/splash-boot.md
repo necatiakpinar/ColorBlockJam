@@ -8,7 +8,7 @@
 1. The app always starts in **Splash** (build index 0) — pinned by
    `BuildSettingsTests.BuildSettings_ShouldStartWithSplash_WhenAppLaunches`.
 2. Every `SceneId` maps to an enabled build scene — `BuildSettings_ShouldContainEverySceneId_WhenLoaderNamesIt`.
-3. **Splash always reaches Gameplay**: no boot step may wait on the network or on user input without a
+3. **Splash always reaches Home**: no boot step may wait on the network or on user input without a
    bounded timeout.
 4. All boot work is done by `IBootStep`s; `SplashFlow` only presents and routes.
 
@@ -25,7 +25,9 @@ SplashFlow.StartAsync
   │    LoadPlayerProgressStep        (weight 2)        IPlayerProgressService.Load()
   ├─ await minimum-display timer
   ├─ await SplashView.WaitForPresentationAsync         intro + last bar fill finished
-  └─ SceneLoader.LoadAsync(Gameplay)                   single mode; Splash scope is destroyed
+  └─ INavigationService.GoToHomeAsync()                single mode; Splash scope is destroyed
+Home.unity → HomeLifetimeScope builds                  HomeView wires its level button
+HomeFlow.Start → HomeView.ShowLevel(level)             level button → GoToGameplayAsync
 Gameplay.unity → GameplayLifetimeScope builds          GameplayHudView subscribes in Construct
 GameplayFlow.Start → LevelStartedSignal(level)         HUD shows "Level N" with a reveal
 ```
@@ -40,5 +42,5 @@ GameplayFlow.Start → LevelStartedSignal(level)         HUD shows "Level N" wit
 
 ## 4. Scene handover detail
 
-`SplashFlow` loads Gameplay with `CancellationToken.None`: the load destroys the Splash scope, which
-cancels the scope's token, and a load listening to it would report its own success as a cancellation.
+Scenes are loaded by `INavigationService`; why it ignores the calling scope's token is in
+[architecture.md](architecture.md) §2.

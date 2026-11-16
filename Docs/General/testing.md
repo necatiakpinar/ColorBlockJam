@@ -10,7 +10,10 @@
 | `RollicCase.Tests.PlayMode` | `Assets/_Project/Tests/PlayMode/` | real scenes end to end |
 
 Shared fakes live in `Tests/EditMode/Helpers/`: `InMemoryKeyValueStorage`, `RecordingLogger`,
-`FakeBootStep`, `RecordingProgress`. Reuse them before writing a new fake.
+`FakeBootStep`, `RecordingProgress`, `RecordingNavigation`, `ControllableSceneLoader`, `RecordingPopup`,
+and `TestViews` (builds views with their serialized references wired). Play Mode tests drive the app
+through `SceneTestUtility` (`BootToHome`, `BootToGameplay`, `TapButton`). Reuse them before writing a
+new fake.
 
 ## 2. Current suite
 
@@ -19,10 +22,19 @@ Shared fakes live in `Tests/EditMode/Helpers/`: `InMemoryKeyValueStorage`, `Reco
 | `SignalBusTests` | delivery, order, type isolation, duplicate guard, (un)subscribe during fire |
 | `BootSequenceTests` | step order, weighted progress, empty sequence, cancellation, weight validation |
 | `PlayerProgressServiceTests` | defaults, read-before-load, persist + flush, corrupt and invalid data |
-| `InstallerResolutionTests` | every installer builds; one SignalBus; boot step order |
-| `GameplayFlowTests` | the level announced matches saved progress |
-| `BuildSettingsTests` | Splash first; every `SceneId` is a build scene |
-| `SplashToGameplayTests` (PlayMode) | real boot reaches Gameplay and the HUD shows the level |
+| `InstallerResolutionTests` | every installer builds; one SignalBus; boot step order; board space cell size |
+| `GameplayFlowTests` | the level announced matches saved progress; Home button routes home |
+| `HomeFlowTests` | Home shows the saved level; the level button routes to Gameplay |
+| `NavigationServiceTests` | each route loads its scene; a request during a load is ignored; a failed load frees the guard |
+| `PopupServiceTests` | one popup at a time; close allows the next |
+| `SafeAreaTests` | safe area to anchors, full screen and notched |
+| `BoardSpaceTests` | cell ↔ world at cell size 1 and 2; edges; outside cells |
+| `BuildSettingsTests` | Splash first; every `SceneId` is a build scene; portrait; IL2CPP ARM64 |
+| `AssetImportTests` | UI sprites, model scale, floor tile size |
+| `SceneSetupTests` | every build scene: canvas scaler, safe area root, button feedback |
+| `NavigationFlowTests` (PlayMode) | real boot reaches Home; Home ⇄ Gameplay round trip |
+| `ButtonPressFeedbackTests` (PlayMode) | press shrinks, release restores; non-interactable and disabled cases |
+| `BoardInputTests` (PlayMode) | pointer events become board cells; one finger; release off the plane; disable mid-touch; UI wins the raycast |
 
 ## 3. Rules
 

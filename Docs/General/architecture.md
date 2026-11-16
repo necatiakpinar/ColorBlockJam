@@ -15,18 +15,21 @@ Assets/_Project/
 │   ├── Logging/         IGameLogger, UnityGameLogger
 │   └── Animation/       IAnimation<TConfig>
 ├── Scripts/Game/      RollicCase.Game     this game
-│   ├── Scopes/          Root / Splash / Gameplay LifetimeScopes
-│   ├── Installers/      CoreServicesInstaller, SplashInstaller
-│   ├── Configs/         ApplicationConfig, SplashConfig, GameplayConfig (ScriptableObjects)
+│   ├── Scopes/          Root / Splash / Home / Gameplay LifetimeScopes
+│   ├── Installers/      CoreServicesInstaller, SplashInstaller, HomeInstaller, GameplayInstaller
+│   ├── Configs/         Application, Splash, Ui, Gameplay, BoardView configs (ScriptableObjects)
+│   ├── Navigation/      INavigationService, NavigationService
 │   ├── Boot/            boot steps, TweeningInitializer
 │   ├── Splash/          SplashFlow, SplashView
-│   ├── Gameplay/        GameplayFlow, signals, HUD
+│   ├── Home/            HomeFlow, HomeView
+│   ├── UI/              safe area, button press feedback, popup service
+│   ├── Gameplay/        GameplayFlow, signals, HUD, Board/ (BoardSpace), Input/ (BoardInputView)
 │   └── Common/Animations/  reusable IAnimation structs
 ├── Scripts/Editor/    RollicCase.Editor   editor tooling
 ├── Tests/EditMode/    RollicCase.Tests.EditMode
 ├── Tests/PlayMode/    RollicCase.Tests.PlayMode
-├── Scenes/            Splash (build index 0), Gameplay
-├── Prefabs/           RootLifetimeScope
+├── Scenes/            Splash (build index 0), Home, Gameplay
+├── Prefabs/           RootLifetimeScope, Board/ part prefabs
 └── Configs/           config assets
 ```
 
@@ -38,6 +41,7 @@ knowledge of this game's scenes, configs or rules.
 ```
 RootLifetimeScope (prefab, VContainerSettings, DontDestroyOnLoad)
 ├── SplashLifetimeScope   (Splash.unity)
+├── HomeLifetimeScope     (Home.unity)
 └── GameplayLifetimeScope (Gameplay.unity)
 ```
 
@@ -45,11 +49,16 @@ RootLifetimeScope (prefab, VContainerSettings, DontDestroyOnLoad)
   instantiates it before the first scene loads, so any scene (including one opened directly in the
   editor) gets it as parent without a `parentReference`.
 - **Scene scopes** live in their scene, own that scene's services and die with it.
+- **Navigation**: flows change scenes only through `INavigationService` (Root). It loads with
+  `CancellationToken.None`, because the load destroys the calling scope and cancels its token; a load
+  listening to that token would report its own success as a cancellation. It ignores a request while a
+  load is running (a double tap) (`NavigationServiceTests`).
 
 ### Registration rules
 
 1. **Installers register plain services; scopes register entry points and scene components.**
-   `CoreServicesInstaller` and `SplashInstaller` are `IInstaller`s so `InstallerResolutionTests` can build
+   `CoreServicesInstaller`, `SplashInstaller`, `HomeInstaller` and `GameplayInstaller` are `IInstaller`s so
+   `InstallerResolutionTests` can build
    them into a bare `ContainerBuilder` without scenes or the player loop. A scope's `Configure` runs its
    installer, then `RegisterComponent` for serialized scene objects, then `RegisterEntryPoint` for flows.
 2. **Constructor injection** for plain classes. **`[Inject] public void Construct(...)`** for
@@ -92,7 +101,8 @@ every animation were skipped.
 
 Tunables are `ScriptableObject`s named `<Area>Config` with `[CreateAssetMenu(menuName =
 "RollicCase/Configs/...")]`, stored in `Assets/_Project/Configs/`, referenced by the owning scope's
-serialized field and registered with `RegisterInstance`. Consumers inject the config type.
+serialized field and registered with `RegisterInstance`. Consumers inject the config type. The one exception,
+`ButtonPressFeedback` reading `UiConfig` directly, is explained in [ui.md](ui.md) §2.2.
 
 ## 6. Animations (DOTween)
 

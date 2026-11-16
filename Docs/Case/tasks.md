@@ -20,9 +20,9 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - [x] [T-01 Pin the project to Unity 2022.3.62f2](#t-01-pin-the-project-to-unity-2022362f2)
 - [x] [T-02 Player, Android and quality settings](#t-02-player-android-and-quality-settings)
 - [x] [T-03 Import and configure the supplied assets](#t-03-import-and-configure-the-supplied-assets)
-- [ ] [T-04 Home scene and scene routing](#t-04-home-scene-and-scene-routing)
-- [ ] [T-05 UI kit: safe area, button feedback, popup service](#t-05-ui-kit-safe-area-button-feedback-popup-service)
-- [ ] [T-06 Board input and camera service](#t-06-board-input-and-camera-service)
+- [x] [T-04 Home scene and scene routing](#t-04-home-scene-and-scene-routing)
+- [x] [T-05 UI kit: safe area, button feedback, popup service](#t-05-ui-kit-safe-area-button-feedback-popup-service)
+- [x] [T-06 Board input and board space](#t-06-board-input-and-board-space)
 - [ ] [T-07 Persistence: wallet, settings, progress](#t-07-persistence-wallet-settings-progress)
 - [ ] [T-08 Level data format and catalog](#t-08-level-data-format-and-catalog)
 - [ ] [T-09 Board model (pure rules)](#t-09-board-model-pure-rules)
@@ -123,17 +123,18 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - **Req:** R-10, R-16, R-20, R-21.
 - **Arch:** new `Home.unity` with `HomeLifetimeScope` (child of Root), `HomeInstaller`, `HomeFlow` entry
   point. `SceneId` gains `Home`. `SplashFlow` loads Home instead of Gameplay. `INavigationService` (Root)
-  exposes `GoToHome()`, `GoToGameplay()` over `ISceneLoader`, so views never know scene names.
+  exposes `GoToHomeAsync()`, `GoToGameplayAsync()` over `ISceneLoader`, so views never know scene names.
 - **Subtasks:**
-  - [ ] Create the scene, scope, installer and an empty `HomeFlow`.
-  - [ ] Add `Home` to build settings (index 1) and `SceneId`.
-  - [ ] Route Splash → Home; Gameplay placeholder "Home" button → Home.
-  - [ ] Update `PlayModeStartScene` if it hard-codes scenes.
+  - [x] Create the scene, scope, installer and `HomeFlow` (shows the level, routes the level button).
+  - [x] Add `Home` to build settings (index 1) and `SceneId`.
+  - [x] Route Splash → Home; Gameplay placeholder "Home" button → Home.
+  - [x] `PlayModeStartScene` needs no change (it always uses build scene 0).
 - **Accept:** Play boots Splash → Home; Home → Gameplay → Home round-trips without errors or duplicate
   Root scopes.
-- **Tests:** `EM InstallerResolutionTests` covers `HomeInstaller`; `EM BuildSettingsTests` covers the new
-  id; `PM SplashToHomeTests`, `PM HomeGameplayRoundTripTests`.
-- **Docs:** `architecture.md` §1–§2, `splash-boot.md` (handover target), `splash-gameplay-qa.md`.
+- **Tests:** `EM InstallerResolutionTests` covers `HomeInstaller` and `GameplayInstaller`;
+  `EM BuildSettingsTests` covers the new id; `EM HomeFlowTests`, `EM NavigationServiceTests`,
+  `EM GameplayFlowTests`; `PM NavigationFlowTests` (boot to Home, Home ⇄ Gameplay).
+- **Docs:** `architecture.md` §1–§2, `splash-boot.md` (handover target), `navigation-qa.md`.
 
 ### T-05 UI kit: safe area, button feedback, popup service
 
@@ -142,33 +143,42 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
   - `SafeAreaFitter` component on each canvas content root; re-applies on rect change
     (`OnRectTransformDimensionsChange`), never per frame.
   - `ButtonPressFeedback` component on every `Button`: `IPointerDown/Up` handlers run a
-    `PressScaleAnimation` (`readonly struct IAnimation<PressScaleSettings>`), timings from
-    `UiFeedbackConfig`. Disabled buttons give no feedback.
-  - `IPopupService` per scene scope: opens an authored popup view (prefab already in the scene, disabled),
-    one at a time, a full-screen blocker behind it, open/close via `FadeScaleInAnimation`.
-  - Canvas template prefab: Screen Space – Camera, `CanvasScaler` 1080x1920, match 0.5.
-- **Subtasks:** components, config asset, animation structs, popup view base, prefab template, apply to
-  Splash.
+    `ScaleToAnimation`, timings from `UiConfig.PressFeedback`. Disabled buttons give no feedback.
+  - `IPopupService` per scene scope: opens an authored popup view (already in the scene, disabled),
+    one at a time, a full-screen blocker behind it.
+  - Canvases stay Screen Space – Overlay with `CanvasScaler` 1080x1920, match 0.5; `SceneSetupTests`
+    enforces the scaler instead of a template prefab.
+- **Subtasks:**
+  - [x] `SafeArea` + `SafeAreaFitter`; a `SafeArea` root in every canvas.
+  - [x] `ButtonPressFeedback` + `ScaleToAnimation`, timings in `UiConfig` (Root).
+  - [x] `IPopupService` / `PopupService` per scene; the shared popup view lands with the first popup
+    (T-19, T-25).
+  - [x] `SceneSetupTests` enforce scaler, safe area and button feedback in every build scene.
 - **Accept:** any button scales down on press and back on release; opening a second popup while one is open
   is refused; UI stays inside the safe area at 1080x1920, 1080x2400 (20:9) and an iPhone notch preset.
-- **Tests:** `EM SafeAreaCalculatorTests` (pure rect math), `EM PopupServiceTests` (one at a time,
-  close returns focus), `PM ButtonPressFeedbackTests`.
+- **Tests:** `EM SafeAreaTests`, `EM PopupServiceTests`, `EM SceneSetupTests`,
+  `PM ButtonPressFeedbackTests`.
 - **Docs:** `Docs/General/ui.md` (canvas rules, feedback, popups, safe area); `Docs/testing/ui-qa.md`.
 
-### T-06 Board input and camera service
+### T-06 Board input and board space
 
 - **Req:** R-17, R-38.
-- **Arch:** `ICameraService` per scene from a serialized camera (replaces `Camera.main`). `BoardInputView`
-  on a board-sized collider receives `IPointerDownHandler`, `IDragHandler`, `IPointerUpHandler` through a
-  `PhysicsRaycaster`; converts screen → board plane → cell with `IBoardSpace` (pure math) and fires
-  `BoardPointerSignal`s or calls `IBoardInputListener`. Pointers over UI never reach the board. Single
-  touch only (DA-4). `IBoardSpace` is the only cell ↔ world conversion; it reads
-  `BoardViewConfig.CellSize` (1 with the current import scale) and the board origin (README §2.8).
+- **Arch:** the scene camera is registered with the scope and injected as `Camera` (replaces
+  `Camera.main`; a wrapper service would add nothing). `BoardInputView` on a board-sized collider receives
+  `IPointerDownHandler`, `IDragHandler`, `IPointerUpHandler` through a `PhysicsRaycaster`, projects the
+  pointer onto the board plane and fires `BoardPointerSignal`s. Pointers over UI never reach the board.
+  Single touch only (DA-4). `BoardSpace` is the only cell ↔ world conversion; it reads
+  `BoardViewConfig.CellSize` (1 with the current import scale) (README §2.8).
+- **Subtasks:**
+  - [x] `BoardViewConfig`, `BoardSpace` registered by `GameplayInstaller`.
+  - [x] `BoardInputView` + `BoardPointerSignal`; camera `PhysicsRaycaster`; Gameplay scope wiring.
+  - [x] Edit Mode `BoardSpaceTests`, Play Mode `BoardInputTests`.
 - **Accept:** pressing, dragging and releasing over board cells reports correct cell coordinates at any
   aspect ratio; touches on HUD buttons never move blocks.
-- **Tests:** `EM BoardSpaceTests` (world ↔ cell round-trip at cell size 1 and 2, out-of-board), `EM`
-  fake input for later gameplay tests.
-- **Docs:** `Docs/General/gameplay.md` §Input (new page, grows in chapters 2–5).
+- **Tests:** `EM BoardSpaceTests` (world ↔ cell round-trip at cell size 1 and 2, out-of-board),
+  `PM BoardInputTests` (cells in order, second finger ignored, disable mid-touch, EventSystem raycast
+  hits the board and the HUD wins over it).
+- **Docs:** `Docs/General/gameplay.md` §1–§2 (new page, grows in chapters 2–5).
 
 ### T-07 Persistence: wallet, settings, progress
 
@@ -228,7 +238,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
   floor tiles (`Grid`), wall segments and corners (`Wall`, `Corner_*`), doors (`Door_1x1` per cell of
   length, tinted by colour). `BoardCameraFitter` frames the board for width/height and aspect using
   margins from `BoardViewConfig` (top HUD and bottom booster bar reserved). Every part position comes from
-  `IBoardSpace`; no `* 2`, `0.5f` or cell-size literal in view code. No board geometry in code beyond
+  `BoardSpace`; no `* 2`, `0.5f` or cell-size literal in view code. No board geometry in code beyond
   placing authored prefabs.
 - **Accept:** boards from 3x3 to the max size are fully visible and centred at 1080x1920 and 20:9; doors sit
   on the right wall cells in the right colour.
@@ -400,7 +410,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 ### T-24 Home behaviors
 
 - **Req:** R-10, R-11, R-19.
-- **Arch:** `HomeFlow` wires the level button to `INavigationService.GoToGameplay()` and the settings
+- **Arch:** `HomeFlow` wires the level button to `INavigationService.GoToGameplayAsync()` and the settings
   button to `IPopupService.Open<SettingsPopup>()`.
 - **Accept:** level button plays the current level; settings opens Settings; coin and level values are
   current on every return.

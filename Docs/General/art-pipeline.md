@@ -35,7 +35,7 @@ The supplied art is used as delivered (case brief §2). `AssetImportTests` enfor
 2. `BlockParts` and `Arrows` are authored Z-up; their part prefabs rotate the `Mesh` child +90° on X so
    the part's top faces +Y. `GroundGrid` and `WallAndDoor` are already Y-up.
 3. Board plane: X right, Z up the screen, Y towards the camera. The floor top is at Y = 0.
-4. **Code never assumes the cell size.** Grid ↔ world conversion goes through `IBoardSpace`, which reads
+4. **Code never assumes the cell size.** Grid ↔ world conversion goes through `BoardSpace`, which reads
    `BoardViewConfig.CellSize`; level data and rules stay in cell coordinates
    ([Case README §2.8](../Case/README.md#2-scope-decisions)).
 
