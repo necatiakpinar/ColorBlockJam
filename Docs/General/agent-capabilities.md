@@ -21,6 +21,15 @@ Updated: 2026-11-16
   none is selected" until `set_active_instance` gets `RollicCaseStudy_NecatiAkpinar@<hash>` (the hash is
   in the error). `refresh_unity` (force, assets) then imports new files and writes their `.meta` (2026-11-16).
 
+- `execute_code` compiles with CodeDom (C# 6): no tuples, `out var` or pattern matching; write
+  `UnityEngine.Object` explicitly (`Object` is ambiguous). `AssetDatabase.DeleteAsset` and `File.*` need
+  `safety_checks: false` (2026-11-16).
+- Test Framework 1.1 (Unity 2022.3) fires `ICallbacks.RunStarted` only after entering Play Mode, so it
+  cannot be used to undo a forced `playModeStartScene`; a forced start scene makes Play Mode test runs
+  hang (headless) or time out (`run_tests`) (2026-11-16).
+- Batch-mode Unity cannot open the project while an editor holds it; MCP `run_tests` works with the
+  editor open (2026-11-16).
+
 ## 2. Shell (Windows, Git Bash)
 
 - Long multi-file `cat <<'EOF'` heredoc chains in one Bash call can fail with "unexpected EOF while
