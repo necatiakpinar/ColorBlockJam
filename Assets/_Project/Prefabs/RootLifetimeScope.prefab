@@ -49,3 +49,4 @@ MonoBehaviour:
   autoRun: 1
   autoInjectGameObjects: []
   _applicationConfig: {fileID: 11400000, guid: 9377f806c6e22e243b7f54db1b07a5c1, type: 2}
+  _uiConfig: {fileID: 11400000, guid: e8978dcbd655e8148b87ae1c2488c3fc, type: 2}

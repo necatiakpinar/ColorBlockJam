@@ -16,9 +16,12 @@ namespace RollicCase.Game.Scopes
         [SerializeField]
         ApplicationConfig _applicationConfig;
 
+        [SerializeField]
+        UiConfig _uiConfig;
+
         protected override void Configure(IContainerBuilder builder)
         {
-            new CoreServicesInstaller(_applicationConfig).Install(builder);
+            new CoreServicesInstaller(_applicationConfig, _uiConfig).Install(builder);
 
             builder.RegisterEntryPoint<TweeningInitializer>();
         }

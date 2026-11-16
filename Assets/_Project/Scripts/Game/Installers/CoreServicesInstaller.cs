@@ -15,15 +15,18 @@ namespace RollicCase.Game.Installers
     public sealed class CoreServicesInstaller : IInstaller
     {
         readonly ApplicationConfig _applicationConfig;
+        readonly UiConfig _uiConfig;
 
-        public CoreServicesInstaller(ApplicationConfig applicationConfig)
+        public CoreServicesInstaller(ApplicationConfig applicationConfig, UiConfig uiConfig)
         {
             _applicationConfig = applicationConfig;
+            _uiConfig = uiConfig;
         }
 
         public void Install(IContainerBuilder builder)
         {
             builder.RegisterInstance(_applicationConfig);
+            builder.RegisterInstance(_uiConfig);
 
             builder.Register<SignalBus>(Lifetime.Singleton);
             builder.Register<IGameLogger, UnityGameLogger>(Lifetime.Singleton);

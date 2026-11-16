@@ -37,7 +37,7 @@ namespace RollicCase.Tests.EditMode
         IObjectResolver BuildCoreAndSplash()
         {
             var builder = new ContainerBuilder();
-            new CoreServicesInstaller(CreateConfig<ApplicationConfig>()).Install(builder);
+            new CoreServicesInstaller(CreateConfig<ApplicationConfig>(), CreateConfig<UiConfig>()).Install(builder);
             new SplashInstaller(CreateConfig<SplashConfig>()).Install(builder);
             return builder.Build();
         }
@@ -46,7 +46,7 @@ namespace RollicCase.Tests.EditMode
         public void CoreServicesInstaller_ShouldResolveEveryService_WhenBuilt()
         {
             var builder = new ContainerBuilder();
-            new CoreServicesInstaller(CreateConfig<ApplicationConfig>()).Install(builder);
+            new CoreServicesInstaller(CreateConfig<ApplicationConfig>(), CreateConfig<UiConfig>()).Install(builder);
             using IObjectResolver container = builder.Build();
 
             Assert.That(container.Resolve<SignalBus>(), Is.Not.Null);
@@ -54,13 +54,14 @@ namespace RollicCase.Tests.EditMode
             Assert.That(container.Resolve<IKeyValueStorage>(), Is.Not.Null);
             Assert.That(container.Resolve<IPlayerProgressService>(), Is.Not.Null);
             Assert.That(container.Resolve<ISceneLoader>(), Is.Not.Null);
+            Assert.That(container.Resolve<UiConfig>(), Is.Not.Null);
         }
 
         [Test]
         public void CoreServicesInstaller_ShouldShareOneSignalBus_WhenResolvedTwice()
         {
             var builder = new ContainerBuilder();
-            new CoreServicesInstaller(CreateConfig<ApplicationConfig>()).Install(builder);
+            new CoreServicesInstaller(CreateConfig<ApplicationConfig>(), CreateConfig<UiConfig>()).Install(builder);
             using IObjectResolver container = builder.Build();
 
             Assert.That(container.Resolve<SignalBus>(), Is.SameAs(container.Resolve<SignalBus>()));
