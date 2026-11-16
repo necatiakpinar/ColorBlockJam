@@ -32,6 +32,7 @@ Pages marked **binding** carry rules agents must follow before touching the path
 | [General/contributing.md](General/contributing.md) | branches, commit convention, commit planning | yes |
 | [General/doc-authoring-rules.md](General/doc-authoring-rules.md) | how docs are written and kept true | yes |
 | [General/getting-started.md](General/getting-started.md) | setup, packages, editor tooling | no |
+| [General/art-pipeline.md](General/art-pipeline.md) | supplied art folders, import rules, cell scale, part prefabs, materials | yes |
 | [General/development-assumptions.md](General/development-assumptions.md) | `DA-n` registry of unconfirmed product decisions | yes |
 | [General/agent-capabilities.md](General/agent-capabilities.md) | what agents verified tools can and cannot do | no |
 
