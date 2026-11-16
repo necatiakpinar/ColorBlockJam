@@ -1,0 +1,45 @@
+using System;
+using System.Collections.Generic;
+using RollicCase.Game.Levels;
+using UnityEditor;
+using UnityEngine;
+using Object = UnityEngine.Object;
+
+namespace RollicCase.Tests.EditMode.Helpers
+{
+    /// <summary>Builds in-memory level catalogs for tests; <see cref="Dispose"/> destroys every asset it made.</summary>
+    public sealed class TestCatalog : IDisposable
+    {
+        readonly List<Object> _created = new();
+
+        public LevelCatalog Create(params LevelData[] levels)
+        {
+            var catalog = Track(ScriptableObject.CreateInstance<LevelCatalog>());
+            var serialized = new SerializedObject(catalog);
+            SerializedProperty list = serialized.FindProperty("_levels");
+            list.arraySize = levels.Length;
+            for (int i = 0; i < levels.Length; i++)
+            {
+                var definition = Track(ScriptableObject.CreateInstance<LevelDefinition>());
+                definition.SetData(levels[i]);
+                list.GetArrayElementAtIndex(i).objectReferenceValue = definition;
+            }
+
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            return catalog;
+        }
+
+        public void Dispose()
+        {
+            foreach (Object created in _created)
+                Object.DestroyImmediate(created);
+            _created.Clear();
+        }
+
+        T Track<T>(T created) where T : Object
+        {
+            _created.Add(created);
+            return created;
+        }
+    }
+}
