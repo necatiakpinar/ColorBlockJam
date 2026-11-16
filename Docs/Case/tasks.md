@@ -24,12 +24,12 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - [x] [T-05 UI kit: safe area, button feedback, popup service](#t-05-ui-kit-safe-area-button-feedback-popup-service)
 - [x] [T-06 Board input and board space](#t-06-board-input-and-board-space)
 - [ ] [T-07 Persistence: wallet, settings, progress](#t-07-persistence-wallet-settings-progress)
-- [ ] [T-08 Level data format and catalog](#t-08-level-data-format-and-catalog)
-- [ ] [T-09 Board model (pure rules)](#t-09-board-model-pure-rules)
-- [ ] [T-10 Board view: floor, walls, doors, camera fit](#t-10-board-view-floor-walls-doors-camera-fit)
-- [ ] [T-11 Block view: modular block meshes and colours](#t-11-block-view-modular-block-meshes-and-colours)
-- [ ] [T-12 Drag and slide](#t-12-drag-and-slide)
-- [ ] [T-13 Exit through door and level complete](#t-13-exit-through-door-and-level-complete)
+- [x] [T-08 Level data format and catalog](#t-08-level-data-format-and-catalog)
+- [x] [T-09 Board model (pure rules)](#t-09-board-model-pure-rules)
+- [x] [T-10 Board view: floor, walls, doors, camera fit](#t-10-board-view-floor-walls-doors-camera-fit)
+- [x] [T-11 Block view: modular block meshes and colours](#t-11-block-view-modular-block-meshes-and-colours)
+- [x] [T-12 Drag and slide](#t-12-drag-and-slide)
+- [x] [T-13 Exit through door and level complete](#t-13-exit-through-door-and-level-complete)
 - [ ] [T-14 Level session state machine](#t-14-level-session-state-machine)
 - [ ] [T-15 Countdown timer](#t-15-countdown-timer)
 - [ ] [T-16 Coin rewards](#t-16-coin-rewards)
@@ -199,33 +199,38 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 ### T-08 Level data format and catalog
 
 - **Req:** R-17, R-26, R-29. Implements DA-13, DA-17, DA-18.
-- **Arch:** `LevelDefinition : ScriptableObject` — `Width`, `Height` (bounds in `LevelRulesConfig`, e.g.
-  3–10), `TimerSeconds`, `List<BlockData>` (`Id`, `BlockColor`, `Vector2Int Origin`, `List<Vector2Int>
-  Cells` relative, optional `BlockModifier` for ice/arrow later), `List<DoorData>` (`WallSide` Top/
-  Bottom/Left/Right, `StartIndex`, `Length`, `BlockColor`). `BlockColor` enum with spaced values.
-  `LevelCatalog : ScriptableObject` — ordered `LevelDefinition` list, registered in Root.
-  `LevelDefinitionValidator` (pure): bounds, overlaps, connected shapes, doors inside a wall, door overlap,
-  every block colour has a door wide enough → list of `LevelIssue`s.
-- **Accept:** a hand-made test asset round-trips through serialization; the validator reports each broken
-  invariant with a readable message.
-- **Tests:** `EM LevelDefinitionValidatorTests` (one test per rule), `EM LevelCatalogTests`.
-- **Docs:** `Docs/General/level-data.md` (format, invariants, versioning); `level-editor-qa.md` stub.
+- **Arch:** `LevelDefinition : ScriptableObject` wraps a plain serializable `LevelData` — `Width`,
+  `Height` (bounds in `LevelRulesConfig`, 3–10), `TimerSeconds`, `BlockData` (`BlockColor`, absolute start
+  `Cells`), `DoorData` (`WallSide`, `Start`, `Length`, `BlockColor`). Ice/arrow modifiers are added by
+  T-34/T-35, not reserved now. `LevelCatalog : ScriptableObject` — ordered list, registered in Root. `LevelDefinitionValidator` (pure) returns `LevelIssue`s (error / warning).
+- **Subtasks:**
+  - [x] Data types, enums with spaced values, `LevelDefinition`, `LevelCatalog`, `LevelRulesConfig`.
+  - [x] Validator with the ten rules of level-data.md §2.
+  - [x] `LevelCatalog.asset` and `LevelRulesConfig.asset`.
+- **Accept:** level data round-trips through Unity serialization of the asset type; the validator reports
+  each broken invariant with a readable message.
+- **Tests:** `EM LevelDefinitionValidatorTests` (one test per rule), `EM LevelDefinitionTests`
+  (serialization round trip); the catalog is covered through `LevelProviderTests`.
+- **Docs:** `Docs/General/level-data.md` (format, invariants); `level-editor-qa.md`.
 
 ### T-09 Board model (pure rules)
 
 - **Req:** R-17, R-24, R-25, R-35. Implements DA-4, DA-5.
-- **Arch:** plain C# in `RollicCase.Game.Gameplay.Board`: `BoardState` built fresh from a
-  `LevelDefinition` per attempt (occupancy grid `int[]`, block runtime list); `BlockMover` answers
-  `MaxSteps(blockId, direction)` and applies a move; `DoorResolver` answers whether a block standing against
-  a wall can exit through a door (colour match, door span covers the block's span on that wall);
-  `BoardState.IsCleared`. No allocation per move (pre-sized buffers).
+- **Arch:** plain C# in `RollicCase.Game.Gameplay.Board`: `BoardState` built fresh from `LevelData` per
+  attempt (occupancy grid `int[]`, `BoardBlock` list); `TryStep(blockId, direction)` moves one cell and
+  returns `Moved` / `Blocked` / `Exited` (the drag controller asks `CanStep` and commits one cell at a time, so no separate
+  `MaxSteps`); `DoorResolver` answers colour and span fit; the exit also needs a clear straight path to the
+  wall (DA-5). `BoardState.IsCleared`. No allocation per step.
+- **Subtasks:**
+  - [x] `BoardState`, `BoardBlock`, `DoorResolver`, `StepResult`.
+  - [x] Exit path check for shapes whose rows do not all touch the wall (L, T, S).
 - **Accept:** every rule below is a passing test:
   slide stops at walls; slide stops at other blocks; block exits through a matching door wide enough;
   wrong colour does not exit; too-narrow door does not exit; removing the last block clears the board;
   building a second `BoardState` from the same definition shares no state with the first.
-- **Tests:** `EM BlockMoverTests`, `EM DoorResolverTests`, `EM BoardStateTests`; allocation test with
-  `GC.GetAllocatedBytesForCurrentThread` around 1 000 moves.
-- **Docs:** `gameplay.md` §Rules.
+- **Tests:** `EM BoardStateTests` (covers the door fit through `TryStep` on every wall), including a
+  zero-allocation test over 5 000 steps covering door and path checks (`Is.Not.AllocatingGCMemory`).
+- **Docs:** `gameplay.md` §3; DA-5 gains the clear-path condition.
 
 ---
 
@@ -234,51 +239,64 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 ### T-10 Board view: floor, walls, doors, camera fit
 
 - **Req:** R-17, R-13.
-- **Arch:** `BoardView` (Gameplay scene component) builds the board from prefabs pooled per part:
-  floor tiles (`Grid`), wall segments and corners (`Wall`, `Corner_*`), doors (`Door_1x1` per cell of
-  length, tinted by colour). `BoardCameraFitter` frames the board for width/height and aspect using
-  margins from `BoardViewConfig` (top HUD and bottom booster bar reserved). Every part position comes from
-  `BoardSpace`; no `* 2`, `0.5f` or cell-size literal in view code. No board geometry in code beyond
-  placing authored prefabs.
+- **Arch:** `BoardView` (Gameplay scene component) builds the board from pooled part prefabs: base, floor
+  tiles, wall segments and corners, doors (one per door cell, tinted by colour). `BoardCameraView` +
+  pure `BoardFraming` frame the board for its size and the aspect, with margins from `BoardViewConfig`.
+  Parts hang under a root at `BoardSpace.Origin` scaled by the cell size, so no cell-size literal in view
+  code. `LevelProvider` + `ActiveBoard` load the current level and announce it (`BoardLoadedSignal`,
+  which carries the level, not the live board).
+- **Subtasks:**
+  - [x] Wall/door prefabs flipped (exported upside down, A-8); `Board_Base` prefab and material.
+  - [x] `BoardView`, `PartPool`, `ColorMaterialCache`, `BoardCameraView`, `BoardFraming`.
+  - [x] `LevelProvider`, `ActiveBoard`, catalog in the root scope, development level `Level_001`.
 - **Accept:** boards from 3x3 to the max size are fully visible and centred at 1080x1920 and 20:9; doors sit
   on the right wall cells in the right colour.
-- **Tests:** `EM BoardCameraFitterTests` (pure framing math), `PM BoardViewTests` (spawned part counts).
-- **Docs:** `gameplay.md` §View, `art-pipeline.md` (part prefabs).
+- **Tests:** `EM BoardFramingTests`, `EM LevelProviderTests`, `EM ActiveBoardTests`,
+  `PM GameplayBoardTests.Board_ShouldDrawEveryPartAndBlock_WhenGameplayStarts` (part counts).
+- **Docs:** `gameplay.md` §4–§5, `art-pipeline.md` §3–§5, `level-data.md` §3, asset feedback A-8, A-9.
 
 ### T-11 Block view: modular block meshes and colours
 
 - **Req:** R-17.
-- **Arch:** `BlockView` assembles a block from `ModularBlock_*` parts. A pure `BlockTileResolver` picks,
-  per cell corner/edge, the part and rotation from the 8-neighbour mask (outer corner, edge, inner corner,
-  centre) — autotiling. Colour from `BlockPaletteConfig` through `MaterialPropertyBlock`. Block views are
-  pooled; parts are pooled.
+- **Arch:** `BlockLayerView` assembles each block under a pooled `BlockView` from `ModularBlock_*` parts.
+  A pure `BlockTileResolver` picks, per cell quarter, Center / Edge / OuterCorner from the two neighbours
+  toward that corner, and one InnerCorner where three cells meet at a vertex; mirroring by negative scale.
+  Colour from the `BoardViewConfig` palette through one shared material per colour (SRP batcher friendly,
+  unlike property blocks). Block views and parts are pooled.
 - **Accept:** I, L, T, S, square and 1x1 shapes render with seamless edges and correct corners in every
   colour.
-- **Tests:** `EM BlockTileResolverTests` (masks → part + rotation for each shape).
-- **Docs:** `gameplay.md` §View, `art-pipeline.md` (part naming and pivots).
+- **Tests:** `EM BlockTileResolverTests` (pieces for each shape, notch direction, full coverage).
+- **Docs:** `gameplay.md` §5, `art-pipeline.md` §4.
 
 ### T-12 Drag and slide
 
 - **Req:** R-17, R-38. Implements DA-4.
-- **Arch:** `BlockDragController` (plain class, Gameplay scope) listens to board input: press selects the
-  block under the finger; drag delta in cells picks the dominant axis and asks `BlockMover` for allowed
-  steps; the model commits cell moves; `BlockView` tweens to the committed cell with `BlockMoveAnimation`.
-  Release ends the drag. Input ignored outside `Playing`. Signal `BlockMovedSignal`.
-- **Accept:** a block follows the finger cell by cell, never overlaps or crosses walls, changes axis mid-drag
-  only through free cells; releasing leaves it snapped to the grid; no GC per drag frame.
-- **Tests:** `EM BlockDragControllerTests` with fake input and a real `BoardState`.
-- **Docs:** `gameplay.md` §Controls; `gameplay-qa.md` cases.
+- **Arch:** `BlockDragController` (`Input/`, plain class, Gameplay scope) listens to board input: press
+  selects the block under the finger; the block follows the finger smoothly in fractional cells, asking
+  `BoardState.CanStep` before entering each cell and committing through `ActiveBoard.TryStep` past the
+  middle of it; release snaps it to its cell (`BlockDraggedSignal`, `BlockDroppedSignal`, one retargeted
+  `BlockMoveAnimation` snap tween per block).
+  Release ends the drag. Signal `BlockMovedSignal`. Ignoring input outside `Playing` lands with the
+  session state machine (T-14).
+- **Accept:** a held block follows the finger smoothly, also when dragged fast across free space, never
+  overlaps or crosses walls, changes axis only through free cells; releasing snaps it to the nearest cell
+  with a tween; no GC per drag frame.
+- **Tests:** `EM BlockDragControllerTests` with signals and a real board (including zero allocation),
+  `PM GameplayBoardTests.BlockView_ShouldNotAllocate_WhenFollowingAFingerAndSnapping` (one retargeted tween).
+- **Docs:** `gameplay.md` §4; `gameplay-qa.md` cases.
 
 ### T-13 Exit through door and level complete
 
 - **Req:** R-17, R-24.
-- **Arch:** when a committed move puts a block against a matching door, the model removes the block
-  (`BlockExitedSignal`); `BlockView` plays `BlockExitAnimation` (slide through the door, shrink), then
-  returns to the pool. When the board is clear the session receives the clear event (T-14).
+- **Arch:** when `BoardState.TryStep` returns `Exited` (a push past the wall through a fitting door with a
+  clear path, DA-5), `ActiveBoard` fires `BlockExitedSignal`; `BlockView` plays
+  `BlockExitAnimation` (slide through the door, shrink), then returns to the pool. The last exit fires
+  `BoardClearedSignal` once; the session (T-14) turns it into level complete.
 - **Accept:** a block leaves through its door; a wrong-colour or narrow door blocks it; the last exit
   triggers level complete exactly once.
-- **Tests:** `EM` model exit tests (T-09) + `PM LevelCompleteTests` (scripted moves on a 1-block level).
-- **Docs:** `gameplay.md` §Rules, §Flow.
+- **Tests:** `EM` model exit tests (T-09), `EM BlockDragControllerTests` (exit, clear once),
+  `PM GameplayBoardTests` (swipes on a two-block level in the real scene).
+- **Docs:** `gameplay.md` §3–§5.
 
 ---
 
@@ -324,7 +342,10 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 
 - **Req:** R-10, R-24. Implements DA-2, DA-8.
 - **Arch:** on `Complete`, `IPlayerProgressService` advances the level number before any presentation.
-  `ILevelProvider` maps level number → `LevelDefinition` (`(n - 1) % catalog.Count`).
+  `LevelProvider` maps level number → `LevelData` (`(n - 1) % catalog.Count`) — done with T-10.
+- **Subtasks:**
+  - [x] `LevelProvider` with looping (`LevelProviderTests`).
+  - [ ] Advance the level on win before the win popup.
 - **Accept:** winning level 3 makes Home show "Level 4"; after level 5, level 6 plays level 1's layout.
 - **Tests:** `EM LevelProviderTests` (mapping, loop), `EM` progress advance test.
 - **Docs:** `gameplay.md` §Progression.
@@ -468,7 +489,7 @@ and (T-33) the solver from `RollicCase.Game`, so the editor never has its own co
 ### T-28 Block placement tools
 
 - **Req:** R-26.
-- **Arch:** tool bar: Select/Move, Paint block, Erase. Colour swatches from `BlockPaletteConfig`. Shape
+- **Arch:** tool bar: Select/Move, Paint block, Erase. Colour swatches from the `BoardViewConfig` palette. Shape
   presets (1x1, 1x2, 1x3, L, T, S, 2x2) plus free paint (drag over cells to build a connected shape).
   Rotate 90° (R key / button). Overlaps and disconnected shapes are prevented live with a red preview.
 - **Accept:** a designer places, recolours, moves, rotates and deletes blocks with the mouse only.
@@ -548,7 +569,7 @@ and (T-33) the solver from `RollicCase.Game`, so the editor never has its own co
 ### T-35 (could) Arrow block
 
 - **Req:** R-34.
-- **Arch:** `BlockModifier.Axis` (horizontal / vertical) shown with `Arrow_*` meshes; `BlockMover` limits
+- **Arch:** `BlockModifier.Axis` (horizontal / vertical) shown with `Arrow_*` meshes; `BoardState.TryStep` limits
   directions. Editor: axis selector on a selected block.
 - **Tests:** `EM` axis-constrained move tests.
 

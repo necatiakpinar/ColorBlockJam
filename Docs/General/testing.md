@@ -9,10 +9,12 @@
 | `RollicCase.Tests.EditMode` | `Assets/_Project/Tests/EditMode/` | pure logic, DI wiring, build settings |
 | `RollicCase.Tests.PlayMode` | `Assets/_Project/Tests/PlayMode/` | real scenes end to end |
 
-Shared fakes live in `Tests/EditMode/Helpers/`: `InMemoryKeyValueStorage`, `RecordingLogger`,
-`FakeBootStep`, `RecordingProgress`, `RecordingNavigation`, `ControllableSceneLoader`, `RecordingPopup`,
-and `TestViews` (builds views with their serialized references wired). Play Mode tests drive the app
-through `SceneTestUtility` (`BootToHome`, `BootToGameplay`, `TapButton`). Reuse them before writing a
+Shared fakes and builders live in `Tests/EditMode/Helpers/`: `InMemoryKeyValueStorage`,
+`RecordingLogger`, `FakeBootStep`, `RecordingProgress`, `RecordingNavigation`, `ControllableSceneLoader`,
+`RecordingPopup`, `LevelDataBuilder` (levels in one line), `TestCatalog` (in-memory catalogs) and
+`TestViews` (views with their serialized references wired). Play Mode tests drive the app through
+`SceneTestUtility` (`BootToHome`, `BootToGameplay`, `TapButton`). The Game assembly exposes a few
+internal view counters to the test assemblies (`Properties/AssemblyInfo.cs`). Reuse them before writing a
 new fake.
 
 ## 2. Current suite
@@ -28,12 +30,22 @@ new fake.
 | `NavigationServiceTests` | each route loads its scene; a request during a load is ignored; a failed load frees the guard |
 | `PopupServiceTests` | one popup at a time; close allows the next |
 | `SafeAreaTests` | safe area to anchors, full screen and notched |
+| `LevelDefinitionValidatorTests` | one test per level rule in level-data.md §2 |
+| `LevelDefinitionTests` | level data survives asset serialization; wall lengths |
+| `BoardStateTests` | moves, walls, blocks, door fit on every wall, clear path out, win, fresh restart, `CanStep`, zero allocation |
+| `LevelProviderTests` | level number to catalog entry; looping; empty catalog |
+| `ActiveBoardTests` | a load sizes the board space and starts fresh; steps announce move, exit and clear |
+| `BlockDragControllerTests` | free follow and diagonals, nearest-cell commit, fast drags, sliding, slipping into gaps without drift, lean, grab, snap, exit, zero allocation |
+| `OutlineMeshBuilderTests` | the selection outline traces 1x1, bars and L shapes at the right height |
+| `BlockTileResolverTests` | pieces for 1x1, bars, squares, L, T; inner corner notch; every quarter covered once |
+| `BoardFramingTests` | 3x3 to 10x10 boards fit inside the margins at 9:16 and 20:9, centred, as close as possible |
 | `BoardSpaceTests` | cell ↔ world at cell size 1 and 2; edges; outside cells |
 | `BuildSettingsTests` | Splash first; every `SceneId` is a build scene; portrait; IL2CPP ARM64 |
 | `AssetImportTests` | UI sprites, model scale, floor tile size |
 | `SceneSetupTests` | every build scene: canvas scaler, safe area root, button feedback |
 | `NavigationFlowTests` (PlayMode) | real boot reaches Home; Home ⇄ Gameplay round trip |
 | `ButtonPressFeedbackTests` (PlayMode) | press shrinks, release restores; non-interactable and disabled cases |
+| `GameplayBoardTests` (PlayMode) | every part and block drawn; swipes take blocks out and clear once; a wrong door holds; outline while held; reload mid-exit; following and snapping allocate nothing |
 | `BoardInputTests` (PlayMode) | pointer events become board cells; one finger; release off the plane; disable mid-touch; UI wins the raycast |
 
 ## 3. Rules

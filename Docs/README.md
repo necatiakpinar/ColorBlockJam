@@ -33,7 +33,8 @@ Pages marked **binding** carry rules agents must follow before touching the path
 | [General/doc-authoring-rules.md](General/doc-authoring-rules.md) | how docs are written and kept true | yes |
 | [General/getting-started.md](General/getting-started.md) | setup, packages, editor tooling | no |
 | [General/ui.md](General/ui.md) | canvases, safe area, button feedback, popups | yes |
-| [General/gameplay.md](General/gameplay.md) | board space, input, gameplay rules as they land | yes |
+| [General/gameplay.md](General/gameplay.md) | board space, input, movement and exit rules | yes |
+| [General/level-data.md](General/level-data.md) | level format, catalog, validation rules | yes |
 | [General/art-pipeline.md](General/art-pipeline.md) | supplied art folders, import rules, cell scale, part prefabs, materials | yes |
 | [General/development-assumptions.md](General/development-assumptions.md) | `DA-n` registry of unconfirmed product decisions | yes |
 | [General/agent-capabilities.md](General/agent-capabilities.md) | what agents verified tools can and cannot do | no |

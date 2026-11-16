@@ -14,7 +14,7 @@ Original: [brief/game-developer-case-2026.pdf](brief/game-developer-case-2026.pd
 flow and a level editor." Code quality, architecture and editor usability are evaluated; art is not.
 
 **Genre summary (our reading).** A grid board surrounded by walls. Coloured multi-cell blocks sit on the
-board. The player drags a block; it slides cell by cell until a wall or another block stops it. Wall
+board. The player drags a block; it slides with the finger until a wall or another block stops it. Wall
 segments carry coloured doors; a block leaves the board through a door of its own colour that is wide
 enough for it. The level is won when every block has left, and failed when the timer reaches zero. The
 exact rules we implement are DA-4 to DA-6.
@@ -118,16 +118,16 @@ task is marked `Dropped`, never deleted. Detail per task: [tasks.md](tasks.md).
 | T-05 | 1 | UI kit: safe area, button feedback, popup service | Every button scales on press; one popup at a time; layout fits 20:9 | T-04 | Done |
 | T-06 | 1 | Board input and board space | Press, drag and release on board cells arrive as events, no polling | T-04 | Done |
 | T-07 | 1 | Persistence: wallet, settings, progress | Coins, settings and level survive restart and app background | T-01 | Todo |
-| T-08 | 2 | Level data format and catalog | `LevelDefinition` asset holds width, height, timer, blocks, doors | T-01 | Todo |
-| T-09 | 2 | Board model (pure rules) | Move, block, exit and win rules pass Edit Mode tests | T-08 | Todo |
-| T-10 | 3 | Board view: floor, walls, doors, camera fit | Any size up to the max shows framed at 1080x1920 and 20:9 | T-08, T-03 | Todo |
-| T-11 | 3 | Block view: modular block meshes and colours | Any polyomino shows with correct corners and colour | T-10 | Todo |
-| T-12 | 3 | Drag and slide | A dragged block follows the finger cell by cell and stops at obstacles | T-06, T-09, T-11 | Todo |
-| T-13 | 3 | Exit through door and level complete | A block leaves through a matching door; last exit completes the level | T-12 | Todo |
+| T-08 | 2 | Level data format and catalog | `LevelDefinition` asset holds width, height, timer, blocks, doors | T-01 | Done |
+| T-09 | 2 | Board model (pure rules) | Move, block, exit and win rules pass Edit Mode tests | T-08 | Done |
+| T-10 | 3 | Board view: floor, walls, doors, camera fit | Any size up to the max shows framed at 1080x1920 and 20:9 | T-08, T-03 | Done |
+| T-11 | 3 | Block view: modular block meshes and colours | Any polyomino shows with correct corners and colour | T-10 | Done |
+| T-12 | 3 | Drag and slide | A held block follows the finger smoothly, stops at obstacles, snaps to its cell on release | T-06, T-09, T-11 | Done |
+| T-13 | 3 | Exit through door and level complete | A block leaves through a matching door; last exit completes the level | T-12 | Done |
 | T-14 | 4 | Level session state machine | Loading → Playing ⇄ Paused → Won / Failed; restart rebuilds from data | T-09 | Todo |
 | T-15 | 4 | Countdown timer | Counts down, pauses, fails the level at 0 | T-14 | Todo |
 | T-16 | 4 | Coin rewards | Win adds the reward once, before the popup; leaving never changes coins | T-07, T-14 | Todo |
-| T-17 | 4 | Level progression and looping | Win advances the level; after level 5 the catalog loops | T-07, T-14 | Todo |
+| T-17 | 4 | Level progression and looping | Win advances the level; after level 5 the catalog loops | T-07, T-14 | In progress |
 | T-18 | 5 | Gameplay HUD | Level, timer, coins, pause, boosters and lives shown and updating | T-05, T-15, T-16 | Todo |
 | T-19 | 5 | Pause popup | Pause freezes timer and input; resume, restart, home work | T-18 | Todo |
 | T-20 | 5 | Fail popup | Opens on timeout; restart and home work | T-18 | Todo |

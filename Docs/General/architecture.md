@@ -22,14 +22,17 @@ Assets/_Project/
 │   ├── Boot/            boot steps, TweeningInitializer
 │   ├── Splash/          SplashFlow, SplashView
 │   ├── Home/            HomeFlow, HomeView
+│   ├── Levels/          LevelData, LevelDefinition, LevelCatalog, LevelProvider, validator
 │   ├── UI/              safe area, button press feedback, popup service
-│   ├── Gameplay/        GameplayFlow, signals, HUD, Board/ (BoardSpace), Input/ (BoardInputView)
+│   ├── Gameplay/        GameplayFlow, signals, HUD, Board/ (rules, ActiveBoard), Input/ (touch, drag),
+│   │                    View/ (board, blocks, tiling, camera), Animations/
 │   └── Common/Animations/  reusable IAnimation structs
 ├── Scripts/Editor/    RollicCase.Editor   editor tooling
 ├── Tests/EditMode/    RollicCase.Tests.EditMode
 ├── Tests/PlayMode/    RollicCase.Tests.PlayMode
 ├── Scenes/            Splash (build index 0), Home, Gameplay
 ├── Prefabs/           RootLifetimeScope, Board/ part prefabs
+├── Levels/            LevelCatalog and level assets
 └── Configs/           config assets
 ```
 

@@ -5,4 +5,9 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 
 ## Cases
 
-_Added with each task's acceptance criteria. See [tasks.md](../Case/tasks.md)._
+### Validation (T-08)
+
+- [ ] ⚙ Every structural rule reports a readable message — `LevelDefinitionValidatorTests` (one test per rule in level-data.md §2)
+- [ ] ⚙ The saved format keeps every field — `LevelDefinitionTests.LevelData_ShouldSurviveSerialization_WhenCopiedThroughTheAsset`
+
+Editor window cases arrive with T-26 to T-31.

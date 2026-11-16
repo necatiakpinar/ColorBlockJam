@@ -5,6 +5,33 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 
 ## Cases
 
+### Rules
+
+- [ ] ⚙ Blocks stop at walls and at other blocks — `BoardStateTests.TryStep_ShouldStopAtWall_WhenNoDoorIsThere`, `TryStep_ShouldStopAtAnotherBlock_WhenItIsInTheWay`
+- [ ] ⚙ A block leaves through a matching door that covers it — `BoardStateTests.TryStep_ShouldExit_WhenAMatchingDoorCoversTheBlock`
+- [ ] ⚙ Wrong colour, narrow or offset doors keep it in — `BoardStateTests.TryStep_ShouldBeBlocked_WhenTheDoorColourDiffers` and siblings
+- [ ] ⚙ A block cannot leave while another block stands in its way out — `BoardStateTests.TryStep_ShouldBeBlocked_WhenAnotherBlockStandsInTheWayOut`
+- [ ] ⚙ The last exit clears the board — `BoardStateTests.IsCleared_ShouldBecomeTrue_WhenTheLastBlockExits`
+- [ ] ⚙ A restart starts from the level, not the last attempt — `BoardStateTests.NewBoard_ShouldStartFromTheLevel_WhenAnEarlierAttemptMovedBlocks`
+
+### Board and controls
+
+- [ ] ⚙ The board draws floor, walls, doors, corners and every block — `GameplayBoardTests.Board_ShouldDrawEveryPartAndBlock_WhenGameplayStarts`
+- [ ] ⚙ A held block follows the finger between cells — `BlockDragControllerTests.Drag_ShouldFollowTheFingerBetweenCells_WhenTheWayIsFree`
+- [ ] ⚙ A fast drag crosses free cells but stops on the edge of an obstacle — `BlockDragControllerTests.Drag_ShouldCrossSeveralFreeCellsInOneEvent_WhenTheFingerMovesFast`, `Drag_ShouldStopOnTheCellEdge_WhenAFastFingerPassesAnObstacle`
+- [ ] ⚙ A released block settles on the nearest cell — `BlockDragControllerTests.Release_ShouldSnapToTheNearestCell_WhenTheBlockIsBetweenCells`
+- [ ] ⚙ A block slightly off its line slips into a one-cell gap and stays with the finger — `BlockDragControllerTests.Drag_ShouldEaseIntoAOneCellGap_WhenPushedThroughItSlightlyOffTheCellLine`, `Drag_ShouldStayWithTheFinger_WhenItSlippedIntoAGapAndCameOutAgain`
+- [ ] ⚙ A held block with no room leans a little and snaps back — `BlockDragControllerTests.Drag_ShouldLeanTowardTheFingerButNotCommit_WhenTheBlockHasNoRoom`
+- [ ] ⚙ The held block is outlined — `GameplayBoardTests.Outline_ShouldShowWhileABlockIsHeld_WhenGrabbedAndHideOnRelease`
+- [ ] 👁 The outline stays visible where another object covers the block.
+- [ ] ⚙ A swipe takes a block out; the last exit completes the level once — `GameplayBoardTests.Swipe_ShouldTakeTheBlockOffTheBoardAndClearItOnce_WhenEveryBlockLeaves`
+- [ ] ⚙ The board fits between HUD and boosters at 9:16 and 20:9 — `BoardFramingTests`
+- [ ] ⚙ A reload mid-exit rebuilds clean blocks — `GameplayBoardTests.Reload_ShouldRebuildCleanBlocks_WhenABlockIsStillSlidingOut`
+- [ ] ⚙ Dragging allocates nothing — `BlockDragControllerTests.Drag_ShouldNotAllocate_WhenAFingerMovesABlockBackAndForth`, `GameplayBoardTests.BlockView_ShouldNotAllocate_WhenFollowingAFingerAndSnapping`
+- [ ] 👁 Blocks of every shape (I, L, T, S, square, 1x1) have seamless sides and rounded outer corners.
+- [ ] 👁 Dragging feels attached to the finger, also when flicked fast across the board; a released block settles on the grid with a small overshoot.
+- [ ] 👁 An exiting block slides into its door and shrinks away; nothing pops.
+
 ### Input
 
 - [ ] ⚙ Press, drag and release report cells in order — `BoardInputTests.PressDragRelease_ShouldReportCellsInOrder_WhenOneFingerMovesAcrossTheBoard`
