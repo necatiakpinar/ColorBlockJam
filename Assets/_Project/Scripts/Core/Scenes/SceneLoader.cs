@@ -10,6 +10,7 @@ namespace RollicCase.Core.Scenes
         public string GetSceneName(SceneId sceneId) => sceneId switch
         {
             SceneId.Splash => "Splash",
+            SceneId.Home => "Home",
             SceneId.Gameplay => "Gameplay",
             _ => throw new ArgumentOutOfRangeException(nameof(sceneId), sceneId, "Scene has no build entry."),
         };

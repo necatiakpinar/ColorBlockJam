@@ -2,8 +2,8 @@ using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using RollicCase.Core.Boot;
-using RollicCase.Core.Scenes;
 using RollicCase.Game.Configs;
+using RollicCase.Game.Navigation;
 using VContainer.Unity;
 
 namespace RollicCase.Game.Splash
@@ -16,14 +16,14 @@ namespace RollicCase.Game.Splash
         readonly BootSequence _bootSequence;
         readonly SplashView _view;
         readonly SplashConfig _config;
-        readonly ISceneLoader _sceneLoader;
+        readonly INavigationService _navigation;
 
-        public SplashFlow(BootSequence bootSequence, SplashView view, SplashConfig config, ISceneLoader sceneLoader)
+        public SplashFlow(BootSequence bootSequence, SplashView view, SplashConfig config, INavigationService navigation)
         {
             _bootSequence = bootSequence;
             _view = view;
             _config = config;
-            _sceneLoader = sceneLoader;
+            _navigation = navigation;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation)
@@ -39,9 +39,7 @@ namespace RollicCase.Game.Splash
             await minimumDisplay;
             await _view.WaitForPresentationAsync(cancellation);
 
-            // Loading Gameplay destroys this scope and cancels its token, so the load itself must not
-            // listen to that token or it would report its own success as a cancellation.
-            await _sceneLoader.LoadAsync(SceneId.Gameplay, CancellationToken.None);
+            await _navigation.GoToHomeAsync();
         }
     }
 }

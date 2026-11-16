@@ -3,6 +3,7 @@ using RollicCase.Core.Persistence;
 using RollicCase.Core.Scenes;
 using RollicCase.Core.Signals;
 using RollicCase.Game.Configs;
+using RollicCase.Game.Navigation;
 using VContainer;
 using VContainer.Unity;
 
@@ -33,6 +34,7 @@ namespace RollicCase.Game.Installers
             builder.Register<IKeyValueStorage, PlayerPrefsStorage>(Lifetime.Singleton);
             builder.Register<IPlayerProgressService, PlayerProgressService>(Lifetime.Singleton);
             builder.Register<ISceneLoader, SceneLoader>(Lifetime.Singleton);
+            builder.Register<INavigationService, NavigationService>(Lifetime.Singleton);
         }
     }
 }

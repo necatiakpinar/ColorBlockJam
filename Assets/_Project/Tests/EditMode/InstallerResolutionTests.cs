@@ -8,7 +8,11 @@ using RollicCase.Core.Scenes;
 using RollicCase.Core.Signals;
 using RollicCase.Game.Boot;
 using RollicCase.Game.Configs;
+using RollicCase.Game.Gameplay.Board;
 using RollicCase.Game.Installers;
+using RollicCase.Game.Navigation;
+using RollicCase.Game.UI;
+using UnityEditor;
 using UnityEngine;
 using VContainer;
 
@@ -54,6 +58,7 @@ namespace RollicCase.Tests.EditMode
             Assert.That(container.Resolve<IKeyValueStorage>(), Is.Not.Null);
             Assert.That(container.Resolve<IPlayerProgressService>(), Is.Not.Null);
             Assert.That(container.Resolve<ISceneLoader>(), Is.Not.Null);
+            Assert.That(container.Resolve<INavigationService>(), Is.Not.Null);
             Assert.That(container.Resolve<UiConfig>(), Is.Not.Null);
         }
 
@@ -79,6 +84,44 @@ namespace RollicCase.Tests.EditMode
                 typeof(ApplyApplicationSettingsStep),
                 typeof(LoadPlayerProgressStep),
             }));
+        }
+
+        [Test]
+        public void HomeInstaller_ShouldResolvePopupService_WhenBuilt()
+        {
+            var builder = new ContainerBuilder();
+            new HomeInstaller().Install(builder);
+            using IObjectResolver container = builder.Build();
+
+            Assert.That(container.Resolve<IPopupService>(), Is.Not.Null);
+        }
+
+        IObjectResolver BuildGameplay(BoardViewConfig boardViewConfig)
+        {
+            var builder = new ContainerBuilder();
+            new GameplayInstaller(CreateConfig<GameplayConfig>(), boardViewConfig).Install(builder);
+            return builder.Build();
+        }
+
+        [Test]
+        public void GameplayInstaller_ShouldResolveBoardSpaceWithConfiguredCellSize_WhenBuilt()
+        {
+            var boardViewConfig = CreateConfig<BoardViewConfig>();
+            var serialized = new SerializedObject(boardViewConfig);
+            serialized.FindProperty("_cellSize").floatValue = 2.5f;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+
+            using IObjectResolver container = BuildGameplay(boardViewConfig);
+
+            Assert.That(container.Resolve<BoardSpace>().CellSize, Is.EqualTo(2.5f));
+        }
+
+        [Test]
+        public void GameplayInstaller_ShouldResolvePopupService_WhenBuilt()
+        {
+            using IObjectResolver container = BuildGameplay(CreateConfig<BoardViewConfig>());
+
+            Assert.That(container.Resolve<IPopupService>(), Is.Not.Null);
         }
 
         [Test]
