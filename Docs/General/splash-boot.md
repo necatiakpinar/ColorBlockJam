@@ -1,0 +1,44 @@
+# Splash and Boot
+
+> **Binding agent rules.** Read this page before touching `Scripts/Game/Splash/`, `Scripts/Game/Boot/`,
+> `Scripts/Core/Boot/`, `SceneLoader`, `SceneId` or the build scene list.
+
+## 1. Guarantees
+
+1. The app always starts in **Splash** (build index 0) — pinned by
+   `BuildSettingsTests.BuildSettings_ShouldStartWithSplash_WhenAppLaunches`.
+2. Every `SceneId` maps to an enabled build scene — `BuildSettings_ShouldContainEverySceneId_WhenLoaderNamesIt`.
+3. **Splash always reaches Gameplay**: no boot step may wait on the network or on user input without a
+   bounded timeout.
+4. All boot work is done by `IBootStep`s; `SplashFlow` only presents and routes.
+
+## 2. Sequence
+
+```
+VContainer creates RootLifetimeScope (prefab)          TweeningInitializer: DOTween.Init + capacities
+Splash.unity loads → SplashLifetimeScope builds        SplashView injected (SplashConfig)
+SplashFlow.StartAsync
+  ├─ SplashView.PlayIntro()                            logo fade + scale (FadeScaleInAnimation)
+  ├─ start minimum-display timer                       SplashConfig.MinimumDisplaySeconds, realtime
+  ├─ BootSequence.RunAsync(progress → SplashView)      steps in SplashInstaller order
+  │    ApplyApplicationSettingsStep  (weight 1)        Application.targetFrameRate
+  │    LoadPlayerProgressStep        (weight 2)        IPlayerProgressService.Load()
+  ├─ await minimum-display timer
+  ├─ await SplashView.WaitForPresentationAsync         intro + last bar fill finished
+  └─ SceneLoader.LoadAsync(Gameplay)                   single mode; Splash scope is destroyed
+Gameplay.unity → GameplayLifetimeScope builds          GameplayHudView subscribes in Construct
+GameplayFlow.Start → LevelStartedSignal(level)         HUD shows "Level N" with a reveal
+```
+
+## 3. Adding a boot step
+
+1. Implement `IBootStep` in `Scripts/Game/Boot/` with a positive `Weight` (its share of the bar).
+2. Register it in `SplashInstaller` **at the position it must run**.
+3. Update `InstallerResolutionTests.SplashInstaller_ShouldRegisterBootStepsInExecutionOrder_WhenBuilt`
+   and the table in section 2.
+4. A step that can block (network, SDK init) wraps its wait in a timeout and continues on failure.
+
+## 4. Scene handover detail
+
+`SplashFlow` loads Gameplay with `CancellationToken.None`: the load destroys the Splash scope, which
+cancels the scope's token, and a load listening to it would report its own success as a cancellation.
