@@ -13,76 +13,105 @@ README table owns status; this page owns scope. Each task block lists:
 
 Supplied assets referenced below live in `Assets/_Project/Art/` (`UI/`, `Models/`, `Textures/`).
 
+## Progress
+
+Tick a task when its acceptance criteria hold and its tests are green; tick subtasks as they land.
+
+- [x] [T-01 Pin the project to Unity 2022.3.62f2](#t-01-pin-the-project-to-unity-2022362f2)
+- [x] [T-02 Player, Android and quality settings](#t-02-player-android-and-quality-settings)
+- [x] [T-03 Import and configure the supplied assets](#t-03-import-and-configure-the-supplied-assets)
+- [ ] [T-04 Home scene and scene routing](#t-04-home-scene-and-scene-routing)
+- [ ] [T-05 UI kit: safe area, button feedback, popup service](#t-05-ui-kit-safe-area-button-feedback-popup-service)
+- [ ] [T-06 Board input and camera service](#t-06-board-input-and-camera-service)
+- [ ] [T-07 Persistence: wallet, settings, progress](#t-07-persistence-wallet-settings-progress)
+- [ ] [T-08 Level data format and catalog](#t-08-level-data-format-and-catalog)
+- [ ] [T-09 Board model (pure rules)](#t-09-board-model-pure-rules)
+- [ ] [T-10 Board view: floor, walls, doors, camera fit](#t-10-board-view-floor-walls-doors-camera-fit)
+- [ ] [T-11 Block view: modular block meshes and colours](#t-11-block-view-modular-block-meshes-and-colours)
+- [ ] [T-12 Drag and slide](#t-12-drag-and-slide)
+- [ ] [T-13 Exit through door and level complete](#t-13-exit-through-door-and-level-complete)
+- [ ] [T-14 Level session state machine](#t-14-level-session-state-machine)
+- [ ] [T-15 Countdown timer](#t-15-countdown-timer)
+- [ ] [T-16 Coin rewards](#t-16-coin-rewards)
+- [ ] [T-17 Level progression and looping](#t-17-level-progression-and-looping)
+- [ ] [T-18 Gameplay HUD](#t-18-gameplay-hud)
+- [ ] [T-19 Pause popup](#t-19-pause-popup)
+- [ ] [T-20 Fail popup](#t-20-fail-popup)
+- [ ] [T-21 Win popup](#t-21-win-popup)
+- [ ] [T-22 Restart and home correctness](#t-22-restart-and-home-correctness)
+- [ ] [T-23 Home screen layout](#t-23-home-screen-layout)
+- [ ] [T-24 Home behaviors](#t-24-home-behaviors)
+- [ ] [T-25 Settings popup](#t-25-settings-popup)
+- [ ] [T-26 Level editor window and level list](#t-26-level-editor-window-and-level-list)
+- [ ] [T-27 Visual board canvas, size and timer](#t-27-visual-board-canvas-size-and-timer)
+- [ ] [T-28 Block placement tools](#t-28-block-placement-tools)
+- [ ] [T-29 Door placement tools](#t-29-door-placement-tools)
+- [ ] [T-30 Save, load, play-test and structural validation](#t-30-save-load-play-test-and-structural-validation)
+- [ ] [T-31 Editor usability pass and designer guide](#t-31-editor-usability-pass-and-designer-guide)
+- [ ] [T-32 Author levels 1–5 in the editor](#t-32-author-levels-15-in-the-editor)
+- [ ] [T-33 (could) Solvability validation](#t-33-could-solvability-validation)
+- [ ] [T-34 (could) Ice blocker](#t-34-could-ice-blocker)
+- [ ] [T-35 (could) Arrow block](#t-35-could-arrow-block)
+- [ ] [T-36 (could) One functional booster](#t-36-could-one-functional-booster)
+- [ ] [T-37 Architecture tests](#t-37-architecture-tests)
+- [ ] [T-38 Performance pass](#t-38-performance-pass)
+- [ ] [T-39 Full QA pass on device and aspect ratios](#t-39-full-qa-pass-on-device-and-aspect-ratios)
+- [ ] [T-40 Submission README](#t-40-submission-readme)
+- [ ] [T-41 Android APK and flow recording](#t-41-android-apk-and-flow-recording)
+- [ ] [T-42 Repository hygiene and hand-off](#t-42-repository-hygiene-and-hand-off)
+
 ---
 
 ## Chapter 0 — Project baseline
 
-### T-01 Migrate the project to Unity 2022.3.62f2
+### T-01 Pin the project to Unity 2022.3.62f2
 
-- **Req:** R-1. **Blocked by** Q-1.
-- **Arch:** no code change intended; package and serialization changes only.
+- **Req:** R-1.
 - **Subtasks:**
-  1. Install 2022.3.62f2 with Android Build Support (SDK, NDK, OpenJDK).
-  2. Branch `chore/T-01-unity-2022`; delete `Library/` locally before opening.
-  3. Downgrade `Packages/manifest.json` to 2022.3-compatible versions: URP 14.x, Input System 1.x for
-     2022.3, Test Framework 1.1.x, `com.unity.textmeshpro` 3.0.x instead of uGUI 2.0's built-in TMP,
-     Timeline, AI Navigation (or remove if unused), IDE packages; keep VContainer, UniTask, unity-mcp if
-     they support 2022.3.
-  4. Remove Unity 6-only modules from the manifest (e.g. `adaptiveperformance`, `accessibility` if absent
-     in 2022.3).
-  5. Open the project; fix every console error. Re-check `URP Mobile` renderer and pipeline assets,
-     `VContainerSettings`, DOTween setup (`DOTween.Modules` asmdef references), TMP essentials.
-  6. Re-save both scenes and every prefab/asset so their serialization matches 2022.3; check
-     `ProjectSettings/ProjectVersion.txt` reads 2022.3.62f2.
-  7. Replace Unity 6-only APIs if any fail to compile (`FindFirstObjectByType` is not used; check
-     `Awaitable`, `InstantiateAsync`, `EntityId`).
-  8. Run Edit Mode and Play Mode tests headless and in the editor.
+  - [x] Package set for 2022.3: URP 14, Input System 1.14, Test Framework 1.1, TextMesh Pro 3.0, uGUI 1.0.
+  - [x] Every asset serialized by 2022.3.62f2.
+  - [x] Play From Splash exempts test runs and batch mode.
 - **Accept:** project opens in 2022.3.62f2 with an empty console; Play from any scene reaches Gameplay;
   all tests green.
-- **Tests:** existing suites must pass; no new tests.
-- **Docs:** `CLAUDE.md` + `AGENTS.md` (Unity version, project overview), `README.md` *Tech*,
-  `getting-started.md`, `agent-capabilities.md` (MCP on 2022.3).
+- **Tests:** existing suites pass.
+- **Docs:** `CLAUDE.md` + `AGENTS.md`, `README.md`, `getting-started.md`.
 
 ### T-02 Player, Android and quality settings
 
 - **Req:** R-2, R-7, R-38. Implements DA-1.
 - **Subtasks:**
-  1. Company, product name, bundle id `com.necatiakpinar.rolliccase`, version `0.1.0`, bundle code 1.
-  2. Default orientation Portrait; disable auto-rotation to landscape.
-  3. Android: IL2CPP, ARM64 only, min API 24, target API = highest installed, `Optimized Frame Pacing`.
-  4. Quality: one Mobile level pointing at the mobile URP asset; delete `PC_RPAsset` / `PC_Renderer`.
-  5. Delete or replace the template `InputSystem_Actions.inputactions` (T-06 decides).
-  6. DOTween safe mode off in editor and development builds.
+  - [x] Company, product name, bundle id `com.necatiakpinar.rolliccase`, version `0.1.0`, bundle code 1.
+  - [x] Default orientation Portrait; disable auto-rotation to landscape.
+  - [x] Android: IL2CPP, ARM64 only, min API 24, target API = highest installed, `Optimized Frame Pacing`.
+  - [x] Quality: one Mobile level pointing at the mobile URP asset; delete `PC_RPAsset` / `PC_Renderer`.
+  - [x] Delete the unused template `InputSystem_Actions.inputactions` and its project-wide actions entry.
+  - [x] Delete the unused `DefaultVolumeProfile`.
+  - [x] DOTween safe mode off in editor and development builds (`TweeningInitializer`).
+  - [ ] Build a development APK and launch it on a device (first build happens with T-41 if no device
+    is at hand earlier).
 - **Accept:** a development APK builds and launches portrait on a device.
-- **Tests:** `EM BuildSettingsTests` gains `PlayerSettings_ShouldBePortrait_WhenBuilding`.
+- **Tests:** `EM BuildSettingsTests.PlayerSettings_ShouldLockPortrait_WhenBuilding`,
+  `EM BuildSettingsTests.PlayerSettings_ShouldBuildIl2CppArm64_WhenTargetingAndroid`.
 - **Docs:** `getting-started.md` (build steps).
 
 ### T-03 Import and configure the supplied assets
 
 - **Req:** R-3, R-17, R-40.
-- **Status:** files copied to `Assets/_Project/Art/` with Unity-generated `.meta` files; import settings
-  not done yet.
 - **Subtasks:**
-  1. `UI/*.png`: Texture Type `Sprite (2D and UI)`, single sprite, mipmaps off, `Clamp`, compression
-     ASTC for Android, max size fitted to the source.
-  2. Nine-slice borders for stretchable sprites: `bg_popup`, `bg_popup_header`, `bg_popup_info_holder`,
-     `bg_menu`, `Btn_levelBg_normal`, `Btn_popup_green`, `Btn_popup_blue`, `bg_gameplay_time_holder`,
-     `bg_home_coin_holder`, `bg_home_resource_holder`.
-  3. A Sprite Atlas for the UI folder (one draw-call group for HUD and popups).
-  4. `Models/*.fbx`: scale factor so one grid cell is 1 unit (measure `Grid`, `ModularBlock_*`,
-     `Door_1x1`); no animation, no cameras/lights import; read/write off; `Generate Colliders` off.
-  5. Prefabs per mesh part under `Assets/_Project/Prefabs/Board/`: floor tile (`Grid`), wall (`Wall`,
-     `Base_Side`), corners (`Corner_1`, `corner_3/4/5`), door (`Door_1x1`, `Gate_Orange`), block parts
-     (`ModularBlock_Base`, `_Center`, `_Edge`, `_InnerCorner`, `_OuterCorner`), arrows (`Arrow_1/2/3`,
-     `Door_Arrow`, `Arrow_Gate_Orange`).
-  6. URP Lit (or Simple Lit) materials: one shared block material, colours applied via
-     `MaterialPropertyBlock` from a `BlockPaletteConfig`; floor, wall and door materials; an ice material
-     from `Textures/icetexture.jpg`.
-  7. Log asset problems for the README (R-40) in [asset-feedback.md](asset-feedback.md): e.g. no "off"
-     sprite for the settings toggle, `Blockjam_*` file naming, scene/key nodes (`Key 1`, `Scene.*`) inside
-     `WallAndDoor.fbx`, inconsistent casing (`Btn_` vs `btn_`, `corner_3` vs `Corner_1`).
+  - [x] `UI/*.png`: Texture Type `Sprite (2D and UI)`, single sprite, mipmaps off, `Clamp`, compression
+    ASTC for Android, max size fitted to the source.
+  - [x] Nine-slice borders for stretchable sprites (list in `art-pipeline.md` §2); `Btn_levelBg_normal`
+    is not sliceable and stays `Simple`.
+  - [x] A Sprite Atlas for the UI folder (one draw-call group for HUD and popups).
+  - [x] `Models/*.fbx`: scale 0.5 so one cell is 1 unit; no materials, animation, cameras, lights or
+    colliders; read/write off.
+  - [x] Part prefabs under `Assets/_Project/Prefabs/Board/` for floor, wall, corners, door, door arrow,
+    block quarter parts and arrows (table in `art-pipeline.md` §4).
+  - [x] URP Simple Lit materials: block, floor, wall, door, arrow, ice (`icetexture.jpg`).
+  - [x] Log asset problems for the README (R-40) in [asset-feedback.md](asset-feedback.md).
 - **Accept:** every UI sprite drops onto an `Image` correctly; every mesh prefab sits on a 1-unit grid.
-- **Tests:** `EM AssetImportTests` asserts every texture in `Art/UI` imports as a sprite without mipmaps.
+- **Tests:** `EM AssetImportTests`: UI textures are sprites without mipmaps; models import at cell scale
+  without materials; the floor tile spans one cell.
 - **Docs:** `Docs/General/art-pipeline.md` (folders, import rules, scale, palette); `Docs/README.md`.
 
 ---
@@ -96,10 +125,10 @@ Supplied assets referenced below live in `Assets/_Project/Art/` (`UI/`, `Models/
   point. `SceneId` gains `Home`. `SplashFlow` loads Home instead of Gameplay. `INavigationService` (Root)
   exposes `GoToHome()`, `GoToGameplay()` over `ISceneLoader`, so views never know scene names.
 - **Subtasks:**
-  1. Create the scene, scope, installer and an empty `HomeFlow`.
-  2. Add `Home` to build settings (index 1) and `SceneId`.
-  3. Route Splash → Home; Gameplay placeholder "Home" button → Home.
-  4. Update `PlayModeStartScene` if it hard-codes scenes.
+  - [ ] Create the scene, scope, installer and an empty `HomeFlow`.
+  - [ ] Add `Home` to build settings (index 1) and `SceneId`.
+  - [ ] Route Splash → Home; Gameplay placeholder "Home" button → Home.
+  - [ ] Update `PlayModeStartScene` if it hard-codes scenes.
 - **Accept:** Play boots Splash → Home; Home → Gameplay → Home round-trips without errors or duplicate
   Root scopes.
 - **Tests:** `EM InstallerResolutionTests` covers `HomeInstaller`; `EM BuildSettingsTests` covers the new
@@ -133,11 +162,12 @@ Supplied assets referenced below live in `Assets/_Project/Art/` (`UI/`, `Models/
   on a board-sized collider receives `IPointerDownHandler`, `IDragHandler`, `IPointerUpHandler` through a
   `PhysicsRaycaster`; converts screen → board plane → cell with `IBoardSpace` (pure math) and fires
   `BoardPointerSignal`s or calls `IBoardInputListener`. Pointers over UI never reach the board. Single
-  touch only (DA-4).
+  touch only (DA-4). `IBoardSpace` is the only cell ↔ world conversion; it reads
+  `BoardViewConfig.CellSize` (1 with the current import scale) and the board origin (README §2.8).
 - **Accept:** pressing, dragging and releasing over board cells reports correct cell coordinates at any
   aspect ratio; touches on HUD buttons never move blocks.
-- **Tests:** `EM BoardSpaceTests` (world ↔ cell round-trip, out-of-board), `EM` fake input for later
-  gameplay tests.
+- **Tests:** `EM BoardSpaceTests` (world ↔ cell round-trip at cell size 1 and 2, out-of-board), `EM`
+  fake input for later gameplay tests.
 - **Docs:** `Docs/General/gameplay.md` §Input (new page, grows in chapters 2–5).
 
 ### T-07 Persistence: wallet, settings, progress
@@ -197,7 +227,8 @@ Supplied assets referenced below live in `Assets/_Project/Art/` (`UI/`, `Models/
 - **Arch:** `BoardView` (Gameplay scene component) builds the board from prefabs pooled per part:
   floor tiles (`Grid`), wall segments and corners (`Wall`, `Corner_*`), doors (`Door_1x1` per cell of
   length, tinted by colour). `BoardCameraFitter` frames the board for width/height and aspect using
-  margins from `BoardViewConfig` (top HUD and bottom booster bar reserved). No board geometry in code beyond
+  margins from `BoardViewConfig` (top HUD and bottom booster bar reserved). Every part position comes from
+  `IBoardSpace`; no `* 2`, `0.5f` or cell-size literal in view code. No board geometry in code beyond
   placing authored prefabs.
 - **Accept:** boards from 3x3 to the max size are fully visible and centred at 1080x1920 and 20:9; doors sit
   on the right wall cells in the right colour.
@@ -336,7 +367,11 @@ Supplied assets referenced below live in `Assets/_Project/Art/` (`UI/`, `Models/
 ### T-22 Restart and home correctness
 
 - **Req:** R-21, R-25.
-- **Subtasks:** kill every board tween on restart; return all pooled views; reset drag state; clear popups;
+- **Subtasks:**
+  - [ ] Kill every board tween on restart
+  - [ ] Return all pooled views
+  - [ ] Reset drag state
+  - [ ] Clear popups
   verify no signal subscriber survives a scene unload.
 - **Accept:** ten restarts in a row leave identical board, timer and coin state; no warnings, no leaked
   objects in the hierarchy.
@@ -455,7 +490,9 @@ and (T-33) the solver from `RollicCase.Game`, so the editor never has its own co
 ### T-31 Editor usability pass and designer guide
 
 - **Req:** R-36.
-- **Subtasks:** tooltips on every control; a collapsible help box with the 5-step "make a level" guide;
+- **Subtasks:**
+  - [ ] Tooltips on every control
+  - [ ] A collapsible help box with the 5-step "make a level" guide
   keyboard shortcuts (1–4 tools, R rotate, Del delete, Ctrl+S save); hover highlight of the cell under the
   mouse; empty-state message when the catalog is empty; consistent colours and spacing.
 - **Accept:** someone who has not seen the editor builds and plays a 2-block level following only the
@@ -527,14 +564,18 @@ and (T-33) the solver from `RollicCase.Game`, so the editor never has its own co
 ### T-38 Performance pass
 
 - **Req:** R-38.
-- **Subtasks:** profile a full level on device; GC alloc 0 B per frame while dragging and while idle; batch
+- **Subtasks:**
+  - [ ] Profile a full level on device
+  - [ ] GC alloc 0 B per frame while dragging and while idle
+  - [ ] Batch
   count; `ProfilerMarker` on drag and move; fix findings; record numbers.
 - **Docs:** `Docs/General/performance.md` (method, device, numbers).
 
 ### T-39 Full QA pass on device and aspect ratios
 
 - **Req:** R-13, all acceptance criteria.
-- **Subtasks:** run every QA page at 1080x1920 and 1080x2400 in the Game view and on an Android device;
+- **Subtasks:**
+  - [ ] Run every QA page at 1080x1920 and 1080x2400 in the Game view and on an Android device
   fix or log every failure as a known problem.
 - **Docs:** tick QA pages; known problems list for the README.
 
@@ -547,7 +588,8 @@ and (T-33) the solver from `RollicCase.Game`, so the editor never has its own co
 - **Req:** R-4, R-6, R-40, R-41.
 - **Sections:** how to open and run (Unity 2022.3.62f2, LFS, Play); how to open the editor and make a level
   (with screenshots); architecture decisions and the reason for each (DI scopes, signal bus, pure board
-  model, ScriptableObject level format, animation separation, no per-frame code); decisions made for unclear
+  model, ScriptableObject level format, animation separation, no per-frame code, cells-only data with the
+  2-unit art cell normalized at import — Case README §2.8); decisions made for unclear
   requirements (DA list summary); known problems and incomplete parts; asset feedback; LLM tools used and
   for which parts; approximate work time.
 - **Docs:** root `README.md`.
@@ -555,7 +597,10 @@ and (T-33) the solver from `RollicCase.Game`, so the editor never has its own co
 ### T-41 Android APK and flow recording
 
 - **Req:** R-7.
-- **Subtasks:** release-config APK (IL2CPP, ARM64); install and smoke test; record ≤ 3 min: Splash → Home →
+- **Subtasks:**
+  - [ ] Release-config APK (IL2CPP, ARM64)
+  - [ ] Install and smoke test
+  - [ ] Record ≤ 3 min: Splash → Home →
   Settings toggles → Level 1 win → Level 2 → pause/restart → timeout fail → Home → editor creating and
   playing a level.
 - **Docs:** README links the APK and video.
@@ -563,5 +608,6 @@ and (T-33) the solver from `RollicCase.Game`, so the editor never has its own co
 ### T-42 Repository hygiene and hand-off
 
 - **Req:** R-5.
-- **Subtasks:** `.gitignore` excludes Library, Temp, Logs, Build, UserSettings, generated `.csproj`/`.sln`;
+- **Subtasks:**
+  - [ ] `.gitignore` excludes Library, Temp, Logs, Build, UserSettings, generated `.csproj`/`.sln`
   every LFS file is a pointer; fresh clone into an empty folder opens and plays; all tests green; send link.

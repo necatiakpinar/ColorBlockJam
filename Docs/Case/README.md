@@ -86,12 +86,19 @@ Priority: **must** (explicit in the brief), **should** (evaluation criterion or 
    tested and the editor's validation reuses the same code.
 7. Items from [Plans/pre-case-readiness.md](../Plans/pre-case-readiness.md) are absorbed only where a task
    needs them (safe area, popups, input, persistence, architecture tests); the rest is out.
+8. **Cells, not world units, everywhere but the view.** The supplied models share a 2-unit grid cell
+   (door 2 units wide, floor tile 1.95, block parts a quarter cell). They are imported at scale 0.5 so one
+   cell is one world unit ([art-pipeline.md](../General/art-pipeline.md) §3). Level data, board model,
+   rules and the level editor work in cell coordinates only. The cell-to-world conversion lives in one
+   class, `IBoardSpace`, and reads `BoardViewConfig.CellSize`; no code assumes a cell is 1 unit. **Why:**
+   the art convention stays an import detail, the world size is one tunable, and changing either never
+   touches data or rules. The submission README states this decision (T-40).
 
 ## 3. Open questions for the reviewer
 
 | # | Question | Blocking | Answer |
 | --- | --- | --- | --- |
-| Q-1 | The brief requires Unity 2022.3.62f2; the skeleton is on 6000.3.15f1. Migrate before any content is authored (T-01)? Packages to downgrade: URP 17 → 14, Input System, Test Framework, uGUI 2.0 → TextMesh Pro 3.0 package | yes | _pending developer_ |
+| Q-1 | Which Unity version? | yes | 2022.3.62f2, as the brief requires (T-01) |
 | Q-2 | Deliverable R-7: Android APK, screen recording, or both? Plan: both, APK first | no | _pending_ |
 | Q-3 | Submission as a GitHub link or an archive? Decides whether CI is worth adding | no | _pending_ |
 | Q-4 | May the brief PDF stay in the repository, or is it confidential? | no | _pending_ |
@@ -104,9 +111,9 @@ task is marked `Dropped`, never deleted. Detail per task: [tasks.md](tasks.md).
 | Id | Ch | Task | Acceptance criteria (summary) | Depends on | Status |
 | --- | --- | --- | --- | --- | --- |
 | T-00 | — | Skeleton: DI, boot Splash → Gameplay, tests, docs, agent rules | Play from any scene reaches Gameplay; all tests green | — | Done |
-| T-01 | 0 | Migrate the project to Unity 2022.3.62f2 | Project opens in 2022.3.62f2 with no errors; all tests green | Q-1 | Blocked |
-| T-02 | 0 | Player, Android and quality settings | Portrait-locked, IL2CPP ARM64 APK builds; mobile URP only | T-01 | Todo |
-| T-03 | 0 | Import and configure the supplied assets | UI as sprites, models and materials ready; asset issues logged | T-01 | In progress |
+| T-01 | 0 | Pin the project to Unity 2022.3.62f2 | Project opens in 2022.3.62f2 with no errors; all tests green | — | Done |
+| T-02 | 0 | Player, Android and quality settings | Portrait-locked, IL2CPP ARM64 APK builds; mobile URP only | T-01 | In progress |
+| T-03 | 0 | Import and configure the supplied assets | UI as sprites, models and materials ready; asset issues logged | T-01 | Done |
 | T-04 | 1 | Home scene and scene routing | Splash → Home → Gameplay → Home works; tests green | T-01 | Todo |
 | T-05 | 1 | UI kit: safe area, button feedback, popup service | Every button scales on press; one popup at a time; layout fits 20:9 | T-04 | Todo |
 | T-06 | 1 | Board input and camera service | Press, drag and release on board cells arrive as events, no polling | T-04 | Todo |
