@@ -1,5 +1,7 @@
 using RollicCase.Game.Configs;
 using RollicCase.Game.Gameplay.Board;
+using RollicCase.Game.Gameplay.Input;
+using RollicCase.Game.Levels;
 using RollicCase.Game.UI;
 using VContainer;
 using VContainer.Unity;
@@ -24,6 +26,9 @@ namespace RollicCase.Game.Installers
             builder.RegisterInstance(_boardViewConfig);
 
             builder.Register(_ => new BoardSpace(_boardViewConfig.CellSize), Lifetime.Singleton);
+            builder.Register<LevelProvider>(Lifetime.Singleton);
+            builder.Register<ActiveBoard>(Lifetime.Singleton);
+            builder.Register<BlockDragController>(Lifetime.Singleton);
             builder.Register<IPopupService, PopupService>(Lifetime.Singleton);
         }
     }

@@ -2,6 +2,7 @@ using RollicCase.Game.Configs;
 using RollicCase.Game.Gameplay;
 using RollicCase.Game.Gameplay.Hud;
 using RollicCase.Game.Gameplay.Input;
+using RollicCase.Game.Gameplay.View;
 using RollicCase.Game.Installers;
 using UnityEngine;
 using VContainer;
@@ -26,6 +27,15 @@ namespace RollicCase.Game.Scopes
         [SerializeField]
         BoardInputView _boardInputView;
 
+        [SerializeField]
+        BoardView _boardView;
+
+        [SerializeField]
+        BlockLayerView _blockLayerView;
+
+        [SerializeField]
+        BoardCameraView _boardCameraView;
+
         protected override void Configure(IContainerBuilder builder)
         {
             new GameplayInstaller(_gameplayConfig, _boardViewConfig).Install(builder);
@@ -35,6 +45,12 @@ namespace RollicCase.Game.Scopes
             builder.RegisterComponent(_boardCamera);
             builder.RegisterComponent(_hudView);
             builder.RegisterComponent(_boardInputView);
+            builder.RegisterComponent(_boardView);
+            builder.RegisterComponent(_blockLayerView);
+            builder.RegisterComponent(_boardCameraView);
+
+            // Listens to board input without being an entry point: build it before any entry point starts.
+            builder.RegisterBuildCallback(resolver => resolver.Resolve<BlockDragController>());
 
             builder.RegisterEntryPoint<GameplayFlow>();
         }

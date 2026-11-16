@@ -1,6 +1,7 @@
 using RollicCase.Game.Boot;
 using RollicCase.Game.Configs;
 using RollicCase.Game.Installers;
+using RollicCase.Game.Levels;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -19,9 +20,12 @@ namespace RollicCase.Game.Scopes
         [SerializeField]
         UiConfig _uiConfig;
 
+        [SerializeField]
+        LevelCatalog _levelCatalog;
+
         protected override void Configure(IContainerBuilder builder)
         {
-            new CoreServicesInstaller(_applicationConfig, _uiConfig).Install(builder);
+            new CoreServicesInstaller(_applicationConfig, _uiConfig, _levelCatalog).Install(builder);
 
             builder.RegisterEntryPoint<TweeningInitializer>();
         }

@@ -3,6 +3,7 @@ using RollicCase.Core.Persistence;
 using RollicCase.Core.Scenes;
 using RollicCase.Core.Signals;
 using RollicCase.Game.Configs;
+using RollicCase.Game.Levels;
 using RollicCase.Game.Navigation;
 using VContainer;
 using VContainer.Unity;
@@ -17,17 +18,20 @@ namespace RollicCase.Game.Installers
     {
         readonly ApplicationConfig _applicationConfig;
         readonly UiConfig _uiConfig;
+        readonly LevelCatalog _levelCatalog;
 
-        public CoreServicesInstaller(ApplicationConfig applicationConfig, UiConfig uiConfig)
+        public CoreServicesInstaller(ApplicationConfig applicationConfig, UiConfig uiConfig, LevelCatalog levelCatalog)
         {
             _applicationConfig = applicationConfig;
             _uiConfig = uiConfig;
+            _levelCatalog = levelCatalog;
         }
 
         public void Install(IContainerBuilder builder)
         {
             builder.RegisterInstance(_applicationConfig);
             builder.RegisterInstance(_uiConfig);
+            builder.RegisterInstance(_levelCatalog);
 
             builder.Register<SignalBus>(Lifetime.Singleton);
             builder.Register<IGameLogger, UnityGameLogger>(Lifetime.Singleton);

@@ -27,6 +27,12 @@ namespace RollicCase.Game.Gameplay.Board
         public Vector2Int Size { get; private set; }
         public Vector3 WorldSize => new(Size.x * _cellSize, 0f, Size.y * _cellSize);
 
+        /// <summary>
+        /// World position of the board's bottom-left corner. Board views parent their parts to a root placed
+        /// here and scaled by <see cref="CellSize"/>, so the parts themselves are laid out in cell units.
+        /// </summary>
+        public Vector3 Origin => _origin;
+
         public void SetSize(Vector2Int size)
         {
             if (size.x <= 0 || size.y <= 0)

@@ -9,7 +9,9 @@ using RollicCase.Core.Signals;
 using RollicCase.Game.Boot;
 using RollicCase.Game.Configs;
 using RollicCase.Game.Gameplay.Board;
+using RollicCase.Game.Gameplay.Input;
 using RollicCase.Game.Installers;
+using RollicCase.Game.Levels;
 using RollicCase.Game.Navigation;
 using RollicCase.Game.UI;
 using UnityEditor;
@@ -41,7 +43,7 @@ namespace RollicCase.Tests.EditMode
         IObjectResolver BuildCoreAndSplash()
         {
             var builder = new ContainerBuilder();
-            new CoreServicesInstaller(CreateConfig<ApplicationConfig>(), CreateConfig<UiConfig>()).Install(builder);
+            new CoreServicesInstaller(CreateConfig<ApplicationConfig>(), CreateConfig<UiConfig>(), CreateConfig<LevelCatalog>()).Install(builder);
             new SplashInstaller(CreateConfig<SplashConfig>()).Install(builder);
             return builder.Build();
         }
@@ -50,7 +52,7 @@ namespace RollicCase.Tests.EditMode
         public void CoreServicesInstaller_ShouldResolveEveryService_WhenBuilt()
         {
             var builder = new ContainerBuilder();
-            new CoreServicesInstaller(CreateConfig<ApplicationConfig>(), CreateConfig<UiConfig>()).Install(builder);
+            new CoreServicesInstaller(CreateConfig<ApplicationConfig>(), CreateConfig<UiConfig>(), CreateConfig<LevelCatalog>()).Install(builder);
             using IObjectResolver container = builder.Build();
 
             Assert.That(container.Resolve<SignalBus>(), Is.Not.Null);
@@ -60,13 +62,14 @@ namespace RollicCase.Tests.EditMode
             Assert.That(container.Resolve<ISceneLoader>(), Is.Not.Null);
             Assert.That(container.Resolve<INavigationService>(), Is.Not.Null);
             Assert.That(container.Resolve<UiConfig>(), Is.Not.Null);
+            Assert.That(container.Resolve<LevelCatalog>(), Is.Not.Null);
         }
 
         [Test]
         public void CoreServicesInstaller_ShouldShareOneSignalBus_WhenResolvedTwice()
         {
             var builder = new ContainerBuilder();
-            new CoreServicesInstaller(CreateConfig<ApplicationConfig>(), CreateConfig<UiConfig>()).Install(builder);
+            new CoreServicesInstaller(CreateConfig<ApplicationConfig>(), CreateConfig<UiConfig>(), CreateConfig<LevelCatalog>()).Install(builder);
             using IObjectResolver container = builder.Build();
 
             Assert.That(container.Resolve<SignalBus>(), Is.SameAs(container.Resolve<SignalBus>()));
@@ -114,6 +117,20 @@ namespace RollicCase.Tests.EditMode
             using IObjectResolver container = BuildGameplay(boardViewConfig);
 
             Assert.That(container.Resolve<BoardSpace>().CellSize, Is.EqualTo(2.5f));
+        }
+
+        [Test]
+        public void GameplayInstaller_ShouldResolveBoardServices_WhenBuiltOnTopOfCoreServices()
+        {
+            var builder = new ContainerBuilder();
+            new CoreServicesInstaller(CreateConfig<ApplicationConfig>(), CreateConfig<UiConfig>(), CreateConfig<LevelCatalog>())
+                .Install(builder);
+            new GameplayInstaller(CreateConfig<GameplayConfig>(), CreateConfig<BoardViewConfig>()).Install(builder);
+            using IObjectResolver container = builder.Build();
+
+            Assert.That(container.Resolve<LevelProvider>(), Is.Not.Null);
+            Assert.That(container.Resolve<ActiveBoard>(), Is.Not.Null);
+            Assert.That(container.Resolve<BlockDragController>(), Is.Not.Null);
         }
 
         [Test]

@@ -14,3 +14,44 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cellSize: 1
   _inputHitAreaHeight: 0.1
+  _wallThickness: 0.5
+  _baseDepth: 0.01
+  _boardBase: {fileID: 5285685021747999911, guid: 81e0cf5c4a54ce548b8e36c1c7d3ba97, type: 3}
+  _floorTile: {fileID: 5004331578576643280, guid: 6a9fa3aeafc1c2b47b5bfb00cade858e, type: 3}
+  _wallSegment: {fileID: 4664084461936823299, guid: c68a5e05707212c44b2dc12da584b762, type: 3}
+  _wallCorner: {fileID: 58693812072964934, guid: bf003d45e0714074c88e730b40cd9268, type: 3}
+  _doorSegment: {fileID: 8546702245937840912, guid: 31886e94a3da98841b61f02a0a2d420c, type: 3}
+  _blockCenter: {fileID: 8000946113667698349, guid: db192a472fd71cd45b6bdf9327ac9f7f, type: 3}
+  _blockEdge: {fileID: 3548412625239514458, guid: 74d63feda4fe0ee4dbee6c1dc67a80ca, type: 3}
+  _blockOuterCorner: {fileID: 3016221141936260903, guid: 1ba411feaaf91424d9d3d3e29316ecd6, type: 3}
+  _blockInnerCorner: {fileID: 7220045126571539801, guid: 4f5d8574f32151440937442a4378488f, type: 3}
+  _blockMaterial: {fileID: 2100000, guid: de4d519fa2c0b0d4cbc1be555b2938e5, type: 2}
+  _doorMaterial: {fileID: 2100000, guid: edbe8514787a72a4996b47f7a5fc3f57, type: 2}
+  _palette:
+  - _color: 1000
+    _tint: {r: 0.92, g: 0.22, b: 0.24, a: 1}
+  - _color: 2000
+    _tint: {r: 1, g: 0.55, b: 0.18, a: 1}
+  - _color: 3000
+    _tint: {r: 1, g: 0.78, b: 0.16, a: 1}
+  - _color: 4000
+    _tint: {r: 0.16, g: 0.56, b: 0.27, a: 1}
+  - _color: 5000
+    _tint: {r: 0.28, g: 0.85, b: 0.96, a: 1}
+  - _color: 6000
+    _tint: {r: 0.16, g: 0.52, b: 0.95, a: 1}
+  - _color: 7000
+    _tint: {r: 0.62, g: 0.32, b: 0.88, a: 1}
+  - _color: 8000
+    _tint: {r: 0.96, g: 0.46, b: 0.72, a: 1}
+  _framing:
+    _side: 0.06
+    _top: 0.22
+    _bottom: 0.16
+  _framedHeight: 0.5
+  _cornerAssist: 0.3
+  _snapDuration: 0.12
+  _snapEase: 27
+  _exitDistance: 1.5
+  _exitDuration: 0.3
+  _exitEase: 5

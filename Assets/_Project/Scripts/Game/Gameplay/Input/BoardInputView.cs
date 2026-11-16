@@ -33,9 +33,12 @@ namespace RollicCase.Game.Gameplay.Input
             _boardSpace = boardSpace;
             _config = config;
             _signalBus = signalBus;
+            _signalBus.Subscribe<BoardLoadedSignal>(OnBoardLoaded);
         }
 
-        /// <summary>Sizes the touch area to the current board; call after <see cref="BoardSpace.SetSize"/>.</summary>
+        void OnBoardLoaded(BoardLoadedSignal signal) => FitToBoard();
+
+        /// <summary>Sizes the touch area to the current board; runs on every <see cref="BoardLoadedSignal"/>.</summary>
         public void FitToBoard()
         {
             Vector3 size = _boardSpace.WorldSize;
@@ -68,6 +71,11 @@ namespace RollicCase.Game.Gameplay.Input
             // A release that misses the board plane still ends the touch, at the last point it reached.
             TryProject(eventData.position);
             Fire(BoardPointerPhase.Released);
+        }
+
+        void OnDestroy()
+        {
+            _signalBus.Unsubscribe<BoardLoadedSignal>(OnBoardLoaded);
         }
 
         void OnDisable()
