@@ -2,7 +2,7 @@
 
 ## 1. Requirements
 
-- Unity **6000.3.15f1** with Android and/or iOS build support.
+- Unity **2022.3.62f2** with Android and/or iOS build support.
 - Git with **Git LFS** (`git lfs install` once per machine).
 
 ## 2. Open the project
@@ -27,13 +27,23 @@
 
 | Menu | Does |
 | --- | --- |
-| **RollicCase > Play From Splash** | (default on) Play always starts from build scene 0, whatever scene is open |
+| **RollicCase > Play From Splash** | (default on) Play always starts from build scene 0, whatever scene is open; test runs and batch mode are exempt |
 | **Window > General > Test Runner** | Edit Mode / Play Mode tests |
 
-## 4. Troubleshooting
+## 4. Android build
+
+Player Settings are already set: bundle id `com.necatiakpinar.rolliccase`, portrait only, IL2CPP,
+ARM64, min API 24, target API = highest installed, one Mobile quality level on `Mobile_RPAsset`.
+`BuildSettingsTests` guards orientation and backend.
+
+1. **File > Build Settings > Android > Switch Platform** (first switch reimports textures as ASTC).
+2. Tick **Development Build** for a test build; **Build** writes the APK.
+
+## 5. Troubleshooting
 
 | Symptom | Fix |
 | --- | --- |
 | `DOTween.Modules` missing or duplicate | keep exactly one `DOTween.Modules.asmdef`, in `Plugins/Demigiant/DOTween/Modules` |
 | `ToUniTask` not found on a tween | the define `UNITASK_DOTWEEN_SUPPORT` is missing for the active platform |
+| Play Mode tests never start in the editor | `EditorSceneManager.playModeStartScene` is set; `PlayModeStartScene` clears it on returning to Edit Mode, so stop Play Mode once |
 | Scene scope has no parent | `VContainerSettings` lost its Root prefab reference, or is missing from Preloaded Assets |

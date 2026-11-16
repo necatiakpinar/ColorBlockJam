@@ -1,5 +1,6 @@
 using DG.Tweening;
 using RollicCase.Game.Configs;
+using UnityEngine;
 using VContainer.Unity;
 
 namespace RollicCase.Game.Boot
@@ -19,7 +20,8 @@ namespace RollicCase.Game.Boot
 
         public void Initialize()
         {
-            DOTween.Init(recycleAllByDefault: false, useSafeMode: true, LogBehaviour.ErrorsOnly)
+            // Safe mode swallows exceptions inside tweens; keep it off wherever bugs must surface.
+            DOTween.Init(recycleAllByDefault: false, useSafeMode: !Debug.isDebugBuild, LogBehaviour.ErrorsOnly)
                 .SetCapacity(_config.TweenCapacity, _config.SequenceCapacity);
         }
     }

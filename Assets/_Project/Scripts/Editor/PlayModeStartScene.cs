@@ -1,21 +1,26 @@
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace RollicCase.Editor
 {
     /// <summary>
     /// Pressing Play always boots through the first build scene (Splash), whichever scene is open,
     /// so the app is never entered in a state a player can't reach. Toggle from the menu.
+    /// The start scene is set only while entering Play Mode and cleared on return, because the test
+    /// runner enters Play Mode from its own init scene and never starts when a start scene is forced.
     /// </summary>
     [InitializeOnLoad]
     public static class PlayModeStartScene
     {
         const string MenuPath = "RollicCase/Play From Splash";
         const string PrefKey = "RollicCase.PlayFromSplash";
+        const string TestRunnerScenePrefix = "InitTestScene";
 
         static PlayModeStartScene()
         {
-            EditorApplication.delayCall += Apply;
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
         }
 
         static bool IsEnabled
@@ -28,7 +33,6 @@ namespace RollicCase.Editor
         static void Toggle()
         {
             IsEnabled = !IsEnabled;
-            Apply();
         }
 
         [MenuItem(MenuPath, true)]
@@ -38,12 +42,21 @@ namespace RollicCase.Editor
             return true;
         }
 
-        static void Apply()
+        static void OnPlayModeStateChanged(PlayModeStateChange change)
         {
-            EditorBuildSettingsScene[] scenes = EditorBuildSettings.scenes;
-            EditorSceneManager.playModeStartScene = IsEnabled && scenes.Length > 0
-                ? AssetDatabase.LoadAssetAtPath<SceneAsset>(scenes[0].path)
-                : null;
+            if (change == PlayModeStateChange.ExitingEditMode)
+                EditorSceneManager.playModeStartScene = ShouldForceSplash() ? FirstBuildScene() : null;
+            else if (change == PlayModeStateChange.EnteredEditMode)
+                EditorSceneManager.playModeStartScene = null;
         }
+
+        static bool ShouldForceSplash() =>
+            IsEnabled
+            && !Application.isBatchMode
+            && EditorBuildSettings.scenes.Length > 0
+            && !SceneManager.GetActiveScene().name.StartsWith(TestRunnerScenePrefix);
+
+        static SceneAsset FirstBuildScene() =>
+            AssetDatabase.LoadAssetAtPath<SceneAsset>(EditorBuildSettings.scenes[0].path);
     }
 }

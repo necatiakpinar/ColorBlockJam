@@ -10,8 +10,8 @@ The index of every page is [Docs/README.md](Docs/README.md).
 
 ## Project Overview
 
-A Unity 6 (6000.3) mobile game built as a hiring case study. The case brief arrives later; until then
-the repository is a production-shaped skeleton: dependency-injected boot from **Splash** to **Gameplay**,
+A Unity 2022.3 LTS mobile game built as a hiring case study. Its foundation is a production-shaped
+skeleton: dependency-injected boot from **Splash** to **Gameplay**,
 a typed signal bus, data-driven configs, separated animations, and Edit Mode + Play Mode tests.
 
 - **Target:** mobile, portrait, URP (Mobile renderer). 60 FPS target via `ApplicationConfig`.
@@ -45,7 +45,7 @@ Validate skill frontmatter with `python tools/validate_skills.py`.
 
 ## Environment Setup
 
-- Unity **6000.3.15f1**. Open the repository root as the Unity project.
+- Unity **2022.3.62f2** (required by the brief). Open the repository root as the Unity project.
 - Packages resolve from Unity's registry and OpenUPM (scoped registry in `Packages/manifest.json`):
   VContainer, UniTask. DOTween (free) is vendored under `Assets/Plugins/Demigiant/DOTween` with a
   hand-authored `DOTween.Modules` assembly definition.

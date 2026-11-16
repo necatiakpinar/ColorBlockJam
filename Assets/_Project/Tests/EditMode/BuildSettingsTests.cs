@@ -30,5 +30,21 @@ namespace RollicCase.Tests.EditMode
             foreach (SceneId sceneId in Enum.GetValues(typeof(SceneId)))
                 Assert.That(enabled, Does.Contain(loader.GetSceneName(sceneId)), sceneId.ToString());
         }
+
+        [Test]
+        public void PlayerSettings_ShouldLockPortrait_WhenBuilding()
+        {
+            Assert.That(PlayerSettings.defaultInterfaceOrientation, Is.EqualTo(UIOrientation.Portrait));
+            Assert.That(PlayerSettings.allowedAutorotateToLandscapeLeft, Is.False);
+            Assert.That(PlayerSettings.allowedAutorotateToLandscapeRight, Is.False);
+        }
+
+        [Test]
+        public void PlayerSettings_ShouldBuildIl2CppArm64_WhenTargetingAndroid()
+        {
+            Assert.That(PlayerSettings.GetScriptingBackend(BuildTargetGroup.Android),
+                Is.EqualTo(ScriptingImplementation.IL2CPP));
+            Assert.That(PlayerSettings.Android.targetArchitectures, Is.EqualTo(AndroidArchitecture.ARM64));
+        }
     }
 }
