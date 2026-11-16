@@ -1,0 +1,26 @@
+{
+    "name": "RollicCase.Tests.PlayMode",
+    "rootNamespace": "RollicCase.Tests.PlayMode",
+    "references": [
+        "RollicCase.Core",
+        "RollicCase.Game",
+        "UniTask",
+        "VContainer",
+        "Unity.TextMeshPro",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

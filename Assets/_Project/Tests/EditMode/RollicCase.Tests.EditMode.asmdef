@@ -3,6 +3,7 @@
     "rootNamespace": "RollicCase.Tests.EditMode",
     "references": [
         "RollicCase.Core",
+        "RollicCase.Game",
         "UniTask",
         "VContainer",
         "UnityEngine.TestRunner",
