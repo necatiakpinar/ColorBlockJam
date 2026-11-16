@@ -9,6 +9,14 @@ owns one area; when a fact changes, it changes in the page that owns it.
 | --- | --- |
 | [Case/README.md](Case/README.md) | the case brief, its task breakdown and progress — the design authority |
 
+## Plans
+
+Dated planning artifacts. They schedule work; they never specify behavior.
+
+| Page | Owns |
+| --- | --- |
+| [Plans/pre-case-readiness.md](Plans/pre-case-readiness.md) | gaps and foundations to build before the brief arrives |
+
 ## General (binding pages)
 
 Pages marked **binding** carry rules agents must follow before touching the paths they name.
