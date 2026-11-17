@@ -107,6 +107,21 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
+        public void Tap_ShouldLeaveTheBoardAlone_WhenTheStockWentWhileTargeting()
+        {
+            Service.Activate(BoosterType.Hammer);
+            _rig.Inventory.TryUse(BoosterType.Hammer);
+
+            Tap(1, 0);
+
+            Assert.That(_board.Current.Blocks[0].HasExited, Is.False);
+            Assert.That(_rig.Inventory.Count(BoosterType.Hammer), Is.Zero);
+            Assert.That(Service.IsTargeting, Is.False);
+            Assert.That(_session.State, Is.EqualTo(LevelState.Playing));
+            Assert.That(_events, Is.EqualTo(new[] { "targeting Hammer True", "targeting Hammer False" }));
+        }
+
+        [Test]
         public void Targeting_ShouldIgnoreTheTap_WhenItHitsAnEmptyCell()
         {
             Service.Activate(BoosterType.Hammer);

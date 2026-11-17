@@ -77,7 +77,8 @@ namespace ColorBlockJam.Game.Gameplay.Boosters
 
         void Use(IBoosterCommand command, in BoosterTarget target)
         {
-            _inventory.TryUse(command.Type);
+            if (!_inventory.TryUse(command.Type))
+                return;
             command.Execute(target);
             _signalBus.Fire(new BoosterUsedSignal(command.Type));
         }

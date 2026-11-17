@@ -45,8 +45,9 @@ shares, and looks the command up by type:
      no dragging) and fires `BoosterTargetingChangedSignal(type, true)`. Nothing is spent yet.
 2. While choosing, a press on a board cell that holds a block (`BoardPointerSignal`) picks the target:
    targeting ends, the level resumes, one booster is taken, then the command changes the board
-   (`ActiveBoard.RemoveCell`, `RemoveBlock`/`Thaw` or `RemoveColor`), and `BoosterUsedSignal` fires. A press
-   on an empty cell does nothing.
+   (`ActiveBoard.RemoveCell`, `RemoveBlock`/`Thaw` or `RemoveColor`), and `BoosterUsedSignal` fires. The
+   stock is checked again at the tap: if none is left by then, the board stays as it was. A press on an
+   empty cell does nothing.
 3. `CancelTargeting` gives up: the booster is kept and the level resumes. A restart drops the choice.
 
 `ActiveBoard` announces the change: `BlockRemovedSignal` (with `BlockRemovalKind` Smashed, Blasted or
