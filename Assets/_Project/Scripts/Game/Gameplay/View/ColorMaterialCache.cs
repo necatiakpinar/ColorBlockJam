@@ -17,12 +17,15 @@ namespace ColorBlockJam.Game.Gameplay.View
 
         readonly Material _baseMaterial;
         readonly BoardViewConfig _config;
+        readonly float _whiten;
         readonly Dictionary<BlockColor, Material> _materials = new();
 
-        public ColorMaterialCache(Material baseMaterial, BoardViewConfig config)
+        /// <param name="whiten">How far each palette colour is pulled toward white (0 keeps it; ice uses more).</param>
+        public ColorMaterialCache(Material baseMaterial, BoardViewConfig config, float whiten = 0f)
         {
             _baseMaterial = baseMaterial;
             _config = config;
+            _whiten = whiten;
         }
 
         public Material Get(BlockColor color)
@@ -31,7 +34,7 @@ namespace ColorBlockJam.Game.Gameplay.View
                 return material;
 
             material = new Material(_baseMaterial) { name = $"{_baseMaterial.name}_{color}" };
-            material.SetColor(BaseColor, _config.TintOf(color));
+            material.SetColor(BaseColor, Color.Lerp(_config.TintOf(color), Color.white, _whiten));
             _materials.Add(color, material);
             return material;
         }

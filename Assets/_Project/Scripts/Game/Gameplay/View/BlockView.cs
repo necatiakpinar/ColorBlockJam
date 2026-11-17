@@ -4,6 +4,7 @@ using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using ColorBlockJam.Game.Gameplay.Animations;
+using TMPro;
 using UnityEngine;
 
 namespace ColorBlockJam.Game.Gameplay.View
@@ -21,6 +22,10 @@ namespace ColorBlockJam.Game.Gameplay.View
         [SerializeField]
         MeshRenderer _outlineRenderer;
 
+        [Tooltip("Lies on top of a frozen block and shows how many exits its ice still needs (T-34).")]
+        [SerializeField]
+        TMP_Text _iceLabel;
+
         static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
         static readonly int ClipPlaneId = Shader.PropertyToID("_ClipPlane");
 
@@ -35,6 +40,7 @@ namespace ColorBlockJam.Game.Gameplay.View
         TweenerCore<Vector3, Vector3, VectorOptions> _move;
         TweenerCore<Vector3, Vector3, VectorOptions> _follow;
         Sequence _exit;
+        Sequence _thaw;
         // This view's own copy of the exit material, made on its first exit and reused by every later one.
         Material _exitMaterial;
         Action<BlockView> _onExitFinished;
@@ -48,6 +54,7 @@ namespace ColorBlockJam.Game.Gameplay.View
         {
             _pivot = pivot;
             _exit?.Kill();
+            _thaw?.Kill();
             transform.localPosition = pivot;
             transform.localRotation = Quaternion.identity;
             transform.localScale = Vector3.one;
@@ -79,6 +86,38 @@ namespace ColorBlockJam.Game.Gameplay.View
         }
 
         internal void SetOutlined(bool outlined) => _outlineRenderer.enabled = outlined;
+
+        internal bool ShowsIce => _iceLabel.gameObject.activeSelf;
+        internal string IceText => _iceLabel.text;
+
+        /// <summary>Shows the ice count over <paramref name="cellPosition"/> (in cells), or hides it at 0.</summary>
+        internal void SetIce(int ice, Vector3 cellPosition)
+        {
+            Vector3 local = _iceLabel.transform.localPosition;
+            _iceLabel.transform.localPosition = new Vector3(cellPosition.x - _pivot.x, local.y, cellPosition.z - _pivot.z);
+            SetIce(ice);
+        }
+
+        /// <summary>Updates the ice count where it is; 0 hides it.</summary>
+        internal void SetIce(int ice)
+        {
+            _iceLabel.gameObject.SetActive(ice > 0);
+            _iceLabel.SetText("{0}", ice);
+        }
+
+        /// <summary>Paints every piece with <paramref name="material"/> (its colour, or ice over it).</summary>
+        internal void SetMaterial(Material material)
+        {
+            for (int i = 0; i < _parts.Count; i++)
+                _parts[i].Mesh.sharedMaterial = material;
+        }
+
+        /// <summary>The ice broke: the block swells for a beat.</summary>
+        internal void PlayThaw(float swell, float duration)
+        {
+            _thaw?.Kill();
+            _thaw = default(BlockThawAnimation).Play(new BlockThawAnimation.Config(transform, swell, duration));
+        }
 
         /// <summary>Puts the block at once where <paramref name="offset"/> cells from its start cells take it.</summary>
         internal void PlaceAt(Vector2Int offset) => transform.localPosition = _pivot + new Vector3(offset.x, 0f, offset.y);
@@ -182,6 +221,8 @@ namespace ColorBlockJam.Game.Gameplay.View
         internal void ReleaseParts()
         {
             _exit?.Kill();
+            _thaw?.Kill();
+            _iceLabel.gameObject.SetActive(false);
             _move?.Pause();
             _follow?.Pause();
             foreach ((PartPool pool, GameObject part, _) in _parts)
@@ -196,6 +237,7 @@ namespace ColorBlockJam.Game.Gameplay.View
             _move?.Kill();
             _follow?.Kill();
             _exit?.Kill();
+            _thaw?.Kill();
             Destroy(_outlineMesh);
             Destroy(_exitMaterial);
         }

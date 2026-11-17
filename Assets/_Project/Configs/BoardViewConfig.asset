@@ -78,3 +78,15 @@ MonoBehaviour:
   _exitDebrisRate: 40
   _exitBurstCoalesceWindow: 0.15
   _exitDebrisHeight: 0.3
+  _iceMaterial: {fileID: 2100000, guid: 8ec03961f3364d64aa0afcec8e90a066, type: 2}
+  _iceWhiten: 1
+  _thawSwell: 1.12
+  _thawDuration: 0.3
+  _thawDebrisPerCell: 14
+  _iceShatter: {fileID: 1701743703172660094, guid: 412f9d68cd0102548815230085cc08b3, type: 3}
+  _smashSwell: 1.2
+  _smashDuration: 0.3
+  _smashDebrisPerCell: 10
+  _vacuumDuration: 0.45
+  _vacuumStagger: 0.08
+  _vacuumLift: 2

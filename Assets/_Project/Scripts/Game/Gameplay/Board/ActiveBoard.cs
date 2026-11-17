@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using ColorBlockJam.Core.Signals;
 using ColorBlockJam.Game.Gameplay.Signals;
 using ColorBlockJam.Game.Levels;
@@ -35,7 +36,15 @@ namespace ColorBlockJam.Game.Gameplay.Board
         {
             Current.RemoveBlock(blockId);
             _signalBus.Fire(new BlockRemovedSignal(blockId, BlockRemovalKind.Smashed, 0));
+            AnnounceThaws();
             AnnounceIfCleared();
+        }
+
+        /// <summary>Breaks a frozen block's ice at once (the hammer, DA-37) and announces it.</summary>
+        public void Thaw(int blockId)
+        {
+            Current.Thaw(blockId);
+            _signalBus.Fire(new BlockThawedSignal(blockId));
         }
 
         /// <summary>
@@ -45,9 +54,15 @@ namespace ColorBlockJam.Game.Gameplay.Board
         public void RemoveCell(int blockId, Vector2Int cell)
         {
             if (Current.RemoveCell(blockId, cell))
+            {
                 _signalBus.Fire(new BlockRemovedSignal(blockId, BlockRemovalKind.Blasted, 0));
+                AnnounceThaws();
+            }
             else
+            {
                 _signalBus.Fire(new BlockCellRemovedSignal(blockId, cell));
+            }
+
             AnnounceIfCleared();
         }
 
@@ -63,11 +78,37 @@ namespace ColorBlockJam.Game.Gameplay.Board
                     continue;
                 Current.RemoveBlock(id);
                 _signalBus.Fire(new BlockRemovedSignal(id, BlockRemovalKind.Vacuumed, removed));
+                AnnounceThaws();
                 removed++;
             }
 
             AnnounceIfCleared();
             return removed;
+        }
+
+        /// <summary>
+        /// After a block left: <see cref="IceCountedDownSignal"/> when frozen blocks counted it, then
+        /// <see cref="BlockThawedSignal"/> for each block it thawed.
+        /// </summary>
+        void AnnounceThaws()
+        {
+            if (!HasIce())
+                return;
+            _signalBus.Fire(new IceCountedDownSignal());
+            IReadOnlyList<int> thawed = Current.JustThawed;
+            for (int i = 0; i < thawed.Count; i++)
+                _signalBus.Fire(new BlockThawedSignal(thawed[i]));
+        }
+
+        /// <summary>True when some block on the board is frozen or was just thawed.</summary>
+        bool HasIce()
+        {
+            if (Current.JustThawed.Count > 0)
+                return true;
+            foreach (BoardBlock block in Current.Blocks)
+                if (!block.HasExited && block.IsFrozen)
+                    return true;
+            return false;
         }
 
         void AnnounceIfCleared()
@@ -91,8 +132,8 @@ namespace ColorBlockJam.Game.Gameplay.Board
                     break;
                 case StepResult.Exited:
                     _signalBus.Fire(new BlockExitedSignal(blockId, direction, Current.Blocks[blockId].Offset));
-                    if (Current.IsCleared)
-                        _signalBus.Fire(new BoardClearedSignal());
+                    AnnounceThaws();
+                    AnnounceIfCleared();
                     break;
             }
 

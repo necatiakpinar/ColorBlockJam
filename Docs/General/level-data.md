@@ -11,7 +11,7 @@ One format, written by the level editor and read by the game (R-29, DA-13).
 | --- | --- |
 | `LevelDefinition` (asset, `Assets/_Project/Levels/`) | one `LevelData`; `SetData` replaces it (the editor records undo first) |
 | `LevelData` | `Width`, `Height` (cells), `TimerSeconds`, `Difficulty` (`Normal`, `Hard`, `VeryHard`; sets the win reward, [economy.md](economy.md)), `Blocks`, `Doors` |
-| `BlockData` | `Color` and the absolute start `Cells` it covers (DA-18) |
+| `BlockData` | `Color`, the absolute start `Cells` it covers (DA-18), and `Ice`: how many other blocks must leave before it thaws (0 = not frozen, T-34, DA-37) |
 | `DoorData` | `Side` (`Bottom`, `Top`, `Left`, `Right`), `Start` cell along that wall, `Length`, `Color` (DA-17) |
 | `LevelCatalog` (asset, `Assets/_Project/Levels/LevelCatalog.asset`) | the ordered level list; level N is entry N − 1 |
 | `LevelRulesConfig` (asset, `Assets/_Project/Configs/`) | board size and timer limits |
@@ -40,6 +40,7 @@ mistake. The level editor (T-30) refuses to save on errors and asks the designer
 | 9 | Every block has a door of its colour at least as wide as the block along that door's wall | error |
 | 10 | Every door has at least one block of its colour | warning |
 | 11 | The level has a difficulty (old levels read as `Normal`) | error |
+| 12 | A block's ice is 0 or more and at most the number of other blocks (or it could never thaw) | error |
 
 Rule 9 is a necessary condition only; whether the level can actually be finished is the solver's answer
 (`LevelSolver`, [level-editor.md](level-editor.md) §3), shown live in the level editor.

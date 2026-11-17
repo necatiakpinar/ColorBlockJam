@@ -42,6 +42,16 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
             return this;
         }
 
+        /// <summary>A block frozen until <paramref name="ice"/> other blocks have left (T-34); cells as in <see cref="Block"/>.</summary>
+        public LevelDataBuilder FrozenBlock(BlockColor color, int ice, params int[] cells)
+        {
+            var points = new List<Vector2Int>();
+            for (int i = 0; i < cells.Length; i += 2)
+                points.Add(new Vector2Int(cells[i], cells[i + 1]));
+            _blocks.Add(new BlockData(color, points, ice));
+            return this;
+        }
+
         public LevelDataBuilder Door(WallSide side, int start, int length, BlockColor color)
         {
             _doors.Add(new DoorData(side, start, length, color));
