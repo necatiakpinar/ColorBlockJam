@@ -94,9 +94,14 @@ All board views listen to signals only; the model has committed every change bef
    cell, the wall ring (two half-cell segments per cell, `BoardViewConfig.WallThickness` outside the
    board), one door segment per door cell in the door's colour, and four rounded corners.
 3. **`BlockLayerView`** builds every block from the modular pieces chosen by **`BlockTileResolver`**
-   (art-pipeline.md §4) in its palette colour. While a block is held it shows a flat outline around its
-   footprint (`OutlineMeshBuilder`, shader `ColorBlockJam/Selection Outline`, drawn over everything so it
-   stays visible under other objects) and draws the block exactly where the finger has it
+   (art-pipeline.md §4) in its palette colour. While a block is held it shows an outline band that hugs
+   its footprint (`OutlineMeshBuilder`): a closed loop `OutlineGap` outside the block, its corners rounded
+   like the block models (`BlockCornerRadius`), so it follows any polyomino, notches and holes included.
+   It traces the block's on-screen silhouette: shader `ColorBlockJam/Selection Outline` keeps a side the
+   camera sees outlined along its bottom edge (`OutlineBaseHeight`) and lifts a side turned away to the
+   rim of the top face (`BlockTopHeight`). A block high on screen shows more of its front face, so the
+   band runs further below its top face there than near the bottom of the screen. The shader draws over
+   everything, so the outline stays visible where the block goes under another object. The view also draws the block exactly where the finger has it
    (`BlockDraggedSignal`, no tween); on `BlockDroppedSignal` it settles it onto its cell with the
    snap tween (`SnapDuration`, `SnapEase`); on `BlockExitedSignal` it plays `BlockExitAnimation` from
    wherever the block is: it slides `ExitDistance` cells through the door while shrinking, then returns to

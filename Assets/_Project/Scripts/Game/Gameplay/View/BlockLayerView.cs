@@ -36,6 +36,7 @@ namespace ColorBlockJam.Game.Gameplay.View
         ColorMaterialCache _materials;
         ObjectPool<BlockView> _blockPool;
         Dictionary<BlockPieceKind, PartPool> _piecePools;
+        OutlineSettings _outline;
 
         [Inject]
         public void Construct(BoardViewConfig config, BoardSpace boardSpace, SignalBus signalBus)
@@ -44,6 +45,8 @@ namespace ColorBlockJam.Game.Gameplay.View
             _boardSpace = boardSpace;
             _signalBus = signalBus;
             _materials = new ColorMaterialCache(config.BlockMaterial, config);
+            _outline = new OutlineSettings(config.OutlineWidth, config.OutlineBaseHeight, config.BlockTopHeight,
+                config.OutlineGap, config.BlockCornerRadius, config.OutlineCornerSegments);
             _blockPool = new ObjectPool<BlockView>(
                 () => Instantiate(_blockPrefab, _storage),
                 view => view.gameObject.SetActive(true),
@@ -97,7 +100,7 @@ namespace ColorBlockJam.Game.Gameplay.View
                 view.AddPart(pool, part, piece.Position, piece.Yaw, piece.Scale);
             }
 
-            view.BuildOutline(block.Cells, _config.OutlineWidth, _config.OutlineHeight);
+            view.BuildOutline(block.Cells, _outline);
 
             return view;
         }

@@ -59,7 +59,8 @@ and rotate the root only.
 | `BlockPart_InnerCorner` | `ModularBlock_InnerCorner` | 1 × 1 centred | fills a concave corner between cells |
 | `Arrow_1`, `Arrow_2`, `Arrow_3` | `Arrow_*` | 0.45 × 0.8 / 1.75 / 2.71 | arrow over a 1-, 2- or 3-cell block |
 
-Block height is 0.8 world units; the `_Center` part is the top cap only. Each quarter piece is authored in
+Block height is 0.8 world units (the top face rim sits 0.33 above the floor, studs reach 0.48; corners,
+outer and inner, are rounded with radius 0.27, `BoardViewConfig.BlockCornerRadius`); the `_Center` part is the top cap only. Each quarter piece is authored in
 the +x +z quarter of its cell and is mirrored into the other quarters with a negative scale (the Edge
 wall's other orientation adds a 90° turn); `BlockTileResolver` picks the piece and its transform.
 `BlockView.prefab` is the empty pooled root a block's pieces hang under.

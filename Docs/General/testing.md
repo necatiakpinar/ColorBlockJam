@@ -36,7 +36,7 @@ new fake.
 | `LevelProviderTests` | level number to catalog entry; looping; empty catalog |
 | `ActiveBoardTests` | a load sizes the board space and starts fresh; steps announce move, exit and clear |
 | `BlockDragControllerTests` | free follow and diagonals, nearest-cell commit, fast drags, sliding, slipping into gaps without drift or jitter on a slow push, lean, grab, snap, exit, zero allocation |
-| `OutlineMeshBuilderTests` | the selection outline traces 1x1, bars and L shapes at the right height |
+| `OutlineMeshBuilderTests` | the outline is one rounded loop per boundary (1x1, L, ring with a hole), hugs a bar a gap outside it along its bottom edge, rounds its corners, and gives each vertex its outward normal and the rim lift |
 | `BlockTileResolverTests` | pieces for 1x1, bars, squares, L, T; inner corner notch; every quarter covered once |
 | `BoardFramingTests` | 3x3 to 10x10 boards fit inside the margins at 9:16 and 20:9, centred, as close as possible |
 | `BoardSpaceTests` | cell ↔ world at cell size 1 and 2; edges; outside cells |

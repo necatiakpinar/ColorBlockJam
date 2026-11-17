@@ -25,6 +25,7 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 - [ ] ⚙ A held block with no room leans a little and snaps back — `BlockDragControllerTests.Drag_ShouldLeanTowardTheFingerButNotCommit_WhenTheBlockHasNoRoom`
 - [ ] ⚙ The held block is outlined — `GameplayBoardTests.Outline_ShouldShowWhileABlockIsHeld_WhenGrabbedAndHideOnRelease`
 - [ ] 👁 The outline stays visible where another object covers the block.
+- [ ] ⚙ The outline hugs the block with rounded corners, notches included — `OutlineMeshBuilderTests`
 - [ ] ⚙ A swipe takes a block out; the last exit completes the level once — `GameplayBoardTests.Swipe_ShouldTakeTheBlockOffTheBoardAndClearItOnce_WhenEveryBlockLeaves`
 - [ ] ⚙ The board fits between HUD and boosters at 9:16 and 20:9 — `BoardFramingTests`
 - [ ] ⚙ A reload mid-exit rebuilds clean blocks — `GameplayBoardTests.Reload_ShouldRebuildCleanBlocks_WhenABlockIsStillSlidingOut`

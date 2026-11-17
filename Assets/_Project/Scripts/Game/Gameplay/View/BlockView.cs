@@ -24,6 +24,8 @@ namespace ColorBlockJam.Game.Gameplay.View
         readonly List<(PartPool Pool, GameObject Part)> _parts = new();
         readonly OutlineMeshBuilder _outlineBuilder = new();
         readonly List<Vector3> _outlineVertices = new();
+        readonly List<Vector3> _outlineNormals = new();
+        readonly List<Vector2> _outlineLifts = new();
         readonly List<int> _outlineTriangles = new();
         Mesh _outlineMesh;
         Vector3 _pivot;
@@ -47,7 +49,7 @@ namespace ColorBlockJam.Game.Gameplay.View
         }
 
         /// <summary>Traces the outline around the block's start cells; hidden until <see cref="SetOutlined"/>.</summary>
-        internal void BuildOutline(IReadOnlyList<Vector2Int> cells, float width, float height)
+        internal void BuildOutline(IReadOnlyList<Vector2Int> cells, in OutlineSettings settings)
         {
             if (_outlineMesh == null)
             {
@@ -56,9 +58,12 @@ namespace ColorBlockJam.Game.Gameplay.View
                 _outlineFilter.sharedMesh = _outlineMesh;
             }
 
-            _outlineBuilder.Build(cells, -_pivot, width, height, _outlineVertices, _outlineTriangles);
+            _outlineBuilder.Build(cells, -_pivot, settings, _outlineVertices, _outlineNormals, _outlineLifts,
+                _outlineTriangles);
             _outlineMesh.Clear();
             _outlineMesh.SetVertices(_outlineVertices);
+            _outlineMesh.SetNormals(_outlineNormals);
+            _outlineMesh.SetUVs(0, _outlineLifts);
             _outlineMesh.SetTriangles(_outlineTriangles, 0);
             _outlineMesh.RecalculateBounds();
             SetOutlined(false);

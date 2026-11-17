@@ -95,13 +95,32 @@ namespace ColorBlockJam.Game.Configs
         float _holdGive = 0.12f;
 
         [Header("Selection outline")]
-        [Tooltip("Width of the outline drawn around a held block, in cells.")]
+        [Tooltip("Width of the outline band drawn around a held block, in cells.")]
         [SerializeField, Min(0.005f)]
         float _outlineWidth = 0.06f;
 
-        [Tooltip("Height of the outline above the floor, in cells: just over the block's studs.")]
+        [Tooltip("Height of the outline along the sides the camera sees, in cells: the block's bottom edge, "
+            + "where it meets the floor.")]
         [SerializeField, Min(0f)]
-        float _outlineHeight = 0.5f;
+        float _outlineBaseHeight = 0.01f;
+
+        [Tooltip("Height of the rim of a block's top face, in cells (ModularBlock_* parts: 0.33). The outline "
+            + "runs there along the sides turned away from the camera, so it traces the block's silhouette.")]
+        [SerializeField, Min(0f)]
+        float _blockTopHeight = 0.33f;
+
+        [Tooltip("Space between the block's side and the outline band, in cells.")]
+        [SerializeField, Min(0f)]
+        float _outlineGap = 0.03f;
+
+        [Tooltip("Corner radius of the block models, in cells (ModularBlock_* parts: 0.27); the outline "
+            + "rounds its corners to match.")]
+        [SerializeField, Min(0f)]
+        float _blockCornerRadius = 0.27f;
+
+        [Tooltip("Straight pieces per rounded outline corner.")]
+        [SerializeField, Range(1, 16)]
+        int _outlineCornerSegments = 6;
 
         [Header("Motion")]
         [Tooltip("How long a released block takes to settle on its cell.")]
@@ -141,7 +160,11 @@ namespace ColorBlockJam.Game.Configs
         public float CornerTolerance => _cornerTolerance;
         public float HoldGive => _holdGive;
         public float OutlineWidth => _outlineWidth;
-        public float OutlineHeight => _outlineHeight;
+        public float OutlineBaseHeight => _outlineBaseHeight;
+        public float BlockTopHeight => _blockTopHeight;
+        public float OutlineGap => _outlineGap;
+        public float BlockCornerRadius => _blockCornerRadius;
+        public int OutlineCornerSegments => _outlineCornerSegments;
         public float SnapDuration => _snapDuration;
         public Ease SnapEase => _snapEase;
         public float ExitDistance => _exitDistance;
