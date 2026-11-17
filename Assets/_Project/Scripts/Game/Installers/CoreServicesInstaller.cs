@@ -5,6 +5,7 @@ using ColorBlockJam.Core.Network;
 using ColorBlockJam.Core.Persistence;
 using ColorBlockJam.Core.Scenes;
 using ColorBlockJam.Core.Signals;
+using ColorBlockJam.Game.Boosters;
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Levels;
 using ColorBlockJam.Game.Navigation;
@@ -23,14 +24,16 @@ namespace ColorBlockJam.Game.Installers
         readonly UiConfig _uiConfig;
         readonly LevelCatalog _levelCatalog;
         readonly NetworkConfig _networkConfig;
+        readonly BoosterConfig _boosterConfig;
 
         public CoreServicesInstaller(ApplicationConfig applicationConfig, UiConfig uiConfig, LevelCatalog levelCatalog,
-            NetworkConfig networkConfig)
+            NetworkConfig networkConfig, BoosterConfig boosterConfig)
         {
             _applicationConfig = applicationConfig;
             _uiConfig = uiConfig;
             _levelCatalog = levelCatalog;
             _networkConfig = networkConfig;
+            _boosterConfig = boosterConfig;
         }
 
         public void Install(IContainerBuilder builder)
@@ -39,6 +42,7 @@ namespace ColorBlockJam.Game.Installers
             builder.RegisterInstance(_uiConfig);
             builder.RegisterInstance(_levelCatalog);
             builder.RegisterInstance(_networkConfig);
+            builder.RegisterInstance(_boosterConfig);
 
             builder.Register<SignalBus>(Lifetime.Singleton);
             builder.Register<IGameLogger, UnityGameLogger>(Lifetime.Singleton);
@@ -46,6 +50,7 @@ namespace ColorBlockJam.Game.Installers
             builder.Register<IPlayerProgressService, PlayerProgressService>(Lifetime.Singleton);
             builder.Register<IWalletService, WalletService>(Lifetime.Singleton);
             builder.Register<ISettingsService, SettingsService>(Lifetime.Singleton);
+            builder.Register<BoosterInventory>(Lifetime.Singleton);
             builder.Register<ISceneLoader, SceneLoader>(Lifetime.Singleton);
             builder.Register<INavigationService, NavigationService>(Lifetime.Singleton);
             builder.Register<IHapticService, MobileHapticService>(Lifetime.Singleton);

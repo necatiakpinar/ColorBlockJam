@@ -53,6 +53,7 @@ MonoBehaviour:
   _uiConfig: {fileID: 11400000, guid: e8978dcbd655e8148b87ae1c2488c3fc, type: 2}
   _levelCatalog: {fileID: 11400000, guid: 6cf5bcd77312b584ab3f94d326ebadf0, type: 2}
   _networkConfig: {fileID: 11400000, guid: 22b0ecfe9f7138d4f9c76393ef2cd07e, type: 2}
+  _boosterConfig: {fileID: 11400000, guid: aacb87acc0ea0794caa130eba2b8bfd6, type: 2}
   _pauseReporter: {fileID: 8684118224795160722}
 --- !u!114 &8684118224795160722
 MonoBehaviour:

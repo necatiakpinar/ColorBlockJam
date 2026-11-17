@@ -29,11 +29,15 @@ namespace ColorBlockJam.Game.Scopes
         NetworkConfig _networkConfig;
 
         [SerializeField]
+        BoosterConfig _boosterConfig;
+
+        [SerializeField]
         ApplicationPauseReporter _pauseReporter;
 
         protected override void Configure(IContainerBuilder builder)
         {
-            new CoreServicesInstaller(_applicationConfig, _uiConfig, _levelCatalog, _networkConfig).Install(builder);
+            new CoreServicesInstaller(_applicationConfig, _uiConfig, _levelCatalog, _networkConfig, _boosterConfig)
+                .Install(builder);
             builder.RegisterComponent(_pauseReporter);
 
             // Probing starts as soon as the app-wide container exists (online requirement, network.md).
