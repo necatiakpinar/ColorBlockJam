@@ -35,14 +35,14 @@ costs one; a missing life comes back after 30 minutes of trusted time; coins fil
   popup; Refill restarts, close goes Home. `GameplayFlow` (restart, pause → Home) and `FailFlow` (give up,
   Retry) call `Abandon` and `PlayAgain`. Pause → Home asks first when `LevelAttemptLives.WouldCostLife`:
   the leave popup's Leave takes the life and goes Home, its close goes back to the pause popup.
-- **`HomeFlow`**: the level button plays only with a life; otherwise, like the lives bar's "+", it opens the
-  lives popup.
+- **`HomeFlow`**: the level button plays only with a life; otherwise, like a tap on the lives bar, it opens
+  the lives popup.
 
 ## 3. On screen
 
 | Piece | Where | Shows |
 | --- | --- | --- |
-| `LivesBarView` | Home `TopBar/Lives` | the lives in the heart; "Full" or the `mm:ss` to the next life; "+" opens the popup |
+| `LivesBarView` | Home `TopBar/Lives` | the lives in the heart; "Full" or the `mm:ss` to the next life; a tap anywhere on the bar opens the popup (one `Button` on the bar, the "+" is art) |
 | `OutOfLivesPopupView` | `OutOfLivesPopup.prefab`, in both `HomePopupConfig` and `GameplayPopupConfig` | "Out of Lives" with none left, "Lives" otherwise; the heart with the count, "Next life in mm:ss" (or "Your lives are full!"), Refill with the price, disabled when full or short of coins |
 
 Countdowns are written into char buffers (`TMP_Text.SetCharArray`), so a tick allocates nothing on device.

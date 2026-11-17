@@ -3,6 +3,7 @@ using ColorBlockJam.Core.Signals;
 using ColorBlockJam.Game.Lives;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using VContainer;
 
@@ -19,13 +20,15 @@ namespace ColorBlockJam.Game.Home
         [SerializeField]
         TMP_Text _statusLabel;
 
+        [Tooltip("Covers the whole bar, so a tap anywhere on it opens the lives popup.")]
+        [FormerlySerializedAs("_plusButton")]
         [SerializeField]
-        Button _plusButton;
+        Button _button;
 
         readonly char[] _timer = new char[5];
         SignalBus _signalBus;
 
-        public event Action PlusClicked;
+        public event Action Clicked;
 
         public string CountText => _countLabel.text;
         public string StatusText => _statusLabel.text;
@@ -35,7 +38,7 @@ namespace ColorBlockJam.Game.Home
         {
             _signalBus = signalBus;
             _signalBus.Subscribe<LivesChangedSignal>(Show);
-            _plusButton.onClick.AddListener(OnPlusClicked);
+            _button.onClick.AddListener(OnClicked);
         }
 
         public void Show(LivesChangedSignal lives)
@@ -63,12 +66,12 @@ namespace ColorBlockJam.Game.Home
             _statusLabel.SetCharArray(_timer, 0, _timer.Length);
         }
 
-        void OnPlusClicked() => PlusClicked?.Invoke();
+        void OnClicked() => Clicked?.Invoke();
 
         void OnDestroy()
         {
             _signalBus.Unsubscribe<LivesChangedSignal>(Show);
-            _plusButton.onClick.RemoveListener(OnPlusClicked);
+            _button.onClick.RemoveListener(OnClicked);
         }
     }
 }

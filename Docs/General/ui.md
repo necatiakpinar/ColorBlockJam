@@ -108,7 +108,7 @@ Authored in `Home.unity` under `HomeCanvas`, laid out after the reference (T-23)
 | --- | --- | --- |
 | `Background` | `bg_home_screen` | fills the screen, outside the safe area |
 | `TopBar/ProfileButton` | `profile_box_blue` | placeholder |
-| `TopBar/Lives` | `bg_home_resource_holder`, `Heart`, "Full" and 5, green "+" | `LivesBarView`: lives, "Full" or the countdown; "+" opens the lives popup ([lives.md](lives.md)) |
+| `TopBar/Lives` | `bg_home_resource_holder`, `Heart`, "Full" and 5, green "+" | `LivesBarView`: lives, "Full" or the countdown; a tap anywhere on the bar opens the lives popup ([lives.md](lives.md)) |
 | `TopBar/Coins` | `bg_home_resource_holder`, `Coin_Single`, green "+" | balance (`CoinAmountText`); "+" is a placeholder |
 | `TopBar/SettingsButton` | `Settings_Icon` | opens the Home settings popup |
 | `LevelPath` | gold rails, `Btn_level_green` tile for the current level, `Btn_settings_normal` + `lock` for the next two | numbers from the saved level |

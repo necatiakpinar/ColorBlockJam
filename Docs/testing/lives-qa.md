@@ -13,6 +13,7 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 - [x] ⚙ Without lives, Retry and restart offer a refill; Refill restarts, close goes Home — `LevelAttemptLivesTests`
 - [x] ⚙ Pause → Home asks first when it would cost a life; Leave takes it, close goes back to pause — `GameplayFlowTests.PausePopupHome_ShouldAskFirst_WhenLeavingWouldCostALife`, `LeavePopup_*`
 - [x] ⚙ Home plays only with a life; otherwise the lives popup opens — `HomeFlowTests.Play_ShouldOpenTheLivesPopupInsteadOfTheLevel_WhenNoLivesAreLeft`
-- [ ] 👁 The Home bar shows the count and "Full", or a countdown that ticks every second; "+" opens the popup.
+- [ ] 👁 The Home bar shows the count and "Full", or a countdown that ticks every second.
+- [x] ⚙ A tap anywhere on the Home lives bar opens the lives popup — `HomeScreenTests.LivesBar_ShouldOpenTheLivesPopup_WhenTappedAnywhere`
 - [ ] 👁 Changing the device clock moves no countdown; closing the app for an hour gives two lives back.
 - [ ] 👁 The lives popup fits the screen on both scenes; Refill is greyed out without the coins or when full.

@@ -27,7 +27,7 @@ namespace ColorBlockJam.Tests.EditMode
         LivesRig _lives;
         LivesBarView _livesBar;
         OutOfLivesPopupView _livesPopup;
-        Button _plusButton;
+        Button _livesBarButton;
         Button _refillButton;
         Button _livesCloseButton;
 
@@ -47,7 +47,7 @@ namespace ColorBlockJam.Tests.EditMode
             _view = _views.CreateHomeView(_bus, out _levelButton, out _settingsButton);
             _settingsPopup = _views.CreateSettingsPopup(_bus, _settings, out _closeButton, out _toggles);
             _lives = new LivesRig(_bus, _wallet);
-            _livesBar = _views.CreateLivesBar(_bus, out _plusButton);
+            _livesBar = _views.CreateLivesBar(_bus, out _livesBarButton);
             _livesPopup = _views.CreateOutOfLivesPopup(_bus, out _refillButton, out _livesCloseButton);
         }
 
@@ -96,7 +96,7 @@ namespace ColorBlockJam.Tests.EditMode
             _wallet.Add(_lives.Lives.RefillPrice);
             using HomeFlow flow = CreateFlow();
             flow.Start();
-            _plusButton.onClick.Invoke();
+            _livesBarButton.onClick.Invoke();
 
             _refillButton.onClick.Invoke();
 
@@ -113,7 +113,7 @@ namespace ColorBlockJam.Tests.EditMode
             _wallet.Add(_lives.Lives.RefillPrice + 30);
             using HomeFlow flow = CreateFlow();
             flow.Start();
-            _plusButton.onClick.Invoke();
+            _livesBarButton.onClick.Invoke();
 
             _refillButton.onClick.Invoke();
 

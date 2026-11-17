@@ -2,6 +2,7 @@ using System.Collections;
 using NUnit.Framework;
 using ColorBlockJam.Game.Home;
 using ColorBlockJam.Game.UI;
+using UnityEngine.UI;
 using UnityEngine.TestTools;
 
 namespace ColorBlockJam.Tests.PlayMode
@@ -29,6 +30,18 @@ namespace ColorBlockJam.Tests.PlayMode
 
             Assert.That(shown, Is.True);
             Assert.That(SceneTestUtility.FindInActiveScene<SettingsPopupView>().gameObject.activeInHierarchy, Is.False);
+        }
+
+        [UnityTest]
+        public IEnumerator LivesBar_ShouldOpenTheLivesPopup_WhenTappedAnywhere()
+        {
+            yield return SceneTestUtility.BootToHome();
+            LivesBarView bar = SceneTestUtility.FindInActiveScene<LivesBarView>();
+
+            bar.GetComponent<Button>().onClick.Invoke();
+
+            Assert.That(bar.GetComponentsInChildren<Button>(true), Has.Length.EqualTo(1), "One button covers the bar.");
+            Assert.That(SceneTestUtility.FindInActiveScene<OutOfLivesPopupView>().gameObject.activeInHierarchy, Is.True);
         }
     }
 }

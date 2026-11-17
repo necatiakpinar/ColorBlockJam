@@ -139,14 +139,14 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
             return view;
         }
 
-        public LivesBarView CreateLivesBar(SignalBus signalBus, out Button plusButton)
+        public LivesBarView CreateLivesBar(SignalBus signalBus, out Button barButton)
         {
             var root = Track(new GameObject("LivesBar"));
             var view = root.AddComponent<LivesBarView>();
-            plusButton = Child(root, "PlusButton").AddComponent<Button>();
+            barButton = root.AddComponent<Button>();
             Assign(view, "_countLabel", Label(root, "Count"));
             Assign(view, "_statusLabel", Label(root, "LivesLabel"));
-            Assign(view, "_plusButton", plusButton);
+            Assign(view, "_button", barButton);
             view.Construct(signalBus);
             return view;
         }

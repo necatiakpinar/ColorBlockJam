@@ -28,7 +28,7 @@ namespace ColorBlockJam.Game.Home
             _lives = lives;
             _livesBar = livesBar;
             _livesPopup = livesPopup;
-            _livesBar.PlusClicked += OpenLivesPopup;
+            _livesBar.Clicked += OpenLivesPopup;
             _livesPopup.RefillClicked += OnRefillClicked;
             _livesPopup.CloseClicked += OnLivesPopupClosed;
             _view = view;
@@ -95,7 +95,7 @@ namespace ColorBlockJam.Game.Home
             _view.SettingsButtonClicked -= OnSettingsButtonClicked;
             _settingsPopup.CloseClicked -= OnSettingsClosed;
             _settingsPopup.ToggleClicked -= OnToggleClicked;
-            _livesBar.PlusClicked -= OpenLivesPopup;
+            _livesBar.Clicked -= OpenLivesPopup;
             _livesPopup.RefillClicked -= OnRefillClicked;
             _livesPopup.CloseClicked -= OnLivesPopupClosed;
         }

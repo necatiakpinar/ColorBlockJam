@@ -68,7 +68,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - [x] [T-49 Twenty levels and the level hardener](#t-49-twenty-levels-and-the-level-hardener)
 - [x] [T-50 Level packs (JSON, remote-ready)](#t-50-level-packs-json-remote-ready)
 - [x] [T-51 Coin flight on a win](#t-51-coin-flight-on-a-win)
-- [ ] [T-52 Whole lives bar opens the lives popup](#t-52-whole-lives-bar-opens-the-lives-popup)
+- [x] [T-52 Whole lives bar opens the lives popup](#t-52-whole-lives-bar-opens-the-lives-popup)
 - [ ] [T-53 Sound effects](#t-53-sound-effects)
 - [ ] [T-54 Low-time warning](#t-54-low-time-warning)
 - [ ] [T-55 Level editor look](#t-55-level-editor-look)
