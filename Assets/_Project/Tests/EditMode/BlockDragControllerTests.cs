@@ -213,6 +213,52 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(LastDrag.y, NUnit.Framework.Is.GreaterThan(1f), "It went into the gap.");
         }
 
+        /// <summary>
+        /// Purple (2,1)-(2,2) in the middle of a board with a one-cell gap above it at column 2 (between yellow
+        /// and orange) and a corridor at column 3 (between purple's column and blue); red blocks row 1 of
+        /// column 3, so purple can turn right only from one row up.
+        /// </summary>
+        void LoadCorridorBoard() => _board.Load(new LevelDataBuilder(5, 6)
+            .Block(Yellow, 0, 4, 1, 4, 0, 5, 1, 5)
+            .Block(Purple, 2, 1, 2, 2)
+            .Block(Green, 0, 1, 1, 1)
+            .Block(Red, 2, 0, 3, 0, 3, 1)
+            .Block(Blue, 4, 1, 4, 2, 4, 3)
+            .Block(Orange, 3, 4, 3, 5, 4, 5)
+            .Build());
+
+        [Test]
+        public void Drag_ShouldTurnIntoASideCorridor_WhenItSlippedTowardAnotherGapFirst()
+        {
+            // Pushed up with the finger 0.2 to the right, purple slips toward the gap above; the finger then
+            // comes back down and goes right. Nothing from the first slip may keep it out of the corridor.
+            LoadCorridorBoard();
+            Finger(BoardPointerPhase.Pressed, 2, 1.5f);
+            for (float y = 1.5f; y <= 2.7f; y += 0.1f)
+                Finger(BoardPointerPhase.Dragged, 2.2f, y);
+            Finger(BoardPointerPhase.Dragged, 2f, 2.3f);
+
+            for (float x = 2f; x <= 3.2f; x += 0.1f)
+                Finger(BoardPointerPhase.Dragged, x, 2.3f);
+
+            Assert.That(CellOf(1), NUnit.Framework.Is.EqualTo(new Vector2Int(1, 1)), "In column 3, one row up.");
+        }
+
+        [Test]
+        public void Drag_ShouldEnterTheGap_WhenTheFingerWobblesSidewaysAtItsMouth()
+        {
+            // A finger is never perfectly still: tiny sideways wobbles at the mouth of the gap must not lock
+            // the block out of it.
+            LoadCorridorBoard();
+            Finger(BoardPointerPhase.Pressed, 2, 1.5f);
+            float[] wobble = { 0.01f, -0.01f, 0.005f, -0.008f };
+            int i = 0;
+            for (float y = 1.5f; y <= 4.5f; y += 0.04f)
+                Finger(BoardPointerPhase.Dragged, 2f + wobble[i++ % wobble.Length], y);
+
+            Assert.That(CellOf(1), NUnit.Framework.Is.EqualTo(new Vector2Int(0, 3)), "Up through the gap.");
+        }
+
         [Test]
         public void Drag_ShouldNotSlipSideways_WhenNoCellLineOpensTheWay()
         {
