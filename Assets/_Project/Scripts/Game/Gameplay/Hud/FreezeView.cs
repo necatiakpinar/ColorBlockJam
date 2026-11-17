@@ -4,7 +4,6 @@ using ColorBlockJam.Game.Common.Animations;
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Gameplay.Signals;
 using UnityEngine;
-using UnityEngine.UI;
 using VContainer;
 
 namespace ColorBlockJam.Game.Gameplay.Hud
@@ -21,8 +20,9 @@ namespace ColorBlockJam.Game.Gameplay.Hud
         [SerializeField]
         CanvasGroup _meter;
 
+        [Tooltip("The nine-sliced fill, stretched over the track from the left; its right anchor is the freeze left.")]
         [SerializeField]
-        Image _meterFill;
+        RectTransform _meterFill;
 
         GameplayConfig _config;
         SignalBus _signalBus;
@@ -40,7 +40,7 @@ namespace ColorBlockJam.Game.Gameplay.Hud
         }
 
         public bool IsShowing => _frame.alpha > 0f;
-        public float MeterFill => _meterFill.fillAmount;
+        public float MeterFill => _meterFill.anchorMax.x;
 
         void OnFreezeChanged(TimerFreezeChangedSignal signal)
         {
@@ -49,10 +49,10 @@ namespace ColorBlockJam.Game.Gameplay.Hud
             if (!signal.IsFrozen)
                 return;
 
-            _meterFill.fillAmount = signal.SecondsLeft / signal.TotalSeconds;
+            _meterFill.anchorMax = new Vector2(signal.SecondsLeft / signal.TotalSeconds, _meterFill.anchorMax.y);
             if (signal.Counting)
-                _drain = default(FillAmountAnimation).Play(new FillAmountAnimation.Config(_meterFill, 0f,
-                    signal.SecondsLeft, Ease.Linear));
+                _drain = default(BarFillAnimation).Play(new BarFillAnimation.Config(_meterFill, 0f, signal.SecondsLeft,
+                    Ease.Linear));
         }
 
         void OnLevelStarted(LevelStartedSignal signal)
