@@ -57,6 +57,12 @@ namespace ColorBlockJam.Tests.EditMode
             AssertSingleError(Validate(level), "width and height must be between 3 and 10");
         }
 
+        [Test]
+        public void Validate_ShouldReportDifficulty_WhenNoneIsChosen()
+        {
+            AssertSingleError(Validate(ValidLevel().Difficulty((LevelDifficulty)0)), "difficulty");
+        }
+
         [TestCase(5)]
         [TestCase(601)]
         public void Validate_ShouldReportTimer_WhenOutsideTheAllowedRange(int seconds)

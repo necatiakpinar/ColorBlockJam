@@ -118,7 +118,8 @@ Home. **Read [splash-boot.md](Docs/General/splash-boot.md) before touching `Spla
 ### Gameplay
 
 **Read [persistence.md](Docs/General/persistence.md) before touching `Scripts/Core/Persistence/` or saving anything
-for the player.**
+for the player. Read [economy.md](Docs/General/economy.md) before touching `Scripts/Game/Economy/`, rewards or a
+level's difficulty.**
 
 **Read [network.md](Docs/General/network.md) before touching `Scripts/Core/Network/`, `NetworkConfig` or anything
 that reads the time of day.**

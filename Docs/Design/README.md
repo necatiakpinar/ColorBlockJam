@@ -135,7 +135,7 @@ task is marked `Dropped`, never deleted. Detail per task: [tasks.md](tasks.md).
 | T-13 | 3 | Exit through door and level complete | A block leaves through a matching door; last exit completes the level | T-12 | Done |
 | T-14 | 4 | Level session state machine | Loading → Playing ⇄ Paused → Won / Failed; restart rebuilds from data | T-09 | Done |
 | T-15 | 4 | Countdown timer | Counts down, pauses, fails the level at 0 | T-14 | Done |
-| T-16 | 4 | Coin rewards | Win adds the reward once, before the popup; leaving never changes coins | T-07, T-14 | Todo |
+| T-16 | 4 | Coin rewards | Win adds the reward once, before the popup; leaving never changes coins | T-07, T-14 | Done |
 | T-17 | 4 | Level progression and looping | Win advances the level; after level 5 the catalog loops | T-07, T-14 | Done |
 | T-18 | 5 | Gameplay HUD | Level, timer, coins, pause, boosters and lives shown and updating | T-05, T-15, T-16 | Todo |
 | T-19 | 5 | Pause popup | Pause freezes timer and input; resume, restart, home work | T-18 | Todo |

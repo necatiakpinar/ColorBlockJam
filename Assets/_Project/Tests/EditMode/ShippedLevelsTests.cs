@@ -44,6 +44,20 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
+        public void ShippedLevels_ShouldNeverGetEasierInDifficulty_WhenTheLevelNumberRises()
+        {
+            LevelDifficulty previous = LevelDifficulty.Normal;
+            for (int i = 0; i < Levels().Count; i++)
+            {
+                LevelDifficulty difficulty = Levels()[i].Data.Difficulty;
+                Assert.That(difficulty, Is.GreaterThanOrEqualTo(previous), $"Level {i + 1}");
+                previous = difficulty;
+            }
+
+            Assert.That(previous, Is.EqualTo(LevelDifficulty.VeryHard), "The last level is the hardest kind.");
+        }
+
+        [Test]
         public void ShippedLevels_ShouldGetHarder_WhenTheLevelNumberRises()
         {
             int previous = 0;

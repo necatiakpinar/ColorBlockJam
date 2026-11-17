@@ -12,6 +12,7 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
         readonly List<BlockData> _blocks = new();
         readonly List<DoorData> _doors = new();
         int _timerSeconds = 60;
+        LevelDifficulty _difficulty = LevelDifficulty.Normal;
 
         public LevelDataBuilder(int width, int height)
         {
@@ -22,6 +23,12 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
         public LevelDataBuilder Timer(int seconds)
         {
             _timerSeconds = seconds;
+            return this;
+        }
+
+        public LevelDataBuilder Difficulty(LevelDifficulty difficulty)
+        {
+            _difficulty = difficulty;
             return this;
         }
 
@@ -41,6 +48,6 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
             return this;
         }
 
-        public LevelData Build() => new(_width, _height, _timerSeconds, _blocks, _doors);
+        public LevelData Build() => new(_width, _height, _timerSeconds, _blocks, _doors, _difficulty);
     }
 }

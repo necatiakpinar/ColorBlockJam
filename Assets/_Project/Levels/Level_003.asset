@@ -16,6 +16,7 @@ MonoBehaviour:
     _width: 5
     _height: 6
     _timerSeconds: 90
+    _difficulty: 2000
     _blocks:
     - _color: 4000
       _cells:

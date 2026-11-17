@@ -28,6 +28,7 @@ Pages marked **binding** carry rules agents must follow before touching the path
 | [General/gameplay.md](General/gameplay.md) | board space, input, movement and exit rules | yes |
 | [General/level-data.md](General/level-data.md) | level format, catalog, validation rules | yes |
 | [General/persistence.md](General/persistence.md) | saved player data: progress, wallet, settings | yes |
+| [General/economy.md](General/economy.md) | coins: win rewards by level difficulty | yes |
 | [General/network.md](General/network.md) | online requirement: connectivity probe, trusted time | yes |
 | [General/art-pipeline.md](General/art-pipeline.md) | art folders, import rules, cell scale, part prefabs, materials | yes |
 | [General/development-assumptions.md](General/development-assumptions.md) | `DA-n` registry of unconfirmed product decisions | yes |

@@ -1,4 +1,5 @@
 using ColorBlockJam.Game.Configs;
+using ColorBlockJam.Game.Economy;
 using ColorBlockJam.Game.Gameplay;
 using ColorBlockJam.Game.Gameplay.Feedback;
 using ColorBlockJam.Game.Gameplay.Hud;
@@ -21,6 +22,9 @@ namespace ColorBlockJam.Game.Scopes
         BoardViewConfig _boardViewConfig;
 
         [SerializeField]
+        LevelRewardConfig _levelRewardConfig;
+
+        [SerializeField]
         Camera _boardCamera;
 
         [SerializeField]
@@ -40,7 +44,7 @@ namespace ColorBlockJam.Game.Scopes
 
         protected override void Configure(IContainerBuilder builder)
         {
-            new GameplayInstaller(_gameplayConfig, _boardViewConfig).Install(builder);
+            new GameplayInstaller(_gameplayConfig, _boardViewConfig, _levelRewardConfig).Install(builder);
 
             // Components are injected while the container builds, so the HUD has subscribed to its
             // signals before any entry point below starts and fires one.
@@ -58,6 +62,7 @@ namespace ColorBlockJam.Game.Scopes
                 resolver.Resolve<GameplayHaptics>();
                 resolver.Resolve<LevelProgression>();
                 resolver.Resolve<LevelTimer>();
+                resolver.Resolve<LevelRewardService>();
             });
 
             builder.RegisterEntryPoint<GameplayFlow>();

@@ -26,6 +26,7 @@ Assets/_Project/
 │   ├── Splash/          SplashFlow, SplashView
 │   ├── Home/            HomeFlow, HomeView
 │   ├── Levels/          LevelData, LevelDefinition, LevelCatalog, LevelProvider, validator
+│   ├── Economy/         LevelRewardProvider, LevelRewardService
 │   ├── UI/              safe area, button press feedback, popup service
 │   ├── Gameplay/        GameplayFlow, signals, HUD, Board/ (rules, ActiveBoard), Input/ (touch, drag),
 │   │                    View/ (board, blocks, tiling, camera), Animations/

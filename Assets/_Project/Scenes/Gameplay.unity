@@ -970,6 +970,7 @@ MonoBehaviour:
   autoInjectGameObjects: []
   _gameplayConfig: {fileID: 11400000, guid: de7add547110b3c4cb7658b56130fe67, type: 2}
   _boardViewConfig: {fileID: 11400000, guid: 5e256dc7696fe224c99263ecfb83cffd, type: 2}
+  _levelRewardConfig: {fileID: 11400000, guid: d1e8ea74ba6a4d741beac27b6c21a0de, type: 2}
   _boardCamera: {fileID: 1522050851}
   _hudView: {fileID: 1525294842}
   _boardInputView: {fileID: 84573918}

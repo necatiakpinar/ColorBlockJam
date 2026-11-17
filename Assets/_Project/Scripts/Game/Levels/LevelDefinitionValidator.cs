@@ -51,6 +51,9 @@ namespace ColorBlockJam.Game.Levels
 
             if (level.Blocks.Count == 0)
                 Error(issues, "The level has no blocks; it would be won before the player touches it.");
+
+            if (!Enum.IsDefined(typeof(LevelDifficulty), level.Difficulty))
+                Error(issues, "The level has no difficulty chosen; it sets the win reward.");
         }
 
         bool IsBoardSizeAllowed(int size) => size >= _rules.MinBoardSize && size <= _rules.MaxBoardSize;

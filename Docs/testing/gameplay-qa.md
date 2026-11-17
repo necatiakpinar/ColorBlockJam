@@ -15,6 +15,9 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 - [ ] ⚙ The timer waits at full time until the first block is grabbed, then counts down second by second and fails the level once at zero — `LevelTimerTests`, `GameplayTimerTests.Hud_ShouldCountTheTimerDown_OnceABlockIsGrabbed`
 - [ ] ⚙ Pausing or backgrounding the app freezes the timer; restart gives the full time — `LevelTimerTests`, `GameplayTimerTests.Timer_ShouldStandStill_WhileTheAppIsInTheBackground`
 - [ ] 👁 On a device, send the app to the background for a while mid-level: the timer shows the same time when it comes back.
+- [ ] ⚙ A win pays its difficulty's coins once; failing or leaving pays nothing — `LevelRewardTests`, `CoinPersistenceTests`
+- [ ] ⚙ Coins stay the same after going Home and coming back — `CoinPersistenceTests`
+- [ ] 👁 Kill the app after a win and open it again: the balance is the same.
 - [ ] ⚙ Winning starts the next level; after the last level the first layout comes back — `LevelProgressionFlowTests`
 - [ ] ⚙ All five shipped levels are valid and solvable — `ShippedLevelsTests`
 - [ ] 👁 Play levels 1 to 5 by hand: each one is a little harder than the one before, and each finishes well inside its timer.

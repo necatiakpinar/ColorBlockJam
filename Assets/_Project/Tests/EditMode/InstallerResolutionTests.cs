@@ -8,6 +8,7 @@ using ColorBlockJam.Core.Scenes;
 using ColorBlockJam.Core.Signals;
 using ColorBlockJam.Game.Boot;
 using ColorBlockJam.Game.Configs;
+using ColorBlockJam.Game.Economy;
 using ColorBlockJam.Core.Clock;
 using ColorBlockJam.Core.Haptics;
 using ColorBlockJam.Core.Network;
@@ -116,7 +117,7 @@ namespace ColorBlockJam.Tests.EditMode
         IObjectResolver BuildGameplay(BoardViewConfig boardViewConfig)
         {
             var builder = new ContainerBuilder();
-            new GameplayInstaller(CreateConfig<GameplayConfig>(), boardViewConfig).Install(builder);
+            new GameplayInstaller(CreateConfig<GameplayConfig>(), boardViewConfig, CreateConfig<LevelRewardConfig>()).Install(builder);
             return builder.Build();
         }
 
@@ -140,7 +141,7 @@ namespace ColorBlockJam.Tests.EditMode
             new CoreServicesInstaller(CreateConfig<ApplicationConfig>(), CreateConfig<UiConfig>(), CreateConfig<LevelCatalog>(),
                 CreateConfig<NetworkConfig>())
                 .Install(builder);
-            new GameplayInstaller(CreateConfig<GameplayConfig>(), CreateConfig<BoardViewConfig>()).Install(builder);
+            new GameplayInstaller(CreateConfig<GameplayConfig>(), CreateConfig<BoardViewConfig>(), CreateConfig<LevelRewardConfig>()).Install(builder);
             using IObjectResolver container = builder.Build();
 
             Assert.That(container.Resolve<LevelProvider>(), Is.Not.Null);
@@ -150,6 +151,7 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(container.Resolve<LevelSession>(), Is.Not.Null);
             Assert.That(container.Resolve<LevelProgression>(), Is.Not.Null);
             Assert.That(container.Resolve<LevelTimer>(), Is.Not.Null);
+            Assert.That(container.Resolve<LevelRewardService>(), Is.Not.Null);
         }
 
         [Test]

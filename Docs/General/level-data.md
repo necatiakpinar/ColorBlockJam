@@ -10,7 +10,7 @@ One format, written by the level editor and read by the game (R-29, DA-13).
 | Type | Holds |
 | --- | --- |
 | `LevelDefinition` (asset, `Assets/_Project/Levels/`) | one `LevelData`; `SetData` replaces it (the editor records undo first) |
-| `LevelData` | `Width`, `Height` (cells), `TimerSeconds`, `Blocks`, `Doors` |
+| `LevelData` | `Width`, `Height` (cells), `TimerSeconds`, `Difficulty` (`Normal`, `Hard`, `VeryHard`; sets the win reward, [economy.md](economy.md)), `Blocks`, `Doors` |
 | `BlockData` | `Color` and the absolute start `Cells` it covers (DA-18) |
 | `DoorData` | `Side` (`Bottom`, `Top`, `Left`, `Right`), `Start` cell along that wall, `Length`, `Color` (DA-17) |
 | `LevelCatalog` (asset, `Assets/_Project/Levels/LevelCatalog.asset`) | the ordered level list; level N is entry N − 1 |
@@ -39,6 +39,7 @@ mistake. The level editor (T-30) refuses to save on errors and asks the designer
 | 8 | Doors on the same wall do not overlap | error |
 | 9 | Every block has a door of its colour at least as wide as the block along that door's wall | error |
 | 10 | Every door has at least one block of its colour | warning |
+| 11 | The level has a difficulty (old levels read as `Normal`) | error |
 
 Rule 9 is a necessary condition only; whether the level can actually be solved is T-33.
 
@@ -52,13 +53,13 @@ The catalog ships five levels, `Level_001` to `Level_005`, made in code until th
 exists (T-32 remakes them with it). They ramp up by board size, block count and how many rounds of exits
 the blocks need (a block can only leave once the ones in its way have):
 
-| Level | Board | Blocks | Rounds | Timer |
-| --- | --- | --- | --- | --- |
-| 1 | 4x4 | 2 | 1 | 60 s |
-| 2 | 5x5 | 3 | 2 | 60 s |
-| 3 | 5x6 | 5 | 4 | 90 s |
-| 4 | 6x7 | 8 | 4 | 120 s |
-| 5 | 6x7 | 8 | 6 | 150 s |
+| Level | Board | Blocks | Rounds | Timer | Difficulty |
+| --- | --- | --- | --- | --- | --- |
+| 1 | 4x4 | 2 | 1 | 60 s | Normal |
+| 2 | 5x5 | 3 | 2 | 60 s | Normal |
+| 3 | 5x6 | 5 | 4 | 90 s | Hard |
+| 4 | 6x7 | 8 | 4 | 120 s | Hard |
+| 5 | 6x7 | 8 | 6 | 150 s | Very Hard |
 
 `ShippedLevelsTests` keeps every catalog level free of validator issues and proves it solvable with the
 real `BoardState` rules: it takes blocks out one at a time, each searching every cell it can slide to.

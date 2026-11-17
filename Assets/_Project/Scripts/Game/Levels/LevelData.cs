@@ -21,6 +21,10 @@ namespace ColorBlockJam.Game.Levels
         [SerializeField]
         int _timerSeconds;
 
+        [Tooltip("Sets the win reward (LevelRewardConfig).")]
+        [SerializeField]
+        LevelDifficulty _difficulty = LevelDifficulty.Normal;
+
         [SerializeField]
         List<BlockData> _blocks;
 
@@ -35,11 +39,12 @@ namespace ColorBlockJam.Game.Levels
         }
 
         public LevelData(int width, int height, int timerSeconds, IEnumerable<BlockData> blocks,
-            IEnumerable<DoorData> doors)
+            IEnumerable<DoorData> doors, LevelDifficulty difficulty = LevelDifficulty.Normal)
         {
             _width = width;
             _height = height;
             _timerSeconds = timerSeconds;
+            _difficulty = difficulty;
             _blocks = new List<BlockData>(blocks);
             _doors = new List<DoorData>(doors);
         }
@@ -47,6 +52,7 @@ namespace ColorBlockJam.Game.Levels
         public int Width => _width;
         public int Height => _height;
         public int TimerSeconds => _timerSeconds;
+        public LevelDifficulty Difficulty => _difficulty;
         public IReadOnlyList<BlockData> Blocks => _blocks;
         public IReadOnlyList<DoorData> Doors => _doors;
 

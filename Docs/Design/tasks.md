@@ -32,7 +32,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - [x] [T-13 Exit through door and level complete](#t-13-exit-through-door-and-level-complete)
 - [x] [T-14 Level session state machine](#t-14-level-session-state-machine)
 - [x] [T-15 Countdown timer](#t-15-countdown-timer)
-- [ ] [T-16 Coin rewards](#t-16-coin-rewards)
+- [x] [T-16 Coin rewards](#t-16-coin-rewards)
 - [x] [T-17 Level progression and looping](#t-17-level-progression-and-looping)
 - [ ] [T-18 Gameplay HUD](#t-18-gameplay-hud)
 - [ ] [T-19 Pause popup](#t-19-pause-popup)
@@ -440,10 +440,13 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - **Req:** R-19. Implements DA-7, DA-14.
 - **Arch:** on `Complete`, `LevelRewardService` adds `GameplayConfig.CoinsPerWin` to `IWalletService`
   before the win popup appears; idempotent per attempt. Fail, restart and Home never touch the wallet.
+  - [x] Rewards by level difficulty instead of one amount (developer, DA-7): `LevelData.Difficulty`,
+    `LevelRewardConfig` read through `LevelRewardProvider`; `LevelRewardService` pays on
+    `LevelCompletedSignal` (economy.md).
 - **Accept:** coins rise by the reward once per win; leaving a level mid-play and returning shows the same
   balance as before entering; app restart keeps the balance.
-- **Tests:** `EM LevelRewardServiceTests`; `PM CoinPersistenceTests` (enter, leave, return, compare).
-- **Docs:** `gameplay.md` §Economy.
+- **Tests:** `EM LevelRewardTests`; `PM CoinPersistenceTests` (enter, leave, return, compare).
+- **Docs:** `economy.md`.
 
 ### T-17 Level progression and looping
 
