@@ -3,7 +3,7 @@
 Verified facts about what agents can and cannot do in this repository's environment. Read before probing
 a tool; update through the `record-agent-capabilities` skill. Never record secrets.
 
-Updated: 2026-11-16
+Updated: 2026-11-17
 
 ## 1. Unity
 
@@ -44,6 +44,21 @@ Updated: 2026-11-16
 - DOTween: `Tweener.ChangeEndValue(object, bool)` boxes a `Vector3` on every call; keep the
   `TweenerCore<Vector3, Vector3, VectorOptions>` from `DOLocalMove` to reach the typed overload
   (found by `Is.Not.AllocatingGCMemory`) (2026-11-16).
+- URP renderer features can be added from `execute_code`: create the feature with
+  `ScriptableObject.CreateInstance`, `AssetDatabase.AddObjectToAsset` it to the renderer data, add it to
+  `rendererFeatures`, then fill `m_RendererFeatureMap` with each feature's local file id
+  (`AssetDatabase.TryGetGUIDAndLocalFileIdentifier`) through `SerializedObject`. URP 14's `RenderObjects`
+  lives in `UnityEngine.Experimental.Rendering.Universal` and defaults to `overrideMode: Material` (2026-11-17).
+- Unity overwrites a hand-edited `ProjectSettings/*.asset` value with its in-memory copy on the next save
+  while the editor is open; change such values through `SerializedObject` in `execute_code` (2026-11-17).
+- MCP `manage_camera` `screenshot` (no camera) captures the Game view in Play Mode and returns the image
+  inline; give `output_folder: "Temp/Screenshots"` so nothing lands under `Assets/` (2026-11-17).
+- MCP `run_tests` and `manage_editor play` leave `ProjectSettings/EditorSettings.asset` with
+  `m_EnterPlayModeOptions: 1`; restore it with `git checkout HEAD -- ProjectSettings/EditorSettings.asset`
+  before committing (2026-11-17).
+- Splitting one file's edits across commits: build the staged text from `git show :<path>` plus only the
+  wanted hunks, then `git hash-object -w --no-filters --stdin` and `git update-index --cacheinfo` (the
+  index stores LF) (2026-11-17).
 
 ## 2. Shell (Windows, Git Bash)
 
