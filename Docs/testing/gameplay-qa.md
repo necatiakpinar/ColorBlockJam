@@ -30,7 +30,7 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 - [ ] ⚙ Going Home after a loss and back gives the same level, fresh — `RestartResetsStateTests.Home_ShouldGiveTheSameLevelAndAFreshAttempt_WhenLeftAfterALoss`
 - [ ] ⚙ No gameplay listener survives going Home — `RestartResetsStateTests.SceneUnload_ShouldLeaveNoGameplayListener_WhenGoingHome`
 - [ ] ⚙ Winning starts the next level; after the last level the first layout comes back — `LevelProgressionFlowTests`
-- [ ] ⚙ All six shipped levels are valid, solvable and ramp up; level 6 has two frozen blocks — `ShippedLevelsTests`
+- [ ] ⚙ All eight shipped levels are valid, solvable and ramp up; level 6 has two frozen blocks, levels 7 and 8 arrow blocks — `ShippedLevelsTests`
 - [x] 👁 Play levels 1 to 5 by hand (developer, 2026-11-17): each one is a little harder than the one before, and each finishes well inside its timer.
   The solver's solutions, blocks numbered as in the editor (Space steps them on its canvas):
   - L1: 1 Cyan out right; 2 Purple out down.
@@ -40,6 +40,7 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
   - L5: 7 Red up; 8 Green down; move 1 Red up two; 5 Orange right; move 4 Blue aside; 2 Green down; 6 Yellow down; 3 Purple left; 1 Red up; 4 Blue left.
   - L6 (ice: 4 Blue waits for 2 exits, 1 Cyan for 4): move 2 Red left two; 3 Pink right; 6 Purple up; 9 Pink right; 4 Blue (thawed) up; 5 Green left; move 1 Cyan (thawed) up two; 8 Red down; 1 Cyan right; 7 Cyan right; 2 Red down.
 - [ ] 👁 Play level 6 by hand: both frozen blocks show their count, count down with every exit, thaw with a burst of ice and then leave.
+- [ ] 👁 Play levels 7 and 8 by hand: every arrow block shows its arrow, moves only along it and leaves through a door on that axis.
 
 ### Rules
 

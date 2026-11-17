@@ -22,13 +22,28 @@ namespace ColorBlockJam.Tests.EditMode
             AssetDatabase.LoadAssetAtPath<LevelCatalog>(CatalogPath).Levels;
 
         [Test]
-        public void Catalog_ShouldShipSixLevels_WhenBuilt()
+        public void Catalog_ShouldShipEightLevels_WhenBuilt()
         {
-            Assert.That(Levels().Count, Is.EqualTo(6));
+            Assert.That(Levels().Count, Is.EqualTo(8));
         }
 
         [Test]
-        public void ShippedLevels_ShouldIncludeFrozenBlocks_WhenTheLastLevelIsPlayed()
+        public void ShippedLevels_ShouldIncludeArrowBlocks_WhenLevelsSevenAndEightArePlayed()
+        {
+            // Levels 7 and 8 show the arrow blocker (T-35): 2 and 3 of their blocks move along one axis only.
+            int[] expected = { 2, 3 };
+            for (int k = 0; k < expected.Length; k++)
+            {
+                int arrows = 0;
+                foreach (BlockData block in Levels()[6 + k].Data.Blocks)
+                    if (block.Blockers.Arrow.IsActive)
+                        arrows++;
+                Assert.That(arrows, Is.EqualTo(expected[k]), $"Level {7 + k}");
+            }
+        }
+
+        [Test]
+        public void ShippedLevels_ShouldIncludeFrozenBlocks_WhenLevelSixIsPlayed()
         {
             // Level 6 shows the ice blocker (T-34): two of its blocks wait for others to leave.
             int frozen = 0;

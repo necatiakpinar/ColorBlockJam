@@ -51,11 +51,13 @@ The game never mutates `LevelData`. The catalog is registered by the root scope;
 level number to its entry and loops after the last one (DA-8). Each attempt builds a new `BoardState`
 ([gameplay.md](gameplay.md) §3, §4), which is what makes a restart start clean.
 
-The catalog ships six levels, `Level_001` to `Level_006`, made with the level editor (T-32): each was
+The catalog ships eight levels, `Level_001` to `Level_008`, made with the level editor (T-32): each was
 generated with the settings and seed below, its timer set by hand, and saved from the editor. They ramp up
 by board size, block count, exit rounds (a block can only leave once the ones in its way have) and, from
 level 3, blocks that must be moved out of the way first. Level 6 adds the ice blocker (T-34): its blue
-block waits for 2 others to leave and its cyan block for 4, which turns the plain layout's score 7 into 9. Score is the solver's difficulty measure
+block waits for 2 others to leave and its cyan block for 4, which turns the plain layout's score 7 into 9. Levels 7 and 8 add the arrow blocker (T-35): each arrow lies on
+a block the plain layout's solution moves along one axis only. Level 7's two arrows (cyan horizontal, red vertical)
+keep its score; level 8's three (purple and orange vertical, cyan horizontal) cut the shortcuts and turn 9 into 11. Score is the solver's difficulty measure
 ([level-editor.md](level-editor.md) §3).
 
 | Level | Board | Colours | Blocks | Seed | Rounds | Moves | Score | Timer | Difficulty |
@@ -66,7 +68,9 @@ block waits for 2 others to leave and its cyan block for 4, which turns the plai
 | 4 | 6x7 | 5 | 7 | 47 | 3 | 1 | 4 | 120 s | Hard |
 | 5 | 6x7 | 6 | 8 | 2 | 6 | 2 | 8 | 160 s | Very Hard |
 | 6 | 6x7 | 6 | 9 | 5, ice 2 and 4 | 7 | 2 | 9 | 190 s | Very Hard |
+| 7 | 6x7 | 6 | 9 | 12, 2 arrows | 7 | 3 | 10 | 200 s | Very Hard |
+| 8 | 6x8 | 6 | 10 | 2, 3 arrows | 9 | 2 | 11 | 220 s | Very Hard |
 
 `ShippedLevelsTests` keeps every catalog level free of validator issues, solvable by `LevelSolver`, as hard
 as its label, and the ramp rising (blocks, score, room-making from level 3); level 6 keeps its two
-frozen blocks.
+frozen blocks and levels 7 and 8 their arrow blocks.

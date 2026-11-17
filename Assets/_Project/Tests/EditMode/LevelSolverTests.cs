@@ -121,9 +121,9 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void ShippedLevels_ShouldScoreTheirDifficulty_WhenSolved()
         {
-            // Scores of the six shipped levels (level-data.md §3).
+            // Scores of the eight shipped levels (level-data.md §3).
             IReadOnlyList<LevelDefinition> levels = AssetDatabase.LoadAssetAtPath<LevelCatalog>(CatalogPath).Levels;
-            int[] scores = { 1, 2, 4, 4, 8, 9 };
+            int[] scores = { 1, 2, 4, 4, 8, 9, 10, 11 };
             for (int i = 0; i < scores.Length; i++)
             {
                 SolveResult result = _solver.Solve(levels[i].Data);
