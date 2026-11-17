@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Levels;
+using ColorBlockJam.Game.Levels.Blockers;
 using ColorBlockJam.Game.Levels.Generation;
 using ColorBlockJam.Game.Levels.Solving;
 using UnityEditor;
@@ -399,8 +400,13 @@ namespace ColorBlockJam.Editor.LevelEditing
 
         string BlockLabel(int index)
         {
-            int ice = Draft.Blocks[index].Blockers.Ice.Exits;
-            return ice > 0 ? $"{index + 1} · ice {ice}" : (index + 1).ToString();
+            BlockerSet blockers = Draft.Blocks[index].Blockers;
+            string label = (index + 1).ToString();
+            if (blockers.Arrow.Axis == ArrowAxis.Horizontal)
+                label += " ↔";
+            else if (blockers.Arrow.Axis == ArrowAxis.Vertical)
+                label += " ↕";
+            return blockers.Ice.IsActive ? $"{label} · ice {blockers.Ice.Exits}" : label;
         }
 
         // ---------------------------------------------------------------- inspector
@@ -435,7 +441,7 @@ namespace ColorBlockJam.Editor.LevelEditing
                 "5. Save (Ctrl+S) and press ▶ Play (P) to try it.\n\n" +
                 "Or let Generate build one and edit it.\n\n" +
                 "A frozen block (Ice above 0 on a selected block) cannot move until that many other blocks have left.\n\n" +
-                "Shortcuts: 1 Select · 2 Block · 3 Door · 4 Erase · Q/E colour · Tab shape · R rotate · I / Shift+I ice · arrows move · " +
+                "Shortcuts: 1 Select · 2 Block · 3 Door · 4 Erase · Q/E colour · Tab shape · R rotate · I / Shift+I ice · A arrow · arrows move · " +
                 "Del remove · Esc deselect · Ctrl+Z / Ctrl+Y undo / redo · Ctrl+S save · N new · Shift+D copy · " +
                 "C check · Space step the solution · G generate · P play · [ ] previous / next level · F1 help",
                 MessageType.None);
@@ -602,6 +608,7 @@ namespace ColorBlockJam.Editor.LevelEditing
                 case KeyCode.Tab: _shape = (_shape + (e.shift ? _shapes.Shapes.Count : 2)) % (_shapes.Shapes.Count + 1) - 1; break;
                 case KeyCode.R: RotateSelected(); break;
                 case KeyCode.I: AddIce(e.shift ? -1 : 1); break;
+                case KeyCode.A when !ctrl: CycleArrow(); break;
                 case KeyCode.LeftArrow: Nudge(Vector2Int.left); break;
                 case KeyCode.RightArrow: Nudge(Vector2Int.right); break;
                 case KeyCode.UpArrow: Nudge(Vector2Int.up); break;
@@ -662,6 +669,10 @@ namespace ColorBlockJam.Editor.LevelEditing
                 block.Blockers.Ice.Exits, 0, Mathf.Max(0, Draft.Blocks.Count - 1));
             if (ice != block.Blockers.Ice.Exits)
                 Change("Set ice", () => block.Blockers.Ice.Exits = ice);
+            var axis = (ArrowAxis)EditorGUILayout.EnumPopup(new GUIContent("Arrow",
+                "Moves, and leaves, only along this axis; None = free (A cycles it)."), block.Blockers.Arrow.Axis);
+            if (axis != block.Blockers.Arrow.Axis)
+                Change("Set arrow", () => block.Blockers.Arrow.Axis = axis);
             EditorGUI.indentLevel--;
         }
 
@@ -674,6 +685,21 @@ namespace ColorBlockJam.Editor.LevelEditing
             int ice = Mathf.Clamp(block.Blockers.Ice.Exits + delta, 0, Mathf.Max(0, Draft.Blocks.Count - 1));
             if (ice != block.Blockers.Ice.Exits)
                 Change("Set ice", () => block.Blockers.Ice.Exits = ice);
+        }
+
+        /// <summary>The selected block's arrow goes None → Horizontal → Vertical → None.</summary>
+        void CycleArrow()
+        {
+            if (_selectedBlock < 0)
+                return;
+            DraftBlock block = Draft.Blocks[_selectedBlock];
+            ArrowAxis next = block.Blockers.Arrow.Axis switch
+            {
+                ArrowAxis.None => ArrowAxis.Horizontal,
+                ArrowAxis.Horizontal => ArrowAxis.Vertical,
+                _ => ArrowAxis.None,
+            };
+            Change("Set arrow", () => block.Blockers.Arrow.Axis = next);
         }
 
         void Nudge(Vector2Int delta)

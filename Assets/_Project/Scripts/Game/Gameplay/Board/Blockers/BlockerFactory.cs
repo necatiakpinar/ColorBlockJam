@@ -11,6 +11,8 @@ namespace ColorBlockJam.Game.Gameplay.Board.Blockers
             var blockers = new List<IBlocker>();
             if (set.Ice.IsActive)
                 blockers.Add(new IceBlocker(set.Ice.Exits));
+            if (set.Arrow.IsActive)
+                blockers.Add(new ArrowBlocker(set.Arrow.Axis));
             return blockers;
         }
     }

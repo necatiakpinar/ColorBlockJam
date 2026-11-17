@@ -53,6 +53,16 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
             return this;
         }
 
+        /// <summary>A block with <paramref name="blockers"/> (arrow, ice, ...); cells as in <see cref="Block"/>.</summary>
+        public LevelDataBuilder Blocked(BlockColor color, BlockerSet blockers, params int[] cells)
+        {
+            var points = new List<Vector2Int>();
+            for (int i = 0; i < cells.Length; i += 2)
+                points.Add(new Vector2Int(cells[i], cells[i + 1]));
+            _blocks.Add(new BlockData(color, points, blockers));
+            return this;
+        }
+
         public LevelDataBuilder Door(WallSide side, int start, int length, BlockColor color)
         {
             _doors.Add(new DoorData(side, start, length, color));

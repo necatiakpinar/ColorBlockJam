@@ -39,7 +39,7 @@ namespace ColorBlockJam.Tests.PlayMode
                 new BlockData(BlockColor.Red, new[] { new Vector2Int(0, 2) }),
                 new BlockData(BlockColor.Blue, new[] { new Vector2Int(3, 2) }),
                 new BlockData(BlockColor.Yellow, new[] { new Vector2Int(1, 0), new Vector2Int(2, 0) },
-                    new BlockerSet(new IceBlockerData(2))),
+                    new BlockerSet(new IceBlockerData(2), new ArrowBlockerData(ArrowAxis.Horizontal))),
             },
             new[]
             {
@@ -71,6 +71,9 @@ namespace ColorBlockJam.Tests.PlayMode
             Assert.That(countAfterOne, Is.EqualTo("1"));
             Assert.That(layer.IceViewOf(2), Is.Null, "The ice view goes back to its pool on thaw.");
             Assert.That(redShowsIce, Is.False, "A block without ice shows no count.");
+            Assert.That(layer.ArrowViewOf(2), Is.Not.Null, "The arrow stays on after the thaw.");
+            Assert.That(layer.ArrowViewOf(2).Axis, Is.EqualTo(ArrowAxis.Horizontal));
+            Assert.That(layer.ArrowViewOf(0), Is.Null, "A block without an arrow shows none.");
             LogAssert.NoUnexpectedReceived();
         }
     }

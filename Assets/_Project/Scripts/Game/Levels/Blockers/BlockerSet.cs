@@ -14,18 +14,26 @@ namespace ColorBlockJam.Game.Levels.Blockers
         [SerializeField]
         IceBlockerData _ice = new();
 
+        [SerializeField]
+        ArrowBlockerData _arrow = new();
+
         public BlockerSet()
         {
         }
 
-        public BlockerSet(IceBlockerData ice) => _ice = ice;
+        public BlockerSet(IceBlockerData ice = null, ArrowBlockerData arrow = null)
+        {
+            _ice = ice ?? new IceBlockerData();
+            _arrow = arrow ?? new ArrowBlockerData();
+        }
 
         public IceBlockerData Ice => _ice;
+        public ArrowBlockerData Arrow => _arrow;
 
         /// <summary>No blocker is active: a plain block.</summary>
-        public bool IsEmpty => !_ice.IsActive;
+        public bool IsEmpty => !_ice.IsActive && !_arrow.IsActive;
 
         /// <summary>A deep copy, so an edited level never shares its blockers with another.</summary>
-        public BlockerSet Clone() => new(new IceBlockerData(_ice.Exits));
+        public BlockerSet Clone() => new(new IceBlockerData(_ice.Exits), new ArrowBlockerData(_arrow.Axis));
     }
 }

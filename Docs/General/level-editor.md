@@ -25,7 +25,8 @@ game's own format ([level-data.md](level-data.md)), and checks them with the gam
 3. **Blocks.** Block tool (`2`): pick a colour and a shape, click to stamp it (`R` turns the stamp), or pick
    **Free** and drag over cells to paint any connected shape. A red preview means it cannot go there.
    Select a block to see its **Blockers** panel: set **Ice** (or press `I` / `Shift+I`) to freeze it until
-   that many other blocks have left ([blockers.md](blockers.md)). Frozen blocks are drawn pale with "ice N" on them.
+   that many other blocks have left, and **Arrow** (or press `A`) to let it move only horizontally or only
+   vertically; the canvas shows ↔ or ↕ next to its number ([blockers.md](blockers.md)). Frozen blocks are drawn pale with "ice N" on them.
 4. **Checks.** Fix every red line. The level must say **Solvable**; it also says how it plays
    (Normal, Hard, Very Hard) so you can match the Difficulty you set.
 5. **Save and play.** `Ctrl+S`, then ▶ Play (`P`): the game starts straight in this level.
@@ -41,6 +42,7 @@ Or press **Generate** (`G`) and edit what it builds.
 | `Tab` / `Shift+Tab` | next / previous shape (Free, 1x1, 1x2, 1x3, 2x2, L, T, S) |
 | `R` | turn the selected block, or the stamp |
 | `I` / `Shift+I` | one more / one less ice on the selected block |
+| `A` | the selected block's arrow: none → horizontal → vertical |
 | arrows | move the selected block one cell |
 | `Delete` | remove the selected block or door |
 | `Esc` | clear the selection |

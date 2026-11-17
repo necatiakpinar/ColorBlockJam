@@ -57,6 +57,7 @@ new fake.
 | `LevelSessionTests` | the attempt's transition table, refused transitions, signal order, restart equal to a fresh start |
 | `GameplayHapticsTests` | an exit taps light, nothing after dispose (`RecordingHaptics`) |
 | `ExitPathTests` | a leaving block's wall, length, door span, edge and door centre |
+| `ArrowBlockerTests` | an arrow block moves and leaves only along its axis, can be picked up, the drag does not give across it, the solver and the validator know it, a split piece and the editor keep it |
 | `IceBlockerTests` | a frozen block cannot move or be picked up; exits and booster removals count it down and thaw it; the hammer thaws it; the solver waits for it and spots a frozen deadlock; the validator caps ice; the editor keeps it |
 | `LivesServiceTests` | full start; trusted-time countdown, catch-up, remainder, offline start, reload; losing; coin refill; the second tick |
 | `LevelAttemptLivesTests` | only a started, abandoned attempt costs a life, once; a win costs none; playing again without lives offers a refill; Refill restarts, close goes Home |

@@ -232,6 +232,10 @@ namespace ColorBlockJam.Game.Configs
         [SerializeField, Min(0f)]
         float _thawDebrisPerCell = 14f;
 
+        [Tooltip("The arrow an arrow block shows on top, along its axis (Blockers/ArrowBlocker prefab).")]
+        [SerializeField]
+        ArrowBlockerView _arrowBlocker;
+
         [Tooltip("The count a frozen block shows on top (Blockers/IceBlocker prefab).")]
         [SerializeField]
         IceBlockerView _iceBlocker;
@@ -247,6 +251,7 @@ namespace ColorBlockJam.Game.Configs
         public float ThawDebrisPerCell => _thawDebrisPerCell;
         public ExitBurstView IceShatter => _iceShatter;
         public IceBlockerView IceBlocker => _iceBlocker;
+        public ArrowBlockerView ArrowBlocker => _arrowBlocker;
 
         [Header("Booster removal")]
         [Tooltip("A smashed block (hammer, or a rocket's last cell) first swells to this scale...")]

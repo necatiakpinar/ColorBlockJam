@@ -83,6 +83,7 @@ MonoBehaviour:
   _thawSwell: 1.12
   _thawDuration: 0.3
   _thawDebrisPerCell: 14
+  _arrowBlocker: {fileID: 1910118735606857254, guid: 42fe73303a9c33747a2446a6a63dafba, type: 3}
   _iceBlocker: {fileID: 4550983103605672701, guid: 3ee4f0f5d8d80fb48972864ccaa82961, type: 3}
   _iceShatter: {fileID: 1701743703172660094, guid: 412f9d68cd0102548815230085cc08b3, type: 3}
   _smashSwell: 1.2

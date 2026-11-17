@@ -57,7 +57,7 @@ requirement keeps its id and is marked `Dropped`.
 | R-31 | The editor warns before saving an unsolvable level | must (developer, 2026-11-17) | T-33 |
 | R-32 | Functional boosters: freeze, rocket, hammer and vacuum work, each with a stock and a coin price | must (developer, 2026-11-17) | T-36 |
 | R-33 | Ice blocker: a frozen block thaws after N other blocks leave; the editor places it | must (developer, 2026-11-17) | T-34 |
-| R-34 | Arrow block | could | T-35 |
+| R-34 | Arrow block | must (developer, 2026-11-17) | T-35 |
 | R-35 | Separation of data, logic and view; low coupling; easy to extend | should | all; T-37 |
 | R-36 | A designer can use the editor without help | should | T-31 |
 | R-37 | Clear names, no dead code, consistent style | should | all; T-37 |
@@ -165,7 +165,7 @@ task is marked `Dropped`, never deleted. Detail per task: [tasks.md](tasks.md).
 | T-32 | 9 | Author levels 1–5 in the editor | Five levels, rising difficulty, each solvable within its timer | T-31, T-22 | Done |
 | T-33 | 10 | (could) Solvability validation | Saving an unsolvable level shows a warning | T-30 | Done |
 | T-34 | 10 | Ice blocker | Frozen block thaws after N exits; editor places it | T-32, T-36 | Done |
-| T-35 | 10 | (could) Arrow block | Block moves only along its arrow; editor places it | T-32 | Todo |
+| T-35 | 10 | Arrow block | Block moves only along its arrow; editor places it | T-32 | Done |
 | T-36 | 10 | Four functional boosters | Freeze, rocket, hammer and vacuum work from the HUD with a stock; none left offers one for coins | T-32 | Done |
 | T-37 | 11 | Architecture tests | Tests fail on `Update`, Core → Game references, raw `Debug.Log` | T-04 | Todo |
 | T-38 | 11 | Performance pass | 0 B GC per gameplay frame measured; 60 FPS on a mid-range device | T-22 | Todo |

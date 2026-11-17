@@ -174,8 +174,20 @@ namespace ColorBlockJam.Game.Gameplay.Input
 
         Vector2 Target(Vector3 fingerWorld) => FingerInCells(fingerWorld) + _grab;
 
-        /// <summary>The drawn-only lean toward the finger, at most <see cref="BoardViewConfig.HoldGive"/>.</summary>
-        Vector2 Lean(Vector2 target) => Vector2.ClampMagnitude(target - _position, _config.HoldGive);
+        /// <summary>
+        /// The drawn-only lean toward the finger, at most <see cref="BoardViewConfig.HoldGive"/>, and never along an
+        /// axis a blocker forbids (an arrow, DA-39), so the block never hints at a move it cannot make.
+        /// </summary>
+        Vector2 Lean(Vector2 target)
+        {
+            Vector2 lean = target - _position;
+            BoardBlock block = _board.Current.Blocks[_blockId];
+            if (!block.AllowsStep(new Vector2Int(lean.x >= 0f ? 1 : -1, 0)))
+                lean.x = 0f;
+            if (!block.AllowsStep(new Vector2Int(0, lean.y >= 0f ? 1 : -1)))
+                lean.y = 0f;
+            return Vector2.ClampMagnitude(lean, _config.HoldGive);
+        }
 
         /// <summary>Moves the held block toward the target; false when no block is held (any more).</summary>
         bool Follow(Vector2 target)
@@ -310,6 +322,9 @@ namespace ColorBlockJam.Game.Gameplay.Input
         {
             BoardState board = _board.Current;
             BoardBlock block = board.Blocks[_blockId];
+            // A blocker (an arrow, DA-39) can forbid this axis altogether: then the block does not give at all.
+            if (!block.AllowsStep(Step(axis, direction)))
+                return 0f;
             int cross = 1 - axis;
             bool doorOpen = IsAligned(cross) && board.CanStep(_blockId, Step(axis, direction)) == StepResult.Exited;
 

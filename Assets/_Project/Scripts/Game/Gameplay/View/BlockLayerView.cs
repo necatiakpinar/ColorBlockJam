@@ -6,6 +6,7 @@ using ColorBlockJam.Game.Gameplay.Board.Blockers;
 using ColorBlockJam.Game.Gameplay.View.Blockers;
 using ColorBlockJam.Game.Gameplay.Signals;
 using ColorBlockJam.Game.Levels;
+using ColorBlockJam.Game.Levels.Blockers;
 using UnityEngine;
 using UnityEngine.Pool;
 using VContainer;
@@ -39,8 +40,10 @@ namespace ColorBlockJam.Game.Gameplay.View
         ColorMaterialCache _materials;
         ColorMaterialCache _iceMaterials;
         ObjectPool<IceBlockerView> _icePool;
-        // The ice view each frozen block wears (blockers.md); taken back when the block thaws or is released.
+        ObjectPool<ArrowBlockerView> _arrowPool;
+        // The blocker views each block wears (blockers.md); taken back when the blocker lets go or the block is released.
         readonly Dictionary<BlockView, IceBlockerView> _iceViews = new();
+        readonly Dictionary<BlockView, ArrowBlockerView> _arrowViews = new();
         System.Action<ExitBurstView> _releaseBurst;
         ObjectPool<BlockView> _blockPool;
         Dictionary<BlockPieceKind, PartPool> _piecePools;
@@ -66,6 +69,11 @@ namespace ColorBlockJam.Game.Gameplay.View
                 ice => ice.gameObject.SetActive(true),
                 ice => ice.gameObject.SetActive(false),
                 ice => Destroy(ice.gameObject));
+            _arrowPool = new ObjectPool<ArrowBlockerView>(
+                () => Instantiate(config.ArrowBlocker, _storage),
+                arrow => arrow.gameObject.SetActive(true),
+                arrow => arrow.gameObject.SetActive(false),
+                arrow => Destroy(arrow.gameObject));
             _outline = new OutlineSettings(config.OutlineWidth, config.OutlineBaseHeight, config.BlockTopHeight,
                 config.OutlineGap, config.BlockCornerRadius, config.OutlineCornerSegments);
             _blockPool = new ObjectPool<BlockView>(
@@ -126,6 +134,10 @@ namespace ColorBlockJam.Game.Gameplay.View
             }
         }
 
+        /// <summary>The arrow view on block <paramref name="blockId"/>, or null when it has no arrow.</summary>
+        internal ArrowBlockerView ArrowViewOf(int blockId) =>
+            _views[blockId] != null && _arrowViews.TryGetValue(_views[blockId], out ArrowBlockerView arrow) ? arrow : null;
+
         /// <summary>The ice view on block <paramref name="blockId"/>, or null when it is not frozen.</summary>
         internal IceBlockerView IceViewOf(int blockId) =>
             _views[blockId] != null && _iceViews.TryGetValue(_views[blockId], out IceBlockerView ice) ? ice : null;
@@ -152,6 +164,14 @@ namespace ColorBlockJam.Game.Gameplay.View
             }
 
             view.BuildOutline(cells, _outline);
+            if (block.TryGetBlocker(out ArrowBlocker arrow))
+            {
+                ArrowBlockerView arrowView = _arrowPool.Get();
+                view.AttachBlockerView(arrowView.transform, centre);
+                arrowView.Show(arrow.Axis, Span(cells, arrow.Axis));
+                _arrowViews[view] = arrowView;
+            }
+
             if (!frozen)
                 return;
             IceBlockerView iceView = _icePool.Get();
@@ -160,8 +180,34 @@ namespace ColorBlockJam.Game.Gameplay.View
             _iceViews[view] = iceView;
         }
 
+        /// <summary>How many cells the block covers along <paramref name="axis"/>.</summary>
+        int Span(IReadOnlyList<Vector2Int> cells, ArrowAxis axis)
+        {
+            int min = int.MaxValue, max = int.MinValue;
+            foreach (Vector2Int cell in cells)
+            {
+                int value = axis == ArrowAxis.Horizontal ? cell.x : cell.y;
+                min = Mathf.Min(min, value);
+                max = Mathf.Max(max, value);
+            }
+
+            return max - min + 1;
+        }
+
         /// <summary>Takes the block's blocker views back to their pools.</summary>
         void Undress(BlockView view)
+        {
+            if (_arrowViews.Remove(view, out ArrowBlockerView arrowView))
+            {
+                arrowView.transform.SetParent(_storage, false);
+                _arrowPool.Release(arrowView);
+            }
+
+            UndressIce(view);
+        }
+
+        /// <summary>Takes back only the ice view: a thaw leaves the other blockers on.</summary>
+        void UndressIce(BlockView view)
         {
             if (!_iceViews.Remove(view, out IceBlockerView iceView))
                 return;
@@ -294,7 +340,7 @@ namespace ColorBlockJam.Game.Gameplay.View
         {
             BoardBlock block = _board.Current.Blocks[signal.BlockId];
             BlockView view = _views[signal.BlockId];
-            Undress(view);
+            UndressIce(view);
             view.SetMaterial(_materials.Get(block.Color));
             view.PlayThaw(_config.ThawSwell, _config.ThawDuration);
             Vector3 centre = Centre(block.StartCells) + new Vector3(block.Offset.x, 0f, block.Offset.y);

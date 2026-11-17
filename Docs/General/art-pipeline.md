@@ -82,7 +82,9 @@ pooled spray of debris out of a door: a particle system of small cubes (built-in
 `M_ExitDebris`, colour set per exit, world space, unscaled time, stop action Callback) shot from
 a 30° cone pointing out of the door, with `ExitBurstView`.
 
-Blocker views live in `Prefabs/Board/Blockers/` ([blockers.md](blockers.md)): `IceBlocker.prefab` (the
+Blocker views live in `Prefabs/Board/Blockers/` ([blockers.md](blockers.md)): `ArrowBlocker.prefab` (the
+`Arrow_1/2/3` prefabs as children, half a cell up so they lie on the studs, one shown by the block's length),
+`IceBlocker.prefab` (the
 frozen block's count, a flat TextMeshPro over the block) and `IceShatter.prefab` (the thaw's ice-textured
 shards, `M_IceShard`).
 

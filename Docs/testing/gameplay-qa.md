@@ -44,6 +44,8 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 ### Rules
 
 - [ ] ⚙ A frozen block cannot move until enough others leave, then thaws — `IceBlockerTests`, `IceBlockerViewTests`
+- [ ] ⚙ An arrow block moves and leaves only along its axis — `ArrowBlockerTests`
+- [ ] 👁 Arrow blocks show a white double-headed arrow sized to the block; dragging across the axis does not move or lean the block.
 - [ ] 👁 A frozen block looks icy over its colour with a readable count; the count drops with every exit; the thaw swells it back to its colour.
 
 - [ ] ⚙ Blocks stop at walls and at other blocks — `BoardStateTests.TryStep_ShouldStopAtWall_WhenNoDoorIsThere`, `TryStep_ShouldStopAtAnotherBlock_WhenItIsInTheWay`

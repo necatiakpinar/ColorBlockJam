@@ -51,7 +51,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - [x] [T-32 Author levels 1–5 in the editor](#t-32-author-levels-15-in-the-editor)
 - [x] [T-33 Solvability validation](#t-33-could-solvability-validation)
 - [x] [T-34 Ice blocker](#t-34-ice-blocker)
-- [ ] [T-35 (could) Arrow block](#t-35-could-arrow-block)
+- [x] [T-35 Arrow block](#t-35-arrow-block)
 - [x] [T-36 Four functional boosters](#t-36-four-functional-boosters)
 - [ ] [T-37 Architecture tests](#t-37-architecture-tests)
 - [ ] [T-38 Performance pass](#t-38-performance-pass)
@@ -723,12 +723,14 @@ and (T-33) the solver from `ColorBlockJam.Game`, so the editor never has its own
 - **Tests:** `EM IceBlockerTests`; `PM IceBlockerViewTests`.
 - **Docs:** level-data.md, gameplay.md §3, level-editor.md, boosters.md.
 
-### T-35 (could) Arrow block
+### T-35 Arrow block
 
-- **Req:** R-34.
-- **Arch:** `BlockModifier.Axis` (horizontal / vertical) shown with `Arrow_*` meshes; `BoardState.TryStep` limits
-  directions. Editor: axis selector on a selected block.
-- **Tests:** `EM` axis-constrained move tests.
+- **Req:** R-34. Implements DA-39.
+- **Arch:** as built: a blocker kind ([blockers.md](../General/blockers.md)): `ArrowBlockerData` (`ArrowAxis`),
+  `ArrowBlocker : IBlocker` (`AllowsStep` only along the axis), `ArrowBlockerView` on `ArrowBlocker.prefab` with
+  the `Arrow_1/2/3` meshes; the drag neither moves nor leans across the axis; the validator checks a door lies
+  along it. Editor: the Arrow row of the Blockers panel and `A`.
+- **Tests:** `EM ArrowBlockerTests`; `PM IceBlockerViewTests` (arrow and ice on one block).
 
 ### T-36 Four functional boosters
 

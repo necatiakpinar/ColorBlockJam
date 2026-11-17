@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ColorBlockJam.Game.Configs;
+using ColorBlockJam.Game.Levels.Blockers;
 using UnityEngine;
 
 namespace ColorBlockJam.Game.Levels
@@ -144,8 +145,10 @@ namespace ColorBlockJam.Game.Levels
             {
                 BlockData block = level.Blocks[b];
                 if (block.Cells.Count > 0 && !HasFittingDoor(level, block))
-                    Error(issues, $"{BlockName(block, b)} can never leave: no {block.Color} door is as wide as the " +
-                        "block along its wall.");
+                    Error(issues, block.Blockers.Arrow.IsActive
+                        ? $"{BlockName(block, b)} can never leave: it moves only {block.Blockers.Arrow.Axis.ToString().ToLowerInvariant()}ly " +
+                          $"and no {block.Color} door on a wall that way is as wide as the block."
+                        : $"{BlockName(block, b)} can never leave: no {block.Color} door is as wide as the block along its wall.");
             }
         }
 
@@ -167,10 +170,18 @@ namespace ColorBlockJam.Game.Levels
         bool HasFittingDoor(LevelData level, BlockData block)
         {
             foreach (DoorData door in level.Doors)
-                if (door.Color == block.Color && door.Length >= SpanAlong(block, door.Side))
+                if (door.Color == block.Color && door.Length >= SpanAlong(block, door.Side) && ArrowAllows(block, door.Side))
                     return true;
             return false;
         }
+
+        /// <summary>An arrow block reaches only the walls across its axis: left and right, or bottom and top.</summary>
+        bool ArrowAllows(BlockData block, WallSide side) => block.Blockers.Arrow.Axis switch
+        {
+            ArrowAxis.Horizontal => side is WallSide.Left or WallSide.Right,
+            ArrowAxis.Vertical => side is WallSide.Bottom or WallSide.Top,
+            _ => true,
+        };
 
         /// <summary>How many cells the block covers along a wall: its width for Bottom/Top, height for Left/Right.</summary>
         int SpanAlong(BlockData block, WallSide side)
