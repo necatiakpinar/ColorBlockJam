@@ -2,6 +2,9 @@
 
 > **Binding agent rules.** Read this page before adding or changing a test or a test assembly.
 
+Automated tests are one half of checking the game; the other is the **debug window** for checking by
+hand without playing a level to the end ([debug-tools.md](debug-tools.md)).
+
 ## 1. Layout
 
 | Assembly | Folder | Covers |
@@ -42,6 +45,7 @@ new fake.
 | `LevelRewardTests` | coins by difficulty, a missing entry throws, the shipped table rises with difficulty, a win pays its layout's reward (also when looped), a loss or a disposed service pays nothing |
 | `GameplayFlowTests` | start, HUD restart, pause opens the settings popup only while playing, close resumes, switches flip settings, Home, nothing after dispose (`RecordingPopupService`) |
 | `LevelResultFlowTests` | win popup after the delay with the reward, Continue plays the next level; out-of-time offer, buying time, giving up, Retry, Home |
+| `GameplayDebugCommandsTests` | the debug shortcuts: win, run out of time, refused when not playing, timer, coins, jump to a level |
 | `PopupPrefabTests` | both settings popups are variants of the base prefab; the popup configs list every prefab; prefabs start hidden and full-screen; every popup button gives press feedback; every popup text auto-sizes |
 | `LevelContinueTests` | spending coins, buying more time on the same board, failing again when it runs out, nothing without coins or outside a loss |
 | `LevelTimerTests` | full time on start, counting only from the first grab, one signal per second, stands still while paused or in the background, fails once at zero, stops on a win, full again on restart, stops when disposed (`FakeGameClock`) |

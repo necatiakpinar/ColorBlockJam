@@ -32,6 +32,7 @@ Pages marked **binding** carry rules agents must follow before touching the path
 | [General/network.md](General/network.md) | online requirement: connectivity probe, trusted time | yes |
 | [General/art-pipeline.md](General/art-pipeline.md) | art folders, import rules, cell scale, part prefabs, materials | yes |
 | [General/development-assumptions.md](General/development-assumptions.md) | `DA-n` registry of unconfirmed product decisions | yes |
+| [General/debug-tools.md](General/debug-tools.md) | the debug window: win, fail, timer, coins, levels, saves | yes |
 | [General/agent-capabilities.md](General/agent-capabilities.md) | what agents verified tools can and cannot do | no |
 
 ## QA checklists

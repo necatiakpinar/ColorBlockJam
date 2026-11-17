@@ -53,6 +53,18 @@ namespace ColorBlockJam.Game.Gameplay.Session
         /// <summary>Seconds left, never below zero.</summary>
         public float SecondsLeft => Mathf.Max(0f, IsRunning ? _remaining - (_clock.Now - _runStart) : _remaining);
 
+        /// <summary>
+        /// Puts the timer at <paramref name="seconds"/> (debug tools, gameplay.md §6). It keeps counting if it was
+        /// counting, so zero runs the level out of time at once.
+        /// </summary>
+        public void SetSecondsLeft(float seconds)
+        {
+            Freeze();
+            _remaining = Mathf.Max(0f, seconds);
+            Announce();
+            Refresh();
+        }
+
         void OnBoardLoaded(BoardLoadedSignal signal) => _fullSeconds = signal.Level.TimerSeconds;
 
         void OnLevelStarted(LevelStartedSignal signal)

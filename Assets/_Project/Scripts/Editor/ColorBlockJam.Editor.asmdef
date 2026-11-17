@@ -3,7 +3,8 @@
     "rootNamespace": "ColorBlockJam.Editor",
     "references": [
         "ColorBlockJam.Core",
-        "ColorBlockJam.Game"
+        "ColorBlockJam.Game",
+        "VContainer"
     ],
     "includePlatforms": [
         "Editor"

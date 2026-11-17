@@ -21,7 +21,10 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 - [ ] ⚙ Pause opens the settings popup, the switches remember their state, close resumes — `GameplayFlowTests`, `GameplayPopupTests`
 - [ ] ⚙ A win opens the win popup with the reward; Continue plays the next level — `LevelResultFlowTests`, `LevelProgressionFlowTests`
 - [ ] ⚙ Out of time sells 20 s for 50 coins; giving up shows Level Failed; Retry restarts, close goes Home — `LevelResultFlowTests`, `LevelContinueTests`, `GameplayPopupTests`
-- [ ] 👁 Compare the HUD and the four popups with the reference screens at 1080x1920 and 20:9.
+- [ ] 👁 Compare the HUD and the four popups with the reference screens at 1080x1920 and 20:9. Open them
+  with the debug window ([debug-tools.md](../General/debug-tools.md)): **Win now**, **Run out of time**,
+  the pause button.
+- [ ] ⚙ The debug window's shortcuts go through the real services — `GameplayDebugCommandsTests`
 - [ ] 👁 Every HUD and popup button shrinks while pressed; boosters and the coin "+" do nothing else.
 - [ ] ⚙ Winning starts the next level; after the last level the first layout comes back — `LevelProgressionFlowTests`
 - [ ] ⚙ All five shipped levels are valid and solvable — `ShippedLevelsTests`

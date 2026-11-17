@@ -11,7 +11,7 @@ a `JsonRecord<T>`.
 
 | Service (Root scope) | Key | Data | New player |
 | --- | --- | --- | --- |
-| `IPlayerProgressService` | `player_progress_v1` | `PlayerProgressData`: current level (1-based, DA-2) | level 1 |
+| `IPlayerProgressService` | `player_progress_v1` | `PlayerProgressData`: current level (1-based, DA-2); `SetCurrentLevel` jumps (debug window) | level 1 |
 | `IWalletService` | `wallet_v1` | `WalletData`: coins | 0 coins (DA-7) |
 | `ISettingsService` | `settings_v1` | `SettingsData`: music, sound, vibration toggles (`GameSetting`) | all on (DA-10) |
 

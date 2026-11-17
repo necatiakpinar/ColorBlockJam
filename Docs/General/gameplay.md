@@ -204,6 +204,8 @@ Failed --Continue(s)--> Playing
   never per frame. `TimerChangedSignal` carries the shown seconds (rounded up) when a level starts and
   each time the shown value drops.
 - At zero it calls `LevelSession.Fail` once; the session fires `LevelFailedSignal` and input stops.
+- `SetSecondsLeft` puts the timer at any value and keeps it counting if it was; the debug window uses it
+  ([debug-tools.md](debug-tools.md)).
 - `GameplayHudView` shows it as `mm:ss` in `TimerLabel`, written into a char buffer
   (`TMP_Text.SetCharArray`) so a tick allocates nothing on device. The label sits in the placeholder top
   bar until the HUD layout (T-18) puts it in the timer holder art.

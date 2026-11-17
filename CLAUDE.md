@@ -121,6 +121,9 @@ Home. **Read [splash-boot.md](Docs/General/splash-boot.md) before touching `Spla
 for the player. Read [economy.md](Docs/General/economy.md) before touching `Scripts/Game/Economy/`, rewards or a
 level's difficulty.**
 
+**Read [debug-tools.md](Docs/General/debug-tools.md) before touching `Scripts/*/Debugging/` or adding a debug
+shortcut.**
+
 **Read [network.md](Docs/General/network.md) before touching `Scripts/Core/Network/`, `NetworkConfig` or anything
 that reads the time of day.**
 
