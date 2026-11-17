@@ -22,7 +22,7 @@ SplashFlow.StartAsync
   ├─ start minimum-display timer                       SplashConfig.MinimumDisplaySeconds, realtime
   ├─ BootSequence.RunAsync(progress → SplashView)      steps in SplashInstaller order
   │    ApplyApplicationSettingsStep  (weight 1)        Application.targetFrameRate
-  │    LoadPlayerProgressStep        (weight 2)        IPlayerProgressService.Load()
+  │    LoadPlayerDataStep            (weight 2)        progress, wallet, settings .Load()
   ├─ await minimum-display timer
   ├─ await SplashView.WaitForPresentationAsync         intro + last bar fill finished
   └─ INavigationService.GoToHomeAsync()                single mode; Splash scope is destroyed

@@ -1,6 +1,5 @@
 using System;
 using ColorBlockJam.Core.Logging;
-using UnityEngine;
 
 namespace ColorBlockJam.Core.Persistence
 {
@@ -8,14 +7,12 @@ namespace ColorBlockJam.Core.Persistence
     {
         public const string StorageKey = "player_progress_v1";
 
-        readonly IKeyValueStorage _storage;
-        readonly IGameLogger _logger;
+        readonly JsonRecord<PlayerProgressData> _record;
         PlayerProgressData _data;
 
         public PlayerProgressService(IKeyValueStorage storage, IGameLogger logger)
         {
-            _storage = storage;
-            _logger = logger;
+            _record = new JsonRecord<PlayerProgressData>(StorageKey, storage, logger);
         }
 
         public int CurrentLevel => Data.CurrentLevel;
@@ -23,46 +20,12 @@ namespace ColorBlockJam.Core.Persistence
         PlayerProgressData Data =>
             _data ?? throw new InvalidOperationException($"{nameof(PlayerProgressService)} read before Load().");
 
-        public void Load()
-        {
-            _data = ReadOrCreate();
-        }
+        public void Load() => _data = _record.LoadOrCreate(data => data.CurrentLevel >= PlayerProgressData.FirstLevel);
 
         public void AdvanceLevel()
         {
             Data.CurrentLevel++;
-            Save();
-        }
-
-        PlayerProgressData ReadOrCreate()
-        {
-            if (!_storage.TryGet(StorageKey, out string json))
-                return new PlayerProgressData();
-
-            PlayerProgressData data;
-            try
-            {
-                data = JsonUtility.FromJson<PlayerProgressData>(json);
-            }
-            catch (ArgumentException exception)
-            {
-                _logger.LogError($"Corrupt player progress, starting fresh: {exception.Message}");
-                return new PlayerProgressData();
-            }
-
-            if (data == null || data.CurrentLevel < PlayerProgressData.FirstLevel)
-            {
-                _logger.LogWarning("Player progress held no valid level, starting fresh.");
-                return new PlayerProgressData();
-            }
-
-            return data;
-        }
-
-        void Save()
-        {
-            _storage.Set(StorageKey, JsonUtility.ToJson(_data));
-            _storage.Flush();
+            _record.Save(_data);
         }
     }
 }

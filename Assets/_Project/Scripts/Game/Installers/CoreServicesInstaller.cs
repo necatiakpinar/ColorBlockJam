@@ -44,6 +44,8 @@ namespace ColorBlockJam.Game.Installers
             builder.Register<IGameLogger, UnityGameLogger>(Lifetime.Singleton);
             builder.Register<IKeyValueStorage, PlayerPrefsStorage>(Lifetime.Singleton);
             builder.Register<IPlayerProgressService, PlayerProgressService>(Lifetime.Singleton);
+            builder.Register<IWalletService, WalletService>(Lifetime.Singleton);
+            builder.Register<ISettingsService, SettingsService>(Lifetime.Singleton);
             builder.Register<ISceneLoader, SceneLoader>(Lifetime.Singleton);
             builder.Register<INavigationService, NavigationService>(Lifetime.Singleton);
             builder.Register<IHapticService, MobileHapticService>(Lifetime.Singleton);

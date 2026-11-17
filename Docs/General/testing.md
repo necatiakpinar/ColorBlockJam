@@ -38,6 +38,8 @@ new fake.
 | `ShippedLevelsTests` | the catalog's five levels: no validator issues, solvable block by block, block counts that never fall |
 | `ConnectivityServiceTests` | first answer announced even offline, only changes after, online and offline intervals, probe on app resume, Retry probes at once and returns the answer, server time handed to the trusted clock, stops when disposed (`FakeProbeRequest`, `FakeGameClock`) |
 | `TrustedClockTests` | no time before a server time; HTTP date read as UTC; moves on with monotonic time; a bad header keeps the last time |
+| `WalletServiceTests` | starts empty, throws before load, adds and saves at once with one signal, rejects zero or less, corrupt or negative saves start fresh |
+| `SettingsServiceTests` | all on for a new player, throws before load, a change saves and announces only that toggle, an unchanged value does nothing, a corrupt save starts fresh |
 | `LevelTimerTests` | full time on start, counting only from the first grab, one signal per second, stands still while paused or in the background, fails once at zero, stops on a win, full again on restart, stops when disposed (`FakeGameClock`) |
 | `GameplayHudViewTests` | the timer label reads `mm:ss` |
 | `LevelSessionTests` | the attempt's transition table, refused transitions, signal order, restart equal to a fresh start |

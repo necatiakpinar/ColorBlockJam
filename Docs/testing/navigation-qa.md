@@ -4,7 +4,8 @@ Verifies [splash-boot.md](../General/splash-boot.md) §1–§2 and the Home ⇄ 
 
 ## Test harness
 
-- Reset progress: delete the `player_progress_v1` PlayerPrefs key (Edit > Clear All PlayerPrefs).
+- Reset progress: delete the `player_progress_v1` PlayerPrefs key (Edit > Clear All PlayerPrefs also
+  clears `wallet_v1` and `settings_v1`, [persistence.md](../General/persistence.md)).
 - Force a level: set `player_progress_v1` to `{"_currentLevel":7}`.
 - Slow boot: raise `SplashConfig.MinimumDisplaySeconds`.
 

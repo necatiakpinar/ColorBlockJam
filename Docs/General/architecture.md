@@ -11,7 +11,7 @@ Assets/_Project/
 │   ├── Signals/         SignalBus
 │   ├── Boot/            IBootStep, BootSequence
 │   ├── Scenes/          SceneId, ISceneLoader, SceneLoader
-│   ├── Persistence/     IKeyValueStorage, PlayerPrefsStorage, IPlayerProgressService
+│   ├── Persistence/     IKeyValueStorage, PlayerPrefsStorage, JsonRecord, progress, wallet, settings
 │   ├── Logging/         IGameLogger, UnityGameLogger
 │   ├── Clock/           IGameClock, RealtimeGameClock
 │   ├── Lifecycle/       ApplicationPausedSignal, ApplicationPauseReporter (Root prefab component)

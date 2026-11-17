@@ -117,6 +117,9 @@ Home. **Read [splash-boot.md](Docs/General/splash-boot.md) before touching `Spla
 
 ### Gameplay
 
+**Read [persistence.md](Docs/General/persistence.md) before touching `Scripts/Core/Persistence/` or saving anything
+for the player.**
+
 **Read [network.md](Docs/General/network.md) before touching `Scripts/Core/Network/`, `NetworkConfig` or anything
 that reads the time of day.**
 

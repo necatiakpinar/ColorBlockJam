@@ -66,6 +66,8 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(container.Resolve<IGameLogger>(), Is.Not.Null);
             Assert.That(container.Resolve<IKeyValueStorage>(), Is.Not.Null);
             Assert.That(container.Resolve<IPlayerProgressService>(), Is.Not.Null);
+            Assert.That(container.Resolve<IWalletService>(), Is.Not.Null);
+            Assert.That(container.Resolve<ISettingsService>(), Is.Not.Null);
             Assert.That(container.Resolve<ISceneLoader>(), Is.Not.Null);
             Assert.That(container.Resolve<INavigationService>(), Is.Not.Null);
             Assert.That(container.Resolve<UiConfig>(), Is.Not.Null);
@@ -97,7 +99,7 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(steps.Select(step => step.GetType()), Is.EqualTo(new[]
             {
                 typeof(ApplyApplicationSettingsStep),
-                typeof(LoadPlayerProgressStep),
+                typeof(LoadPlayerDataStep),
             }));
         }
 

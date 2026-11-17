@@ -126,7 +126,7 @@ task is marked `Dropped`, never deleted. Detail per task: [tasks.md](tasks.md).
 | T-04 | 1 | Home scene and scene routing | Splash → Home → Gameplay → Home works; tests green | T-01 | Done |
 | T-05 | 1 | UI kit: safe area, button feedback, popup service | Every button scales on press; one popup at a time; layout fits 20:9 | T-04 | Done |
 | T-06 | 1 | Board input and board space | Press, drag and release on board cells arrive as events, no polling | T-04 | Done |
-| T-07 | 1 | Persistence: wallet, settings, progress | Coins, settings and level survive restart and app background | T-01 | Todo |
+| T-07 | 1 | Persistence: wallet, settings, progress | Coins, settings and level survive restart and app background | T-01 | Done |
 | T-08 | 2 | Level data format and catalog | `LevelDefinition` asset holds width, height, timer, blocks, doors | T-01 | Done |
 | T-09 | 2 | Board model (pure rules) | Move, block, exit and win rules pass Edit Mode tests | T-08 | Done |
 | T-10 | 3 | Board view: floor, walls, doors, camera fit | Any size up to the max shows framed at 1080x1920 and 20:9 | T-08, T-03 | Done |

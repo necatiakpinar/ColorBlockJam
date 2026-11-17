@@ -23,7 +23,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - [x] [T-04 Home scene and scene routing](#t-04-home-scene-and-scene-routing)
 - [x] [T-05 UI kit: safe area, button feedback, popup service](#t-05-ui-kit-safe-area-button-feedback-popup-service)
 - [x] [T-06 Board input and board space](#t-06-board-input-and-board-space)
-- [ ] [T-07 Persistence: wallet, settings, progress](#t-07-persistence-wallet-settings-progress)
+- [x] [T-07 Persistence: wallet, settings, progress](#t-07-persistence-wallet-settings-progress)
 - [x] [T-08 Level data format and catalog](#t-08-level-data-format-and-catalog)
 - [x] [T-09 Board model (pure rules)](#t-09-board-model-pure-rules)
 - [x] [T-10 Board view: floor, walls, doors, camera fit](#t-10-board-view-floor-walls-doors-camera-fit)
@@ -191,9 +191,13 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
   `ISettingsService` (music, sound, vibration booleans, `SettingChangedSignal`), existing
   `IPlayerProgressService` (current level). All through `IKeyValueStorage`, versioned keys. An
   `AppLifecycleObserver` saves on `OnApplicationPause(true)` / focus loss.
+  - [x] `WalletService`, `SettingsService` and `PlayerProgressService` share `JsonRecord<T>`; all three load
+    in `LoadPlayerDataStep`.
+  - [x] ~~`AppLifecycleObserver`~~: dropped, every change saves and flushes at once, so there is nothing
+    left to save on pause (persistence.md §2).
 - **Accept:** coins, toggles and level survive app kill and restart; background/foreground keeps them.
 - **Tests:** `EM WalletServiceTests` (add, negative rejected, persists, signal fired once),
-  `EM SettingsServiceTests`, `EM` lifecycle save with a fake storage.
+  `EM SettingsServiceTests` (each change saves at once, so no lifecycle save test).
 - **Docs:** `Docs/General/persistence.md` (keys, versions, what is saved when).
 
 ---

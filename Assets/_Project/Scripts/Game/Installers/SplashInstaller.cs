@@ -23,7 +23,7 @@ namespace ColorBlockJam.Game.Installers
             builder.RegisterInstance(_splashConfig);
 
             builder.Register<IBootStep, ApplyApplicationSettingsStep>(Lifetime.Singleton);
-            builder.Register<IBootStep, LoadPlayerProgressStep>(Lifetime.Singleton);
+            builder.Register<IBootStep, LoadPlayerDataStep>(Lifetime.Singleton);
             builder.Register<BootSequence>(Lifetime.Singleton);
         }
     }
