@@ -22,8 +22,11 @@ Coins are earned only by winning a level (DA-7). The amount depends on the level
 
 ## 2. Paying a win
 
-**`LevelRewardService`** (plain class, Gameplay scope, built by the scope's build callback) adds the
-reward to `IWalletService` on `LevelCompletedSignal`, before anything presents the win (T-16):
+**`LevelWinService`** (plain class, Gameplay scope, built by the scope's build callback) records a win on
+`LevelCompletedSignal`, before anything presents it (T-16, T-17): it advances `IPlayerProgressService` and
+adds the reward to `IWalletService` in one save (`IKeyValueStorage.DeferFlush`), then fires
+`LevelRewardedSignal(level, coins, balanceBefore)`. It is the only place that decides the reward:
+`WinFlow` shows the coins and holds the counter at the balance that signal carries.
 
 - It looks the level up through `LevelProvider`, so a looped level number pays its layout's reward.
 - The session announces a win once per attempt, so a win pays once.
@@ -45,6 +48,7 @@ or neither:
 
 ## 4. Tests
 
-`LevelRewardTests` cover the table, a missing entry, the shipped config rising with difficulty, paying
-by difficulty and on a looped level, and nothing on a loss or after disposal. `CoinPersistenceTests`
+`LevelRewardTests` cover the table, a missing entry and the shipped config rising with difficulty.
+`LevelWinServiceTests` cover paying by difficulty and on a looped level, advancing once, one save for both,
+the announced reward, and nothing on a loss or after disposal. `CoinPersistenceTests`
 (Play Mode) win in the real scene, then leave and come back.

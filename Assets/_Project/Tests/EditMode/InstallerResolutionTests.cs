@@ -221,9 +221,8 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(container.Resolve<GameplayHaptics>(), Is.Not.Null);
             Assert.That(container.Resolve<GameplaySounds>(), Is.Not.Null);
             Assert.That(container.Resolve<LevelSession>(), Is.Not.Null);
-            Assert.That(container.Resolve<LevelProgression>(), Is.Not.Null);
+            Assert.That(container.Resolve<LevelWinService>(), Is.Not.Null);
             Assert.That(container.Resolve<LevelTimer>(), Is.Not.Null);
-            Assert.That(container.Resolve<LevelRewardService>(), Is.Not.Null);
             Assert.That(container.Resolve<BoosterShop>(), Is.Not.Null);
             Assert.That(container.Resolve<BoosterService>(), Is.Not.Null);
             Assert.That(container.Resolve<LevelAttemptLives>(), Is.Not.Null);

@@ -15,7 +15,7 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 - [x] ⚙ The timer waits at full time until the first block is grabbed, then counts down second by second and fails the level once at zero — `LevelTimerTests`, `GameplayTimerTests.Hud_ShouldCountTheTimerDown_OnceABlockIsGrabbed`
 - [x] ⚙ Pausing or backgrounding the app freezes the timer; restart gives the full time — `LevelTimerTests`, `GameplayTimerTests.Timer_ShouldStandStill_WhileTheAppIsInTheBackground`
 - [ ] 👁 On a device, send the app to the background for a while mid-level: the timer shows the same time when it comes back.
-- [x] ⚙ A win pays its difficulty's coins once; failing or leaving pays nothing — `LevelRewardTests`, `CoinPersistenceTests`
+- [x] ⚙ A win pays its difficulty's coins once, with the next level, in one save; failing or leaving pays nothing — `LevelWinServiceTests`, `CoinPersistenceTests`
 - [x] ⚙ Coins stay the same after going Home and coming back — `CoinPersistenceTests`
 - [ ] 👁 Kill the app after a win and open it again: the balance is the same.
 - [x] ⚙ Pause opens the settings popup, the switches remember their state, close resumes — `GameplayFlowTests`, `GameplayPopupTests`

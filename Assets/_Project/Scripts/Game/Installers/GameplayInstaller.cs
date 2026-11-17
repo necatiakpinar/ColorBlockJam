@@ -22,10 +22,9 @@ namespace ColorBlockJam.Game.Installers
             builder.Register(resolver => new BoardSpace(resolver.Resolve<BoardViewConfig>().CellSize), Lifetime.Singleton);
             builder.Register<LevelProvider>(Lifetime.Singleton);
             builder.Register<LevelRewardProvider>(Lifetime.Singleton);
-            builder.Register<LevelRewardService>(Lifetime.Singleton);
             builder.Register<ActiveBoard>(Lifetime.Singleton);
             builder.Register<LevelSession>(Lifetime.Singleton);
-            builder.Register<LevelProgression>(Lifetime.Singleton);
+            builder.Register<LevelWinService>(Lifetime.Singleton);
             builder.Register<LevelTimer>(Lifetime.Singleton);
             builder.Register<LevelAttemptLives>(Lifetime.Singleton);
             builder.Register<BoosterShop>(Lifetime.Singleton);

@@ -192,9 +192,10 @@ Won --Next(n)--> Playing
 
 - Restart rebuilds everything from the level's data, so nothing of the previous attempt stays (DA-15); a
   won level is not restarted, it moves on (T-17, T-21). A paused level cannot fail: its timer stands still.
-- **Progression:** `LevelProgression` (plain class, built by the scope's build callback) advances
-  `IPlayerProgressService` on `LevelCompletedSignal`, before anything presents the win (T-17). The
-  catalog loops (DA-8): after the last level the next number plays the first layout again.
+- **Progression:** `LevelWinService` (plain class, built by the scope's build callback) advances
+  `IPlayerProgressService` on `LevelCompletedSignal`, together with the reward, before anything presents
+  the win (T-17, [economy.md](economy.md) §2). The catalog loops (DA-8): after the last level the next
+  number plays the first layout again.
 - The flows only route (§7): after the win popup's Continue the game goes Home, whose level button plays
   the already advanced level number.
 

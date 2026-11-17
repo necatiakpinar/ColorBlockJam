@@ -33,7 +33,7 @@ namespace ColorBlockJam.Tests.EditMode
         GameplayConfig _config;
         LevelRewardConfig _rewardConfig;
         WinFlow _winFlow;
-        LevelRewardService _rewardService;
+        LevelWinService _winService;
         RecordingCoinFlight _coinFlight;
         FailFlow _failFlow;
         WinPopupView _winPopup;
@@ -71,10 +71,10 @@ namespace ColorBlockJam.Tests.EditMode
 
             _winPopup = _views.CreateWinPopup(out _continueAfterWin);
             _levelFailed = _views.CreateLevelFailedPopup(out _retry, out _goHome, out _closeFailed);
-            _rewardService = new LevelRewardService(_bus, levels, new LevelRewardProvider(_rewardConfig), _wallet);
+            _winService = new LevelWinService(_bus, levels, new LevelRewardProvider(_rewardConfig), _progress, _wallet,
+                new InMemoryKeyValueStorage());
             _coinFlight = new RecordingCoinFlight();
-            _winFlow = new WinFlow(_bus, _popups, _winPopup, levels, new LevelRewardProvider(_rewardConfig), _config, _clock,
-                _wallet, _coinFlight, _navigation);
+            _winFlow = new WinFlow(_bus, _popups, _winPopup, _config, _clock, _coinFlight, _navigation);
             _lives = new LivesRig(_bus, _wallet);
             _attempt = new LevelAttemptLives(_lives.Lives, _bus);
             _livesPopup = _views.CreateOutOfLivesPopup(_bus, out _refill, out _livesClose);
@@ -87,7 +87,7 @@ namespace ColorBlockJam.Tests.EditMode
         public void TearDown()
         {
             _winFlow.Dispose();
-            _rewardService.Dispose();
+            _winService.Dispose();
             _failFlow.Dispose();
             _livesFlow.Dispose();
             _attempt.Dispose();
@@ -99,11 +99,7 @@ namespace ColorBlockJam.Tests.EditMode
             _catalogs.Dispose();
         }
 
-        void Win()
-        {
-            _bus.Fire(new BoardClearedSignal());
-            _progress.AdvanceLevel();
-        }
+        void Win() => _bus.Fire(new BoardClearedSignal());
 
         [Test]
         public void Win_ShouldOpenThePopupWithTheRewardOnlyAfterTheDelay_WhenTheLevelIsWon()

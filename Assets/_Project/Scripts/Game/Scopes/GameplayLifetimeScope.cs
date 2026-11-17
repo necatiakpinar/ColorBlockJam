@@ -1,5 +1,4 @@
 using ColorBlockJam.Game.Configs;
-using ColorBlockJam.Game.Economy;
 using ColorBlockJam.Game.Gameplay;
 using ColorBlockJam.Game.Gameplay.Boosters;
 using ColorBlockJam.Game.Gameplay.Feedback;
@@ -89,9 +88,8 @@ namespace ColorBlockJam.Game.Scopes
                 resolver.Resolve<BlockDragController>();
                 resolver.Resolve<GameplayHaptics>();
                 resolver.Resolve<GameplaySounds>();
-                resolver.Resolve<LevelProgression>();
+                resolver.Resolve<LevelWinService>();
                 resolver.Resolve<LevelTimer>();
-                resolver.Resolve<LevelRewardService>();
                 resolver.Resolve<WinFlow>();
                 resolver.Resolve<FailFlow>();
                 resolver.Resolve<BoosterService>();

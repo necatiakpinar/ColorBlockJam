@@ -39,7 +39,7 @@ new fake.
 | `LevelProviderTests` | level number to catalog entry; looping; empty catalog |
 | `LevelPackJsonTests` | the level pack JSON: round trip, names not numbers, compact output, unknown fields ignored, refusals worded with level and item |
 | `LevelPackServiceTests` | bundled or stored remote pack per launch; stale and broken packs dropped; remote packs stored only when good, for the next launch |
-| `LevelProgressionTests` | a win advances the level once; a loss or a disposed listener does not |
+| `LevelWinServiceTests` | a win advances the level once and pays its layout's reward (also when looped) in one save, then announces it; a loss or a disposed service changes nothing |
 | `ShippedLevelsTests` | the catalog's twenty levels: no validator issues, solved by `LevelSolver` as hard as their label; levels 1–8 ramp up; from level 9 each group of six has a breather and a higher peak, the last needing 8+ room-making moves |
 | `LevelHardenerTests` | Make harder never needs fewer moves, finds more, keeps the level valid and solvable, repeats per seed, adds no blockers when they are off, stops at its target, refuses an unfinishable level |
 | `ConnectivityServiceTests` | first answer announced even offline, only changes after, online and offline intervals, probe on app resume, Retry probes at once and returns the answer, server time handed to the trusted clock, stops when disposed (`FakeProbeRequest`, `FakeGameClock`) |
@@ -51,7 +51,7 @@ new fake.
 | `LevelGeneratorTests` | valid, solvable levels in each difficulty's band; settings respected; seeds repeat; cancelling stops it; impossible settings refused; timer formula |
 | `LevelDraftTests` | the editor's model: round trip, add, move, rotate, doors, resize |
 | `LevelCatalogEditingTests` | append, duplicate, move, delete and save level assets on a throw-away catalog; a save survives an undo rollback |
-| `LevelRewardTests` | coins by difficulty, a missing entry throws, the shipped table rises with difficulty, a win pays its layout's reward (also when looped), a loss or a disposed service pays nothing |
+| `LevelRewardTests` | coins by difficulty, a missing entry throws, the shipped table rises with difficulty |
 | `GameplayFlowTests` | start, HUD restart, pause opens the settings popup only while playing, close resumes, switches flip settings, Home, nothing after dispose (`RecordingPopupService`) |
 | `LevelResultFlowTests` | win popup after the delay with the reward; the counter held at the old balance; Continue flies the coins once, then goes Home; level failed at once with its life taken, Retry with a life, Retry without lives offering a refill, Home |
 | `GameplayDebugCommandsTests` | the debug shortcuts: win, run out of time, refused when not playing, timer, coins, boosters, jump to a level |

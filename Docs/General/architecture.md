@@ -28,7 +28,7 @@ Assets/_Project/
 │   ├── Levels/          LevelData, LevelDefinition, LevelCatalog, LevelProvider, validator, BlockShape; Packs/ (level-packs.md)
 │   │   ├── Solving/     LevelSolver (can a level be finished)
 │   │   └── Generation/  LevelGenerator (build a level from settings)
-│   ├── Economy/         LevelRewardProvider, LevelRewardService
+│   ├── Economy/         LevelRewardProvider (coins by difficulty)
 │   ├── Boosters/        BoosterType, BoosterInventory (saved stock), BoosterShop
 │   ├── Debugging/       GameplayDebugCommands (the debug window's shortcuts)
 │   ├── UI/              safe area, button press feedback, popup service, PopupView, SettingToggleView
