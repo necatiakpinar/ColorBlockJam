@@ -46,6 +46,20 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
+        public void IsLoading_ShouldBeTrueOnlyWhileASceneLoads_WhenRouted()
+        {
+            bool before = _navigation.IsLoading;
+            _navigation.GoToGameplayAsync().Forget();
+            bool during = _navigation.IsLoading;
+
+            _loader.CompleteLoad();
+
+            Assert.That(before, Is.False);
+            Assert.That(during, Is.True);
+            Assert.That(_navigation.IsLoading, Is.False);
+        }
+
+        [Test]
         public void GoToHome_ShouldLoad_WhenThePreviousLoadFinished()
         {
             _navigation.GoToGameplayAsync().Forget();
@@ -65,6 +79,8 @@ namespace ColorBlockJam.Tests.EditMode
             _navigation.GoToHomeAsync().Forget();
 
             Assert.That(failed.Status, Is.EqualTo(UniTaskStatus.Faulted));
+            // Reading the fault observes it; left unread, UniTask reports it from the finalizer in a later test.
+            Assert.Throws<InvalidOperationException>(() => failed.GetAwaiter().GetResult());
             Assert.That(_loader.Loads, Is.EqualTo(new[] { SceneId.Gameplay, SceneId.Home }));
         }
     }

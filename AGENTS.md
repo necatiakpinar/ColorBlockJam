@@ -130,7 +130,8 @@ that reads the time of day.**
 **Read [gameplay.md](Docs/General/gameplay.md) before touching `Scripts/Game/Gameplay/` or the Gameplay
 scene.** Level data and rules work in cells; `BoardSpace` is the only cell ↔ world conversion.
 **Read [level-data.md](Docs/General/level-data.md) before touching `Scripts/Game/Levels/`, a level asset or
-the level editor.**
+the level editor. Read [level-editor.md](Docs/General/level-editor.md) before touching the editor, the solver
+or the generator.**
 
 ## Coding Standards
 

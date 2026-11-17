@@ -15,79 +15,66 @@ MonoBehaviour:
   _data:
     _width: 6
     _height: 7
-    _timerSeconds: 150
+    _timerSeconds: 160
     _difficulty: 3000
     _blocks:
-    - _color: 7000
-      _cells:
-      - {x: 1, y: 6}
-      - {x: 2, y: 6}
-      - {x: 1, y: 5}
-    - _color: 4000
-      _cells:
-      - {x: 3, y: 6}
-      - {x: 3, y: 5}
     - _color: 1000
       _cells:
-      - {x: 4, y: 6}
-      - {x: 5, y: 6}
-      - {x: 4, y: 5}
-      - {x: 5, y: 5}
-    - _color: 3000
+      - {x: 5, y: 2}
+      - {x: 5, y: 3}
+      - {x: 5, y: 4}
+    - _color: 4000
       _cells:
       - {x: 0, y: 4}
       - {x: 0, y: 3}
       - {x: 1, y: 3}
-    - _color: 6000
+      - {x: 1, y: 2}
+    - _color: 7000
       _cells:
       - {x: 4, y: 4}
-      - {x: 4, y: 3}
-      - {x: 5, y: 3}
-    - _color: 8000
-      _cells:
-      - {x: 2, y: 3}
+      - {x: 3, y: 4}
       - {x: 3, y: 3}
-      - {x: 3, y: 2}
-    - _color: 5000
+      - {x: 2, y: 3}
+    - _color: 6000
       _cells:
-      - {x: 2, y: 2}
+      - {x: 3, y: 1}
       - {x: 2, y: 1}
+      - {x: 2, y: 0}
+      - {x: 1, y: 0}
     - _color: 2000
       _cells:
+      - {x: 4, y: 2}
+    - _color: 3000
+      _cells:
+      - {x: 0, y: 5}
+    - _color: 1000
+      _cells:
+      - {x: 3, y: 6}
+    - _color: 4000
+      _cells:
       - {x: 4, y: 1}
-      - {x: 3, y: 0}
-      - {x: 4, y: 0}
-      - {x: 5, y: 0}
     _doors:
-    - _side: 3000
-      _start: 0
-      _length: 2
-      _color: 2000
+    - _side: 2000
+      _start: 4
+      _length: 1
+      _color: 1000
     - _side: 1000
       _start: 2
-      _length: 1
-      _color: 5000
-    - _side: 4000
-      _start: 5
       _length: 2
-      _color: 7000
-    - _side: 4000
-      _start: 3
-      _length: 2
-      _color: 6000
-    - _side: 1000
-      _start: 3
-      _length: 1
       _color: 4000
-    - _side: 1000
+    - _side: 3000
       _start: 4
       _length: 2
-      _color: 1000
-    - _side: 2000
-      _start: 0
-      _length: 2
-      _color: 3000
-    - _side: 2000
+      _color: 7000
+    - _side: 3000
       _start: 2
       _length: 2
-      _color: 8000
+      _color: 6000
+    - _side: 4000
+      _start: 2
+      _length: 3
+      _color: 2000
+    - _side: 1000
+      _start: 4
+      _length: 1
+      _color: 3000

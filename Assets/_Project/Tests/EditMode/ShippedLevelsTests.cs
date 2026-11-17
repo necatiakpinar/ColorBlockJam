@@ -1,23 +1,22 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using ColorBlockJam.Game.Configs;
-using ColorBlockJam.Game.Gameplay.Board;
 using ColorBlockJam.Game.Levels;
+using ColorBlockJam.Game.Levels.Generation;
+using ColorBlockJam.Game.Levels.Solving;
 using UnityEditor;
-using UnityEngine;
 
 namespace ColorBlockJam.Tests.EditMode
 {
     /// <summary>
-    /// Every level in the shipped catalog is valid and can be finished. Solvability is checked with the real
-    /// <see cref="BoardState"/> rules: blocks are taken out one at a time, each one searching every cell it can
-    /// slide to with the others in place. Clearing a level that way proves it solvable.
+    /// Every level in the shipped catalog is valid, can be finished (proved by <see cref="LevelSolver"/> on the real
+    /// board rules) and ramps up: more blocks, a higher solver score, and from level 3 on blocks that must be moved
+    /// out of the way first (T-32, level-data.md §3).
     /// </summary>
     public sealed class ShippedLevelsTests
     {
         const string CatalogPath = "Assets/_Project/Levels/LevelCatalog.asset";
         const string RulesPath = "Assets/_Project/Configs/LevelRulesConfig.asset";
-        static readonly Vector2Int[] Steps = { Vector2Int.left, Vector2Int.right, Vector2Int.up, Vector2Int.down };
 
         static IReadOnlyList<LevelDefinition> Levels() =>
             AssetDatabase.LoadAssetAtPath<LevelCatalog>(CatalogPath).Levels;
@@ -37,13 +36,6 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
-        public void ShippedLevels_ShouldBeSolvable_WhenBlocksLeaveOneByOne()
-        {
-            for (int i = 0; i < Levels().Count; i++)
-                Assert.That(CanClear(new BoardState(Levels()[i].Data)), Is.True, $"Level {i + 1}");
-        }
-
-        [Test]
         public void ShippedLevels_ShouldNeverGetEasierInDifficulty_WhenTheLevelNumberRises()
         {
             LevelDifficulty previous = LevelDifficulty.Normal;
@@ -58,6 +50,43 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
+        public void ShippedLevels_ShouldPlayAsHardAsTheirDifficultySays_WhenSolved()
+        {
+            var rules = AssetDatabase.LoadAssetAtPath<LevelRulesConfig>(RulesPath);
+            var solver = new LevelSolver(rules.SolverStateCap);
+            var generator = new LevelGenerator(new LevelDefinitionValidator(rules), solver, new BlockShapeLibrary());
+            for (int i = 0; i < Levels().Count; i++)
+            {
+                LevelData level = Levels()[i].Data;
+                SolveResult result = solver.Solve(level);
+                (int min, int max) = generator.ScoreFor(level.Difficulty);
+                Assert.That(result.Status, Is.EqualTo(SolveStatus.Solvable), $"Level {i + 1}");
+                Assert.That(result.Score, Is.InRange(min, max), $"Level {i + 1} is labelled {level.Difficulty}");
+            }
+        }
+
+        [Test]
+        public void ShippedLevels_ShouldScoreHigher_WhenTheLevelNumberRises()
+        {
+            var solver = new LevelSolver(AssetDatabase.LoadAssetAtPath<LevelRulesConfig>(RulesPath).SolverStateCap);
+            int previous = 0;
+            for (int i = 0; i < Levels().Count; i++)
+            {
+                int score = solver.Solve(Levels()[i].Data).Score;
+                Assert.That(score, Is.GreaterThanOrEqualTo(previous), $"Level {i + 1} plays easier than the one before.");
+                previous = score;
+            }
+        }
+
+        [Test]
+        public void ShippedLevels_ShouldNeedRoomMadeFirst_WhenFromLevelThreeOn()
+        {
+            var solver = new LevelSolver(AssetDatabase.LoadAssetAtPath<LevelRulesConfig>(RulesPath).SolverStateCap);
+            for (int i = 2; i < Levels().Count; i++)
+                Assert.That(solver.Solve(Levels()[i].Data).Moves, Is.GreaterThanOrEqualTo(1), $"Level {i + 1}");
+        }
+
+        [Test]
         public void ShippedLevels_ShouldGetHarder_WhenTheLevelNumberRises()
         {
             int previous = 0;
@@ -67,45 +96,6 @@ namespace ColorBlockJam.Tests.EditMode
                 Assert.That(blocks, Is.GreaterThanOrEqualTo(previous), $"Level {i + 1} has fewer blocks than the one before.");
                 previous = blocks;
             }
-        }
-
-        static bool CanClear(BoardState board)
-        {
-            while (board.RemainingBlocks > 0)
-            {
-                bool progress = false;
-                for (int id = 0; id < board.Blocks.Count; id++)
-                    if (!board.Blocks[id].HasExited && TryTakeOut(board, id, new HashSet<Vector2Int>()))
-                        progress = true;
-                if (!progress)
-                    return false;
-            }
-
-            return true;
-        }
-
-        /// <summary>Slides the block through every free cell it can reach; leaves it out if any reaches its door.</summary>
-        static bool TryTakeOut(BoardState board, int id, HashSet<Vector2Int> visited)
-        {
-            visited.Add(board.Blocks[id].Offset);
-            foreach (Vector2Int step in Steps)
-            {
-                StepResult result = board.CanStep(id, step);
-                if (result == StepResult.Exited)
-                {
-                    board.TryStep(id, step);
-                    return true;
-                }
-
-                if (result != StepResult.Moved || visited.Contains(board.Blocks[id].Offset + step))
-                    continue;
-                board.TryStep(id, step);
-                if (TryTakeOut(board, id, visited))
-                    return true;
-                board.TryStep(id, -step);
-            }
-
-            return false;
         }
     }
 }
