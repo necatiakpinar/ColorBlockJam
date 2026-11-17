@@ -26,10 +26,10 @@ be measured before they are fixed.
 | [CR-02](#cr-02-home-coin-counter-ignores-spends) | P0 | Home | Home coin counter ignores spends | — | Done |
 | [CR-03](#cr-03-booster-is-applied-even-when-no-stock-was-taken) | P0 | Boosters | Booster is applied even when no stock was taken | — | Done |
 | [CR-04](#cr-04-a-failed-continue-skips-the-life-cost) | P0 | Lives | A failed continue skips the life cost | — | Superseded |
-| [CR-05](#cr-05-two-record-economy-operations-are-not-atomic) | P1 | Economy | Two-record economy operations are not atomic | — | Todo |
-| [CR-06](#cr-06-win-reward-is-computed-twice-and-depends-on-handler-order) | P1 | Economy | Win reward is computed twice and depends on handler order | — | Todo |
-| [CR-07](#cr-07-booster-target-tap-relies-on-subscription-order) | P1 | Input | Booster target tap relies on subscription order | — | Todo |
-| [CR-08](#cr-08-board-input-can-stay-pressed-across-a-background) | P1 | Input | Board input can stay pressed across a background | — | Todo |
+| [CR-05](#cr-05-two-record-economy-operations-are-not-atomic) | P1 | Economy | Two-record economy operations are not atomic | — | Done |
+| [CR-06](#cr-06-win-reward-is-computed-twice-and-depends-on-handler-order) | P1 | Economy | Win reward is computed twice and depends on handler order | — | Done |
+| [CR-07](#cr-07-booster-target-tap-relies-on-subscription-order) | P1 | Input | Booster target tap relies on subscription order | — | Done |
+| [CR-08](#cr-08-board-input-can-stay-pressed-across-a-background) | P1 | Input | Board input can stay pressed across a background | — | Done |
 | [CR-09](#cr-09-connectivity-loop-dies-on-an-unexpected-error) | P1 | Network | Connectivity loop dies on an unexpected error | — | Todo |
 | [CR-10](#cr-10-probe-and-trusted-clock-accept-wrong-answers) | P1 | Network | Probe and trusted clock accept wrong answers | — | Todo |
 | [CR-11](#cr-11-remote-level-pack-gate-before-a-fetcher-ships) | P1 | Levels | Remote level pack gate before a fetcher ships | — | Todo |
@@ -49,16 +49,14 @@ be measured before they are fixed.
 | [CR-25](#cr-25-restart-leaves-debris-and-overlapping-tweens) | P3 | Views | Restart leaves debris and overlapping tweens | — | Todo |
 | [CR-26](#cr-26-small-cleanups) | P3 | Mixed | Small cleanups | — | Todo |
 
-## 3. Open product questions
+## 3. Product questions
 
-These need a decision before the linked task, or a new `DA-n` in
-[development-assumptions.md](../General/development-assumptions.md).
-
-| Id | Question | Why it matters | Recommendation |
+| Id | Question | Answer (developer, 2026-11-17) | Where |
 | --- | --- | --- | --- |
-| Q-2 | Should Freeze be usable before the first grab? | boosters.md §3 counts the freeze "touched or not", so a freeze used before the first grab runs out while the timer stands still anyway; the player pays a booster for nothing | Refuse Freeze until the timer runs (`FreezeBoosterCommand.CanExecute`), or hold the freeze until the first grab |
-| Q-3 | Should choosing a target stop the timer? | Activating a target booster pauses the level (DA-36), so the player can study a visible board with no clock, then tap the booster again to put it back for free | Keep the timer running during targeting, or accept it and record it in DA-36 |
-| Q-4 | When does the vibration toggle start gating haptics? | DA-10 is open: the toggle saves but haptics still fire; T-25 is Done, so players see a switch that does nothing | Gate `GameplayHaptics` on `ISettingsService` now (one dependency, one test) |
+| Q-1 | Does killing the app mid-attempt cost a life? | Dropped: the timer only runs after the first grab, so the finding did not hold | — |
+| Q-2 | Should Freeze be usable before the first grab? | Yes, but its seconds wait for the first grab | DA-36, boosters.md §3 |
+| Q-3 | Should choosing a target stop the timer? | No: the timer keeps running, dragging is off | DA-36, boosters.md §2 |
+| Q-4 | Should the vibration toggle gate haptics? | Yes | DA-10 |
 
 ## 4. Tasks
 
@@ -120,6 +118,7 @@ These need a decision before the linked task, or a new `DA-n` in
 - **Accept:** a fake storage that throws on the second flush leaves both records unchanged, or both changed.
 - **Tests:** `BoosterShopTests`, `LivesServiceTests` with a failing fake storage.
 - **Docs:** persistence.md (transaction rule), economy.md.
+- **Done:** `IKeyValueStorage.DeferFlush` (`FlushGate`) writes both records of a booster purchase, a lives refill and a win in one flush; `BoosterInventoryTests`, `LivesServiceTests` and `LevelWinServiceTests` count one flush each. PlayerPrefs keeps both in one file, so a killed app keeps both or neither.
 
 ### CR-06 Win reward is computed twice and depends on handler order
 
@@ -134,6 +133,7 @@ These need a decision before the linked task, or a new `DA-n` in
 - **Accept:** reordering the two resolves in the build callback changes nothing on screen.
 - **Tests:** `LevelResultFlowTests` asserts the popup reward equals the paid amount.
 - **Docs:** economy.md, architecture.md (flows read results, never recompute them).
+- **Done:** `LevelWinService` replaces `LevelProgression` and `LevelRewardService`: it advances the level and pays the reward in one save, then fires `LevelRewardedSignal(level, coins, balanceBefore)`; `WinFlow` reads both from it and no longer looks the reward up.
 
 ### CR-07 Booster target tap relies on subscription order
 
@@ -147,6 +147,7 @@ These need a decision before the linked task, or a new `DA-n` in
 - **Accept:** a target tap never grabs, in either subscription order.
 - **Tests:** Edit Mode test subscribing the two in reverse order.
 - **Docs:** boosters.md §2, gameplay.md input section.
+- **Done:** the target is picked on the release of the tap, and `BlockDragController` ignores the board while `BoosterTargetingChangedSignal` says targeting, so the press never reaches a grab in either order; targeting no longer pauses the level (Q-3).
 
 ### CR-08 Board input can stay pressed across a background
 
@@ -161,6 +162,7 @@ These need a decision before the linked task, or a new `DA-n` in
 - **Accept:** background mid-drag, return: the block has settled and the next press works.
 - **Tests:** Edit Mode test firing the signal mid-drag; device case in gameplay-qa.md.
 - **Docs:** gameplay.md input section.
+- **Done:** `BoardInputView` ends a held touch with `BoardPointerPhase.Cancelled` on `ApplicationPausedSignal`; the drag drops the block onto its cell and the booster target is dropped, not used. Device check stays in gameplay-qa.md.
 
 ### CR-09 Connectivity loop dies on an unexpected error
 
