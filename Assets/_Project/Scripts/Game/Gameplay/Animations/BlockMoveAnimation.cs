@@ -6,9 +6,10 @@ using UnityEngine;
 namespace ColorBlockJam.Game.Gameplay.Animations
 {
     /// <summary>
-    /// The settle a block makes onto its cell when the finger lets go. Blocks are dropped again and again,
-    /// so instead of building a sequence per drop it keeps one paused tween per block and retargets it:
-    /// dropping allocates nothing. (The one exception to <c>IAnimation</c>'s build-per-play shape.)
+    /// A block's reusable move: the settle onto its cell when the finger lets go, and the short glide that
+    /// trails the finger while it is held. Both run again and again (every drop, every drag event), so
+    /// instead of building a sequence each time a block keeps one paused tween per use and retargets it:
+    /// moving allocates nothing. (The one exception to <c>IAnimation</c>'s build-per-play shape.)
     /// </summary>
     public readonly struct BlockMoveAnimation
     {

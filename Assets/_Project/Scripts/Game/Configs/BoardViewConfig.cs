@@ -123,6 +123,14 @@ namespace ColorBlockJam.Game.Configs
         int _outlineCornerSegments = 6;
 
         [Header("Motion")]
+        [Tooltip("How long a held block takes to catch up with the finger; retargeted on every drag, so the "
+            + "block trails the finger by about this much and glides instead of jumping on a fast flick.")]
+        [SerializeField, Min(0.01f)]
+        float _followDuration = 0.12f;
+
+        [SerializeField]
+        Ease _followEase = Ease.OutQuad;
+
         [Tooltip("How long a released block takes to settle on its cell.")]
         [SerializeField, Min(0.01f), FormerlySerializedAs("_moveDuration")]
         float _snapDuration = 0.12f;
@@ -165,6 +173,8 @@ namespace ColorBlockJam.Game.Configs
         public float OutlineGap => _outlineGap;
         public float BlockCornerRadius => _blockCornerRadius;
         public int OutlineCornerSegments => _outlineCornerSegments;
+        public float FollowDuration => _followDuration;
+        public Ease FollowEase => _followEase;
         public float SnapDuration => _snapDuration;
         public Ease SnapEase => _snapEase;
         public float ExitDistance => _exitDistance;

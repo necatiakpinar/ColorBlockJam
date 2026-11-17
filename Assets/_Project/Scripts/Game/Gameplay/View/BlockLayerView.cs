@@ -89,7 +89,8 @@ namespace ColorBlockJam.Game.Gameplay.View
 
             BlockView view = _blockPool.Get();
             view.transform.SetParent(_root, false);
-            view.Show(new Vector3(centre.x, 0f, centre.y), _config.SnapDuration, _config.SnapEase);
+            view.Show(new Vector3(centre.x, 0f, centre.y), _config.SnapDuration, _config.SnapEase,
+                _config.FollowDuration, _config.FollowEase);
 
             Material material = _materials.Get(block.Color);
             foreach (BlockPiece piece in _tileResolver.Resolve(block.Cells))

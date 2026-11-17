@@ -30,6 +30,7 @@ namespace ColorBlockJam.Game.Gameplay.View
         Mesh _outlineMesh;
         Vector3 _pivot;
         TweenerCore<Vector3, Vector3, VectorOptions> _move;
+        TweenerCore<Vector3, Vector3, VectorOptions> _follow;
         Sequence _exit;
         Action<BlockView> _onExitFinished;
         TweenCallback _exitFinished;
@@ -38,7 +39,7 @@ namespace ColorBlockJam.Game.Gameplay.View
         internal bool IsOutlined => _outlineRenderer.enabled;
 
         /// <summary>Places the block at its start cells; <paramref name="pivot"/> is its centre in cells.</summary>
-        internal void Show(Vector3 pivot, float snapDuration, Ease snapEase)
+        internal void Show(Vector3 pivot, float snapDuration, Ease snapEase, float followDuration, Ease followEase)
         {
             _pivot = pivot;
             _exit?.Kill();
@@ -46,6 +47,8 @@ namespace ColorBlockJam.Game.Gameplay.View
             transform.localScale = Vector3.one;
             _move ??= default(BlockMoveAnimation).Create(transform, snapDuration, snapEase);
             _move.Pause();
+            _follow ??= default(BlockMoveAnimation).Create(transform, followDuration, followEase);
+            _follow.Pause();
         }
 
         /// <summary>Traces the outline around the block's start cells; hidden until <see cref="SetOutlined"/>.</summary>
@@ -80,16 +83,20 @@ namespace ColorBlockJam.Game.Gameplay.View
             _parts.Add((pool, part));
         }
 
-        /// <summary>Draws the held block exactly where the finger has it (fractional cells).</summary>
+        /// <summary>
+        /// Moves the held block toward where the finger has it (fractional cells) with the short follow tween,
+        /// retargeted on every drag, so the block trails the finger slightly and never jumps on a fast flick.
+        /// </summary>
         internal void Follow(Vector2 offset)
         {
             _move.Pause();
-            transform.localPosition = _pivot + new Vector3(offset.x, 0f, offset.y);
+            default(BlockMoveAnimation).Retarget(_follow, _pivot + new Vector3(offset.x, 0f, offset.y));
         }
 
         /// <summary>Settles the block onto its cell with the snap tween.</summary>
         internal void SnapTo(Vector2Int offset)
         {
+            _follow.Pause();
             default(BlockMoveAnimation).Retarget(_move, _pivot + new Vector3(offset.x, 0f, offset.y));
         }
 
@@ -98,6 +105,7 @@ namespace ColorBlockJam.Game.Gameplay.View
             Action<BlockView> onFinished)
         {
             _move.Pause();
+            _follow.Pause();
             SetOutlined(false);
             _onExitFinished = onFinished;
             _exitFinished ??= OnExitFinished;
@@ -112,6 +120,7 @@ namespace ColorBlockJam.Game.Gameplay.View
         {
             _exit?.Kill();
             _move?.Pause();
+            _follow?.Pause();
             foreach ((PartPool pool, GameObject part) in _parts)
                 pool.Release(part);
             _parts.Clear();
@@ -122,6 +131,7 @@ namespace ColorBlockJam.Game.Gameplay.View
         void OnDestroy()
         {
             _move?.Kill();
+            _follow?.Kill();
             _exit?.Kill();
             Destroy(_outlineMesh);
         }

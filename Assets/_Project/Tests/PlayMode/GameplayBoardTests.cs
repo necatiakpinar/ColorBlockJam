@@ -179,6 +179,25 @@ namespace ColorBlockJam.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator BlockView_ShouldGlideAfterTheFinger_WhenItMovesSuddenly()
+        {
+            yield return BootToBoard();
+            _board.Load(TwoBlockLevel());
+            BlockView view = _blocks.Views[1];
+            Vector3 start = view.transform.localPosition;
+            Vector3 end = start + new Vector3(-1f, 0f, 0f);
+            float followDuration = _container.Resolve<BoardViewConfig>().FollowDuration;
+
+            view.Follow(new Vector2(-1f, 0f));
+            Vector3 sameFrame = view.transform.localPosition;
+            yield return WaitRealtime(followDuration + 0.1f);
+
+            Assert.That(Vector3.Distance(sameFrame, start), Is.LessThan(0.01f), "No jump on the frame of the flick.");
+            Assert.That(Vector3.Distance(view.transform.localPosition, end), Is.LessThan(1e-3f),
+                "Caught up once the follow time has passed.");
+        }
+
+        [UnityTest]
         public IEnumerator BlockView_ShouldNotAllocate_WhenFollowingAFingerAndSnapping()
         {
             yield return BootToBoard();

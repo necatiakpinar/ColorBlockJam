@@ -98,20 +98,23 @@ All board views listen to signals only; the model has committed every change bef
    board), one door segment per door cell in the door's colour, and four rounded corners.
 3. **`BlockLayerView`** builds every block from the modular pieces chosen by **`BlockTileResolver`**
    (art-pipeline.md §4) in its palette colour. While a block is held it shows an outline band that hugs
-   its footprint (`OutlineMeshBuilder`): a closed loop `OutlineGap` outside the block, its corners rounded
-   like the block models (`BlockCornerRadius`), so it follows any polyomino, notches and holes included.
-   It traces the block's on-screen silhouette: shader `ColorBlockJam/Selection Outline` keeps a side the
-   camera sees outlined along its bottom edge (`OutlineBaseHeight`) and lifts a side turned away to the
-   rim of the top face (`BlockTopHeight`). A block high on screen shows more of its front face, so the
-   band runs further below its top face there than near the bottom of the screen. The shader draws over
-   everything, so the outline stays visible where the block goes under another object. The view also draws the block exactly where the finger has it
-   (`BlockDraggedSignal`, no tween); on `BlockDroppedSignal` it settles it onto its cell with the
-   snap tween (`SnapDuration`, `SnapEase`); on `BlockExitedSignal` it plays `BlockExitAnimation` from
-   wherever the block is: it slides `ExitDistance` cells through the door while shrinking, then returns to
-   its pool. A block view's pivot is the block's centre. The snap is one paused tween per block, retargeted
-   on every drop (`BlockMoveAnimation`), so following and snapping allocate nothing
-   (`GameplayBoardTests.BlockView_ShouldNotAllocate_WhenFollowingAFingerAndSnapping`). A board reload also
-   recycles blocks that are still sliding out
+   its footprint (`OutlineMeshBuilder`): a closed loop `OutlineGap` outside the block, its corners
+   rounded like the block models (`BlockCornerRadius`), so it follows any polyomino, notches and holes
+   included. It traces the block's on-screen silhouette: shader `ColorBlockJam/Selection Outline` keeps a
+   side the camera sees outlined along its bottom edge (`OutlineBaseHeight`) and lifts a side turned away
+   to the rim of the top face (`BlockTopHeight`). A block high on screen shows more of its front face, so
+   the band runs further below its top face there than near the bottom of the screen. The shader draws
+   over everything, so the outline stays visible where the block goes under another object. On every
+   `BlockDraggedSignal` the view glides the block toward where the finger has it with the follow tween
+   (`FollowDuration`, `FollowEase`), retargeted each event, so the drawn block trails the finger slightly
+   and never jumps on a fast flick (the board model follows the finger at once; only the drawing trails);
+   on `BlockDroppedSignal` it settles it onto its cell with the snap tween (`SnapDuration`, `SnapEase`);
+   on `BlockExitedSignal` it plays `BlockExitAnimation` from wherever the block is: it slides
+   `ExitDistance` cells through the door while shrinking, then returns to its pool. A block view's pivot
+   is the block's centre. The follow and the snap are one paused tween each per block, retargeted on
+   every drag and drop (`BlockMoveAnimation`), so following and snapping allocate nothing
+   (`GameplayBoardTests.BlockView_ShouldNotAllocate_WhenFollowingAFingerAndSnapping`). A board reload
+   also recycles blocks that are still sliding out
    (`GameplayBoardTests.Reload_ShouldRebuildCleanBlocks_WhenABlockIsStillSlidingOut`).
 4. Every part, block view and piece comes from a pool (`PartPool`, `ObjectPool`), so a restart or the next
    level reuses objects. Colours are one shared material per colour (`ColorMaterialCache`) to keep the SRP

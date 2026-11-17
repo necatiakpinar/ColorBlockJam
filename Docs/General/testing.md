@@ -45,7 +45,7 @@ new fake.
 | `SceneSetupTests` | every build scene: canvas scaler, safe area root, button feedback |
 | `NavigationFlowTests` (PlayMode) | real boot reaches Home; Home ⇄ Gameplay round trip |
 | `ButtonPressFeedbackTests` (PlayMode) | press shrinks, release restores; non-interactable and disabled cases |
-| `GameplayBoardTests` (PlayMode) | every part and block drawn; swipes take blocks out and clear once; a wrong door holds; outline while held; reload mid-exit; following and snapping allocate nothing |
+| `GameplayBoardTests` (PlayMode) | every part and block drawn; swipes take blocks out and clear once; a wrong door holds; outline while held; reload mid-exit; a held block glides after a sudden finger move instead of jumping; following and snapping allocate nothing |
 | `BoardInputTests` (PlayMode) | pointer events become board cells; one finger; release off the plane; disable mid-touch; UI wins the raycast |
 
 ## 3. Rules
