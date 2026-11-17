@@ -12,7 +12,7 @@ costs one; a missing life comes back after 30 minutes of trusted time; coins fil
 | --- | --- |
 | New player | full (5) |
 | A level is won | none taken |
-| An attempt the player has started (first grab) is given up (out of time, then close), restarted, or left for Home | one taken, once per attempt; Home asks first ("Leave Level?", `LeaveLevelPopup`) |
+| An attempt the player has started (first grab) runs out of time, is restarted, or is left for Home | one taken, once per attempt; Home asks first ("Leave Level?", `LeaveLevelPopup`) |
 | An attempt is left before the first grab | none taken |
 | 30 minutes of trusted time after a life went (one countdown at a time) | one back, up to the max |
 | Refill (100 coins) | every missing life back |

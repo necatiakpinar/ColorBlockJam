@@ -39,7 +39,6 @@ namespace ColorBlockJam.Game.Gameplay.Session
             _signalBus.Subscribe<LevelResumedSignal>(OnLevelResumed);
             _signalBus.Subscribe<LevelCompletedSignal>(OnLevelCompleted);
             _signalBus.Subscribe<LevelFailedSignal>(OnLevelFailed);
-            _signalBus.Subscribe<LevelContinuedSignal>(OnLevelContinued);
             _signalBus.Subscribe<ApplicationPausedSignal>(OnApplicationPaused);
         }
 
@@ -97,14 +96,6 @@ namespace ColorBlockJam.Game.Gameplay.Session
         void OnLevelCompleted(LevelCompletedSignal signal) => SetLevelPlaying(false);
 
         void OnLevelFailed(LevelFailedSignal signal) => SetLevelPlaying(false);
-
-        void OnLevelContinued(LevelContinuedSignal signal)
-        {
-            StopCounting();
-            _remaining = SecondsLeft + signal.ExtraSeconds;
-            Announce();
-            SetLevelPlaying(true);
-        }
 
         void OnApplicationPaused(ApplicationPausedSignal signal)
         {
@@ -242,7 +233,6 @@ namespace ColorBlockJam.Game.Gameplay.Session
             _signalBus.Unsubscribe<LevelResumedSignal>(OnLevelResumed);
             _signalBus.Unsubscribe<LevelCompletedSignal>(OnLevelCompleted);
             _signalBus.Unsubscribe<LevelFailedSignal>(OnLevelFailed);
-            _signalBus.Unsubscribe<LevelContinuedSignal>(OnLevelContinued);
             _signalBus.Unsubscribe<ApplicationPausedSignal>(OnApplicationPaused);
         }
     }

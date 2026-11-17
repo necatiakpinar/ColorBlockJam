@@ -399,19 +399,6 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
-        public void Input_ShouldComeBack_WhenALostLevelIsContinued()
-        {
-            _board.Load(new LevelDataBuilder(5, 5).Block(Red, 0, 0).Build());
-            _bus.Fire(new LevelFailedSignal(1));
-
-            _bus.Fire(new LevelContinuedSignal(20));
-            Finger(BoardPointerPhase.Pressed, 0, 0);
-            Finger(BoardPointerPhase.Dragged, 2f, 0);
-
-            Assert.That(CellOf(0), NUnit.Framework.Is.EqualTo(new Vector2Int(2, 0)));
-        }
-
-        [Test]
         public void Drag_ShouldDoNothing_WhenThePressMissedEveryBlock()
         {
             _board.Load(new LevelDataBuilder(5, 5).Block(Red, 0, 0).Build());

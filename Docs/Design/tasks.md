@@ -501,12 +501,11 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - **Req:** R-20. Implements DA-15.
 - **Arch:** `FailPopupView`: "Time's up" header, Restart (`Btn_square_retry`), Home. Opens on
   `LevelFailedSignal`.
-  - [x] Two popups after the reference (DA-30, DA-31): "Out of Time!" sells 20 s for 50 coins
-    (`LevelContinueService`, `LevelSession.Continue`, `IWalletService.TrySpend`); closing it opens
-    "Level Failed!" with Retry, and its close goes Home (`FailFlow`).
+  - [x] One popup after the reference failed screen (DA-31): "Level Failed!" opens at timer zero with
+    Retry (restarts, or offers a refill with no lives left) and a close that goes Home (`FailFlow`).
 - **Accept:** opens at timer zero; Restart replays the same level from its start state; Home returns to Home
   with the same level number.
-- **Tests:** `EM LevelResultFlowTests`, `EM LevelContinueTests`, `PM GameplayPopupTests`.
+- **Tests:** `EM LevelResultFlowTests`, `PM GameplayPopupTests`.
 - **Docs:** `ui.md`; `gameplay-qa.md`.
 
 ### T-21 Win popup

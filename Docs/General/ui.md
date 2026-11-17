@@ -76,8 +76,7 @@ after the reference screens, sizes measured on them and scaled to the canvas (DA
 | `SafeArea/BoosterBanner`, `IceFrame`, `TopBar/TimePanel/FreezeMeter` | title and hint text; `icetexture` strips; `bg_gameplay_time_holder` track + `SquareRoundedMask` fill, both nine-sliced with a pixels-per-unit multiplier (2.6, 4) so their round ends fit the 44 px bar, the fill shrinking by its right anchor (`BarFillAnimation`), + `Clock_Freeze` | booster targeting and freeze looks ([boosters.md](boosters.md) §4) |
 | `PausePopup` prefab | "SETTINGS": vibration, sound and music switches, Legal Terms, Restore Purchases, Support, Language, Home | switches show and set `ISettingsService`; the four blue buttons are placeholders (DA-29) |
 | `WinPopup` prefab | "LEVEL COMPLETE", a pile of `Coin_Single` (`_coinPile`, the flight's start), Continue with the reward | Continue flies the coins to the HUD counter and goes Home (DA-12, T-51; [gameplay.md](gameplay.md) §7) |
-| `OutOfTimePopup` prefab | "Out of Time!", `Clock`, "+20", Continue with the price | buys more time; close gives up (DA-30) |
-| `LevelFailedPopup` prefab | "Level Failed!" with `Heart`, Retry | Retry restarts; close goes Home (DA-31) |
+| `LevelFailedPopup` prefab | "Level Failed!" with `Heart`, Retry | opens when the timer runs out; Retry restarts, or opens the lives popup with none left; close goes Home (DA-31) |
 | `LeaveLevelPopup` prefab | "Leave Level?", `Heart` with "-1", "You will lose a life!", Leave | Leave takes the life and goes Home; close goes back to pause (DA-38) |
 | `OutOfLivesPopup` prefab (Home and Gameplay) | "Out of Lives", `Heart` with the count, the next life's countdown, Refill with the price | fills every life for coins; in Gameplay close goes Home (DA-38) |
 | `BoosterPurchasePopup` prefab | the booster's title, icon, "x1", description, Buy with the price | buys one booster; close resumes (DA-36) |

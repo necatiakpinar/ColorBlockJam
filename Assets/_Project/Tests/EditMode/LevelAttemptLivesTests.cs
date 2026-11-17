@@ -91,6 +91,26 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
+        public void Fail_ShouldCostOneLifeOnce_WhenAStartedAttemptRunsOutOfTime()
+        {
+            Grab();
+
+            _session.Fail();
+            _attempt.Abandon();
+
+            Assert.That(_lives.Lives.Count, Is.EqualTo(4));
+            Assert.That(_attempt.WouldCostLife, Is.False);
+        }
+
+        [Test]
+        public void Fail_ShouldCostNothing_WhenThePlayerNeverTouchedTheLevel()
+        {
+            _session.Fail();
+
+            Assert.That(_lives.Lives.Count, Is.EqualTo(5));
+        }
+
+        [Test]
         public void NewAttempt_ShouldCostItsOwnLife_WhenItIsStartedAndLeftToo()
         {
             Grab();

@@ -131,7 +131,6 @@ namespace ColorBlockJam.Tests.PlayMode
             int fullTime = Mathf.CeilToInt(Gameplay().Resolve<LevelTimer>().SecondsLeft);
 
             session.Fail();
-            SceneTestUtility.TapButton<OutOfTimePopupView>("CloseButton");
             SceneTestUtility.TapButton<LevelFailedPopupView>("CloseButton");
             yield return SceneTestUtility.WaitForScene(SceneTestUtility.HomeScene);
             string homeLabel = SceneTestUtility.FindInActiveScene<HomeView>().LevelLabelText;
@@ -145,7 +144,7 @@ namespace ColorBlockJam.Tests.PlayMode
             foreach (var popup in new Component[]
                      {
                          SceneTestUtility.FindInActiveScene<PausePopupView>(), SceneTestUtility.FindInActiveScene<WinPopupView>(),
-                         SceneTestUtility.FindInActiveScene<OutOfTimePopupView>(), SceneTestUtility.FindInActiveScene<LevelFailedPopupView>(),
+                         SceneTestUtility.FindInActiveScene<LevelFailedPopupView>(),
                      })
                 Assert.That(popup.gameObject.activeSelf, Is.False, popup.name);
             LogAssert.NoUnexpectedReceived();

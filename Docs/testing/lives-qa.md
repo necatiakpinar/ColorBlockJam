@@ -9,6 +9,7 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 - [x] ⚙ The countdown waits for the trusted time and survives a restart of the app — `LivesServiceTests.Countdown_ShouldWaitForTheTrustedTime_WhenALifeIsLostOffline`, `Lives_ShouldSurviveARestart_WhenSavedAndLoaded`
 - [x] ⚙ Refill fills every life for 100 coins, or does nothing when full or short — `LivesServiceTests.Refill_*`
 - [x] ⚙ Only a started, abandoned attempt costs a life, once; a win costs none — `LevelAttemptLivesTests`
+- [x] ⚙ Running out of time takes the started attempt's life once — `LevelAttemptLivesTests.Fail_ShouldCostOneLifeOnce_WhenAStartedAttemptRunsOutOfTime`, `LevelResultFlowTests.Fail_ShouldTakeTheAttemptsLife_WhenTheLevelFails`
 - [x] ⚙ Without lives, Retry and restart offer a refill; Refill restarts, close goes Home — `LevelAttemptLivesTests`
 - [x] ⚙ Pause → Home asks first when it would cost a life; Leave takes it, close goes back to pause — `GameplayFlowTests.PausePopupHome_ShouldAskFirst_WhenLeavingWouldCostALife`, `LeavePopup_*`
 - [x] ⚙ Home plays only with a life; otherwise the lives popup opens — `HomeFlowTests.Play_ShouldOpenTheLivesPopupInsteadOfTheLevel_WhenNoLivesAreLeft`

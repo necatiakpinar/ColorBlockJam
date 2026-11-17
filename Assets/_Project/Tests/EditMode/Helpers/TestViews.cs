@@ -122,22 +122,6 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
             return view;
         }
 
-        public OutOfTimePopupView CreateOutOfTimePopup(out Button continueButton, out Button closeButton)
-        {
-            var root = Track(new GameObject("OutOfTimePopup"));
-            var view = root.AddComponent<OutOfTimePopupView>();
-            continueButton = Child(root, "ContinueButton").AddComponent<Button>();
-            closeButton = Child(root, "CloseButton").AddComponent<Button>();
-            WirePopup(view, root);
-            Assign(view, "_secondsLabel", Label(root, "SecondsLabel"));
-            Assign(view, "_messageLabel", Label(root, "MessageLabel"));
-            Assign(view, "_costLabel", Label(root, "CostLabel"));
-            Assign(view, "_continueButton", continueButton);
-            Assign(view, "_closeButton", closeButton);
-            view.Construct();
-            return view;
-        }
-
         public OutOfLivesPopupView CreateOutOfLivesPopup(SignalBus signalBus, out Button refillButton, out Button closeButton)
         {
             var root = Track(new GameObject("OutOfLivesPopup"));

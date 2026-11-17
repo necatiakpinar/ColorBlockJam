@@ -19,6 +19,7 @@ namespace ColorBlockJam.Game.Gameplay.Session
             _signalBus.Subscribe<LevelStartedSignal>(OnLevelStarted);
             _signalBus.Subscribe<BlockGrabbedSignal>(OnBlockGrabbed);
             _signalBus.Subscribe<LevelCompletedSignal>(OnLevelCompleted);
+            _signalBus.Subscribe<LevelFailedSignal>(OnLevelFailed);
         }
 
         public bool WouldCostLife => _started && !_settled;
@@ -41,11 +42,14 @@ namespace ColorBlockJam.Game.Gameplay.Session
 
         void OnLevelCompleted(LevelCompletedSignal signal) => _settled = true;
 
+        void OnLevelFailed(LevelFailedSignal signal) => Abandon();
+
         public void Dispose()
         {
             _signalBus.Unsubscribe<LevelStartedSignal>(OnLevelStarted);
             _signalBus.Unsubscribe<BlockGrabbedSignal>(OnBlockGrabbed);
             _signalBus.Unsubscribe<LevelCompletedSignal>(OnLevelCompleted);
+            _signalBus.Unsubscribe<LevelFailedSignal>(OnLevelFailed);
         }
     }
 }

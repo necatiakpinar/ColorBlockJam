@@ -27,7 +27,6 @@ namespace ColorBlockJam.Game.Installers
             builder.Register<LevelSession>(Lifetime.Singleton);
             builder.Register<LevelProgression>(Lifetime.Singleton);
             builder.Register<LevelTimer>(Lifetime.Singleton);
-            builder.Register<LevelContinueService>(Lifetime.Singleton);
             builder.Register<LevelAttemptLives>(Lifetime.Singleton);
             builder.Register<BoosterShop>(Lifetime.Singleton);
             builder.Register<IBoosterCommand, FreezeBoosterCommand>(Lifetime.Singleton);

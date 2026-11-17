@@ -68,7 +68,6 @@ namespace ColorBlockJam.Game.Scopes
             builder.RegisterComponent(_coinFlight).As<ICoinFlight>();
             builder.RegisterComponentInNewPrefab(popups.PausePopup, Lifetime.Scoped).UnderTransform(_popupLayer);
             builder.RegisterComponentInNewPrefab(popups.WinPopup, Lifetime.Scoped).UnderTransform(_popupLayer);
-            builder.RegisterComponentInNewPrefab(popups.OutOfTimePopup, Lifetime.Scoped).UnderTransform(_popupLayer);
             builder.RegisterComponentInNewPrefab(popups.LevelFailedPopup, Lifetime.Scoped).UnderTransform(_popupLayer);
             builder.RegisterComponentInNewPrefab(popups.BoosterPurchasePopup, Lifetime.Scoped).UnderTransform(_popupLayer);
             builder.RegisterComponentInNewPrefab(popups.OutOfLivesPopup, Lifetime.Scoped).UnderTransform(_popupLayer);

@@ -40,17 +40,14 @@ namespace ColorBlockJam.Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator Loss_ShouldGoFromOutOfTimeToLevelFailedToARetry_WhenThePlayerGivesUp()
+        public IEnumerator Loss_ShouldShowLevelFailedThenRetry_WhenTheTimerRunsOut()
         {
             yield return BootToGameplay();
 
             _session.Fail();
-            bool outOfTime = IsShown<OutOfTimePopupView>();
-            SceneTestUtility.TapButton<OutOfTimePopupView>("CloseButton");
             bool failed = IsShown<LevelFailedPopupView>();
             SceneTestUtility.TapButton<LevelFailedPopupView>("RetryButton");
 
-            Assert.That(outOfTime, Is.True);
             Assert.That(failed, Is.True);
             Assert.That(IsShown<LevelFailedPopupView>(), Is.False);
             Assert.That(_session.State, Is.EqualTo(LevelState.Playing));

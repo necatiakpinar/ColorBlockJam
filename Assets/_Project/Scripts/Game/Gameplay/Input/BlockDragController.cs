@@ -41,7 +41,6 @@ namespace ColorBlockJam.Game.Gameplay.Input
             _signalBus.Subscribe<LevelPausedSignal>(OnLevelPaused);
             _signalBus.Subscribe<LevelCompletedSignal>(OnLevelCompleted);
             _signalBus.Subscribe<LevelFailedSignal>(OnLevelFailed);
-            _signalBus.Subscribe<LevelContinuedSignal>(OnLevelContinued);
         }
 
         void OnBoardLoaded(BoardLoadedSignal signal) => _blockId = NoBlock;
@@ -55,8 +54,6 @@ namespace ColorBlockJam.Game.Gameplay.Input
         void OnLevelCompleted(LevelCompletedSignal signal) => StopInput();
 
         void OnLevelFailed(LevelFailedSignal signal) => StopInput();
-
-        void OnLevelContinued(LevelContinuedSignal signal) => _acceptsInput = true;
 
         void StopInput()
         {
@@ -345,7 +342,6 @@ namespace ColorBlockJam.Game.Gameplay.Input
             _signalBus.Unsubscribe<LevelPausedSignal>(OnLevelPaused);
             _signalBus.Unsubscribe<LevelCompletedSignal>(OnLevelCompleted);
             _signalBus.Unsubscribe<LevelFailedSignal>(OnLevelFailed);
-            _signalBus.Unsubscribe<LevelContinuedSignal>(OnLevelContinued);
         }
     }
 }

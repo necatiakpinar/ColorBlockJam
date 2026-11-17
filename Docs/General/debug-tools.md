@@ -29,7 +29,7 @@ The level shortcuts need the Gameplay scene in play mode; outside it the window 
 - **`GameplayDebugCommands`** (Game assembly, Gameplay scope) holds the shortcuts. Each one goes through the
   service that owns the change, so the game reacts exactly as it does in play: **Win now** announces the
   board as cleared (the reward is paid, the win popup opens), **Run out of time** empties the timer and
-  fails the session (the out-of-time popup opens), coins go through `IWalletService`, levels through
+  fails the session (the level-failed popup opens), coins go through `IWalletService`, levels through
   `IPlayerProgressService.SetCurrentLevel` and a scene reload, the timer through `LevelTimer.SetSecondsLeft`.
 - **`GameDebugWindow`** (Editor assembly) only finds the Gameplay scope (`LifetimeScope.Find`), resolves the
   commands, calls them and repaints the readout a few times a second. It owns no game logic.

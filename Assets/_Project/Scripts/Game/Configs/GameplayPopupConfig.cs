@@ -14,9 +14,6 @@ namespace ColorBlockJam.Game.Configs
         WinPopupView _winPopup;
 
         [SerializeField]
-        OutOfTimePopupView _outOfTimePopup;
-
-        [SerializeField]
         LevelFailedPopupView _levelFailedPopup;
 
         [SerializeField]
@@ -32,7 +29,6 @@ namespace ColorBlockJam.Game.Configs
 
         public PausePopupView PausePopup => _pausePopup;
         public WinPopupView WinPopup => _winPopup;
-        public OutOfTimePopupView OutOfTimePopup => _outOfTimePopup;
         public LevelFailedPopupView LevelFailedPopup => _levelFailedPopup;
         public BoosterPurchasePopupView BoosterPurchasePopup => _boosterPurchasePopup;
         public OutOfLivesPopupView OutOfLivesPopup => _outOfLivesPopup;

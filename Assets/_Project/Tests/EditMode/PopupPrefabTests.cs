@@ -22,7 +22,6 @@ namespace ColorBlockJam.Tests.EditMode
         {
             yield return GameplayConfig.PausePopup;
             yield return GameplayConfig.WinPopup;
-            yield return GameplayConfig.OutOfTimePopup;
             yield return GameplayConfig.LevelFailedPopup;
             yield return HomeConfig.SettingsPopup;
         }

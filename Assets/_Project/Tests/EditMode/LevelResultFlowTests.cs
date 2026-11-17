@@ -37,11 +37,8 @@ namespace ColorBlockJam.Tests.EditMode
         RecordingCoinFlight _coinFlight;
         FailFlow _failFlow;
         WinPopupView _winPopup;
-        OutOfTimePopupView _outOfTime;
         LevelFailedPopupView _levelFailed;
         Button _continueAfterWin;
-        Button _buyTime;
-        Button _giveUp;
         Button _retry;
         Button _goHome;
         LivesRig _lives;
@@ -72,7 +69,6 @@ namespace ColorBlockJam.Tests.EditMode
             _rewardConfig = ScriptableObject.CreateInstance<LevelRewardConfig>();
 
             _winPopup = _views.CreateWinPopup(out _continueAfterWin);
-            _outOfTime = _views.CreateOutOfTimePopup(out _buyTime, out _giveUp);
             _levelFailed = _views.CreateLevelFailedPopup(out _retry, out _goHome);
             _rewardService = new LevelRewardService(_bus, levels, new LevelRewardProvider(_rewardConfig), _wallet);
             _coinFlight = new RecordingCoinFlight();
@@ -82,8 +78,7 @@ namespace ColorBlockJam.Tests.EditMode
             _attempt = new LevelAttemptLives(_lives.Lives, _bus);
             _livesPopup = _views.CreateOutOfLivesPopup(_bus, out _refill, out _livesClose);
             _livesFlow = new GameplayLivesFlow(_lives.Lives, _wallet, _livesPopup, _popups, _session, _navigation);
-            _failFlow = new FailFlow(_bus, _popups, _outOfTime, _levelFailed, _session,
-                new LevelContinueService(_session, _wallet, _config), _navigation, _attempt, _livesFlow);
+            _failFlow = new FailFlow(_bus, _popups, _levelFailed, _navigation, _livesFlow);
             _session.Start(1);
         }
 
@@ -175,71 +170,69 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
-        public void Fail_ShouldOfferMoreTimeForCoins_WhenTheTimerRunsOut()
-        {
-            _wallet.Add(80);
-
-            _session.Fail();
-
-            Assert.That(_popups.Current, Is.SameAs(_outOfTime));
-            Assert.That(_outOfTime.CanContinue, Is.True);
-        }
-
-        [Test]
-        public void Fail_ShouldNotLetThePlayerContinue_WhenTheyCannotPay()
-        {
-            _wallet.Add(10);
-
-            _session.Fail();
-
-            Assert.That(_outOfTime.CanContinue, Is.False);
-        }
-
-        [Test]
-        public void BuyTime_ShouldTakeTheCoinsCloseAndPlayOn_WhenTapped()
-        {
-            _wallet.Add(80);
-            _session.Fail();
-            int extra = 0;
-            _bus.Subscribe<LevelContinuedSignal>(signal => extra = signal.ExtraSeconds);
-
-            _buyTime.onClick.Invoke();
-
-            Assert.That(_wallet.Coins, Is.EqualTo(30));
-            Assert.That(extra, Is.EqualTo(_config.ContinueSeconds));
-            Assert.That(_session.State, Is.EqualTo(LevelState.Playing));
-            Assert.That(_popups.IsOpen, Is.False);
-        }
-
-        [Test]
-        public void GiveUp_ShouldOpenLevelFailed_WhenTheOutOfTimePopupIsClosed()
+        public void Fail_ShouldOpenLevelFailed_WhenTheTimerRunsOut()
         {
             _session.Fail();
-
-            _giveUp.onClick.Invoke();
 
             Assert.That(_popups.Current, Is.SameAs(_levelFailed));
             Assert.That(_session.State, Is.EqualTo(LevelState.Failed));
         }
 
         [Test]
-        public void Retry_ShouldCloseAndRestartTheLevel_WhenTapped()
+        public void Fail_ShouldTakeTheAttemptsLife_WhenTheLevelFails()
         {
+            _bus.Fire(new BlockGrabbedSignal(0));
+
             _session.Fail();
-            _giveUp.onClick.Invoke();
+
+            Assert.That(_lives.Lives.Count, Is.EqualTo(_lives.Lives.Max - 1));
+        }
+
+        [Test]
+        public void Retry_ShouldCloseAndRestartTheLevel_WhenALifeIsLeft()
+        {
+            _bus.Fire(new BlockGrabbedSignal(0));
+            _session.Fail();
 
             _retry.onClick.Invoke();
 
             Assert.That(_popups.IsOpen, Is.False);
             Assert.That(_session.State, Is.EqualTo(LevelState.Playing));
             Assert.That(_session.LevelNumber, Is.EqualTo(1));
+            Assert.That(_lives.Lives.Count, Is.EqualTo(_lives.Lives.Max - 1), "The fail took the only life it costs.");
+        }
+
+        [Test]
+        public void Retry_ShouldOfferARefill_WhenNoLivesAreLeft()
+        {
+            _lives.LoseAll();
+            _session.Fail();
+
+            _retry.onClick.Invoke();
+
+            Assert.That(_popups.Current, Is.SameAs(_livesPopup));
+            Assert.That(_session.State, Is.EqualTo(LevelState.Failed));
+        }
+
+        [Test]
+        public void Refill_ShouldRestartTheLevel_WhenBoughtAfterAFail()
+        {
+            _lives.LoseAll();
+            _wallet.Add(_lives.Lives.RefillPrice);
+            _session.Fail();
+            _retry.onClick.Invoke();
+
+            _refill.onClick.Invoke();
+
+            Assert.That(_popups.IsOpen, Is.False);
+            Assert.That(_session.State, Is.EqualTo(LevelState.Playing));
+            Assert.That(_lives.Lives.IsFull, Is.True);
         }
 
         [Test]
         public void LevelFailedClose_ShouldGoHome_WhenTapped()
         {
             _session.Fail();
-            _giveUp.onClick.Invoke();
 
             _goHome.onClick.Invoke();
 

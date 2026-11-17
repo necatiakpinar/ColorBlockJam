@@ -180,7 +180,6 @@ Loading --Start(n)--> Playing --Pause--> Paused --Resume--> Playing
 Playing --(BoardClearedSignal)--> Won          Playing --Fail--> Failed
 Playing | Paused | Failed --Restart--> Playing
 Won --Next(n)--> Playing
-Failed --Continue(s)--> Playing
 ```
 
 | Transition | Signals |
@@ -189,7 +188,6 @@ Failed --Continue(s)--> Playing
 | `Pause` / `Resume` | `LevelPausedSignal` / `LevelResumedSignal` |
 | board cleared while playing | `LevelCompletedSignal` (once) |
 | `Fail` (the timer, T-15) | `LevelFailedSignal` (once) |
-| `Continue(s)` (after a loss, paid first) | `LevelContinuedSignal(s)`: the timer gets `s` more seconds, input comes back |
 
 - Restart rebuilds everything from the level's data, so nothing of the previous attempt stays (DA-15); a
   won level is not restarted, it moves on (T-17, T-21). A paused level cannot fail: its timer stands still.
@@ -247,9 +245,7 @@ own every change:
   and otherwise offers a refill (DA-38).
 - **`BoosterFlow`** routes the booster bar and the booster purchase popup ([boosters.md](boosters.md) §5);
   `GameplayFlow` puts a booster that waits for a target back before pausing.
-- **`FailFlow`** opens the out-of-time popup on `LevelFailedSignal`. Continue buys
-  `GameplayConfig.ContinueSeconds` (20) for `ContinueCost` (50) coins through `LevelContinueService`:
-  the wallet pays first (`IWalletService.TrySpend`), then `LevelSession.Continue` plays on with the same
-  board and `LevelContinuedSignal` adds the seconds to the timer and gives input back. The button cannot
-  be pressed without the coins. Closing gives up and opens the level-failed popup: Retry restarts, close
-  goes Home (T-20, DA-30, DA-31).
+- **`FailFlow`** opens the one level-failed popup on `LevelFailedSignal`; a failed level is final, there is
+  no paid continue. `LevelAttemptLives` has already taken the attempt's life on the same signal (DA-38).
+  Retry plays again through `GameplayLivesFlow`: it restarts when a life is left and otherwise opens the
+  lives popup, whose Refill restarts and whose close goes Home. The popup's close goes Home (T-20, DA-31).

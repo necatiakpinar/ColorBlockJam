@@ -66,15 +66,6 @@ namespace ColorBlockJam.Game.Gameplay.Session
             return true;
         }
 
-        public bool Continue(int extraSeconds)
-        {
-            if (State != LevelState.Failed)
-                return false;
-            State = LevelState.Playing;
-            _signalBus.Fire(new LevelContinuedSignal(extraSeconds));
-            return true;
-        }
-
         public bool Fail()
         {
             if (State != LevelState.Playing)
