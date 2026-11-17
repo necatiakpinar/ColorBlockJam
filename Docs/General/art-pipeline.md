@@ -18,10 +18,19 @@ The art set is used as imported (R-3). `AssetImportTests` enforces §2 and §3.
 ## 2. UI sprites
 
 1. Texture Type `Sprite (2D and UI)`, single, mipmaps off, clamp, alpha is transparency.
-2. Max size: the smallest power of two that holds the source; the 1024² booster icons are capped at 512.
-3. Android override ASTC 6x6.
-4. Every sprite except the full-screen backgrounds (`bg_home_screen`, `bg_block_texture`) is packed into
-   `UiAtlas` (build-time packing, padding 4, no rotation, no tight packing).
+2. Max size: the smallest power of two at least 1.5 times the largest size the UI draws it at (on the
+   1080x1920 reference canvas; phones scale it up to about 1.2 times), never above the source. So the
+   booster, clock and heart icons are 256, `ic_time` and `ic_restart` 128. Nine-sliced sprites keep their
+   source size, since their borders are drawn at it.
+3. Every sprite the UI uses, except the full-screen background `bg_home_screen`, is packed into `UiAtlas`
+   (build-time packing, padding 4, no rotation, no tight packing). The atlas compresses its page (Android
+   ASTC 6x6), so a packed sprite's own import is **uncompressed with no Android override**: a compressed
+   source would be compressed twice and lose detail. The atlas must fit on **one 2048 page**: a second
+   page splits the UI's draw calls and doubles its memory. A new sprite that does not fit means shrinking
+   one by rule 2 first.
+4. Sprites outside the atlas (`bg_home_screen`, and the unused `bg_block_texture`, `Btn_levelBg_normal`,
+   `Lego_Brickv1`, `leaderboard`, `bg_popup_info_holder_2`) keep an Android ASTC 6x6 override. An unused
+   sprite is not built into the player; it joins the atlas when a screen starts using it.
 5. Nine-slice borders are set on panels and stretchable buttons: `bg_popup`, `bg_popup_header`,
    `bg_popup_info_holder`, `bg_popup_info_holder_2`, `bg_menu`, `Btn_popup_green`, `Btn_popup_blue`,
    `bg_gameplay_time_holder`, `bg_home_coin_holder`, `bg_home_resource_holder`, `SquareRoundedMask`.
@@ -31,7 +40,8 @@ The art set is used as imported (R-3). `AssetImportTests` enforces §2 and §3.
 ## 3. Models
 
 1. Scale factor **0.5**: the source files use a 2-unit cell, so after import **one board cell is 1 world
-   unit**. Materials, animation, cameras, lights, blend shapes and colliders are not imported.
+   unit**. Materials, animation, cameras, lights, blend shapes and colliders are not imported, nor are
+   tangents (no material uses a normal map); meshes are not readable, so no CPU copy stays in memory.
 2. `BlockParts` and `Arrows` are authored Z-up; their part prefabs rotate the `Mesh` child +90° on X so
    the part's top faces +Y. `GroundGrid` is Y-up. `WallAndDoor` is exported upside down (its cap faces -y
    and the top is open), so wall, corner and door prefabs rotate the `Mesh` child 180° on X; their top then

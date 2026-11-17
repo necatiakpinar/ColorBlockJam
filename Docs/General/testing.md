@@ -69,7 +69,7 @@ new fake.
 | `BoardFramingTests` | 3x3 to 10x10 boards fit inside the margins at 9:16 and 20:9, centred, as close as possible |
 | `BoardSpaceTests` | cell ↔ world at cell size 1 and 2; edges; outside cells |
 | `BuildSettingsTests` | Splash first; every `SceneId` is a build scene; portrait; IL2CPP ARM64 |
-| `AssetImportTests` | UI sprites, model scale, floor tile size |
+| `AssetImportTests` | UI sprites; atlas sources uncompressed, the atlas ASTC on Android and on one page; model scale, no tangents, not readable; floor tile size |
 | `SceneSetupTests` | every build scene: canvas scaler, safe area root, button feedback |
 | `NavigationFlowTests` (PlayMode) | real boot reaches Home; Home ⇄ Gameplay round trip |
 | `ButtonPressFeedbackTests` (PlayMode) | press shrinks, release restores; non-interactable and disabled cases |
