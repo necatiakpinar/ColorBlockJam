@@ -22,32 +22,16 @@ namespace ColorBlockJam.Game.Installers
     /// </summary>
     public sealed class CoreServicesInstaller : IInstaller
     {
-        readonly ApplicationConfig _applicationConfig;
-        readonly UiConfig _uiConfig;
-        readonly LevelPackConfig _levelPackConfig;
-        readonly NetworkConfig _networkConfig;
-        readonly BoosterConfig _boosterConfig;
-        readonly LivesConfig _livesConfig;
+        readonly ConfigProvider _configs;
 
-        public CoreServicesInstaller(ApplicationConfig applicationConfig, UiConfig uiConfig, LevelPackConfig levelPackConfig,
-            NetworkConfig networkConfig, BoosterConfig boosterConfig, LivesConfig livesConfig)
+        public CoreServicesInstaller(ConfigProvider configs)
         {
-            _livesConfig = livesConfig;
-            _applicationConfig = applicationConfig;
-            _uiConfig = uiConfig;
-            _levelPackConfig = levelPackConfig;
-            _networkConfig = networkConfig;
-            _boosterConfig = boosterConfig;
+            _configs = configs;
         }
 
         public void Install(IContainerBuilder builder)
         {
-            builder.RegisterInstance(_applicationConfig);
-            builder.RegisterInstance(_uiConfig);
-            builder.RegisterInstance(_levelPackConfig);
-            builder.RegisterInstance(_networkConfig);
-            builder.RegisterInstance(_boosterConfig);
-            builder.RegisterInstance(_livesConfig);
+            new ConfigInstaller(_configs).Install(builder);
 
             builder.Register<SignalBus>(Lifetime.Singleton);
             builder.Register<IGameLogger, UnityGameLogger>(Lifetime.Singleton);
@@ -66,7 +50,7 @@ namespace ColorBlockJam.Game.Installers
             builder.Register<TrustedClock>(Lifetime.Singleton).As<ITrustedClock>().AsSelf();
             builder.Register(resolver => new ConnectivityService(resolver.Resolve<IProbeRequest>(),
                     resolver.Resolve<IGameClock>(), resolver.Resolve<TrustedClock>(), resolver.Resolve<SignalBus>(),
-                    resolver.Resolve<IGameLogger>(), _networkConfig.Connectivity), Lifetime.Singleton)
+                    resolver.Resolve<IGameLogger>(), resolver.Resolve<NetworkConfig>().Connectivity), Lifetime.Singleton)
                 .As<IConnectivityService>().AsSelf();
         }
     }

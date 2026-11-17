@@ -51,13 +51,72 @@ namespace ColorBlockJam.Tests.EditMode
             return config;
         }
 
+        /// <summary>Every config class of the game: the <c>*Config</c> ScriptableObjects.</summary>
+        static List<System.Type> ConfigTypes() =>
+            typeof(ConfigProvider).Assembly.GetTypes()
+                .Where(type => typeof(ScriptableObject).IsAssignableFrom(type) && type.Name.EndsWith("Config") && !type.IsAbstract)
+                .ToList();
+
+        /// <summary>A provider with a fresh instance of every config, or the given board view config.</summary>
+        ConfigProvider Configs(BoardViewConfig boardView = null)
+        {
+            var provider = CreateConfig<ConfigProvider>();
+            var serialized = new SerializedObject(provider);
+            SerializedProperty list = serialized.FindProperty("_configs");
+            List<System.Type> types = ConfigTypes();
+            list.arraySize = types.Count;
+            for (int i = 0; i < types.Count; i++)
+            {
+                ScriptableObject config = boardView;
+                if (types[i] != typeof(BoardViewConfig) || boardView == null)
+                {
+                    config = ScriptableObject.CreateInstance(types[i]);
+                    _createdAssets.Add(config);
+                }
+
+                list.GetArrayElementAtIndex(i).objectReferenceValue = config;
+            }
+
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            return provider;
+        }
+
+        [Test]
+        public void ConfigInstaller_ShouldRegisterEveryConfigUnderItsOwnType_WhenBuilt()
+        {
+            ConfigProvider configs = Configs();
+            var builder = new ContainerBuilder();
+            new ConfigInstaller(configs).Install(builder);
+            using IObjectResolver container = builder.Build();
+
+            Assert.That(container.Resolve<ConfigProvider>(), Is.SameAs(configs));
+            foreach (ScriptableObject config in configs.All)
+                Assert.That(container.Resolve(config.GetType()), Is.SameAs(config), config.GetType().Name);
+            Assert.That(configs.GetConfig<GameplayConfig>(), Is.SameAs(container.Resolve<GameplayConfig>()));
+        }
+
+        [Test]
+        public void ShippedConfigProvider_ShouldHoldEveryConfigOnce_WhenTheGameShips()
+        {
+            var shipped = AssetDatabase.LoadAssetAtPath<ConfigProvider>("Assets/_Project/Configs/ConfigProvider.asset");
+            var types = new List<System.Type>();
+            foreach (ScriptableObject config in shipped.All)
+            {
+                Assert.That(config, Is.Not.Null, "Every slot is assigned.");
+                types.Add(config.GetType());
+            }
+
+            Assert.That(types, Is.Unique);
+            // A new config class belongs in the provider too.
+            foreach (System.Type type in ConfigTypes())
+                Assert.That(types, Does.Contain(type), $"{type.Name} is missing from the ConfigProvider.");
+        }
+
         IObjectResolver BuildCoreAndSplash()
         {
             var builder = new ContainerBuilder();
-            new CoreServicesInstaller(CreateConfig<ApplicationConfig>(), CreateConfig<UiConfig>(), CreateConfig<LevelPackConfig>(),
-                CreateConfig<NetworkConfig>(), CreateConfig<BoosterConfig>(),
-                CreateConfig<LivesConfig>()).Install(builder);
-            new SplashInstaller(CreateConfig<SplashConfig>()).Install(builder);
+            new CoreServicesInstaller(Configs()).Install(builder);
+            new SplashInstaller().Install(builder);
             return builder.Build();
         }
 
@@ -65,9 +124,7 @@ namespace ColorBlockJam.Tests.EditMode
         public void CoreServicesInstaller_ShouldResolveEveryService_WhenBuilt()
         {
             var builder = new ContainerBuilder();
-            new CoreServicesInstaller(CreateConfig<ApplicationConfig>(), CreateConfig<UiConfig>(), CreateConfig<LevelPackConfig>(),
-                CreateConfig<NetworkConfig>(), CreateConfig<BoosterConfig>(),
-                CreateConfig<LivesConfig>()).Install(builder);
+            new CoreServicesInstaller(Configs()).Install(builder);
             using IObjectResolver container = builder.Build();
 
             Assert.That(container.Resolve<SignalBus>(), Is.Not.Null);
@@ -93,9 +150,7 @@ namespace ColorBlockJam.Tests.EditMode
         public void CoreServicesInstaller_ShouldShareOneSignalBus_WhenResolvedTwice()
         {
             var builder = new ContainerBuilder();
-            new CoreServicesInstaller(CreateConfig<ApplicationConfig>(), CreateConfig<UiConfig>(), CreateConfig<LevelPackConfig>(),
-                CreateConfig<NetworkConfig>(), CreateConfig<BoosterConfig>(),
-                CreateConfig<LivesConfig>()).Install(builder);
+            new CoreServicesInstaller(Configs()).Install(builder);
             using IObjectResolver container = builder.Build();
 
             Assert.That(container.Resolve<SignalBus>(), Is.SameAs(container.Resolve<SignalBus>()));
@@ -126,10 +181,19 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(container.Resolve<IPopupService>(), Is.Not.Null);
         }
 
+        IObjectResolver BuildCoreAndGameplay()
+        {
+            var builder = new ContainerBuilder();
+            new CoreServicesInstaller(Configs()).Install(builder);
+            new GameplayInstaller().Install(builder);
+            return builder.Build();
+        }
+
         IObjectResolver BuildGameplay(BoardViewConfig boardViewConfig)
         {
             var builder = new ContainerBuilder();
-            new GameplayInstaller(CreateConfig<GameplayConfig>(), boardViewConfig, CreateConfig<LevelRewardConfig>()).Install(builder);
+            new ConfigInstaller(Configs(boardViewConfig)).Install(builder);
+            new GameplayInstaller().Install(builder);
             return builder.Build();
         }
 
@@ -149,13 +213,7 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void GameplayInstaller_ShouldResolveBoardServices_WhenBuiltOnTopOfCoreServices()
         {
-            var builder = new ContainerBuilder();
-            new CoreServicesInstaller(CreateConfig<ApplicationConfig>(), CreateConfig<UiConfig>(), CreateConfig<LevelPackConfig>(),
-                CreateConfig<NetworkConfig>(), CreateConfig<BoosterConfig>(),
-                CreateConfig<LivesConfig>())
-                .Install(builder);
-            new GameplayInstaller(CreateConfig<GameplayConfig>(), CreateConfig<BoardViewConfig>(), CreateConfig<LevelRewardConfig>()).Install(builder);
-            using IObjectResolver container = builder.Build();
+            using IObjectResolver container = BuildCoreAndGameplay();
 
             Assert.That(container.Resolve<LevelProvider>(), Is.Not.Null);
             Assert.That(container.Resolve<ActiveBoard>(), Is.Not.Null);

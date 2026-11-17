@@ -3813,9 +3813,6 @@ MonoBehaviour:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
-  _gameplayConfig: {fileID: 11400000, guid: de7add547110b3c4cb7658b56130fe67, type: 2}
-  _boardViewConfig: {fileID: 11400000, guid: 5e256dc7696fe224c99263ecfb83cffd, type: 2}
-  _levelRewardConfig: {fileID: 11400000, guid: d1e8ea74ba6a4d741beac27b6c21a0de, type: 2}
   _boardCamera: {fileID: 1522050851}
   _hudView: {fileID: 1525294842}
   _boosterBarView: {fileID: 849473856}
@@ -3825,7 +3822,6 @@ MonoBehaviour:
   _boardView: {fileID: 2033246774}
   _blockLayerView: {fileID: 1067540039}
   _boardCameraView: {fileID: 1522050855}
-  _popupConfig: {fileID: 11400000, guid: 0ff3b67a0671dd34dbb21bdf48c99f62, type: 2}
   _popupLayer: {fileID: 157014769}
 --- !u!4 &1406341275
 Transform:

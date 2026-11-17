@@ -16,31 +16,16 @@ namespace ColorBlockJam.Game.Scopes
     /// </summary>
     public sealed class RootLifetimeScope : LifetimeScope
     {
+        [Tooltip("Every config of the game; each one is registered under its own type.")]
         [SerializeField]
-        ApplicationConfig _applicationConfig;
-
-        [SerializeField]
-        UiConfig _uiConfig;
-
-        [SerializeField]
-        LevelPackConfig _levelPackConfig;
-
-        [SerializeField]
-        NetworkConfig _networkConfig;
-
-        [SerializeField]
-        BoosterConfig _boosterConfig;
-
-        [SerializeField]
-        LivesConfig _livesConfig;
+        ConfigProvider _configs;
 
         [SerializeField]
         ApplicationPauseReporter _pauseReporter;
 
         protected override void Configure(IContainerBuilder builder)
         {
-            new CoreServicesInstaller(_applicationConfig, _uiConfig, _levelPackConfig, _networkConfig, _boosterConfig, _livesConfig)
-                .Install(builder);
+            new CoreServicesInstaller(_configs).Install(builder);
             builder.RegisterComponent(_pauseReporter);
 
             // Probing starts as soon as the app-wide container exists (online requirement, network.md).

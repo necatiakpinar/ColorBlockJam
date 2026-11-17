@@ -13,4 +13,3 @@ MonoBehaviour:
   m_Name: LevelPackConfig
   m_EditorClassIdentifier: 
   _bundledPack: {fileID: 4900000, guid: d0fd4ff29f8006b4392ff94ab9213c1e, type: 3}
-  _rules: {fileID: 11400000, guid: 5cd45030ba1df7f41a2eef6da122a51c, type: 2}

@@ -43,8 +43,8 @@
    hiding deactivates it at once. A framed popup uses `bg_popup` for the panel, `bg_popup_header` with the
    title, `Popup_Close_Button` at the top right and `bg_popup_info_holder` for inner panels.
    - **Popups are prefabs** under `Assets/_Project/Prefabs/UI/Popups/`, saved inactive with a full-screen
-     root. The scenes hold none: `GameplayPopupConfig` and `HomePopupConfig` list the prefabs and each scope
-     creates them under its `Popups` layer with `RegisterComponentInNewPrefab` and injects it. Change a
+     root. The scenes hold none: `GameplayPopupConfig` and `HomePopupConfig` (in the `ConfigProvider`,
+     [architecture.md](architecture.md) §5) list the prefabs and each scope creates them under its `Popups` layer with `RegisterComponentInNewPrefab` and injects it. Change a
      popup by editing its prefab (`PopupPrefabTests` checks the config, the inactive root, press
      feedback on every button and auto-sized texts).
    - **Texts fit their box:** every label stretches over the area it belongs to (anchors, not a fixed

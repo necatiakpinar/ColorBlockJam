@@ -982,7 +982,6 @@ MonoBehaviour:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
-  _splashConfig: {fileID: 11400000, guid: a07efd526856aa247911e4b7dae0be6a, type: 2}
   _splashView: {fileID: 783649465}
 --- !u!4 &2145145670
 Transform:

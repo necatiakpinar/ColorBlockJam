@@ -49,12 +49,7 @@ MonoBehaviour:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
-  _applicationConfig: {fileID: 11400000, guid: 9377f806c6e22e243b7f54db1b07a5c1, type: 2}
-  _uiConfig: {fileID: 11400000, guid: e8978dcbd655e8148b87ae1c2488c3fc, type: 2}
-  _levelPackConfig: {fileID: 11400000, guid: 86efbc653f2cee347b5664875b06045e, type: 2}
-  _networkConfig: {fileID: 11400000, guid: 22b0ecfe9f7138d4f9c76393ef2cd07e, type: 2}
-  _boosterConfig: {fileID: 11400000, guid: aacb87acc0ea0794caa130eba2b8bfd6, type: 2}
-  _livesConfig: {fileID: 11400000, guid: 62cda503805459f4ab22bf9f7552ee68, type: 2}
+  _configs: {fileID: 11400000, guid: e6940e0edda0ac64fa42194eae406cb6, type: 2}
   _pauseReporter: {fileID: 8684118224795160722}
 --- !u!114 &8684118224795160722
 MonoBehaviour:

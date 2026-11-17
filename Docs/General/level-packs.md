@@ -16,7 +16,7 @@ The game plays a **level pack**: the whole ordered level list as one JSON docume
 | `Assets/_Project/Levels/LevelCatalog.asset` + `Level_NNN.asset` | the levels as authored (`LevelCatalog`, [level-data.md](level-data.md)) | the level editor |
 | `Assets/_Project/Levels/levels.json` | the **bundled pack**, built into the app | `LevelCatalogEditing.WritePack`, on every catalog change |
 | `IKeyValueStorage` key `level_pack_remote_v1` | the **stored remote pack**, waiting for the next launch | `LevelPackService.TryStoreRemote` |
-| `LevelPackConfig` (`Assets/_Project/Configs/`) | the bundled pack's `TextAsset` and the `LevelRulesConfig` packs are checked against | by hand |
+| `LevelPackConfig` (`Assets/_Project/Configs/`, in the `ConfigProvider`) | the bundled pack's `TextAsset`; packs are checked against `LevelRulesConfig` | by hand |
 
 Rules:
 1. **The catalog and `levels.json` never drift.** Every editor change to the catalog (save, add, copy,

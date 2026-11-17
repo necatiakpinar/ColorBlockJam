@@ -1,6 +1,5 @@
 using ColorBlockJam.Core.Boot;
 using ColorBlockJam.Game.Boot;
-using ColorBlockJam.Game.Configs;
 using VContainer;
 using VContainer.Unity;
 
@@ -11,17 +10,8 @@ namespace ColorBlockJam.Game.Installers
     /// </summary>
     public sealed class SplashInstaller : IInstaller
     {
-        readonly SplashConfig _splashConfig;
-
-        public SplashInstaller(SplashConfig splashConfig)
-        {
-            _splashConfig = splashConfig;
-        }
-
         public void Install(IContainerBuilder builder)
         {
-            builder.RegisterInstance(_splashConfig);
-
             builder.Register<IBootStep, ApplyApplicationSettingsStep>(Lifetime.Singleton);
             builder.Register<IBootStep, LoadLevelsStep>(Lifetime.Singleton);
             builder.Register<IBootStep, LoadPlayerDataStep>(Lifetime.Singleton);

@@ -15,28 +15,12 @@ using VContainer.Unity;
 
 namespace ColorBlockJam.Game.Installers
 {
-    /// <summary>Gameplay-scene services.</summary>
+    /// <summary>Gameplay-scene services; their configs come from the root scope's <see cref="ConfigProvider"/>.</summary>
     public sealed class GameplayInstaller : IInstaller
     {
-        readonly GameplayConfig _gameplayConfig;
-        readonly BoardViewConfig _boardViewConfig;
-        readonly LevelRewardConfig _levelRewardConfig;
-
-        public GameplayInstaller(GameplayConfig gameplayConfig, BoardViewConfig boardViewConfig,
-            LevelRewardConfig levelRewardConfig)
-        {
-            _gameplayConfig = gameplayConfig;
-            _boardViewConfig = boardViewConfig;
-            _levelRewardConfig = levelRewardConfig;
-        }
-
         public void Install(IContainerBuilder builder)
         {
-            builder.RegisterInstance(_gameplayConfig);
-            builder.RegisterInstance(_boardViewConfig);
-            builder.RegisterInstance(_levelRewardConfig);
-
-            builder.Register(_ => new BoardSpace(_boardViewConfig.CellSize), Lifetime.Singleton);
+            builder.Register(resolver => new BoardSpace(resolver.Resolve<BoardViewConfig>().CellSize), Lifetime.Singleton);
             builder.Register<LevelProvider>(Lifetime.Singleton);
             builder.Register<LevelRewardProvider>(Lifetime.Singleton);
             builder.Register<LevelRewardService>(Lifetime.Singleton);

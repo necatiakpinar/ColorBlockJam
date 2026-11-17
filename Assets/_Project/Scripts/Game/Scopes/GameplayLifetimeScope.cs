@@ -17,15 +17,6 @@ namespace ColorBlockJam.Game.Scopes
     public sealed class GameplayLifetimeScope : LifetimeScope
     {
         [SerializeField]
-        GameplayConfig _gameplayConfig;
-
-        [SerializeField]
-        BoardViewConfig _boardViewConfig;
-
-        [SerializeField]
-        LevelRewardConfig _levelRewardConfig;
-
-        [SerializeField]
         Camera _boardCamera;
 
         [SerializeField]
@@ -52,16 +43,15 @@ namespace ColorBlockJam.Game.Scopes
         [SerializeField]
         BoardCameraView _boardCameraView;
 
-        [SerializeField]
-        GameplayPopupConfig _popupConfig;
-
         [Tooltip("Full-screen layer above the HUD that the popup prefabs are created under.")]
         [SerializeField]
         Transform _popupLayer;
 
         protected override void Configure(IContainerBuilder builder)
         {
-            new GameplayInstaller(_gameplayConfig, _boardViewConfig, _levelRewardConfig).Install(builder);
+            new GameplayInstaller().Install(builder);
+            // The popup prefabs are needed while this scope is configured, so they come from the root's configs now.
+            var popups = Parent.Container.Resolve<GameplayPopupConfig>();
 
             // Components are injected while the container builds, so the HUD has subscribed to its
             // signals before any entry point below starts and fires one.
@@ -75,13 +65,13 @@ namespace ColorBlockJam.Game.Scopes
             builder.RegisterComponent(_blockLayerView);
             builder.RegisterComponent(_boardCameraView);
             // Popups come from their prefabs (GameplayPopupConfig), created under the popup layer and injected.
-            builder.RegisterComponentInNewPrefab(_popupConfig.PausePopup, Lifetime.Scoped).UnderTransform(_popupLayer);
-            builder.RegisterComponentInNewPrefab(_popupConfig.WinPopup, Lifetime.Scoped).UnderTransform(_popupLayer);
-            builder.RegisterComponentInNewPrefab(_popupConfig.OutOfTimePopup, Lifetime.Scoped).UnderTransform(_popupLayer);
-            builder.RegisterComponentInNewPrefab(_popupConfig.LevelFailedPopup, Lifetime.Scoped).UnderTransform(_popupLayer);
-            builder.RegisterComponentInNewPrefab(_popupConfig.BoosterPurchasePopup, Lifetime.Scoped).UnderTransform(_popupLayer);
-            builder.RegisterComponentInNewPrefab(_popupConfig.OutOfLivesPopup, Lifetime.Scoped).UnderTransform(_popupLayer);
-            builder.RegisterComponentInNewPrefab(_popupConfig.LeaveLevelPopup, Lifetime.Scoped).UnderTransform(_popupLayer);
+            builder.RegisterComponentInNewPrefab(popups.PausePopup, Lifetime.Scoped).UnderTransform(_popupLayer);
+            builder.RegisterComponentInNewPrefab(popups.WinPopup, Lifetime.Scoped).UnderTransform(_popupLayer);
+            builder.RegisterComponentInNewPrefab(popups.OutOfTimePopup, Lifetime.Scoped).UnderTransform(_popupLayer);
+            builder.RegisterComponentInNewPrefab(popups.LevelFailedPopup, Lifetime.Scoped).UnderTransform(_popupLayer);
+            builder.RegisterComponentInNewPrefab(popups.BoosterPurchasePopup, Lifetime.Scoped).UnderTransform(_popupLayer);
+            builder.RegisterComponentInNewPrefab(popups.OutOfLivesPopup, Lifetime.Scoped).UnderTransform(_popupLayer);
+            builder.RegisterComponentInNewPrefab(popups.LeaveLevelPopup, Lifetime.Scoped).UnderTransform(_popupLayer);
 
             // Flows that only listen; they need the scene's popups, so the scope registers them, not the installer.
             builder.Register<WinFlow>(Lifetime.Singleton);

@@ -143,8 +143,9 @@ pack or where the game's levels come from.**
 - No abstraction "just in case": an interface needs two implementations or a real seam (tests count).
 - One responsibility per class; methods fit on one screen.
 - No static classes or methods holding runtime logic (editor tooling excepted). Instance + DI.
-- Tunables live in a ScriptableObject config (`<Area>Config`, `[CreateAssetMenu]`) registered in its
-  scope. No magic numbers in logic.
+- Tunables live in a ScriptableObject config (`<Area>Config`, `[CreateAssetMenu]`) listed in
+  `ConfigProvider`, which registers every config by its type; inject the one you need (architecture.md §5).
+  No magic numbers in logic.
 
 ### Naming
 

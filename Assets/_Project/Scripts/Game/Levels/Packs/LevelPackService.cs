@@ -24,12 +24,13 @@ namespace ColorBlockJam.Game.Levels.Packs
         readonly LevelDefinitionValidator _validator;
         LevelPack _current;
 
-        public LevelPackService(LevelPackConfig config, IKeyValueStorage storage, IGameLogger logger)
+        /// <param name="rules">The board and timer limits every level of a pack must respect.</param>
+        public LevelPackService(LevelPackConfig config, LevelRulesConfig rules, IKeyValueStorage storage, IGameLogger logger)
         {
             _config = config;
             _storage = storage;
             _logger = logger;
-            _validator = new LevelDefinitionValidator(config.Rules);
+            _validator = new LevelDefinitionValidator(rules);
         }
 
         public LevelPack Current => _current ?? throw new InvalidOperationException("Load the level pack at boot before reading levels.");

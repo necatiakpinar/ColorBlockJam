@@ -32,7 +32,7 @@ Assets/_Project/
 │   ├── Boosters/        BoosterType, BoosterInventory (saved stock), BoosterShop
 │   ├── Debugging/       GameplayDebugCommands (the debug window's shortcuts)
 │   ├── UI/              safe area, button press feedback, popup service, PopupView, SettingToggleView
-│   ├── Gameplay/        GameplayFlow, signals, HUD, Board/ (rules, ActiveBoard), Input/ (touch, drag), Boosters/ (BoosterService),
+│   ├── Gameplay/        GameplayFlow, signals, HUD, Board/ (rules, ActiveBoard), Input/ (touch, drag), Boosters/ (BoosterService, Commands/),
 │   │                    View/ (board, blocks, tiling, camera), Animations/
 │   └── Common/Animations/  reusable IAnimation structs
 ├── Scripts/Editor/    ColorBlockJam.Editor   editor tooling: LevelEditing/ (level editor), Debugging/
@@ -111,9 +111,19 @@ every animation were skipped.
 ## 5. Configs
 
 Tunables are `ScriptableObject`s named `<Area>Config` with `[CreateAssetMenu(menuName =
-"ColorBlockJam/Configs/...")]`, stored in `Assets/_Project/Configs/`, referenced by the owning scope's
-serialized field and registered with `RegisterInstance`. Consumers inject the config type. The one exception,
-`ButtonPressFeedback` reading `UiConfig` directly, is explained in [ui.md](ui.md) §2.2.
+"ColorBlockJam/Configs/...")]`, stored in `Assets/_Project/Configs/`. All of them sit in one place:
+- **The provider.** `ConfigProvider` (`Assets/_Project/Configs/ConfigProvider.asset`) holds every config in
+  one list, one asset per type. The root scope holds it as its only config field.
+- **Registration.** `ConfigInstaller` (through `CoreServicesInstaller`) registers the provider and every
+  config under its own type, once for the session.
+- **Consumers.** Inject the config type you need, or inject `ConfigProvider` and call `GetConfig<T>()`.
+- **Scenes.** No scope or installer takes configs as fields or arguments. A scene scope that needs a config
+  while it is configured (the popup prefab lists) resolves it from `Parent.Container`.
+- **Adding a config.** Add its asset to the provider's list.
+  `InstallerResolutionTests.ShippedConfigProvider_ShouldHoldEveryConfigOnce_WhenTheGameShips` fails for a
+  `*Config` class the list misses, an empty entry or a type listed twice.
+
+The one exception, `ButtonPressFeedback` reading `UiConfig` directly, is explained in [ui.md](ui.md) §2.2.
 
 ## 6. Animations (DOTween)
 

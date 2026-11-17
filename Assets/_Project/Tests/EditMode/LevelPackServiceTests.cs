@@ -62,13 +62,12 @@ namespace ColorBlockJam.Tests.EditMode
             _config = ScriptableObject.CreateInstance<LevelPackConfig>();
             var serialized = new SerializedObject(_config);
             serialized.FindProperty("_bundledPack").objectReferenceValue = _bundled;
-            serialized.FindProperty("_rules").objectReferenceValue = _rules;
             serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 
         LevelPackService Loaded()
         {
-            var service = new LevelPackService(_config, _storage, _logger);
+            var service = new LevelPackService(_config, _rules, _storage, _logger);
             service.Load();
             return service;
         }
@@ -153,7 +152,7 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void Levels_ShouldThrow_WhenReadBeforeLoad()
         {
-            var service = new LevelPackService(_config, _storage, _logger);
+            var service = new LevelPackService(_config, _rules, _storage, _logger);
 
             Assert.Throws<InvalidOperationException>(() => _ = service.LevelCount);
         }
