@@ -45,7 +45,7 @@ new fake.
 | `LevelSolverTests` | one-round and waiting levels, a level that needs room made first, unsolvable and capped searches, shipped level scores; every solution replays on a real board |
 | `LevelGeneratorTests` | valid, solvable levels in each difficulty's band; settings respected; seeds repeat; impossible settings refused; timer formula |
 | `LevelDraftTests` | the editor's model: round trip, add, move, rotate, doors, resize |
-| `LevelCatalogEditingTests` | append, duplicate, move, delete and save level assets on a throw-away catalog |
+| `LevelCatalogEditingTests` | append, duplicate, move, delete and save level assets on a throw-away catalog; a save survives an undo rollback |
 | `LevelRewardTests` | coins by difficulty, a missing entry throws, the shipped table rises with difficulty, a win pays its layout's reward (also when looped), a loss or a disposed service pays nothing |
 | `GameplayFlowTests` | start, HUD restart, pause opens the settings popup only while playing, close resumes, switches flip settings, Home, nothing after dispose (`RecordingPopupService`) |
 | `LevelResultFlowTests` | win popup after the delay with the reward, Continue plays the next level; out-of-time offer, buying time, giving up, Retry, Home |

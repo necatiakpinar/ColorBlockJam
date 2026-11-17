@@ -5,8 +5,10 @@ using UnityEditor;
 namespace ColorBlockJam.Editor.LevelEditing
 {
     /// <summary>
-    /// Adds, copies, removes and reorders the catalog's level assets (T-26, level-editor.md §3). Every change is
-    /// undoable and saved; a new level is an asset next to the others, named after the first free number.
+    /// Adds, copies, removes and reorders the catalog's level assets (T-26, level-editor.md §3). Every change goes
+    /// straight to disk without an undo record: the editor's undo covers the draft, and an undo record on an asset
+    /// lets the test runner's undo rollback revert a saved level. A new level is an asset next to the others, named
+    /// after the first free number.
     /// </summary>
     public sealed class LevelCatalogEditing
     {
@@ -29,13 +31,12 @@ namespace ColorBlockJam.Editor.LevelEditing
             var definition = UnityEngine.ScriptableObject.CreateInstance<LevelDefinition>();
             definition.SetData(data);
             AssetDatabase.CreateAsset(definition, NextFreePath());
-            Undo.RegisterCreatedObjectUndo(definition, "Add level");
 
             var serialized = new SerializedObject(_catalog);
             SerializedProperty list = serialized.FindProperty(ListField);
             list.InsertArrayElementAtIndex(index);
             list.GetArrayElementAtIndex(index).objectReferenceValue = definition;
-            serialized.ApplyModifiedProperties();
+            serialized.ApplyModifiedPropertiesWithoutUndo();
             AssetDatabase.SaveAssets();
             return definition;
         }
@@ -53,7 +54,7 @@ namespace ColorBlockJam.Editor.LevelEditing
             SerializedProperty list = serialized.FindProperty(ListField);
             list.GetArrayElementAtIndex(index).objectReferenceValue = null;
             list.DeleteArrayElementAtIndex(index);
-            serialized.ApplyModifiedProperties();
+            serialized.ApplyModifiedPropertiesWithoutUndo();
             AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(definition));
             AssetDatabase.SaveAssets();
         }
@@ -63,15 +64,14 @@ namespace ColorBlockJam.Editor.LevelEditing
         {
             var serialized = new SerializedObject(_catalog);
             serialized.FindProperty(ListField).MoveArrayElement(from, to);
-            serialized.ApplyModifiedProperties();
+            serialized.ApplyModifiedPropertiesWithoutUndo();
             AssetDatabase.SaveAssets();
         }
 
-        /// <summary>Writes the draft into the level's asset (undoable) and saves it.</summary>
+        /// <summary>Writes the draft into the level's asset and saves it.</summary>
         public void Save(int index, LevelDraft draft)
         {
             LevelDefinition definition = _catalog.Levels[index];
-            Undo.RecordObject(definition, "Save level");
             definition.SetData(draft.ToLevel());
             EditorUtility.SetDirty(definition);
             AssetDatabase.SaveAssets();

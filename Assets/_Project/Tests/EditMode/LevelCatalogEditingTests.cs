@@ -98,5 +98,22 @@ namespace ColorBlockJam.Tests.EditMode
 
             Assert.That(_catalog.Levels[0].Data.TimerSeconds, Is.EqualTo(123));
         }
+
+        [Test]
+        public void Save_ShouldSurviveAnUndoRollback_WhenTheTestRunnerRevertsTheEditor()
+        {
+            _editing.Append(Level(3));
+            LevelDraft draft = LevelDraft.From(_catalog.Levels[0].Data);
+            draft.TimerSeconds = 123;
+            Undo.IncrementCurrentGroup();
+            int group = Undo.GetCurrentGroup();
+
+            _editing.Save(0, draft);
+            _editing.Append(Level(4));
+            Undo.RevertAllDownToGroup(group);
+
+            Assert.That(_catalog.Levels[0].Data.TimerSeconds, Is.EqualTo(123));
+            Assert.That(Widths(), Is.EqualTo(new[] { 3, 4 }));
+        }
     }
 }
