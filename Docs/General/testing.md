@@ -42,6 +42,7 @@ new fake.
 | `TrustedClockTests` | no time before a server time; HTTP date read as UTC; moves on with monotonic time; a bad header keeps the last time |
 | `WalletServiceTests` | starts empty, throws before load, adds and saves at once with one signal, rejects zero or less, corrupt or negative saves start fresh |
 | `SettingsServiceTests` | all on for a new player, throws before load, a change saves and announces only that toggle, an unchanged value does nothing, a corrupt save starts fresh |
+| `LevelSolverTests` | one-round and waiting levels, a level that needs room made first, unsolvable and capped searches, shipped level scores; every solution replays on a real board |
 | `LevelRewardTests` | coins by difficulty, a missing entry throws, the shipped table rises with difficulty, a win pays its layout's reward (also when looped), a loss or a disposed service pays nothing |
 | `GameplayFlowTests` | start, HUD restart, pause opens the settings popup only while playing, close resumes, switches flip settings, Home, nothing after dispose (`RecordingPopupService`) |
 | `LevelResultFlowTests` | win popup after the delay with the reward, Continue plays the next level; out-of-time offer, buying time, giving up, Retry, Home |

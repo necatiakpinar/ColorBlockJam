@@ -32,5 +32,12 @@ namespace ColorBlockJam.Game.Gameplay.Board
         internal void Translate(Vector2Int delta) => Offset += delta;
 
         internal void MarkExited() => HasExited = true;
+
+        /// <summary>Puts the block anywhere at once; only <see cref="BoardState"/> calls it, for the solver.</summary>
+        internal void Reset(Vector2Int offset, bool hasExited)
+        {
+            Offset = offset;
+            HasExited = hasExited;
+        }
     }
 }

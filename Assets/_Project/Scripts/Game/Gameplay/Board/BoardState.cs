@@ -76,6 +76,33 @@ namespace ColorBlockJam.Game.Gameplay.Board
             return result;
         }
 
+        /// <summary>
+        /// Lays every block out at once, at <paramref name="offsets"/> or gone (<paramref name="exited"/>). The
+        /// level solver uses it to visit board states with these same rules; play never does.
+        /// </summary>
+        internal void Arrange(IReadOnlyList<Vector2Int> offsets, IReadOnlyList<bool> exited)
+        {
+            Array.Fill(_occupancy, Empty);
+            RemainingBlocks = 0;
+            for (int id = 0; id < _blocks.Length; id++)
+            {
+                _blocks[id].Reset(offsets[id], exited[id]);
+                if (exited[id])
+                    continue;
+                Place(_blocks[id]);
+                RemainingBlocks++;
+            }
+        }
+
+        /// <summary>Moves a block straight to <paramref name="offset"/>, which must be free (solver only).</summary>
+        internal void MoveBlockTo(int blockId, Vector2Int offset)
+        {
+            BoardBlock block = _blocks[blockId];
+            Clear(block);
+            block.Reset(offset, false);
+            Place(block);
+        }
+
         /// <summary>True when the cell is on the board and empty or taken by the block itself.</summary>
         public bool IsCellFree(Vector2Int cell, int blockId) => IsInside(cell) && IsFreeFor(cell, blockId);
 

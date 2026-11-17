@@ -19,6 +19,10 @@ namespace ColorBlockJam.Game.Configs
         [SerializeField, Min(1)]
         int _maxTimerSeconds = 600;
 
+        [Tooltip("Board states the solver may visit before it answers \"unknown\" (DA-32).")]
+        [SerializeField, Min(100)]
+        int _solverStateCap = 20000;
+
         void OnValidate()
         {
             _maxBoardSize = Mathf.Max(_maxBoardSize, _minBoardSize);
@@ -29,5 +33,6 @@ namespace ColorBlockJam.Game.Configs
         public int MaxBoardSize => _maxBoardSize;
         public int MinTimerSeconds => _minTimerSeconds;
         public int MaxTimerSeconds => _maxTimerSeconds;
+        public int SolverStateCap => _solverStateCap;
     }
 }
