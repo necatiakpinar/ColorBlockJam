@@ -22,7 +22,7 @@ namespace ColorBlockJam.Game.Gameplay.Input
     /// event to the next, so a block can always turn into any other gap.</item>
     /// <item>Whenever its nearest cell changes, the move is committed to the board, so the board always holds
     /// the cell it settles on. Lined up with a fitting door, the wall stops counting and the block exits as
-    /// it is halfway through.</item>
+    /// soon as it is pushed <see cref="BoardViewConfig.ExitPush"/> into the door.</item>
     /// <item>What is drawn may lean toward the finger past an obstacle by
     /// <see cref="BoardViewConfig.HoldGive"/>, so a held block never feels frozen; that lean is never
     /// committed.</item>
@@ -284,7 +284,10 @@ namespace ColorBlockJam.Game.Gameplay.Input
             return false;
         }
 
-        /// <summary>Steps the board block until it sits on the cell nearest to where it is drawn.</summary>
+        /// <summary>
+        /// Steps the board block until it sits on the cell nearest to where it is drawn, and lets it out as
+        /// soon as it is pushed <see cref="BoardViewConfig.ExitPush"/> past its cell into a fitting door.
+        /// </summary>
         void Commit(int axis, int direction)
         {
             int nearest = Mathf.RoundToInt(_position[axis]);
@@ -296,6 +299,13 @@ namespace ColorBlockJam.Game.Gameplay.Input
                     _blockId = NoBlock;
                 else if (result == StepResult.Blocked)
                     break;
+            }
+
+            if (_blockId != NoBlock && (_position[axis] - CellOffset[axis]) * direction >= _config.ExitPush
+                && _board.Current.CanStep(_blockId, step) == StepResult.Exited)
+            {
+                _board.TryStep(_blockId, step);
+                _blockId = NoBlock;
             }
         }
 

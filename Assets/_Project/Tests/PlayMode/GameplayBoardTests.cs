@@ -119,7 +119,9 @@ namespace ColorBlockJam.Tests.PlayMode
                 Assert.That(_blocks.Views[0], Is.Null);
                 Assert.That(cleared, Is.Empty);
 
-                yield return WaitRealtime(_container.Resolve<BoardViewConfig>().ExitDuration + 0.2f);
+                BoardViewConfig config = _container.Resolve<BoardViewConfig>();
+                // The blocks here are one cell long: they slide that plus the clearance at the exit speed.
+                yield return WaitRealtime((1f + config.ExitClearance) / config.ExitSpeed + 0.2f);
                 Assert.That(redView.gameObject.activeInHierarchy, Is.False, "The exited block view returns to its pool.");
 
                 Swipe(new Vector2Int(3, 1), new Vector2Int(5, 1));
@@ -176,6 +178,52 @@ namespace ColorBlockJam.Tests.PlayMode
             yield return WaitRealtime(_container.Resolve<BoardViewConfig>().SnapDuration + 0.2f);
             Assert.That(_blocks.Views[1].transform.localPosition.x, Is.EqualTo(2.5f).Within(0.01f),
                 "A reused block view still slides to its new cell.");
+        }
+
+        [UnityTest]
+        public IEnumerator Exit_ShouldSettleAtTheDoorBeforeSlidingIn_WhenTheBlockLeaves()
+        {
+            yield return BootToBoard();
+            _board.Load(TwoBlockLevel());
+            BlockView red = _blocks.Views[0];
+            Vector3 mouth = red.transform.localPosition; // red already sits in its door's row, by the wall
+            float snap = _container.Resolve<BoardViewConfig>().ExitSnapDuration;
+
+            Swipe(new Vector2Int(0, 1), new Vector2Int(-2, 1));
+            yield return WaitRealtime(snap * 0.5f);
+            float whileSettling = red.transform.localPosition.x;
+            yield return WaitRealtime(snap + 0.1f);
+
+            Assert.That(whileSettling, Is.GreaterThanOrEqualTo(mouth.x - 1e-3f), "Not into the door while settling.");
+            Assert.That(red.transform.localPosition.x, Is.LessThan(mouth.x - 0.1f), "Then it slides in.");
+        }
+
+        [UnityTest]
+        public IEnumerator Exit_ShouldCutTheBlockAtTheDoorAndSprayDebris_WhenItLeaves()
+        {
+            yield return BootToBoard();
+            _board.Load(TwoBlockLevel());
+            BlockView red = _blocks.Views[0];
+
+            Swipe(new Vector2Int(0, 1), new Vector2Int(-2, 1));
+            yield return null;
+
+            Assert.That(red.transform.localScale, Is.EqualTo(Vector3.one), "It does not shrink; the door cuts it.");
+            int cut = 0;
+            foreach (MeshRenderer mesh in red.GetComponentsInChildren<MeshRenderer>())
+            {
+                if (mesh.sharedMaterial.shader.name != "ColorBlockJam/Block Exit")
+                    continue;
+                cut++;
+                // The plane keeps the board side of the left edge (x = origin.x) and cuts what is past it.
+                Vector4 plane = mesh.sharedMaterial.GetVector("_ClipPlane");
+                Assert.That(new Vector3(plane.x, plane.y, plane.z), Is.EqualTo(Vector3.right));
+                Assert.That(plane.w, Is.EqualTo(-_space.Origin.x).Within(1e-4f));
+            }
+
+            Assert.That(cut, Is.EqualTo(red.PartCount), "Every piece of the exiting block uses the exit material.");
+            ExitBurstView burst = SceneTestUtility.FindInActiveScene<ExitBurstView>();
+            Assert.That(burst.GetComponent<ParticleSystem>().isPlaying, Is.True, "Debris sprays out of the door.");
         }
 
         [UnityTest]

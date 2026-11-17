@@ -290,7 +290,8 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - **Req:** R-17, R-24.
 - **Arch:** when `BoardState.TryStep` returns `Exited` (a push past the wall through a fitting door with a
   clear path, DA-5), `ActiveBoard` fires `BlockExitedSignal`; `BlockView` plays
-  `BlockExitAnimation` (slide through the door, shrink), then returns to the pool. The last exit fires
+  `BlockExitAnimation` (slide through the door at full size, cut at the board's edge, debris spray), then
+  returns to the pool. The last exit fires
   `BoardClearedSignal` once; the session (T-14) turns it into level complete.
 - **Accept:** a block leaves through its door; a wrong-colour or narrow door blocks it; the last exit
   triggers level complete exactly once.

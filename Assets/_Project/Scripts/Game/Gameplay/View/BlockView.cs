@@ -21,7 +21,10 @@ namespace ColorBlockJam.Game.Gameplay.View
         [SerializeField]
         MeshRenderer _outlineRenderer;
 
-        readonly List<(PartPool Pool, GameObject Part)> _parts = new();
+        static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
+        static readonly int ClipPlaneId = Shader.PropertyToID("_ClipPlane");
+
+        readonly List<(PartPool Pool, GameObject Part, Renderer Mesh)> _parts = new();
         readonly OutlineMeshBuilder _outlineBuilder = new();
         readonly List<Vector3> _outlineVertices = new();
         readonly List<Vector3> _outlineNormals = new();
@@ -32,6 +35,8 @@ namespace ColorBlockJam.Game.Gameplay.View
         TweenerCore<Vector3, Vector3, VectorOptions> _move;
         TweenerCore<Vector3, Vector3, VectorOptions> _follow;
         Sequence _exit;
+        // This view's own copy of the exit material, made on its first exit and reused by every later one.
+        Material _exitMaterial;
         Action<BlockView> _onExitFinished;
         TweenCallback _exitFinished;
 
@@ -74,13 +79,14 @@ namespace ColorBlockJam.Game.Gameplay.View
 
         internal void SetOutlined(bool outlined) => _outlineRenderer.enabled = outlined;
 
-        internal void AddPart(PartPool pool, GameObject part, Vector3 cellPosition, float yaw, Vector3 scale)
+        internal void AddPart(PartPool pool, GameObject part, Renderer mesh, Vector3 cellPosition, float yaw,
+            Vector3 scale)
         {
             part.transform.SetParent(transform, false);
             part.transform.localPosition = cellPosition - _pivot;
             part.transform.localRotation = Quaternion.Euler(0f, yaw, 0f);
             part.transform.localScale = scale;
-            _parts.Add((pool, part));
+            _parts.Add((pool, part, mesh));
         }
 
         /// <summary>
@@ -100,19 +106,45 @@ namespace ColorBlockJam.Game.Gameplay.View
             default(BlockMoveAnimation).Retarget(_move, _pivot + new Vector3(offset.x, 0f, offset.y));
         }
 
+        /// <summary>
+        /// Settles the block, from wherever it is drawn, lined up at the mouth of its door (never backing away
+        /// from it), then slides it <paramref name="distance"/> cells past its last cell at
+        /// <paramref name="speed"/>, switched to the exit material so the part past
+        /// <paramref name="clipPlane"/> (world normal and distance, the board's edge) is cut away.
+        /// </summary>
+        /// <param name="offset">The cell offset the block left from, lined up with the door.</param>
         /// <param name="onFinished">Called when the block has vanished, to return it to its pool.</param>
-        internal void PlayExit(Vector2Int direction, float distance, float duration, Ease ease,
+        /// <returns>How long the slide through the door takes, after the settle.</returns>
+        internal float PlayExit(Vector2Int offset, Vector2Int direction, float distance, float speed,
+            float snapDuration, Ease snapEase, Ease ease, Material exitTemplate, Color color, Vector4 clipPlane,
             Action<BlockView> onFinished)
         {
             _move.Pause();
             _follow.Pause();
             SetOutlined(false);
+            UseExitMaterial(exitTemplate, color, clipPlane);
             _onExitFinished = onFinished;
             _exitFinished ??= OnExitFinished;
-            // Starts from wherever the finger left it, mid-cell or not.
-            Vector3 end = transform.localPosition + new Vector3(direction.x, 0f, direction.y) * distance;
-            _exit = default(BlockExitAnimation).Play(
-                new BlockExitAnimation.Config(transform, end, duration, ease, _exitFinished));
+
+            var outward = new Vector3(direction.x, 0f, direction.y);
+            Vector3 lined = _pivot + new Vector3(offset.x, 0f, offset.y);
+            float alreadyIn = Mathf.Max(0f, Vector3.Dot(transform.localPosition - lined, outward));
+            Vector3 door = lined + outward * alreadyIn;
+            Vector3 end = lined + outward * distance;
+            float slide = (distance - alreadyIn) / speed;
+            _exit = default(BlockExitAnimation).Play(new BlockExitAnimation.Config(
+                transform, door, snapDuration, snapEase, end, slide, ease, _exitFinished));
+            return slide;
+        }
+
+        void UseExitMaterial(Material template, Color color, Vector4 clipPlane)
+        {
+            if (_exitMaterial == null)
+                _exitMaterial = new Material(template) { name = template.name + "_" + name };
+            _exitMaterial.SetColor(BaseColorId, color);
+            _exitMaterial.SetVector(ClipPlaneId, clipPlane);
+            for (int i = 0; i < _parts.Count; i++)
+                _parts[i].Mesh.sharedMaterial = _exitMaterial;
         }
 
         /// <summary>Stops its tweens and returns every piece to its pool; the view is then free for reuse.</summary>
@@ -121,7 +153,7 @@ namespace ColorBlockJam.Game.Gameplay.View
             _exit?.Kill();
             _move?.Pause();
             _follow?.Pause();
-            foreach ((PartPool pool, GameObject part) in _parts)
+            foreach ((PartPool pool, GameObject part, _) in _parts)
                 pool.Release(part);
             _parts.Clear();
         }
@@ -134,6 +166,7 @@ namespace ColorBlockJam.Game.Gameplay.View
             _follow?.Kill();
             _exit?.Kill();
             Destroy(_outlineMesh);
+            Destroy(_exitMaterial);
         }
     }
 }

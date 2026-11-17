@@ -63,7 +63,10 @@ Block height is 0.8 world units (the top face rim sits 0.33 above the floor, stu
 outer and inner, are rounded with radius 0.27, `BoardViewConfig.BlockCornerRadius`); the `_Center` part is the top cap only. Each quarter piece is authored in
 the +x +z quarter of its cell and is mirrored into the other quarters with a negative scale (the Edge
 wall's other orientation adds a 90° turn); `BlockTileResolver` picks the piece and its transform.
-`BlockView.prefab` is the empty pooled root a block's pieces hang under.
+`BlockView.prefab` is the empty pooled root a block's pieces hang under. `BlockExitBurst.prefab` is the
+pooled spray of debris out of a door: a particle system of small cubes (built-in cube mesh,
+`M_ExitDebris`, colour set per exit, world space, unscaled time, stop action Callback) with
+`ExitBurstView`.
 
 ## 5. Materials
 
@@ -74,3 +77,5 @@ wall's other orientation adds a 90° turn); `BlockTileResolver` picks the piece 
 | `M_Door`, `M_Arrow` | base of every door colour; arrows and door markers |
 | `M_SelectionOutline` | outline of a held block (`Art/Shaders/SelectionOutline.shader`, drawn over everything) |
 | `M_Ice` | ice blocker overlay, base map `icetexture.jpg` |
+| `M_BlockExit` | base of an exiting block (`Art/Shaders/BlockExit.shader`): lit like `M_Block`, cut at the board's edge; each block view makes its own copy |
+| `M_ExitDebris` | debris cubes sprayed out of a door (URP Particles/Simple Lit, tinted by the particle colour) |

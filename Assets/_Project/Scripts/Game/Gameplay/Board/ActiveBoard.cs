@@ -44,7 +44,7 @@ namespace ColorBlockJam.Game.Gameplay.Board
                     _signalBus.Fire(new BlockMovedSignal(blockId, Current.Blocks[blockId].Offset));
                     break;
                 case StepResult.Exited:
-                    _signalBus.Fire(new BlockExitedSignal(blockId, direction));
+                    _signalBus.Fire(new BlockExitedSignal(blockId, direction, Current.Blocks[blockId].Offset));
                     if (Current.IsCleared)
                         _signalBus.Fire(new BoardClearedSignal());
                     break;

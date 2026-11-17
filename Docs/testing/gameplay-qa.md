@@ -36,7 +36,10 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 - [ ] ⚙ Dragging allocates nothing — `BlockDragControllerTests.Drag_ShouldNotAllocate_WhenAFingerMovesABlockBackAndForth`, `GameplayBoardTests.BlockView_ShouldNotAllocate_WhenFollowingAFingerAndSnapping`
 - [ ] 👁 Blocks of every shape (I, L, T, S, square, 1x1) have seamless sides and rounded outer corners.
 - [ ] 👁 Dragging feels attached to the finger, also when flicked fast across the board; a released block settles on the grid with a small overshoot.
-- [ ] 👁 An exiting block slides into its door and shrinks away; nothing pops.
+- [ ] ⚙ A block leaves as soon as it is pushed a little into its own door — `BlockDragControllerTests.Drag_ShouldExit_WhenTheBlockIsPushedJustIntoItsDoor`
+- [ ] ⚙ An exiting block settles at its door before it starts to disappear — `GameplayBoardTests.Exit_ShouldSettleAtTheDoorBeforeSlidingIn_WhenTheBlockLeaves`
+- [ ] ⚙ An exiting block keeps its size, is cut at the board's edge and sprays debris — `GameplayBoardTests.Exit_ShouldCutTheBlockAtTheDoorAndSprayDebris_WhenItLeaves`
+- [ ] 👁 An exiting block lines up with its door, slides into it at a steady speed and disappears into the door while cubes of its colour spray out; nothing pops.
 
 ### Input
 

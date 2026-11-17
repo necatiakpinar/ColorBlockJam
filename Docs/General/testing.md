@@ -34,8 +34,8 @@ new fake.
 | `LevelDefinitionTests` | level data survives asset serialization; wall lengths |
 | `BoardStateTests` | moves, walls, blocks, door fit on every wall, clear path out, win, fresh restart, `CanStep`, zero allocation |
 | `LevelProviderTests` | level number to catalog entry; looping; empty catalog |
-| `ActiveBoardTests` | a load sizes the board space and starts fresh; steps announce move, exit and clear |
-| `BlockDragControllerTests` | free follow and diagonals, nearest-cell commit, fast drags, sliding, slipping into gaps without drift, jitter on a slow push, or locking out of a side corridor or a wobbled-at gap, lean, grab, snap, exit, zero allocation |
+| `ActiveBoardTests` | a load sizes the board space and starts fresh; steps announce move, exit (with the cell left from) and clear |
+| `BlockDragControllerTests` | free follow and diagonals, nearest-cell commit, fast drags, sliding, slipping into gaps without drift, jitter on a slow push, or locking out of a side corridor or a wobbled-at gap, exit on a small push into the door, lean, grab, snap, exit, zero allocation |
 | `OutlineMeshBuilderTests` | the outline is one rounded loop per boundary (1x1, L, ring with a hole), hugs a bar a gap outside it along its bottom edge, rounds its corners, and gives each vertex its outward normal and the rim lift |
 | `BlockTileResolverTests` | pieces for 1x1, bars, squares, L, T; inner corner notch; every quarter covered once |
 | `BoardFramingTests` | 3x3 to 10x10 boards fit inside the margins at 9:16 and 20:9, centred, as close as possible |
@@ -45,7 +45,7 @@ new fake.
 | `SceneSetupTests` | every build scene: canvas scaler, safe area root, button feedback |
 | `NavigationFlowTests` (PlayMode) | real boot reaches Home; Home ⇄ Gameplay round trip |
 | `ButtonPressFeedbackTests` (PlayMode) | press shrinks, release restores; non-interactable and disabled cases |
-| `GameplayBoardTests` (PlayMode) | every part and block drawn; swipes take blocks out and clear once; a wrong door holds; outline while held; reload mid-exit; a held block glides after a sudden finger move instead of jumping; following and snapping allocate nothing |
+| `GameplayBoardTests` (PlayMode) | every part and block drawn; swipes take blocks out and clear once; a wrong door holds; outline while held; reload mid-exit; a held block glides after a sudden finger move instead of jumping; an exiting block settles at its door before sliding in, and is cut at the door at full size while debris sprays; following and snapping allocate nothing |
 | `BoardInputTests` (PlayMode) | pointer events become board cells; one finger; release off the plane; disable mid-touch; UI wins the raycast |
 
 ## 3. Rules

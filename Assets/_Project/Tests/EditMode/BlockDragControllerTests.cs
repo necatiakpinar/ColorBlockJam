@@ -351,7 +351,23 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
-        public void Drag_ShouldExitAndClearTheBoard_WhenTheLastBlockSlidesHalfIntoItsDoor()
+        public void Drag_ShouldExit_WhenTheBlockIsPushedJustIntoItsDoor()
+        {
+            // Red sits next to the left wall; its door is there. A push of ExitPush (0.15) is enough.
+            _board.Load(new LevelDataBuilder(4, 4).Block(Red, 0, 1).Block(Blue, 3, 3).Door(Left, 1, 1, Red).Build());
+            Finger(BoardPointerPhase.Pressed, 0, 1);
+
+            Finger(BoardPointerPhase.Dragged, -0.1f, 1);
+            int afterSmallPush = _exits.Count;
+            Finger(BoardPointerPhase.Dragged, -0.2f, 1);
+
+            Assert.That(afterSmallPush, NUnit.Framework.Is.Zero, "A push shorter than ExitPush keeps it in.");
+            Assert.That(_exits.Count, NUnit.Framework.Is.EqualTo(1));
+            Assert.That(_exits[0].Offset, NUnit.Framework.Is.EqualTo(Vector2Int.zero), "It leaves from its cell by the door.");
+        }
+
+        [Test]
+        public void Drag_ShouldExitAndClearTheBoard_WhenTheLastBlockIsPushedIntoItsDoor()
         {
             _board.Load(new LevelDataBuilder(4, 4).Block(Red, 1, 1).Door(Left, 1, 1, Red).Build());
 

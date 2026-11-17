@@ -82,7 +82,7 @@ and restart, so no state survives an attempt. `BoardStateTests` pins every rule 
    - whenever its nearest cell changes the move is committed (`ActiveBoard.TryStep`), so the board always
      holds the cell it settles on;
    - lined up with a fitting door (`BoardState.CanStep` says `Exited`), the wall stops being an obstacle
-     and the block exits once it is halfway through;
+     and the block exits as soon as it is pushed `BoardViewConfig.ExitPush` (0.15 cell) into the door;
    - release fires **`BlockDroppedSignal`** with the cell it settles on; nothing snaps before release.
    A drag allocates nothing (`BlockDragControllerTests`).
 
@@ -109,8 +109,15 @@ All board views listen to signals only; the model has committed every change bef
    (`FollowDuration`, `FollowEase`), retargeted each event, so the drawn block trails the finger slightly
    and never jumps on a fast flick (the board model follows the finger at once; only the drawing trails);
    on `BlockDroppedSignal` it settles it onto its cell with the snap tween (`SnapDuration`, `SnapEase`);
-   on `BlockExitedSignal` it plays `BlockExitAnimation` from wherever the block is: it slides
-   `ExitDistance` cells through the door while shrinking, then returns to its pool. A block view's pivot
+   on `BlockExitedSignal` (which carries the cell offset the block left from) it plays
+   `BlockExitAnimation`: from wherever the block is drawn it first settles lined up at the mouth of its
+   door (`ExitSnapDuration`, `ExitSnapEase`; never backing away from it), then slides through the door at
+   `ExitSpeed` cells per second, its own length plus `ExitClearance`, at full size. Its pieces switch to
+   the view's copy of `BlockExitMaterial` (`ColorBlockJam/Block Exit`: lit like Simple Lit, cut by a
+   world plane at the board's edge), so it disappears into the door; meanwhile an `ExitBurstView` (pooled
+   `BlockExitBurst.prefab`) sprays cubes of its colour out of the door, outside the wall ring, for as
+   long as the slide lasts, starting when it begins (`ExitDebrisRate` per cell of width per second). The
+   view then returns to its pool, and the burst once its last cube is gone (DA-20). A block view's pivot
    is the block's centre. The follow and the snap are one paused tween each per block, retargeted on
    every drag and drop (`BlockMoveAnimation`), so following and snapping allocate nothing
    (`GameplayBoardTests.BlockView_ShouldNotAllocate_WhenFollowingAFingerAndSnapping`). A board reload

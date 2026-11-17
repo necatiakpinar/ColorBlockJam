@@ -29,7 +29,7 @@ namespace ColorBlockJam.Tests.EditMode
             _events.Clear();
             _bus.Subscribe<BoardLoadedSignal>(signal => _events.Add($"loaded {signal.Level.Width}x{signal.Level.Height}"));
             _bus.Subscribe<BlockMovedSignal>(signal => _events.Add($"moved {signal.BlockId} to {signal.Offset}"));
-            _bus.Subscribe<BlockExitedSignal>(signal => _events.Add($"exited {signal.BlockId} {signal.Direction}"));
+            _bus.Subscribe<BlockExitedSignal>(signal => _events.Add($"exited {signal.BlockId} {signal.Direction} from {signal.Offset}"));
             _bus.Subscribe<BoardClearedSignal>(_ => _events.Add("cleared"));
         }
 
@@ -85,7 +85,7 @@ namespace ColorBlockJam.Tests.EditMode
 
             _board.TryStep(0, Vector2Int.left);
 
-            Assert.That(_events, Is.EqualTo(new[] { "exited 0 (-1, 0)", "cleared" }));
+            Assert.That(_events, Is.EqualTo(new[] { "exited 0 (-1, 0) from (0, 0)", "cleared" }));
         }
 
         [Test]
@@ -96,7 +96,7 @@ namespace ColorBlockJam.Tests.EditMode
 
             _board.TryStep(0, Vector2Int.left);
 
-            Assert.That(_events, Is.EqualTo(new[] { "exited 0 (-1, 0)" }));
+            Assert.That(_events, Is.EqualTo(new[] { "exited 0 (-1, 0) from (0, 0)" }));
         }
     }
 }

@@ -49,9 +49,22 @@ MonoBehaviour:
     _top: 0.22
     _bottom: 0.16
   _framedHeight: 0.5
-  _cornerAssist: 0.3
+  _cornerTolerance: 0.4
+  _holdGive: 0.12
+  _outlineWidth: 0.06
+  _outlineBaseHeight: 0.01
+  _blockTopHeight: 0.33
+  _outlineGap: 0.03
+  _blockCornerRadius: 0.27
+  _outlineCornerSegments: 6
+  _followDuration: 0.12
+  _followEase: 6
   _snapDuration: 0.12
   _snapEase: 27
-  _exitDistance: 1.5
-  _exitDuration: 0.3
+  _exitSpeed: 6
+  _exitClearance: 0.1
   _exitEase: 5
+  _blockExitMaterial: {fileID: 2100000, guid: ccb884cc04d739b4799978c8b7c6ac62, type: 2}
+  _exitBurst: {fileID: 1701743703172660094, guid: 04976142d90840e458042ab11e0e34a1, type: 3}
+  _exitDebrisRate: 110
+  _exitDebrisHeight: 0.3

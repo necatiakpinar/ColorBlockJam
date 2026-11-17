@@ -1,5 +1,6 @@
 using System;
 using DG.Tweening;
+using ColorBlockJam.Game.Gameplay.View;
 using ColorBlockJam.Game.Levels;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -94,6 +95,10 @@ namespace ColorBlockJam.Game.Configs
         [SerializeField, Range(0f, 0.3f)]
         float _holdGive = 0.12f;
 
+        [Tooltip("How far a held block lined up with its own door must be pushed into it, in cells, to leave.")]
+        [SerializeField, Range(0.01f, 0.5f)]
+        float _exitPush = 0.15f;
+
         [Header("Selection outline")]
         [Tooltip("Width of the outline band drawn around a held block, in cells.")]
         [SerializeField, Min(0.005f)]
@@ -138,15 +143,41 @@ namespace ColorBlockJam.Game.Configs
         [SerializeField, FormerlySerializedAs("_moveEase")]
         Ease _snapEase = Ease.OutBack;
 
-        [Tooltip("How far an exiting block slides past its wall, in cells, while it shrinks away.")]
+        [Tooltip("How long an exiting block takes to settle at the mouth of its door before it slides in.")]
         [SerializeField, Min(0f)]
-        float _exitDistance = 1.5f;
-
-        [SerializeField, Min(0.01f)]
-        float _exitDuration = 0.3f;
+        float _exitSnapDuration = 0.08f;
 
         [SerializeField]
-        Ease _exitEase = Ease.InQuad;
+        Ease _exitSnapEase = Ease.OutQuad;
+
+        [Tooltip("How fast an exiting block slides into its door, in cells per second.")]
+        [SerializeField, Min(0.1f)]
+        float _exitSpeed = 6f;
+
+        [Tooltip("How far past its own length an exiting block slides, in cells, so it is fully gone.")]
+        [SerializeField, Min(0f)]
+        float _exitClearance = 0.1f;
+
+        [SerializeField]
+        Ease _exitEase = Ease.Linear;
+
+        [Tooltip("Material an exiting block switches to (ColorBlockJam/Block Exit): lit like M_Block, cut at "
+            + "the board's edge.")]
+        [SerializeField]
+        Material _blockExitMaterial;
+
+        [Header("Exit debris")]
+        [Tooltip("The spray of small cubes out of a door while a block passes it (BlockExitBurst.prefab).")]
+        [SerializeField]
+        ExitBurstView _exitBurst;
+
+        [Tooltip("Cubes sprayed per second for each cell of the block's width across the door.")]
+        [SerializeField, Min(0f)]
+        float _exitDebrisRate = 70f;
+
+        [Tooltip("Height of the spray's source above the floor, in cells (about the block's own height).")]
+        [SerializeField, Min(0f)]
+        float _exitDebrisHeight = 0.3f;
 
         public float CellSize => _cellSize;
         public float InputHitAreaHeight => _inputHitAreaHeight;
@@ -167,6 +198,7 @@ namespace ColorBlockJam.Game.Configs
         public float FramedHeight => _framedHeight;
         public float CornerTolerance => _cornerTolerance;
         public float HoldGive => _holdGive;
+        public float ExitPush => _exitPush;
         public float OutlineWidth => _outlineWidth;
         public float OutlineBaseHeight => _outlineBaseHeight;
         public float BlockTopHeight => _blockTopHeight;
@@ -177,9 +209,15 @@ namespace ColorBlockJam.Game.Configs
         public Ease FollowEase => _followEase;
         public float SnapDuration => _snapDuration;
         public Ease SnapEase => _snapEase;
-        public float ExitDistance => _exitDistance;
-        public float ExitDuration => _exitDuration;
+        public float ExitSnapDuration => _exitSnapDuration;
+        public Ease ExitSnapEase => _exitSnapEase;
+        public float ExitSpeed => _exitSpeed;
+        public float ExitClearance => _exitClearance;
         public Ease ExitEase => _exitEase;
+        public Material BlockExitMaterial => _blockExitMaterial;
+        public ExitBurstView ExitBurst => _exitBurst;
+        public float ExitDebrisRate => _exitDebrisRate;
+        public float ExitDebrisHeight => _exitDebrisHeight;
 
         public Color TintOf(BlockColor color)
         {
