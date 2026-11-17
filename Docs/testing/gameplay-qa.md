@@ -7,30 +7,30 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 
 ### Level session
 
-- [ ] ⚙ Start, pause, resume, win, fail and restart follow the state table; anything else is refused — `LevelSessionTests`
-- [ ] ⚙ Restart gives a board equal to a fresh start — `LevelSessionTests.Restart_ShouldGiveAFreshBoardEqualToAFirstStart_WhenPlayingPausedOrFailed`
-- [ ] ⚙ Pausing mid-drag drops the block onto its cell; no input while paused or lost — `BlockDragControllerTests.Pause_ShouldDropTheHeldBlockOntoItsCell_WhenTheLevelPausesMidDrag`, `Input_ShouldBeIgnored_UntilTheLevelResumes`, `Input_ShouldBeIgnored_WhenTheLevelIsLost`
-- [ ] ⚙ The last exit wins the level without dropping the block that left — `BlockDragControllerTests.Win_ShouldForgetTheExitedBlockWithoutDroppingIt_WhenTheLastExitCompletesTheLevel`
+- [x] ⚙ Start, pause, resume, win, fail and restart follow the state table; anything else is refused — `LevelSessionTests`
+- [x] ⚙ Restart gives a board equal to a fresh start — `LevelSessionTests.Restart_ShouldGiveAFreshBoardEqualToAFirstStart_WhenPlayingPausedOrFailed`
+- [x] ⚙ Pausing mid-drag drops the block onto its cell; no input while paused or lost — `BlockDragControllerTests.Pause_ShouldDropTheHeldBlockOntoItsCell_WhenTheLevelPausesMidDrag`, `Input_ShouldBeIgnored_UntilTheLevelResumes`, `Input_ShouldBeIgnored_WhenTheLevelIsLost`
+- [x] ⚙ The last exit wins the level without dropping the block that left — `BlockDragControllerTests.Win_ShouldForgetTheExitedBlockWithoutDroppingIt_WhenTheLastExitCompletesTheLevel`
 
-- [ ] ⚙ The timer waits at full time until the first block is grabbed, then counts down second by second and fails the level once at zero — `LevelTimerTests`, `GameplayTimerTests.Hud_ShouldCountTheTimerDown_OnceABlockIsGrabbed`
-- [ ] ⚙ Pausing or backgrounding the app freezes the timer; restart gives the full time — `LevelTimerTests`, `GameplayTimerTests.Timer_ShouldStandStill_WhileTheAppIsInTheBackground`
+- [x] ⚙ The timer waits at full time until the first block is grabbed, then counts down second by second and fails the level once at zero — `LevelTimerTests`, `GameplayTimerTests.Hud_ShouldCountTheTimerDown_OnceABlockIsGrabbed`
+- [x] ⚙ Pausing or backgrounding the app freezes the timer; restart gives the full time — `LevelTimerTests`, `GameplayTimerTests.Timer_ShouldStandStill_WhileTheAppIsInTheBackground`
 - [ ] 👁 On a device, send the app to the background for a while mid-level: the timer shows the same time when it comes back.
-- [ ] ⚙ A win pays its difficulty's coins once; failing or leaving pays nothing — `LevelRewardTests`, `CoinPersistenceTests`
-- [ ] ⚙ Coins stay the same after going Home and coming back — `CoinPersistenceTests`
+- [x] ⚙ A win pays its difficulty's coins once; failing or leaving pays nothing — `LevelRewardTests`, `CoinPersistenceTests`
+- [x] ⚙ Coins stay the same after going Home and coming back — `CoinPersistenceTests`
 - [ ] 👁 Kill the app after a win and open it again: the balance is the same.
-- [ ] ⚙ Pause opens the settings popup, the switches remember their state, close resumes — `GameplayFlowTests`, `GameplayPopupTests`
-- [ ] ⚙ A win opens the win popup with the reward; Continue plays the next level — `LevelResultFlowTests`, `LevelProgressionFlowTests`
-- [ ] ⚙ Out of time sells 20 s for 50 coins; giving up shows Level Failed; Retry restarts, close goes Home — `LevelResultFlowTests`, `LevelContinueTests`, `GameplayPopupTests`
+- [x] ⚙ Pause opens the settings popup, the switches remember their state, close resumes — `GameplayFlowTests`, `GameplayPopupTests`
+- [x] ⚙ A win opens the win popup with the reward; Continue plays the next level — `LevelResultFlowTests`, `LevelProgressionFlowTests`
+- [x] ⚙ Out of time sells 20 s for 50 coins; giving up shows Level Failed; Retry restarts, close goes Home — `LevelResultFlowTests`, `LevelContinueTests`, `GameplayPopupTests`
 - [ ] 👁 Compare the HUD and the four popups with the reference screens at 1080x1920 and 20:9. Open them
   with the debug window ([debug-tools.md](../General/debug-tools.md)): **Win now**, **Run out of time**,
   the pause button.
-- [ ] ⚙ The debug window's shortcuts go through the real services — `GameplayDebugCommandsTests`
+- [x] ⚙ The debug window's shortcuts go through the real services — `GameplayDebugCommandsTests`
 - [ ] 👁 Every HUD and popup button shrinks while pressed; boosters and the coin "+" do nothing else.
-- [ ] ⚙ Ten restarts in a row leave the same board, timer, coins and objects as a fresh start — `RestartResetsStateTests.Restart_ShouldLeaveTheSameStateAsAFreshStart_WhenRepeatedTenTimes`
-- [ ] ⚙ Going Home after a loss and back gives the same level, fresh — `RestartResetsStateTests.Home_ShouldGiveTheSameLevelAndAFreshAttempt_WhenLeftAfterALoss`
-- [ ] ⚙ No gameplay listener survives going Home — `RestartResetsStateTests.SceneUnload_ShouldLeaveNoGameplayListener_WhenGoingHome`
-- [ ] ⚙ Winning starts the next level; after the last level the first layout comes back — `LevelProgressionFlowTests`
-- [ ] ⚙ All twenty shipped levels are valid and solvable; 1–8 ramp up, then groups of six with a breather and a rising peak; level 6 has two frozen blocks, levels 7 and 8 arrow blocks — `ShippedLevelsTests`
+- [x] ⚙ Ten restarts in a row leave the same board, timer, coins and objects as a fresh start — `RestartResetsStateTests.Restart_ShouldLeaveTheSameStateAsAFreshStart_WhenRepeatedTenTimes`
+- [x] ⚙ Going Home after a loss and back gives the same level, fresh — `RestartResetsStateTests.Home_ShouldGiveTheSameLevelAndAFreshAttempt_WhenLeftAfterALoss`
+- [x] ⚙ No gameplay listener survives going Home — `RestartResetsStateTests.SceneUnload_ShouldLeaveNoGameplayListener_WhenGoingHome`
+- [x] ⚙ Winning starts the next level; after the last level the first layout comes back — `LevelProgressionFlowTests`
+- [x] ⚙ All twenty shipped levels are valid and solvable; 1–8 ramp up, then groups of six with a breather and a rising peak; level 6 has two frozen blocks, levels 7 and 8 arrow blocks — `ShippedLevelsTests`
 - [ ] 👁 Play levels 14 and 20 by hand: they need blocks moved around in the right order before most can leave, and the timer leaves room to think.
 - [x] 👁 Play levels 1 to 5 by hand (developer, 2026-11-17): each one is a little harder than the one before, and each finishes well inside its timer.
   The solver's solutions, blocks numbered as in the editor (Space steps them on its canvas):
@@ -45,62 +45,62 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 
 ### Rules
 
-- [ ] ⚙ A frozen block cannot move until enough others leave, then thaws — `IceBlockerTests`, `IceBlockerViewTests`
-- [ ] ⚙ An arrow block moves and leaves only along its axis — `ArrowBlockerTests`
+- [x] ⚙ A frozen block cannot move until enough others leave, then thaws — `IceBlockerTests`, `IceBlockerViewTests`
+- [x] ⚙ An arrow block moves and leaves only along its axis — `ArrowBlockerTests`
 - [ ] 👁 Arrow blocks show a white double-headed arrow sized to the block; dragging across the axis does not move or lean the block.
 - [ ] 👁 A frozen block looks icy over its colour with a readable count; the count drops with every exit; the thaw swells it back to its colour.
 
-- [ ] ⚙ Blocks stop at walls and at other blocks — `BoardStateTests.TryStep_ShouldStopAtWall_WhenNoDoorIsThere`, `TryStep_ShouldStopAtAnotherBlock_WhenItIsInTheWay`
-- [ ] ⚙ A block leaves through a matching door that covers it — `BoardStateTests.TryStep_ShouldExit_WhenAMatchingDoorCoversTheBlock`
-- [ ] ⚙ Wrong colour, narrow or offset doors keep it in — `BoardStateTests.TryStep_ShouldBeBlocked_WhenTheDoorColourDiffers` and siblings
-- [ ] ⚙ A block cannot leave while another block stands in its way out — `BoardStateTests.TryStep_ShouldBeBlocked_WhenAnotherBlockStandsInTheWayOut`
-- [ ] ⚙ The last exit clears the board — `BoardStateTests.IsCleared_ShouldBecomeTrue_WhenTheLastBlockExits`
-- [ ] ⚙ A restart starts from the level, not the last attempt — `BoardStateTests.NewBoard_ShouldStartFromTheLevel_WhenAnEarlierAttemptMovedBlocks`
+- [x] ⚙ Blocks stop at walls and at other blocks — `BoardStateTests.TryStep_ShouldStopAtWall_WhenNoDoorIsThere`, `TryStep_ShouldStopAtAnotherBlock_WhenItIsInTheWay`
+- [x] ⚙ A block leaves through a matching door that covers it — `BoardStateTests.TryStep_ShouldExit_WhenAMatchingDoorCoversTheBlock`
+- [x] ⚙ Wrong colour, narrow or offset doors keep it in — `BoardStateTests.TryStep_ShouldBeBlocked_WhenTheDoorColourDiffers` and siblings
+- [x] ⚙ A block cannot leave while another block stands in its way out — `BoardStateTests.TryStep_ShouldBeBlocked_WhenAnotherBlockStandsInTheWayOut`
+- [x] ⚙ The last exit clears the board — `BoardStateTests.IsCleared_ShouldBecomeTrue_WhenTheLastBlockExits`
+- [x] ⚙ A restart starts from the level, not the last attempt — `BoardStateTests.NewBoard_ShouldStartFromTheLevel_WhenAnEarlierAttemptMovedBlocks`
 
 ### Board and controls
 
-- [ ] ⚙ The board draws floor, walls, doors, corners and every block — `GameplayBoardTests.Board_ShouldDrawEveryPartAndBlock_WhenGameplayStarts`
-- [ ] ⚙ The wall ring is continuous bars from corner to corner, with no seams — `GameplayBoardTests.Board_ShouldCloseTheWallRingWithoutSeams_WhenWallsAreStretchedBetweenDoors`
-- [ ] ⚙ Each door shows one arrow, centred, pointing out of the board — `GameplayBoardTests.Doors_ShouldShowOneCentredArrowPointingOutOfTheBoard_WhenTheBoardIsBuilt`
+- [x] ⚙ The board draws floor, walls, doors, corners and every block — `GameplayBoardTests.Board_ShouldDrawEveryPartAndBlock_WhenGameplayStarts`
+- [x] ⚙ The wall ring is continuous bars from corner to corner, with no seams — `GameplayBoardTests.Board_ShouldCloseTheWallRingWithoutSeams_WhenWallsAreStretchedBetweenDoors`
+- [x] ⚙ Each door shows one arrow, centred, pointing out of the board — `GameplayBoardTests.Doors_ShouldShowOneCentredArrowPointingOutOfTheBoard_WhenTheBoardIsBuilt`
 - [ ] 👁 The arrows sit on the door (not floating, not sunk) and go down and up with it when a block leaves.
-- [ ] ⚙ A held block follows the finger between cells — `BlockDragControllerTests.Drag_ShouldFollowTheFingerBetweenCells_WhenTheWayIsFree`
-- [ ] ⚙ A fast drag crosses free cells but stops on the edge of an obstacle — `BlockDragControllerTests.Drag_ShouldCrossSeveralFreeCellsInOneEvent_WhenTheFingerMovesFast`, `Drag_ShouldStopOnTheCellEdge_WhenAFastFingerPassesAnObstacle`
-- [ ] ⚙ A released block settles on the nearest cell — `BlockDragControllerTests.Release_ShouldSnapToTheNearestCell_WhenTheBlockIsBetweenCells`
-- [ ] ⚙ A block slightly off its line slips into a one-cell gap and stays with the finger — `BlockDragControllerTests.Drag_ShouldEaseIntoAOneCellGap_WhenPushedThroughItSlightlyOffTheCellLine`, `Drag_ShouldStayWithTheFinger_WhenItSlippedIntoAGapAndCameOutAgain`
-- [ ] ⚙ A slow push into a one-cell gap from slightly off the line does not jitter — `BlockDragControllerTests.Drag_ShouldNotJitter_WhenPushedSlowlyIntoAOneCellGapSlightlyOffTheCellLine`
-- [ ] ⚙ A block never locks out of a free gap or corridor: it turns into a side corridor after slipping toward another gap, and enters a gap while the finger wobbles at its mouth — `BlockDragControllerTests.Drag_ShouldTurnIntoASideCorridor_WhenItSlippedTowardAnotherGapFirst`, `Drag_ShouldEnterTheGap_WhenTheFingerWobblesSidewaysAtItsMouth`
+- [x] ⚙ A held block follows the finger between cells — `BlockDragControllerTests.Drag_ShouldFollowTheFingerBetweenCells_WhenTheWayIsFree`
+- [x] ⚙ A fast drag crosses free cells but stops on the edge of an obstacle — `BlockDragControllerTests.Drag_ShouldCrossSeveralFreeCellsInOneEvent_WhenTheFingerMovesFast`, `Drag_ShouldStopOnTheCellEdge_WhenAFastFingerPassesAnObstacle`
+- [x] ⚙ A released block settles on the nearest cell — `BlockDragControllerTests.Release_ShouldSnapToTheNearestCell_WhenTheBlockIsBetweenCells`
+- [x] ⚙ A block slightly off its line slips into a one-cell gap and stays with the finger — `BlockDragControllerTests.Drag_ShouldEaseIntoAOneCellGap_WhenPushedThroughItSlightlyOffTheCellLine`, `Drag_ShouldStayWithTheFinger_WhenItSlippedIntoAGapAndCameOutAgain`
+- [x] ⚙ A slow push into a one-cell gap from slightly off the line does not jitter — `BlockDragControllerTests.Drag_ShouldNotJitter_WhenPushedSlowlyIntoAOneCellGapSlightlyOffTheCellLine`
+- [x] ⚙ A block never locks out of a free gap or corridor: it turns into a side corridor after slipping toward another gap, and enters a gap while the finger wobbles at its mouth — `BlockDragControllerTests.Drag_ShouldTurnIntoASideCorridor_WhenItSlippedTowardAnotherGapFirst`, `Drag_ShouldEnterTheGap_WhenTheFingerWobblesSidewaysAtItsMouth`
 - [ ] 👁 Held anywhere, a block lined up roughly with a free one-cell gap or corridor goes in and comes back out without sticking.
-- [ ] ⚙ A held block glides after the finger instead of jumping on a sudden move — `GameplayBoardTests.BlockView_ShouldGlideAfterTheFinger_WhenItMovesSuddenly`
+- [x] ⚙ A held block glides after the finger instead of jumping on a sudden move — `GameplayBoardTests.BlockView_ShouldGlideAfterTheFinger_WhenItMovesSuddenly`
 - [ ] 👁 Dragging feels smooth: the block trails the finger by about a tenth of a second and never teleports.
-- [ ] ⚙ A press just next to a block picks it; a press further away picks nothing — `BlockDragControllerTests.Grab_ShouldPickTheNearestBlock_WhenThePressMissesItByLittle`, `Grab_ShouldPickNothing_WhenThePressIsBeyondTheTouchTolerance`
-- [ ] ⚙ An exit taps the device lightly — `GameplayHapticsTests`
+- [x] ⚙ A press just next to a block picks it; a press further away picks nothing — `BlockDragControllerTests.Grab_ShouldPickTheNearestBlock_WhenThePressMissesItByLittle`, `Grab_ShouldPickNothing_WhenThePressIsBeyondTheTouchTolerance`
+- [x] ⚙ An exit taps the device lightly — `GameplayHapticsTests`
 - [ ] 👁 On an Android and an iOS device, the tap is short and crisp (not a long buzz).
 - [ ] 👁 Pushing a block into a door of another colour stops it like a wall: no shake, no tap.
 - [ ] 👁 A block leaving through a bottom door (facing the camera) sits flush at the door while it is cut away; no gap shows between block and door.
-- [ ] ⚙ A held block with no room leans a little and snaps back — `BlockDragControllerTests.Drag_ShouldLeanTowardTheFingerButNotCommit_WhenTheBlockHasNoRoom`
-- [ ] ⚙ The held block is outlined — `GameplayBoardTests.Outline_ShouldShowWhileABlockIsHeld_WhenGrabbedAndHideOnRelease`
+- [x] ⚙ A held block with no room leans a little and snaps back — `BlockDragControllerTests.Drag_ShouldLeanTowardTheFingerButNotCommit_WhenTheBlockHasNoRoom`
+- [x] ⚙ The held block is outlined — `GameplayBoardTests.Outline_ShouldShowWhileABlockIsHeld_WhenGrabbedAndHideOnRelease`
 - [ ] 👁 The outline stays visible where another object covers the block.
-- [ ] ⚙ The outline hugs the block with rounded corners, notches included — `OutlineMeshBuilderTests`
-- [ ] ⚙ A swipe takes a block out; the last exit completes the level once — `GameplayBoardTests.Swipe_ShouldTakeTheBlockOffTheBoardAndClearItOnce_WhenEveryBlockLeaves`
-- [ ] ⚙ The board fits between HUD and boosters at 9:16 and 20:9 — `BoardFramingTests`
-- [ ] ⚙ A reload mid-exit rebuilds clean blocks — `GameplayBoardTests.Reload_ShouldRebuildCleanBlocks_WhenABlockIsStillSlidingOut`
-- [ ] ⚙ Dragging allocates nothing — `BlockDragControllerTests.Drag_ShouldNotAllocate_WhenAFingerMovesABlockBackAndForth`, `GameplayBoardTests.BlockView_ShouldNotAllocate_WhenFollowingAFingerAndSnapping`
+- [x] ⚙ The outline hugs the block with rounded corners, notches included — `OutlineMeshBuilderTests`
+- [x] ⚙ A swipe takes a block out; the last exit completes the level once — `GameplayBoardTests.Swipe_ShouldTakeTheBlockOffTheBoardAndClearItOnce_WhenEveryBlockLeaves`
+- [x] ⚙ The board fits between HUD and boosters at 9:16 and 20:9 — `BoardFramingTests`
+- [x] ⚙ A reload mid-exit rebuilds clean blocks — `GameplayBoardTests.Reload_ShouldRebuildCleanBlocks_WhenABlockIsStillSlidingOut`
+- [x] ⚙ Dragging allocates nothing — `BlockDragControllerTests.Drag_ShouldNotAllocate_WhenAFingerMovesABlockBackAndForth`, `GameplayBoardTests.BlockView_ShouldNotAllocate_WhenFollowingAFingerAndSnapping`
 - [ ] 👁 Blocks of every shape (I, L, T, S, square, 1x1) have seamless sides and rounded outer corners.
 - [ ] 👁 Dragging feels attached to the finger, also when flicked fast across the board; a released block settles on the grid with a small overshoot.
-- [ ] ⚙ A block leaves as soon as it is pushed a little into its own door — `BlockDragControllerTests.Drag_ShouldExit_WhenTheBlockIsPushedJustIntoItsDoor`
-- [ ] ⚙ An exiting block settles at its door before it starts to disappear — `GameplayBoardTests.Exit_ShouldSettleAtTheDoorBeforeSlidingIn_WhenTheBlockLeaves`
-- [ ] ⚙ The door sinks open for a leaving block and closes after it — `GameplayBoardTests.Exit_ShouldOpenTheDoorAndCloseItAfter_WhenTheBlockLeaves`
-- [ ] ⚙ A block narrower than its door sinks the whole door — `GameplayBoardTests.Exit_ShouldSinkTheWholeDoor_WhenASmallerBlockLeavesThroughIt`
+- [x] ⚙ A block leaves as soon as it is pushed a little into its own door — `BlockDragControllerTests.Drag_ShouldExit_WhenTheBlockIsPushedJustIntoItsDoor`
+- [x] ⚙ An exiting block settles at its door before it starts to disappear — `GameplayBoardTests.Exit_ShouldSettleAtTheDoorBeforeSlidingIn_WhenTheBlockLeaves`
+- [x] ⚙ The door sinks open for a leaving block and closes after it — `GameplayBoardTests.Exit_ShouldOpenTheDoorAndCloseItAfter_WhenTheBlockLeaves`
+- [x] ⚙ A block narrower than its door sinks the whole door — `GameplayBoardTests.Exit_ShouldSinkTheWholeDoor_WhenASmallerBlockLeavesThroughIt`
 - [ ] 👁 Debris bursts out of the door in a cone pointing away from the board (left door to the left, bottom door down).
-- [ ] ⚙ Blocks leaving one door together share one spray — `GameplayBoardTests.Exit_ShouldShareOneSpray_WhenTwoBlocksLeaveTheSameDoorTogether`
-- [ ] ⚙ An exiting block keeps its size, is cut at the board's edge and sprays debris — `GameplayBoardTests.Exit_ShouldCutTheBlockAtTheDoorAndSprayDebris_WhenItLeaves`
+- [x] ⚙ Blocks leaving one door together share one spray — `GameplayBoardTests.Exit_ShouldShareOneSpray_WhenTwoBlocksLeaveTheSameDoorTogether`
+- [x] ⚙ An exiting block keeps its size, is cut at the board's edge and sprays debris — `GameplayBoardTests.Exit_ShouldCutTheBlockAtTheDoorAndSprayDebris_WhenItLeaves`
 - [ ] 👁 An exiting block lines up with its door, slides into it at a steady speed and disappears into the door while cubes of its colour spray out; nothing pops.
 
 ### Input
 
-- [ ] ⚙ Press, drag and release report cells in order — `BoardInputTests.PressDragRelease_ShouldReportCellsInOrder_WhenOneFingerMovesAcrossTheBoard`
-- [ ] ⚙ A second finger is ignored — `BoardInputTests.SecondFinger_ShouldBeIgnored_WhenAFingerIsAlreadyDown`
-- [ ] ⚙ A touch on a board cell reaches the board — `BoardInputTests.EventSystemRaycast_ShouldHitTheBoard_WhenTouchingABoardCell`
-- [ ] ⚙ A HUD button over the board wins the touch — `BoardInputTests.EventSystemRaycast_ShouldHitTheHudButtonFirst_WhenTheButtonCoversTheBoard`
-- [ ] ⚙ A release off the board plane ends the touch at the last cell — `BoardInputTests.Release_ShouldEndTheTouchAtTheLastCell_WhenTheReleaseRayMissesTheBoardPlane`
-- [ ] ⚙ Disabling the board mid-touch frees input — `BoardInputTests.Press_ShouldBeAccepted_WhenTheViewWasDisabledMidTouch`
+- [x] ⚙ Press, drag and release report cells in order — `BoardInputTests.PressDragRelease_ShouldReportCellsInOrder_WhenOneFingerMovesAcrossTheBoard`
+- [x] ⚙ A second finger is ignored — `BoardInputTests.SecondFinger_ShouldBeIgnored_WhenAFingerIsAlreadyDown`
+- [x] ⚙ A touch on a board cell reaches the board — `BoardInputTests.EventSystemRaycast_ShouldHitTheBoard_WhenTouchingABoardCell`
+- [x] ⚙ A HUD button over the board wins the touch — `BoardInputTests.EventSystemRaycast_ShouldHitTheHudButtonFirst_WhenTheButtonCoversTheBoard`
+- [x] ⚙ A release off the board plane ends the touch at the last cell — `BoardInputTests.Release_ShouldEndTheTouchAtTheLastCell_WhenTheReleaseRayMissesTheBoardPlane`
+- [x] ⚙ Disabling the board mid-touch frees input — `BoardInputTests.Press_ShouldBeAccepted_WhenTheViewWasDisabledMidTouch`

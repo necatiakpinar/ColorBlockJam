@@ -3,6 +3,7 @@ using ColorBlockJam.Core.Signals;
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Gameplay.Board;
 using ColorBlockJam.Game.Gameplay.Signals;
+using Unity.Profiling;
 using UnityEngine;
 
 namespace ColorBlockJam.Game.Gameplay.Input
@@ -34,6 +35,9 @@ namespace ColorBlockJam.Game.Gameplay.Input
     /// </summary>
     public sealed class BlockDragController : IDisposable
     {
+        // Shows the drag in the Profiler (performance.md).
+        static readonly ProfilerMarker DragMarker = new("ColorBlockJam.Drag");
+
         const int NoBlock = -1;
         const float Epsilon = 1e-4f;
         // One pass moves along both axes; a pass that cannot move ends the event. Bounds the loop.
@@ -104,6 +108,7 @@ namespace ColorBlockJam.Game.Gameplay.Input
         {
             if (!_acceptsInput)
                 return;
+            using ProfilerMarker.AutoScope scope = DragMarker.Auto();
             switch (signal.Phase)
             {
                 case BoardPointerPhase.Pressed:

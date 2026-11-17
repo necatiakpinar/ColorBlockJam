@@ -81,13 +81,23 @@ namespace ColorBlockJam.Tests.PlayMode
             input.OnPointerUp(pointer);
         }
 
+        static BoardBlock FirstUnfrozen(BoardState board)
+        {
+            foreach (BoardBlock block in board.Blocks)
+                if (block.CanBeGrabbed)
+                    return block;
+            Assert.Fail("Every block on the board is frozen.");
+            return null;
+        }
+
         [UnityTest]
         public IEnumerator Hammer_ShouldSmashTheTappedBlock_WhenUsedFromTheBar()
         {
             yield return SceneTestUtility.BootToGameplay();
             Own(BoosterType.Hammer);
             int owned = Gameplay().Resolve<BoosterInventory>().Count(BoosterType.Hammer);
-            BoardBlock block = Gameplay().Resolve<ActiveBoard>().Current.Blocks[0];
+            // The save decides the level; a frozen block would only lose its ice (DA-37), so pick a plain one.
+            BoardBlock block = FirstUnfrozen(Gameplay().Resolve<ActiveBoard>().Current);
 
             SceneTestUtility.TapButton<BoosterBarView>("HammerBooster");
             yield return WaitRealtime(0.3f);
@@ -99,7 +109,7 @@ namespace ColorBlockJam.Tests.PlayMode
             Assert.That(bannerShown, Is.True);
             Assert.That(whileChoosing, Is.EqualTo(LevelState.Paused));
             Assert.That(block.HasExited, Is.True);
-            Assert.That(SceneTestUtility.FindInActiveScene<BlockLayerView>().Views[0], Is.Null);
+            Assert.That(SceneTestUtility.FindInActiveScene<BlockLayerView>().Views[block.Id], Is.Null);
             Assert.That(Gameplay().Resolve<BoosterInventory>().Count(BoosterType.Hammer), Is.EqualTo(owned - 1));
             Assert.That(Gameplay().Resolve<LevelSession>().State, Is.Not.EqualTo(LevelState.Paused));
             Assert.That(SceneTestUtility.FindInActiveScene<BoosterTargetingView>().IsShowing, Is.False);

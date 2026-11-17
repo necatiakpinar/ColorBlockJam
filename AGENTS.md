@@ -165,7 +165,8 @@ pack or where the game's levels come from.**
 ### Update loop
 
 **Per-frame code is banned**: no `Update`, `LateUpdate`, `FixedUpdate` or `ITickable` unless a code
-comment names the event that was unavailable. Use EventSystem handlers for input, signals for state
+comment names the event that was unavailable (and `ArchitectureTests` lists it). **Read
+[performance.md](Docs/General/performance.md) before changing per-frame work, the drag or the board views.** Use EventSystem handlers for input, signals for state
 changes, tweens for motion with an end, `UniTask.Delay` for deadlines.
 
 ### GC allocations

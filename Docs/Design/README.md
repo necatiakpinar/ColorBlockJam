@@ -169,10 +169,10 @@ task is marked `Dropped`, never deleted. Detail per task: [tasks.md](tasks.md).
 | T-34 | 10 | Ice blocker | Frozen block thaws after N exits; editor places it | T-32, T-36 | Done |
 | T-35 | 10 | Arrow block | Block moves only along its arrow; editor places it | T-32 | Done |
 | T-36 | 10 | Four functional boosters | Freeze, rocket, hammer and vacuum work from the HUD with a stock; none left offers one for coins | T-32 | Done |
-| T-37 | 11 | Architecture tests | Tests fail on `Update`, Core → Game references, raw `Debug.Log` | T-04 | Todo |
-| T-38 | 11 | Performance pass | 0 B GC per gameplay frame measured; 60 FPS on a mid-range device | T-22 | Todo |
-| T-39 | 11 | Full QA pass on device and aspect ratios | Every QA checklist ticked at 1080x1920 and 20:9 | T-32 | Todo |
-| T-40 | 12 | Project README | Open and run, level editor how-to, architecture decisions, known problems, asset feedback | T-39 | Todo |
+| T-37 | 11 | Architecture tests | Tests fail on `Update`, Core → Game references, raw `Debug.Log` | T-04 | Done |
+| T-38 | 11 | Performance pass | 0 B GC per gameplay frame measured; 60 FPS on a mid-range device | T-22 | In progress (editor done; device left) |
+| T-39 | 11 | Full QA pass on device and aspect ratios | Every QA checklist ticked at 1080x1920 and 20:9 | T-32 | In progress (automated cases ticked; manual and device left) |
+| T-40 | 12 | Project README | Open and run, level editor how-to, architecture decisions, known problems, asset feedback | T-39 | Done |
 | T-41 | 12 | Android APK | APK installs and plays the full flow on a device | T-39 | Todo |
 | T-42 | 12 | Repository hygiene | Clean clone opens and runs; no Library, Temp or Build tracked | T-40, T-41 | Todo |
 | T-44 | 4 | Connectivity probe and trusted time | Online state follows a real request; server time is readable once a probe succeeds | T-04 | Done |

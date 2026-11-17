@@ -3,6 +3,7 @@ using ColorBlockJam.Core.Signals;
 using ColorBlockJam.Game.Gameplay.Board.Blockers;
 using ColorBlockJam.Game.Gameplay.Signals;
 using ColorBlockJam.Game.Levels;
+using Unity.Profiling;
 using UnityEngine;
 
 namespace ColorBlockJam.Game.Gameplay.Board
@@ -14,6 +15,9 @@ namespace ColorBlockJam.Game.Gameplay.Board
     /// </summary>
     public sealed class ActiveBoard
     {
+        // Shows each one-cell step in the Profiler (performance.md).
+        static readonly ProfilerMarker MoveMarker = new("ColorBlockJam.Move");
+
         readonly BoardSpace _boardSpace;
         readonly SignalBus _signalBus;
 
@@ -129,6 +133,7 @@ namespace ColorBlockJam.Game.Gameplay.Board
         /// </summary>
         public StepResult TryStep(int blockId, Vector2Int direction)
         {
+            using ProfilerMarker.AutoScope scope = MoveMarker.Auto();
             StepResult result = Current.TryStep(blockId, direction);
             switch (result)
             {

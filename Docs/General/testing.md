@@ -27,7 +27,7 @@ new fake.
 | `SignalBusTests` | delivery, order, type isolation, duplicate guard, (un)subscribe during fire |
 | `BootSequenceTests` | step order, weighted progress, empty sequence, cancellation, weight validation |
 | `PlayerProgressServiceTests` | defaults, read-before-load, persist + flush, corrupt and invalid data, setting a level |
-| `InstallerResolutionTests` | every installer builds; one SignalBus; boot step order; board space cell size |
+| `InstallerResolutionTests` | every installer builds; one SignalBus; boot step order; board space cell size; one command per booster |
 | `HomeFlowTests` | Home shows the level path and the balance; the level button routes to Gameplay; settings open showing the saved switches, a switch flips its setting, close closes |
 | `NavigationServiceTests` | each route loads its scene; a request during a load is ignored; a failed load frees the guard |
 | `PopupServiceTests` | one popup at a time; close allows the next |
@@ -35,6 +35,7 @@ new fake.
 | `LevelDefinitionValidatorTests` | one test per level rule in level-data.md §2 |
 | `LevelDefinitionTests` | level data survives asset serialization; wall lengths |
 | `BoardStateTests` | moves, walls, blocks, door fit on every wall, clear path out, win, fresh restart, `CanStep`, zero allocation |
+| `ArchitectureTests` | no per-frame code, Core never references Game, logs only through `IGameLogger`, no `Camera.main` or `Find*`, every build scene's serialized references set |
 | `LevelProviderTests` | level number to catalog entry; looping; empty catalog |
 | `LevelPackJsonTests` | the level pack JSON: round trip, names not numbers, compact output, unknown fields ignored, refusals worded with level and item |
 | `LevelPackServiceTests` | bundled or stored remote pack per launch; stale and broken packs dropped; remote packs stored only when good, for the next launch |
@@ -67,7 +68,7 @@ new fake.
 | `LevelAttemptLivesTests` | only a started, abandoned attempt costs a life, once; a win costs none; playing again without lives offers a refill; Refill restarts, close goes Home |
 | `BoardRemovalTests` | boosters taking a whole block, one cell (a block that falls apart splits into blocks that move and leave on their own; the biggest piece keeps the id) or a whole colour; the clear fires once |
 | `BoosterInventoryTests` | starting stock saved, use, none left, bad saves, the shop paying or refusing |
-| `BoosterServiceTests` | freeze at once and no stacking; rocket, hammer and vacuum wait for a tapped block, spend one, change the board, resume, can win; cancel, purchase needed, refused when not playing, restart |
+| `BoosterServiceTests` | freeze at once and no stacking; rocket, hammer and vacuum wait for a tapped block, spend one, change the board, resume, can win; cancel, purchase needed, refused when not playing, restart, two commands for one booster throw |
 | `LevelTimerFreezeTests` | the freeze holds the timer for its seconds, stands still with a pause or the background, does not stack, ends on restart |
 | `ActiveBoardTests` | a load sizes the board space and starts fresh; steps announce move, exit (with the cell left from) and clear |
 | `BlockDragControllerTests` | free follow and diagonals, nearest-cell commit, fast drags, sliding, slipping into gaps without drift, jitter on a slow push, or locking out of a side corridor or a wobbled-at gap, exit on a small push into the door, picking a block a press narrowly missed, dropping the held block on pause and ignoring input until the level resumes, lean, grab, snap, exit, zero allocation |
@@ -81,6 +82,7 @@ new fake.
 | `NavigationFlowTests` (PlayMode) | real boot reaches Home; Home ⇄ Gameplay round trip |
 | `ButtonPressFeedbackTests` (PlayMode) | press shrinks, release restores; non-interactable and disabled cases |
 | `GameplayBoardTests` (PlayMode) | every part and block drawn; the wall ring closes corner to corner without seams; every door has one centred arrow pointing out; swipes take blocks out and clear once; a wrong door holds; outline while held; reload mid-exit; a held block glides after a sudden finger move instead of jumping; the door opens and closes for a leaving block, the whole door for a narrower block; two blocks leaving one door together share one spray; an exiting block settles at its door before sliding in, and is cut at the door at full size while debris sprays; following and snapping allocate nothing |
+| `DragAllocationTests` (PlayMode) | 200 one-cell drags in the real Gameplay scene allocate 0 B after a warm-up ([performance.md](performance.md)) |
 | `IceBlockerViewTests` (PlayMode) | a frozen block shows its ice count, counts down as others leave and thaws |
 | `BoosterFlowTests` (PlayMode) | through the real HUD and input: the hammer smashes a tapped block, the rocket rebuilds a block without its cell, the freeze holds the timer and shows the ice, an empty booster offers one for coins and plays on (restores saves) |
 | `LevelProgressionFlowTests` (PlayMode) | a full lap of wins: each starts the next level and the last loops to the first layout (restores saved progress) |

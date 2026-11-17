@@ -53,10 +53,10 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - [x] [T-34 Ice blocker](#t-34-ice-blocker)
 - [x] [T-35 Arrow block](#t-35-arrow-block)
 - [x] [T-36 Four functional boosters](#t-36-four-functional-boosters)
-- [ ] [T-37 Architecture tests](#t-37-architecture-tests)
+- [x] [T-37 Architecture tests](#t-37-architecture-tests)
 - [ ] [T-38 Performance pass](#t-38-performance-pass)
 - [ ] [T-39 Full QA pass on device and aspect ratios](#t-39-full-qa-pass-on-device-and-aspect-ratios)
-- [ ] [T-40 Project README](#t-40-project-readme)
+- [x] [T-40 Project README](#t-40-project-readme)
 - [ ] [T-41 Android APK](#t-41-android-apk)
 - [ ] [T-42 Repository hygiene](#t-42-repository-hygiene)
 - [x] [T-43 Touch and door feel](#t-43-touch-and-door-feel)
@@ -763,15 +763,18 @@ and (T-33) the solver from `ColorBlockJam.Game`, so the editor never has its own
 - **Arch:** reflection tests: no `Update`/`LateUpdate`/`FixedUpdate`/`ITickable` in `ColorBlockJam.*` types
   (allow-list with reason); `ColorBlockJam.Core` references no `ColorBlockJam.Game`; no `UnityEngine.Debug.Log`
   calls outside `UnityGameLogger` (scan IL or source); every scene's serialized references are set.
+  As built: `EM ArchitectureTests`. It runs the four checks above, plus a source scan for `Camera.main` and
+  `Find*` lookups. The scene check reads the project's own components in the three build scenes (135 references).
 - **Docs:** `testing.md`.
 
 ### T-38 Performance pass
 
 - **Req:** R-38.
 - **Subtasks:**
-  - [ ] Profile a full level on device
-  - [ ] GC alloc 0 B per frame while dragging and while idle
-  - [ ] Batch
+  - [ ] Profile a full level on device (needs T-41's build and a device)
+  - [x] GC alloc 0 B per frame while dragging (`PM DragAllocationTests`) and while idle (no per-frame code,
+    `ArchitectureTests`)
+  - [x] Batch
   count; `ProfilerMarker` on drag and move; fix findings; record numbers.
 - **Docs:** `Docs/General/performance.md` (method, device, numbers).
 
@@ -779,7 +782,8 @@ and (T-33) the solver from `ColorBlockJam.Game`, so the editor never has its own
 
 - **Req:** R-13, all acceptance criteria.
 - **Subtasks:**
-  - [ ] Run every QA page at 1080x1920 and 1080x2400 in the Game view and on an Android device
+  - [x] Full Edit Mode (455) and Play Mode (44) suites green; every ⚙ case on the QA pages ticked
+  - [ ] Run every 👁 case at 1080x1920 and 1080x2400 in the Game view and on an Android device
   fix or log every failure as a known problem.
 - **Docs:** tick QA pages; known problems list for the README.
 

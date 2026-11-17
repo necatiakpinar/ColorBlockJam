@@ -19,19 +19,19 @@ Verifies [splash-boot.md](../General/splash-boot.md) §1–§2 and the Home ⇄ 
 
 ## §1 Guarantees
 
-- [ ] ⚙ Build starts in Splash — `BuildSettingsTests.BuildSettings_ShouldStartWithSplash_WhenAppLaunches`
-- [ ] ⚙ Every scene id is a build scene — `BuildSettingsTests.BuildSettings_ShouldContainEverySceneId_WhenLoaderNamesIt`
-- [ ] ⚙ Splash reaches Home — `NavigationFlowTests.Splash_ShouldReachHomeAndShowLevel_WhenAppBoots`
-- [ ] ⚙ Level button opens Gameplay at the same level — `NavigationFlowTests.LevelButton_ShouldOpenGameplayShowingTheSameLevel_WhenTappedOnHome`
-- [ ] ⚙ Gameplay Home button returns to Home — `NavigationFlowTests.HomeButton_ShouldReturnToHome_WhenTappedInGameplay`
-- [ ] ⚙ A double tap starts one load only — `NavigationServiceTests.GoToGameplay_ShouldBeIgnored_WhenALoadIsRunning`
+- [x] ⚙ Build starts in Splash — `BuildSettingsTests.BuildSettings_ShouldStartWithSplash_WhenAppLaunches`
+- [x] ⚙ Every scene id is a build scene — `BuildSettingsTests.BuildSettings_ShouldContainEverySceneId_WhenLoaderNamesIt`
+- [x] ⚙ Splash reaches Home — `NavigationFlowTests.Splash_ShouldReachHomeAndShowLevel_WhenAppBoots`
+- [x] ⚙ Level button opens Gameplay at the same level — `NavigationFlowTests.LevelButton_ShouldOpenGameplayShowingTheSameLevel_WhenTappedOnHome`
+- [x] ⚙ Gameplay Home (in the pause popup) returns to Home — `NavigationFlowTests.PausePopupHome_ShouldReturnToHome_WhenTappedInGameplay`
+- [x] ⚙ A double tap starts one load only — `NavigationServiceTests.GoToGameplay_ShouldBeIgnored_WhenALoadIsRunning`
 
 ## §2 Sequence
 
 - [ ] 👁 The logo fades and scales in on launch; no pop or flicker.
 - [ ] 👁 The loading bar fills smoothly and is full before the scene changes.
 - [ ] 👁 Splash stays at least `MinimumDisplaySeconds` on a fast device.
-- [ ] ⚙ Gameplay HUD shows "Level N" for the saved level — `GameplayFlowTests.Start_ShouldFireLevelStartedWithCurrentLevel_WhenSceneStarts`
+- [x] ⚙ Gameplay HUD shows "Level N" for the saved level — `NavigationFlowTests.LevelButton_ShouldOpenGameplayShowingTheSameLevel_WhenTappedOnHome`
 - [ ] 👁 The HUD reveals with a short fade and scale.
 - [ ] 👁 Pressing Play with Home or Gameplay open in the editor still boots through Splash.
 - [ ] 👁 Ten Home ⇄ Gameplay round trips leave one RootLifetimeScope and no console errors.
