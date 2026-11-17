@@ -109,24 +109,49 @@ changes the saved progress to that level; the debug window's *Clear player saves
 | `LevelGenerator` | Game | builds levels from a `LevelGenerationRequest` (below) |
 | `BlockShape`, `BlockShapeLibrary` | Game | the preset shapes the editor stamps and the generator uses |
 
-**Solver (T-33, DA-32).** It lays board states out on a real `BoardState` (`Arrange`, `MoveBlockTo`), so the
-rules are never copied. A move takes one block along any path of free cells, as the drag allows. Leaving
+**Solver (T-33, DA-32).**
+- **Rules from the game.** `SearchBoard` asks a real `BoardState` once per level and records, as 128-bit
+  cell masks, every block's positions, its one-cell moves, the spots it can leave from and the cells its way
+  out needs free (found by probing with a one-cell block), plus what its blockers allow for each number of
+  blocks gone. The search then runs on bit operations; the rules are never copied.
+- **Board size.** It handles boards up to 128 cells.
+- **Same answers.** Before the old board-moving solver was removed, it was checked to give the same status,
+  score, states searched and steps on every shipped level and on generated ones with arrows and ice.
+
+A move takes one block along any path of free cells, as the drag allows. Leaving
 never hurts, so after every move all blocks that can reach their door leave, in waves (each wave is every
 block that can leave at that moment). The search branches only over room-making moves, breadth first, and
 stops at `LevelRulesConfig.SolverStateCap` (20 000 states) with *Unknown*. `Solve(level, token)` stops with
-`OperationCanceledException` once the token is cancelled; use one instance per thread.
+`OperationCanceledException` once the token is cancelled; `Solve(level, maxMoves, token)` tries only
+solutions with at most that many room-making moves and says *Unknown* past them.
+
+It keeps the search cheap without changing what it finds:
+- A board reached right after a move is played out once, however many moves reach it.
+- States are keyed by one character per block, hashed with a mixing comparer (the runtime's string hash
+  spreads such keys badly).
+- The reach search reuses its buffers.
+
+Because of those buffers, use one solver per thread.
 
 Ice needs no extra state in the search: every exit counts every frozen block down by one, so a block's ice
 is its starting ice minus the blocks already gone (`BoardState.Arrange`).
 
-**Difficulty (DA-33). A solution's score is its exit waves plus its room-making moves: Normal 1–2, Hard 3–4,
-Very Hard 5 or more. The shipped levels score 1, 2, 4, 4 and 8, matching their labels
+**Difficulty (DA-33).** A solution's score is its exit waves plus its room-making moves: Normal 1–2, Hard 3–4,
+Very Hard 5 or more. The shipped levels score 1, 2, 4, 4, 8, 9, 10 and 11, matching their labels
 (`ShippedLevelsTests`).
 
 **Generator (T-47, DA-33).** With a seeded `System.Random`, each candidate gets one door per colour (1–3 cells,
 not overlapping) and preset blocks in those colours, each turned so it fits a door of its colour. A
 candidate is kept when the validator has no error and the solver finds it solvable within 2 000 states;
-the first whose score is in the difficulty's band wins. The timer is 20 s plus 10 s a block, plus 30 % for
+the first whose score is in the difficulty's band wins.
+- **Parallel checks.** Candidates are built one after another from the seed, then checked in parallel batches,
+  one per core. They are read in order, so a seed gives the same level as one at a time would.
+- **Early stop.** Once a candidate fits, the later ones in its batch stop.
+- **Move limit.** For Normal and Hard the solver is not asked for solutions with more moves than the band's
+  top score allows, since every solution has at least one exit wave.
+- **Cancellation.** `Generate(request, token)` stops when the token is cancelled.
+
+The timer is 20 s plus 10 s a block, plus 30 % for
 Hard and 60 % for Very Hard, rounded to 5 s.
 
 ## 4. Tests

@@ -81,7 +81,7 @@ namespace ColorBlockJam.Tests.EditMode
         {
             var rules = AssetDatabase.LoadAssetAtPath<LevelRulesConfig>(RulesPath);
             var solver = new LevelSolver(rules.SolverStateCap);
-            var generator = new LevelGenerator(new LevelDefinitionValidator(rules), solver, new BlockShapeLibrary());
+            var generator = new LevelGenerator(new LevelDefinitionValidator(rules), rules.SolverStateCap, new BlockShapeLibrary());
             for (int i = 0; i < Levels().Count; i++)
             {
                 LevelData level = Levels()[i].Data;

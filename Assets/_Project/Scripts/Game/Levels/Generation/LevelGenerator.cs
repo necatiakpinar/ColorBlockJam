@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using ColorBlockJam.Game.Levels.Solving;
 using UnityEngine;
 using Random = System.Random;
@@ -10,7 +12,9 @@ namespace ColorBlockJam.Game.Levels.Generation
     /// Builds a level from a <see cref="LevelGenerationRequest"/> (T-47, DA-33). Each candidate gets one door per
     /// colour on the wall ring and preset-shaped blocks in those colours, each one able to fit a door of its
     /// colour. A candidate is kept only when the validator finds no error and the solver proves it finishable;
-    /// its difficulty is the solution's score: exit waves plus room-making moves. Editor-time code.
+    /// its difficulty is the solution's score: exit waves plus room-making moves. Candidates are built one after
+    /// another from the seed and checked in parallel batches, one per core, so a seed still gives the same level.
+    /// Editor-time code.
     /// </summary>
     public sealed class LevelGenerator
     {
@@ -21,13 +25,14 @@ namespace ColorBlockJam.Game.Levels.Generation
         const int MaxDoorLength = 3;
 
         readonly LevelDefinitionValidator _validator;
-        readonly LevelSolver _solver;
+        readonly int _solverStateCap;
         readonly BlockShapeLibrary _shapes;
 
-        public LevelGenerator(LevelDefinitionValidator validator, LevelSolver solver, BlockShapeLibrary shapes)
+        /// <param name="solverStateCap">Each candidate's search cap; a candidate past it is dropped, not waited on.</param>
+        public LevelGenerator(LevelDefinitionValidator validator, int solverStateCap, BlockShapeLibrary shapes)
         {
             _validator = validator;
-            _solver = solver;
+            _solverStateCap = solverStateCap;
             _shapes = shapes;
         }
 
@@ -52,7 +57,7 @@ namespace ColorBlockJam.Game.Levels.Generation
             return Mathf.RoundToInt(seconds / 5f) * 5;
         }
 
-        public LevelGenerationResult Generate(LevelGenerationRequest request)
+        public LevelGenerationResult Generate(LevelGenerationRequest request, CancellationToken token = default)
         {
             if (request.Colors < 1 || request.Colors > Palette.Length || request.Blocks < request.Colors)
                 return LevelGenerationResult.Failed(0, $"Use 1 to {Palette.Length} colours and at least one block per colour.");
@@ -62,23 +67,59 @@ namespace ColorBlockJam.Game.Levels.Generation
             LevelData closest = null;
             SolveResult closestSolution = null;
             int closestGap = int.MaxValue;
-            for (int attempt = 1; attempt <= request.Attempts; attempt++)
+            int batch = Math.Max(1, Environment.ProcessorCount);
+            var candidates = new LevelData[batch];
+            var solutions = new SolveResult[batch];
+            var searches = new CancellationTokenSource[batch];
+            var options = new ParallelOptions { CancellationToken = token };
+            for (int first = 1; first <= request.Attempts; first += batch)
             {
-                LevelData candidate = TryBuild(request, random);
-                if (candidate == null || _validator.HasErrors(_validator.Validate(candidate)))
-                    continue;
-                SolveResult solution = _solver.Solve(candidate);
-                if (solution.Status != SolveStatus.Solvable)
-                    continue;
-                int score = solution.Score;
-                if (score >= min && score <= max)
-                    return LevelGenerationResult.Succeeded(candidate, solution, attempt, true);
-                int gap = score < min ? min - score : score - max;
-                if (gap < closestGap)
+                int count = Math.Min(batch, request.Attempts - first + 1);
+                // Built in order from the one seeded random, exactly as one at a time would.
+                for (int i = 0; i < count; i++)
                 {
-                    closest = candidate;
-                    closestSolution = solution;
-                    closestGap = gap;
+                    candidates[i] = TryBuild(request, random);
+                    searches[i] = CancellationTokenSource.CreateLinkedTokenSource(token);
+                }
+
+                Parallel.For(0, count, options, () => new LevelSolver(_solverStateCap),
+                    (i, _, solver) =>
+                    {
+                        try
+                        {
+                            solutions[i] = Check(candidates[i], solver, max, searches[i].Token);
+                            // An earlier fitting candidate always wins, so the later ones need not finish.
+                            if (Fits(solutions[i], min, max))
+                                for (int later = i + 1; later < count; later++)
+                                    searches[later].Cancel();
+                        }
+                        catch (OperationCanceledException) when (!token.IsCancellationRequested)
+                        {
+                            solutions[i] = null;
+                        }
+
+                        return solver;
+                    },
+                    _ => { });
+                for (int i = 0; i < count; i++)
+                    searches[i].Dispose();
+
+                // Read in attempt order, so the earliest fitting candidate wins as it would one at a time.
+                for (int i = 0; i < count; i++)
+                {
+                    SolveResult solution = solutions[i];
+                    if (solution == null || solution.Status != SolveStatus.Solvable)
+                        continue;
+                    int score = solution.Score;
+                    if (score >= min && score <= max)
+                        return LevelGenerationResult.Succeeded(candidates[i], solution, first + i, true);
+                    int gap = score < min ? min - score : score - max;
+                    if (gap < closestGap)
+                    {
+                        closest = candidates[i];
+                        closestSolution = solution;
+                        closestGap = gap;
+                    }
                 }
             }
 
@@ -87,6 +128,18 @@ namespace ColorBlockJam.Game.Levels.Generation
                 : LevelGenerationResult.Failed(request.Attempts,
                     "No valid, finishable level came out of these settings. Try a bigger board, fewer blocks or another seed.");
         }
+
+        static bool Fits(SolveResult solution, int min, int max) =>
+            solution != null && solution.Status == SolveStatus.Solvable && solution.Score >= min && solution.Score <= max;
+
+        /// <summary>
+        /// The candidate's solution, or null when it has a validator error. Every solution takes at least one exit
+        /// wave, so one needing <paramref name="maxScore"/> moves or more could never fit and is not searched for.
+        /// </summary>
+        SolveResult Check(LevelData candidate, LevelSolver solver, int maxScore, CancellationToken token) =>
+            candidate == null || _validator.HasErrors(_validator.Validate(candidate))
+                ? null
+                : solver.Solve(candidate, maxScore == int.MaxValue ? int.MaxValue : maxScore - 1, token);
 
         LevelData TryBuild(LevelGenerationRequest request, Random random)
         {

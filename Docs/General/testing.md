@@ -42,9 +42,9 @@ new fake.
 | `TrustedClockTests` | no time before a server time; HTTP date read as UTC; moves on with monotonic time; a bad header keeps the last time |
 | `WalletServiceTests` | starts empty, throws before load, adds and saves at once with one signal, rejects zero or less, corrupt or negative saves start fresh |
 | `SettingsServiceTests` | all on for a new player, throws before load, a change saves and announces only that toggle, an unchanged value does nothing, a corrupt save starts fresh |
-| `LevelSolverTests` | one-round and waiting levels, a level that needs room made first, unsolvable, capped and cancelled searches, shipped level scores; every solution replays on a real board |
+| `LevelSolverTests` | one-round and waiting levels, a level that needs room made first, unsolvable, capped, move-limited and cancelled searches, shipped level scores; every solution replays on a real board |
 | `LevelCheckerTests` | the editor's checks: validation at once, the solve in the background, a newer check drops the old solve |
-| `LevelGeneratorTests` | valid, solvable levels in each difficulty's band; settings respected; seeds repeat; impossible settings refused; timer formula |
+| `LevelGeneratorTests` | valid, solvable levels in each difficulty's band; settings respected; seeds repeat; cancelling stops it; impossible settings refused; timer formula |
 | `LevelDraftTests` | the editor's model: round trip, add, move, rotate, doors, resize |
 | `LevelCatalogEditingTests` | append, duplicate, move, delete and save level assets on a throw-away catalog; a save survives an undo rollback |
 | `LevelRewardTests` | coins by difficulty, a missing entry throws, the shipped table rises with difficulty, a win pays its layout's reward (also when looped), a loss or a disposed service pays nothing |

@@ -122,6 +122,24 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
+        public void Solve_ShouldSayUnknown_WhenTheLevelNeedsMoreMovesThanAllowed()
+        {
+            SolveResult result = _solver.Solve(NeedsRoom(), 0, System.Threading.CancellationToken.None);
+
+            Assert.That(result.Status, Is.EqualTo(SolveStatus.Unknown));
+        }
+
+        [Test]
+        public void Solve_ShouldFindTheSameSolution_WhenTheMoveLimitAllowsIt()
+        {
+            SolveResult limited = _solver.Solve(NeedsRoom(), 5, System.Threading.CancellationToken.None);
+            SolveResult free = _solver.Solve(NeedsRoom());
+
+            Assert.That(limited.Status, Is.EqualTo(SolveStatus.Solvable));
+            Assert.That(limited.Steps, Is.EqualTo(free.Steps));
+        }
+
+        [Test]
         public void Solve_ShouldSayUnknown_WhenTheStateCapIsHit()
         {
             Assert.That(new LevelSolver(1).Solve(NeedsRoom()).Status, Is.EqualTo(SolveStatus.Unknown));

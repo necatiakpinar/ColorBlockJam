@@ -110,8 +110,7 @@ namespace ColorBlockJam.Editor.LevelEditing
             _checker = new LevelChecker(_validator, _rules.SolverStateCap, SolveSettleMilliseconds);
             _checker.Solved += Repaint;
             _shapes = new BlockShapeLibrary();
-            // The generator runs on a worker thread, so it gets a validator and solver of its own.
-            _generator = new LevelGenerator(new LevelDefinitionValidator(_rules), new LevelSolver(GeneratorStateCap), _shapes);
+            _generator = new LevelGenerator(_validator, GeneratorStateCap, _shapes);
             _toolLabels = new[]
             {
                 new GUIContent("Select", "Pick and drag blocks, pick doors (1)."), new GUIContent("Block", "Stamp or paint blocks (2)."),
@@ -960,7 +959,7 @@ namespace ColorBlockJam.Editor.LevelEditing
             LevelGenerationResult result;
             try
             {
-                result = await UniTask.RunOnThreadPool(() => _generator.Generate(request), cancellationToken: token);
+                result = await UniTask.RunOnThreadPool(() => _generator.Generate(request, token), cancellationToken: token);
             }
             catch (OperationCanceledException)
             {

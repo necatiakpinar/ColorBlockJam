@@ -21,7 +21,7 @@ namespace ColorBlockJam.Tests.EditMode
             // Defaults: board 3-10, timer 10-600 s.
             _rules = ScriptableObject.CreateInstance<LevelRulesConfig>();
             _validator = new LevelDefinitionValidator(_rules);
-            _generator = new LevelGenerator(_validator, new LevelSolver(2000), new BlockShapeLibrary());
+            _generator = new LevelGenerator(_validator, 2000, new BlockShapeLibrary());
         }
 
         [TearDown]
@@ -69,6 +69,15 @@ namespace ColorBlockJam.Tests.EditMode
             LevelData second = _generator.Generate(Request(LevelDifficulty.Normal, 42)).Level;
 
             Assert.That(JsonUtility.ToJson(second), Is.EqualTo(JsonUtility.ToJson(first)));
+        }
+
+        [Test]
+        public void Generate_ShouldStop_WhenCancelled()
+        {
+            using var cancelled = new System.Threading.CancellationTokenSource();
+            cancelled.Cancel();
+
+            Assert.Throws<System.OperationCanceledException>(() => _generator.Generate(Request(LevelDifficulty.VeryHard, 1), cancelled.Token));
         }
 
         [Test]
