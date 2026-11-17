@@ -3,10 +3,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Levels
 {
-    /// <summary>
-    /// A block outline in cells, anchored at (0, 0) at its bottom-left corner. The level editor stamps these and
-    /// the generator builds levels from them (level-editor.md).
-    /// </summary>
     public readonly struct BlockShape
     {
         public BlockShape(string name, params Vector2Int[] cells)
@@ -27,7 +23,6 @@ namespace ColorBlockJam.Game.Levels
         public int Width => Extent(true);
         public int Height => Extent(false);
 
-        /// <summary>The same shape turned a quarter clockwise, still anchored at (0, 0).</summary>
         public BlockShape Rotated()
         {
             var turned = new Vector2Int[Cells.Count];
@@ -36,7 +31,6 @@ namespace ColorBlockJam.Game.Levels
             return new BlockShape(Name, turned);
         }
 
-        /// <summary>The board cells the shape covers with its anchor on <paramref name="origin"/>.</summary>
         public List<Vector2Int> At(Vector2Int origin)
         {
             var cells = new List<Vector2Int>(Cells.Count);
@@ -54,7 +48,6 @@ namespace ColorBlockJam.Game.Levels
         }
     }
 
-    /// <summary>The preset block outlines, in the order the editor offers them (Tab cycles them).</summary>
     public sealed class BlockShapeLibrary
     {
         readonly BlockShape[] _shapes =

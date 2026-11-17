@@ -11,11 +11,6 @@ using VContainer;
 
 namespace ColorBlockJam.Tests.PlayMode
 {
-    /// <summary>
-    /// The drag allocates nothing once warmed up, in the real Gameplay scene: input handling, board moves and every
-    /// view that follows them (T-38, performance.md). Measured around the handlers only, so the editor's own
-    /// allocations between frames do not count.
-    /// </summary>
     public sealed class DragAllocationTests
     {
         const int WarmUpDrags = 20;
@@ -54,7 +49,6 @@ namespace ColorBlockJam.Tests.PlayMode
         static void DragTo(SignalBus bus, Vector3 point, Vector2Int cell) =>
             bus.Fire(new BoardPointerSignal(BoardPointerPhase.Dragged, cell, point));
 
-        /// <summary>A block that can take a one-cell step on the start board.</summary>
         static void FindMovableBlock(BoardState board, out int id, out Vector2Int step)
         {
             Vector2Int[] directions = { Vector2Int.right, Vector2Int.left, Vector2Int.up, Vector2Int.down };

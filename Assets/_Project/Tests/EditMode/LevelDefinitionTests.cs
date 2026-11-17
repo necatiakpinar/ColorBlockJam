@@ -8,7 +8,6 @@ using static ColorBlockJam.Game.Levels.WallSide;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>The level asset keeps every field through Unity serialization, the path the editor and game share.</summary>
     public sealed class LevelDefinitionTests
     {
         [Test]

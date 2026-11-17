@@ -10,7 +10,6 @@ using static ColorBlockJam.Game.Levels.WallSide;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>Make harder: more room-making moves, never fewer, valid and solvable, the same per seed (T-49, DA-40).</summary>
     public sealed class LevelHardenerTests
     {
         const int Cap = 5000;

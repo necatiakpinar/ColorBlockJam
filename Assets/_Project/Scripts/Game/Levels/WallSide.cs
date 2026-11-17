@@ -1,6 +1,5 @@
 namespace ColorBlockJam.Game.Levels
 {
-    /// <summary>The board wall a door sits on. Bottom and Top run along x; Left and Right run along y.</summary>
     public enum WallSide
     {
         Bottom = 1000,

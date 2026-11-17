@@ -7,11 +7,6 @@ using VContainer;
 
 namespace ColorBlockJam.Game.Home
 {
-    /// <summary>
-    /// Binds the authored Home canvas (T-23, ui.md §7) and reports taps; decides nothing itself. The level path
-    /// shows the current level and the next ones; the lives, the "+" buttons, the profile and the tabs are
-    /// placeholders with press feedback only (DA-9, DA-11).
-    /// </summary>
     public sealed class HomeView : MonoBehaviour
     {
         const string LevelLabelFormat = "Level {0}";

@@ -7,11 +7,6 @@ using VContainer;
 
 namespace ColorBlockJam.Game.Gameplay.View
 {
-    /// <summary>
-    /// Moves the board camera so the whole board, walls included, fits between the HUD and the booster bar
-    /// at the screen's aspect ratio when a board loads. The camera's tilt and field of view are authored in
-    /// the scene. The aspect is fixed on device (portrait only), so there is no re-fit on resize.
-    /// </summary>
     public sealed class BoardCameraView : MonoBehaviour
     {
         readonly BoardFraming _framing = new();

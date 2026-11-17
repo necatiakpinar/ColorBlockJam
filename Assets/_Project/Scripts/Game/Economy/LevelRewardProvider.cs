@@ -5,7 +5,6 @@ using ColorBlockJam.Game.Levels;
 
 namespace ColorBlockJam.Game.Economy
 {
-    /// <summary>Maps a level to the coins its win pays, by its difficulty (economy.md). Reads <see cref="LevelRewardConfig"/>.</summary>
     public sealed class LevelRewardProvider
     {
         readonly LevelRewardConfig _config;

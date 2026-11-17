@@ -9,11 +9,6 @@ using VContainer;
 
 namespace ColorBlockJam.Game.Gameplay.Hud
 {
-    /// <summary>
-    /// What the player sees while a booster waits for a target (DA-36): a banner with its name and what to tap,
-    /// the top bar faded, and a dark backdrop under the board that shades everything around it while the board
-    /// itself stays bright.
-    /// </summary>
     public sealed class BoosterTargetingView : MonoBehaviour
     {
         [SerializeField]
@@ -45,7 +40,6 @@ namespace ColorBlockJam.Game.Gameplay.Hud
             _boosters = boosters;
             _config = config;
             _signalBus = signalBus;
-            // The view's own copy, so fading it never touches the asset.
             _backdropMaterial = _backdrop.material;
             _signalBus.Subscribe<BoosterTargetingChangedSignal>(OnTargetingChanged);
             _signalBus.Subscribe<LevelStartedSignal>(OnLevelStarted);
@@ -66,7 +60,6 @@ namespace ColorBlockJam.Game.Gameplay.Hud
             Fade(signal.Active, _config.BoosterFadeDuration);
         }
 
-        /// <summary>A fresh attempt shows no targeting at all.</summary>
         void OnLevelStarted(LevelStartedSignal signal) => Fade(false, 0f);
 
         void Fade(bool shown, float duration)

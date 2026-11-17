@@ -31,7 +31,6 @@ using VContainer;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>Builds the real installers into a plain container: catches missing or broken registrations.</summary>
     public sealed class InstallerResolutionTests
     {
         readonly List<Object> _createdAssets = new();
@@ -51,13 +50,11 @@ namespace ColorBlockJam.Tests.EditMode
             return config;
         }
 
-        /// <summary>Every config class of the game: the <c>*Config</c> ScriptableObjects.</summary>
         static List<System.Type> ConfigTypes() =>
             typeof(ConfigProvider).Assembly.GetTypes()
                 .Where(type => typeof(ScriptableObject).IsAssignableFrom(type) && type.Name.EndsWith("Config") && !type.IsAbstract)
                 .ToList();
 
-        /// <summary>A provider with a fresh instance of every config, or the given board view config.</summary>
         ConfigProvider Configs(BoardViewConfig boardView = null)
         {
             var provider = CreateConfig<ConfigProvider>();
@@ -107,7 +104,6 @@ namespace ColorBlockJam.Tests.EditMode
             }
 
             Assert.That(types, Is.Unique);
-            // A new config class belongs in the provider too.
             foreach (System.Type type in ConfigTypes())
                 Assert.That(types, Does.Contain(type), $"{type.Name} is missing from the ConfigProvider.");
         }

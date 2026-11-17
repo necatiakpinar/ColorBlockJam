@@ -165,8 +165,8 @@ pack or where the game's levels come from.**
 
 ### Update loop
 
-**Per-frame code is banned**: no `Update`, `LateUpdate`, `FixedUpdate` or `ITickable` unless a code
-comment names the event that was unavailable (and `ArchitectureTests` lists it). **Read
+**Per-frame code is banned**: no `Update`, `LateUpdate`, `FixedUpdate` or `ITickable` unless
+`ArchitectureTests.PerFrameAllowed` lists the type with the event that was unavailable. **Read
 [performance.md](Docs/General/performance.md) before changing per-frame work, the drag or the board views.** Use EventSystem handlers for input, signals for state
 changes, tweens for motion with an end, `UniTask.Delay` for deadlines.
 
@@ -200,8 +200,9 @@ Use the injected `IGameLogger`, never raw `Debug.Log`. No logs on per-frame path
 
 ### Comments
 
-Comment only non-obvious intent (why, not what). XML summaries on public types whose role is not obvious
-from the name.
+**No comments in code**: no `//`, no `/* */`, no XML `///` summaries, in scripts and tests alike. Names,
+small methods and tests explain the code; a decision worth recording goes in the docs or the commit
+message (`ArchitectureTests.Code_ShouldHaveNoComments_WhenWritten` fails on any comment).
 
 ## Testing Guidelines
 
@@ -221,7 +222,7 @@ from the name.
 - **Read [doc-authoring-rules.md](Docs/General/doc-authoring-rules.md) before writing any `.md`.**
 - A player-visible decision the design does not answer is never a silent default: register it in
   [development-assumptions.md](Docs/General/development-assumptions.md) as `DA-n` and cite the id in
-  code and commit message.
+  the commit message and the docs that describe the behaviour (never in a code comment).
 
 ## Commit Guidelines
 

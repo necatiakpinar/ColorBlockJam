@@ -6,11 +6,6 @@ using VContainer;
 
 namespace ColorBlockJam.Game.UI
 {
-    /// <summary>
-    /// The shared behaviour of every authored popup (ui.md §3): its root holds a full-screen blocker and a
-    /// panel; it stays inactive until <see cref="IPopupService"/> shows it, then fades in while the panel
-    /// scales up (<see cref="UiConfig.PopupReveal"/>). Hiding is instant.
-    /// </summary>
     public abstract class PopupView : MonoBehaviour, IPopup
     {
         [SerializeField]

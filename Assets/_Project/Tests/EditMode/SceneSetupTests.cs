@@ -10,7 +10,6 @@ using UnityEngine.UI;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>Opens every build scene and checks the UI rules authored scenes must follow (ui.md).</summary>
     public sealed class SceneSetupTests
     {
         static readonly Vector2 ReferenceResolution = new(1080f, 1920f);
@@ -23,7 +22,6 @@ namespace ColorBlockJam.Tests.EditMode
                     yield return scene.path;
         }
 
-        /// <summary>Keeps a build scene open for one test; closes it again unless it was already open.</summary>
         sealed class OpenedScene : IDisposable
         {
             readonly Scene _scene;

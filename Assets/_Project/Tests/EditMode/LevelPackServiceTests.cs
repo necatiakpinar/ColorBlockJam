@@ -12,10 +12,6 @@ using Object = UnityEngine.Object;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>
-    /// Which levels a launch plays: the bundled pack, or a remote one stored by an earlier launch when it is valid
-    /// and not older (level-packs.md §3, DA-41).
-    /// </summary>
     public sealed class LevelPackServiceTests
     {
         const int BundledRevision = 5;
@@ -109,7 +105,6 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void Load_ShouldDropTheStoredPack_WhenItHasAnUnplayableLevel()
         {
-            // A 2x4 board is below the rules' smallest size.
             _storage.Set(LevelPackService.RemoteKey, Pack(BundledRevision + 1, 2));
 
             LevelPackService service = Loaded();

@@ -12,7 +12,6 @@ using static ColorBlockJam.Game.Levels.WallSide;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>The attempt's state machine (gameplay.md §6).</summary>
     public sealed class LevelSessionTests
     {
         TestCatalog _catalogs;
@@ -27,7 +26,6 @@ namespace ColorBlockJam.Tests.EditMode
             _catalogs = new TestCatalog();
             _bus = new SignalBus();
             _board = new ActiveBoard(new BoardSpace(1f), _bus);
-            // Red leaves left; blue stays, so one exit does not clear the board.
             var levels = new LevelProvider(_catalogs.Create(
                 new LevelDataBuilder(4, 4).Block(Red, 1, 1).Block(Blue, 3, 3).Door(Left, 1, 1, Red).Build()));
             _session = new LevelSession(_board, levels, _bus);
@@ -47,7 +45,6 @@ namespace ColorBlockJam.Tests.EditMode
             _catalogs.Dispose();
         }
 
-        /// <summary>Slides block 0 left until it leaves through its door.</summary>
         void SlideOutFirstBlock()
         {
             while (_board.TryStep(0, Vector2Int.left) == StepResult.Moved) { }

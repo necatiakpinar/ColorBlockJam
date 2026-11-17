@@ -4,10 +4,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Gameplay.Board
 {
-    /// <summary>
-    /// Decides whether a block pushed against a wall fits a door there (DA-5): same colour, and the door
-    /// spans every cell the block covers along that wall. Free of allocation per query.
-    /// </summary>
     internal sealed class DoorResolver
     {
         readonly DoorData[] _doors;
@@ -19,7 +15,6 @@ namespace ColorBlockJam.Game.Gameplay.Board
                 _doors[i] = doors[i];
         }
 
-        /// <param name="direction">A unit step toward the wall: right, left, up or down.</param>
         public bool FitsDoor(BoardBlock block, Vector2Int direction)
         {
             WallSide side = WallFacing(direction);

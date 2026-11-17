@@ -5,15 +5,8 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Levels.Solving
 {
-    /// <summary>
-    /// The solver's view of a level (level-editor.md §3). Every block's legal positions, its one-cell moves, the
-    /// spots it can leave from and the cells its way out needs free are worked out once, as 128-bit cell masks,
-    /// by asking a real <see cref="BoardState"/>. The search then runs on bit operations alone while the rules
-    /// (walls, doors, arrows, ice) still live only in <see cref="BoardState"/> and the blockers.
-    /// </summary>
     internal sealed class SearchBoard
     {
-        /// <summary>Right, left, up, down: the order every search step tries them in.</summary>
         public static readonly Vector2Int[] Directions = { Vector2Int.right, Vector2Int.left, Vector2Int.up, Vector2Int.down };
 
         public const int MaxCells = 128;
@@ -23,12 +16,10 @@ namespace ColorBlockJam.Game.Levels.Solving
         readonly Vector2Int[][] _offsets;
         readonly ulong[][] _low;
         readonly ulong[][] _high;
-        // Indexed [block][position * 4 + direction].
         readonly int[][] _moves;
         readonly bool[][] _exits;
         readonly ulong[][] _wayLow;
         readonly ulong[][] _wayHigh;
-        // Indexed [block][blocks gone * 4 + direction]: what its blockers (arrow, ice) allow.
         readonly bool[][] _allows;
         readonly int[] _start;
 
@@ -57,7 +48,6 @@ namespace ColorBlockJam.Game.Levels.Solving
 
         public int PositionCount(int id) => _offsets[id].Length;
 
-        /// <summary>The position the level places the block at.</summary>
         public int StartPosition(int id) => _start[id];
 
         public Vector2Int OffsetOf(int id, int position) => _offsets[id][position];
@@ -66,23 +56,16 @@ namespace ColorBlockJam.Game.Levels.Solving
 
         public ulong High(int id, int position) => _high[id][position];
 
-        /// <summary>Whether the block's blockers let it step that way once <paramref name="gone"/> blocks have left.</summary>
         public bool Allows(int id, int gone, int direction) => _allows[id][gone * Directions.Length + direction];
 
-        /// <summary>
-        /// Where one step takes the block when the cells are free of others, or -1 when a wall stops it. The
-        /// caller still checks the target's cells against the other blocks and asks <see cref="Allows"/>.
-        /// </summary>
         public int MoveTo(int id, int position, int direction) => _moves[id][position * Directions.Length + direction];
 
-        /// <summary>Whether the block leaves through a door from here, with the others at these cells.</summary>
         public bool CanLeave(int id, int position, int direction, ulong othersLow, ulong othersHigh)
         {
             int at = position * Directions.Length + direction;
             return _exits[id][at] && (_wayLow[id][at] & othersLow) == 0 && (_wayHigh[id][at] & othersHigh) == 0;
         }
 
-        /// <summary>Positions, masks and moves, and the exits by door: the block alone on a board with every door.</summary>
         void MapBlock(LevelData level, int id)
         {
             BlockData data = level.Blocks[id];
@@ -100,8 +83,6 @@ namespace ColorBlockJam.Game.Levels.Solving
                 foreach (Vector2Int cell in data.Cells)
                     Set(ref _low[id][p], ref _high[id][p], cell + offsets[p]);
 
-            // A plain copy of the block (its blockers are mapped apart, by blocks gone) and a one-cell probe that
-            // finds the cells a way out needs free.
             Vector2Int probeCell = FreeCellOutside(level, data);
             bool hasProbe = probeCell.x >= 0;
             var blocks = new List<BlockData> { new(data.Color, data.Cells) };
@@ -135,7 +116,6 @@ namespace ColorBlockJam.Game.Levels.Solving
             }
         }
 
-        /// <summary>For every exit from position <paramref name="p"/>: the cells a block standing there would block.</summary>
         void MapWaysOut(LevelData level, BoardState board, int id, int p, Vector2Int[] at, bool[] gone, Vector2Int probeCell)
         {
             gone[1] = false;
@@ -160,7 +140,6 @@ namespace ColorBlockJam.Game.Levels.Solving
             gone[1] = true;
         }
 
-        /// <summary>What every block's blockers allow, for each number of blocks gone, read off the real blocks.</summary>
         void MapBlockers(LevelData level)
         {
             int count = level.Blocks.Count;
@@ -172,7 +151,6 @@ namespace ColorBlockJam.Game.Levels.Solving
                 _allows[id] = new bool[count * Directions.Length];
                 for (int left = 0; left < count; left++)
                 {
-                    // Any `left` other blocks gone: the blockers only count them.
                     for (int other = 0, marked = 0; other < count; other++)
                     {
                         gone[other] = other != id && marked < left;

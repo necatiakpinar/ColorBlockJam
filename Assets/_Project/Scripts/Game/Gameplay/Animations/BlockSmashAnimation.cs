@@ -4,10 +4,8 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Gameplay.Animations
 {
-    /// <summary>A block broken by a booster: it swells for a beat, then shrinks to nothing. Runs on unscaled time.</summary>
     public readonly struct BlockSmashAnimation : IAnimation<BlockSmashAnimation.Config>
     {
-        // Share of the duration spent swelling; the rest shrinks.
         const float SwellShare = 0.35f;
 
         public readonly struct Config

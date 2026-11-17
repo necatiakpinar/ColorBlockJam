@@ -6,11 +6,6 @@ using ColorBlockJam.Game.Levels;
 
 namespace ColorBlockJam.Game.Economy
 {
-    /// <summary>
-    /// Pays a win into the wallet the moment the level is won, before anything presents it (T-16, DA-7). The
-    /// session announces a win once per attempt, so a win pays once; failing, restarting or leaving never
-    /// touches the wallet.
-    /// </summary>
     public sealed class LevelRewardService : IDisposable
     {
         readonly SignalBus _signalBus;

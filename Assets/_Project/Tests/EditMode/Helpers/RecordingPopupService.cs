@@ -4,10 +4,6 @@ using ColorBlockJam.Game.UI;
 
 namespace ColorBlockJam.Tests.EditMode.Helpers
 {
-    /// <summary>
-    /// Keeps the popup service's one-at-a-time rule and records what opens, without showing anything, so flow
-    /// tests need no tweens or canvases.
-    /// </summary>
     public sealed class RecordingPopupService : IPopupService
     {
         public List<IPopup> Opened { get; } = new();

@@ -6,11 +6,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Editor.LevelEditing
 {
-    /// <summary>
-    /// Draws a <see cref="LevelDraft"/> top-down (level-editor.md §1): the floor grid inside a dark wall ring,
-    /// doors as coloured strips on the ring with an arrow out, blocks as joined coloured cells. It also maps the
-    /// mouse back to board cells and wall cells. Cells are counted from the bottom-left, as in the game.
-    /// </summary>
     public sealed class LevelCanvas
     {
         static readonly Color Background = new(0.16f, 0.17f, 0.22f);
@@ -19,7 +14,6 @@ namespace ColorBlockJam.Editor.LevelEditing
         static readonly Color Selection = Color.white;
 
         readonly BoardViewConfig _colors;
-        // Reused on every draw: OnGUI runs several times a frame and must not allocate per block or label.
         readonly HashSet<Vector2Int> _blockCells = new();
         GUIStyle _label;
         Rect _area;
@@ -37,7 +31,6 @@ namespace ColorBlockJam.Editor.LevelEditing
 
         public Color ColorOf(BlockColor color) => _colors.TintOf(color);
 
-        /// <summary>Fits the board and its wall ring into <paramref name="area"/>.</summary>
         public void Layout(Rect area, int width, int height)
         {
             _area = area;
@@ -48,7 +41,6 @@ namespace ColorBlockJam.Editor.LevelEditing
                 area.y + (area.height - _cell * (height + 2)) * 0.5f);
         }
 
-        /// <summary>The rect of a cell; -1 and the width / height address the wall ring around the board.</summary>
         public Rect CellRect(int x, int y) =>
             new(_origin.x + (x + 1) * _cell, _origin.y + (_height - y) * _cell, _cell, _cell);
 
@@ -59,7 +51,6 @@ namespace ColorBlockJam.Editor.LevelEditing
             return cell.x >= 0 && cell.y >= 0 && cell.x < _width && cell.y < _height;
         }
 
-        /// <summary>The wall cell under the mouse: which wall, and how far along it. Corners are not wall cells.</summary>
         public bool TryGetWall(Vector2 mouse, out WallSide side, out int index)
         {
             TryGetCell(mouse, out Vector2Int c);
@@ -122,7 +113,6 @@ namespace ColorBlockJam.Editor.LevelEditing
                 Outline(span, Selection, 3f);
         }
 
-        /// <summary>A block as joined cells, at its cells moved by <paramref name="offset"/>.</summary>
         public void DrawBlock(IReadOnlyList<Vector2Int> cells, Vector2Int offset, Color color, bool selected, string label)
         {
             HashSet<Vector2Int> set = _blockCells;
@@ -134,7 +124,6 @@ namespace ColorBlockJam.Editor.LevelEditing
             {
                 Rect rect = CellRect(cell.x, cell.y);
                 EditorGUI.DrawRect(Inset(rect, gap), color);
-                // Bridge to the right and upward neighbours of the same block so the shape reads as one piece.
                 if (set.Contains(cell + Vector2Int.right))
                     EditorGUI.DrawRect(new Rect(rect.xMax - gap, rect.y + gap, gap * 2f, rect.height - gap * 2f), color);
                 if (set.Contains(cell + Vector2Int.up))
@@ -153,7 +142,6 @@ namespace ColorBlockJam.Editor.LevelEditing
             }
         }
 
-        /// <summary>A see-through preview over cells, green when the action is allowed and red when not.</summary>
         public void DrawGhost(IEnumerable<Vector2Int> cells, Color color, bool allowed)
         {
             Color tint = allowed ? new Color(color.r, color.g, color.b, 0.55f) : new Color(1f, 0.15f, 0.15f, 0.55f);

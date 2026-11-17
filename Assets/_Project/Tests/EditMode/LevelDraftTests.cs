@@ -9,7 +9,6 @@ using static ColorBlockJam.Game.Levels.WallSide;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>The level editor's editing model keeps the board buildable (T-27 – T-29, level-editor.md §3).</summary>
     public sealed class LevelDraftTests
     {
         static List<Vector2Int> Cells(params int[] xy)

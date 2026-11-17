@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Core.Network
 {
-    /// <summary>How the connectivity probe asks and how often (DA-25). Held by the game's network config.</summary>
     [Serializable]
     public struct ConnectivitySettings
     {

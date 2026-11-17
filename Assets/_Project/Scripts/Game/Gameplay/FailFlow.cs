@@ -9,12 +9,6 @@ using ColorBlockJam.Game.UI;
 
 namespace ColorBlockJam.Game.Gameplay
 {
-    /// <summary>
-    /// Presents a loss (T-20): the out-of-time popup offers more seconds for coins (DA-30); Continue buys them
-    /// through <see cref="LevelContinueService"/> and closes. Closing it gives up, which costs the attempt's life
-    /// (<see cref="LevelAttemptLives"/>, DA-38), and opens the level-failed popup (DA-31), whose Retry plays again
-    /// through <see cref="GameplayLivesFlow"/> and whose close button goes Home.
-    /// </summary>
     public sealed class FailFlow : IDisposable
     {
         readonly SignalBus _signalBus;
@@ -55,7 +49,6 @@ namespace ColorBlockJam.Game.Gameplay
 
         void OnContinueClicked()
         {
-            // The popup closes first, so the continue's signals find no popup in the way.
             _popups.Close();
             if (!_continues.TryContinue())
                 _popups.Open(_levelFailed);

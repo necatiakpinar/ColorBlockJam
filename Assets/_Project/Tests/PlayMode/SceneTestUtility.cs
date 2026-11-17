@@ -7,7 +7,6 @@ using UnityEngine.UI;
 
 namespace ColorBlockJam.Tests.PlayMode
 {
-    /// <summary>Drives the real app through its scenes the way a player would.</summary>
     public static class SceneTestUtility
     {
         public const string SplashScene = "Splash";
@@ -24,14 +23,11 @@ namespace ColorBlockJam.Tests.PlayMode
                 yield return null;
             }
 
-            // One frame for the scene scope's entry points to start.
             yield return null;
         }
 
         public static IEnumerator BootToHome()
         {
-            // LoadScene takes effect next frame; waiting for Splash first keeps a Home scene left over from
-            // the previous test from passing the wait below.
             SceneManager.LoadScene(SplashScene, LoadSceneMode.Single);
             yield return WaitForScene(SplashScene);
             yield return WaitForScene(HomeScene);
@@ -44,7 +40,6 @@ namespace ColorBlockJam.Tests.PlayMode
             yield return WaitForScene(GameplayScene);
         }
 
-        /// <summary>Taps the button named <paramref name="buttonName"/> under the view of type T.</summary>
         public static void TapButton<TView>(string buttonName) where TView : Component
         {
             FindButton<TView>(buttonName).onClick.Invoke();

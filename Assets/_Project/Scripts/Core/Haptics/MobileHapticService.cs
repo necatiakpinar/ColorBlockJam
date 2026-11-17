@@ -6,19 +6,10 @@ using System.Runtime.InteropServices;
 
 namespace ColorBlockJam.Core.Haptics
 {
-    /// <summary>
-    /// Short taps through the platform's own haptics, with no third-party package: Android's
-    /// <c>VibrationEffect</c> predefined effects (one-shot pulses before API 29) and iOS's
-    /// <c>UIImpactFeedbackGenerator</c> (<c>Assets/Plugins/iOS/ColorBlockJamHaptics.mm</c>). Silent in the
-    /// editor and on desktop. Android needs the VIBRATE permission
-    /// (<c>Assets/Plugins/Android/ColorBlockJamHaptics.androidlib</c>).
-    /// </summary>
     public sealed class MobileHapticService : IHapticService
     {
 #if UNITY_ANDROID && !UNITY_EDITOR
-        // android.os.VibrationEffect.EFFECT_TICK, EFFECT_CLICK, EFFECT_HEAVY_CLICK (API 29+).
         static readonly int[] PredefinedEffects = { 2, 0, 5 };
-        // One-shot pulse lengths in milliseconds for the same three strengths, before API 29.
         static readonly long[] PulseMilliseconds = { 10L, 20L, 35L };
         const int DefaultAmplitude = -1;
         const int PredefinedSince = 29;
@@ -41,7 +32,6 @@ namespace ColorBlockJam.Core.Haptics
                 return;
             }
 
-            // Built once, so a tap allocates no Java objects of its own.
             if (_sdk >= PredefinedSince)
             {
                 using var effect = new AndroidJavaClass("android.os.VibrationEffect");
@@ -72,7 +62,6 @@ namespace ColorBlockJam.Core.Haptics
         [DllImport("__Internal")]
         static extern void ColorBlockJamHapticImpact(int style);
 
-        // UIImpactFeedbackStyle: 0 light, 1 medium, 2 heavy.
         public void Play(HapticImpact impact) => ColorBlockJamHapticImpact(IndexOf(impact));
 #else
         public void Play(HapticImpact impact)

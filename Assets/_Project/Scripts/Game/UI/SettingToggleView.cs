@@ -4,10 +4,6 @@ using UnityEngine.UI;
 
 namespace ColorBlockJam.Game.UI
 {
-    /// <summary>
-    /// One authored on/off switch for a <see cref="GameSetting"/>: the whole switch is the button, and the
-    /// on and off looks are two authored children (art has only the "on" knob, asset-feedback.md A-1).
-    /// </summary>
     public sealed class SettingToggleView : MonoBehaviour
     {
         [SerializeField]

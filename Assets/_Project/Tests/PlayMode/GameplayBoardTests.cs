@@ -18,7 +18,6 @@ using VContainer;
 
 namespace ColorBlockJam.Tests.PlayMode
 {
-    /// <summary>The real Gameplay scene draws the board and lets a finger take blocks out through their doors.</summary>
     public sealed class GameplayBoardTests
     {
         IObjectResolver _container;
@@ -59,10 +58,6 @@ namespace ColorBlockJam.Tests.PlayMode
                 yield return null;
         }
 
-        /// <summary>
-        /// Base, tiles, corners, one segment and one arrow per door, and one segment per stretch of wall between
-        /// doors.
-        /// </summary>
         static int ExpectedBoardParts(LevelData level)
         {
             int parts = 1 + level.Width * level.Height + 4 + level.Doors.Count * 2;
@@ -89,7 +84,6 @@ namespace ColorBlockJam.Tests.PlayMode
             return false;
         }
 
-        /// <summary>Two blocks next to their doors: red leaves left, blue leaves right.</summary>
         static LevelData TwoBlockLevel() => new(4, 3, 60,
             new[]
             {
@@ -136,7 +130,6 @@ namespace ColorBlockJam.Tests.PlayMode
                     ring.Add(part.bounds);
             }
 
-            // Every side, corner to corner, is covered by parts that meet end to end.
             AssertSideIsClosed(ring, b => b.min.x, b => b.min.z, b => b.max.z, lowest: true);
             AssertSideIsClosed(ring, b => b.max.x, b => b.min.z, b => b.max.z, lowest: false);
             AssertSideIsClosed(ring, b => b.min.z, b => b.min.x, b => b.max.x, lowest: true);
@@ -229,7 +222,6 @@ namespace ColorBlockJam.Tests.PlayMode
                 Assert.That(cleared, Is.Empty);
 
                 BoardViewConfig config = _container.Resolve<BoardViewConfig>();
-                // The blocks here are one cell long: they slide that plus the clearance at the exit speed.
                 yield return WaitRealtime((1f + config.ExitCutOffset + config.ExitClearance) / config.ExitSpeed + 0.2f);
                 Assert.That(redView.gameObject.activeInHierarchy, Is.False, "The exited block view returns to its pool.");
 
@@ -270,8 +262,6 @@ namespace ColorBlockJam.Tests.PlayMode
 
             _board.Load(TwoBlockLevel());
 
-            // The sliding view went back to its pool with the old board: it is either idle or reused, at full
-            // size, for one of the new blocks.
             bool reused = false;
             foreach (BlockView view in _blocks.Views)
                 reused |= view == exiting;
@@ -311,7 +301,6 @@ namespace ColorBlockJam.Tests.PlayMode
         public IEnumerator Exit_ShouldSinkTheWholeDoor_WhenASmallerBlockLeavesThroughIt()
         {
             yield return BootToBoard();
-            // A three-cell red door on the left wall; a one-cell red block leaves through its middle.
             _board.Load(new LevelData(4, 3, 60,
                 new[] { new BlockData(BlockColor.Red, new[] { new Vector2Int(0, 1) }) },
                 new[] { new DoorData(WallSide.Left, 0, 3, BlockColor.Red) }));
@@ -355,7 +344,7 @@ namespace ColorBlockJam.Tests.PlayMode
             yield return BootToBoard();
             _board.Load(TwoBlockLevel());
             BlockView red = _blocks.Views[0];
-            Vector3 mouth = red.transform.localPosition; // red already sits in its door's row, by the wall
+            Vector3 mouth = red.transform.localPosition;
             float snap = _container.Resolve<BoardViewConfig>().ExitSnapDuration;
 
             Swipe(new Vector2Int(0, 1), new Vector2Int(-2, 1));
@@ -384,7 +373,6 @@ namespace ColorBlockJam.Tests.PlayMode
                 if (mesh.sharedMaterial.shader.name != "ColorBlockJam/Block Exit")
                     continue;
                 cut++;
-                // The plane keeps the board side of a line ExitCutOffset inside the left door and cuts the rest.
                 Vector4 plane = mesh.sharedMaterial.GetVector("_ClipPlane");
                 float cutX = _space.Origin.x - _container.Resolve<BoardViewConfig>().ExitCutOffset * _space.CellSize;
                 Assert.That(new Vector3(plane.x, plane.y, plane.z), Is.EqualTo(Vector3.right));
@@ -440,8 +428,8 @@ namespace ColorBlockJam.Tests.PlayMode
             yield return BootToBoard();
             _board.Load(TwoBlockLevel());
 
-            Swipe(new Vector2Int(0, 1), new Vector2Int(-2, 1)); // red out
-            Swipe(new Vector2Int(3, 1), new Vector2Int(-2, 1)); // blue slides left to the red door
+            Swipe(new Vector2Int(0, 1), new Vector2Int(-2, 1));
+            Swipe(new Vector2Int(3, 1), new Vector2Int(-2, 1));
 
             Assert.That(_board.Current.Blocks[1].HasExited, Is.False);
             Assert.That(_board.Current.Blocks[1].GetCell(0), Is.EqualTo(new Vector2Int(0, 1)));

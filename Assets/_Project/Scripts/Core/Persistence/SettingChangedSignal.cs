@@ -1,6 +1,5 @@
 namespace ColorBlockJam.Core.Persistence
 {
-    /// <summary>A toggle changed and is already saved.</summary>
     public readonly struct SettingChangedSignal
     {
         public readonly GameSetting Setting;

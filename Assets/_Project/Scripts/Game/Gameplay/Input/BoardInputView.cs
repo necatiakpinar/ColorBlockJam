@@ -8,11 +8,6 @@ using VContainer;
 
 namespace ColorBlockJam.Game.Gameplay.Input
 {
-    /// <summary>
-    /// Turns EventSystem pointer events on the board collider into <see cref="BoardPointerSignal"/>s.
-    /// One finger at a time (DA-4). UI drawn above the board wins the EventSystem raycast, so touches on
-    /// HUD buttons never arrive here.
-    /// </summary>
     public sealed class BoardInputView : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
     {
         [SerializeField]
@@ -38,7 +33,6 @@ namespace ColorBlockJam.Game.Gameplay.Input
 
         void OnBoardLoaded(BoardLoadedSignal signal) => FitToBoard();
 
-        /// <summary>Sizes the touch area to the current board; runs on every <see cref="BoardLoadedSignal"/>.</summary>
         public void FitToBoard()
         {
             Vector3 size = _boardSpace.WorldSize;
@@ -68,7 +62,6 @@ namespace ColorBlockJam.Game.Gameplay.Input
                 return;
 
             _isPressed = false;
-            // A release that misses the board plane still ends the touch, at the last point it reached.
             TryProject(eventData.position);
             Fire(BoardPointerPhase.Released);
         }
@@ -80,14 +73,11 @@ namespace ColorBlockJam.Game.Gameplay.Input
 
         void OnDisable()
         {
-            // The EventSystem sends no pointer-up to a disabled object; a stale press would block every
-            // later touch.
             _isPressed = false;
         }
 
         bool TryProject(Vector2 screenPosition)
         {
-            // Projecting on the board plane, not the collider, keeps drags valid past the board edge.
             if (!_boardSpace.TryProjectToBoard(_camera.ScreenPointToRay(screenPosition), out Vector3 worldPoint))
                 return false;
 

@@ -6,10 +6,6 @@ using VContainer;
 
 namespace ColorBlockJam.Game.Gameplay.Popups
 {
-    /// <summary>
-    /// Asks before Home ends a started attempt (lives.md, DA-38): leaving costs a life. Leave goes; close stays in
-    /// the paused level.
-    /// </summary>
     public sealed class LeaveLevelPopupView : PopupView
     {
         [SerializeField]

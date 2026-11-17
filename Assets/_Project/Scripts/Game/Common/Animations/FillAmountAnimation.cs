@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 namespace ColorBlockJam.Game.Common.Animations
 {
-    /// <summary>Moves a filled image toward a fill amount. Runs on unscaled time.</summary>
     public readonly struct FillAmountAnimation : IAnimation<FillAmountAnimation.Config>
     {
         public readonly struct Config

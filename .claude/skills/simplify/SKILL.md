@@ -36,7 +36,8 @@ serialized values (a config number, a reference). Never line-review YAML.
 
 ### Pass 2 — Rules (each is a bug to fix now)
 
-- Per-frame code (`Update`, `LateUpdate`, `FixedUpdate`, `ITickable`) without a justified comment.
+- Per-frame code (`Update`, `LateUpdate`, `FixedUpdate`, `ITickable`) not listed in `ArchitectureTests.PerFrameAllowed`.
+- Any comment in code (`//`, `/* */`, `///`): the code must explain itself (CLAUDE.md, Comments).
 - Inline `DO*` / `DOTween.*` outside an `IAnimation<T>` struct; data writes gated on a tween or flow.
 - Subscriptions outside a constructor / `[Inject] Construct`; missing unsubscribe.
 - Null checks on serialized references in components; `Camera.main`; `Find*`; static runtime logic.

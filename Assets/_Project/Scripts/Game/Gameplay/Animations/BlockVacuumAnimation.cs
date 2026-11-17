@@ -4,10 +4,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Gameplay.Animations
 {
-    /// <summary>
-    /// A block sucked up by the vacuum: after its turn in the queue it rises, spins and shrinks to nothing. Runs on
-    /// unscaled time.
-    /// </summary>
     public readonly struct BlockVacuumAnimation : IAnimation<BlockVacuumAnimation.Config>
     {
         const float Turns = 1f;

@@ -4,10 +4,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Core.Persistence
 {
-    /// <summary>
-    /// One saved document: <typeparamref name="T"/> as JSON under one versioned storage key (persistence.md).
-    /// Reading never throws on bad data: a missing, corrupt or invalid record starts fresh and says why.
-    /// </summary>
     public sealed class JsonRecord<T> where T : class, new()
     {
         readonly string _key;
@@ -21,7 +17,6 @@ namespace ColorBlockJam.Core.Persistence
             _logger = logger;
         }
 
-        /// <summary>The saved record, or a new one when there is none or it fails <paramref name="isValid"/>.</summary>
         public T LoadOrCreate(Func<T, bool> isValid)
         {
             if (!_storage.TryGet(_key, out string json))
@@ -47,7 +42,6 @@ namespace ColorBlockJam.Core.Persistence
             return data;
         }
 
-        /// <summary>Writes the record and flushes, so it survives the app being killed right after.</summary>
         public void Save(T data)
         {
             _storage.Set(_key, JsonUtility.ToJson(data));

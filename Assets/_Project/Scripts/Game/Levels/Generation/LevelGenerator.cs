@@ -8,19 +8,10 @@ using Random = System.Random;
 
 namespace ColorBlockJam.Game.Levels.Generation
 {
-    /// <summary>
-    /// Builds a level from a <see cref="LevelGenerationRequest"/> (T-47, DA-33). Each candidate gets one door per
-    /// colour on the wall ring and preset-shaped blocks in those colours, each one able to fit a door of its
-    /// colour. A candidate is kept only when the validator finds no error and the solver proves it finishable;
-    /// its difficulty is the solution's score: exit waves plus room-making moves. Candidates are built one after
-    /// another from the seed and checked in parallel batches, one per core, so a seed still gives the same level.
-    /// Editor-time code.
-    /// </summary>
     public sealed class LevelGenerator
     {
         static readonly WallSide[] Sides = { WallSide.Bottom, WallSide.Top, WallSide.Left, WallSide.Right };
         static readonly BlockColor[] Palette = (BlockColor[])Enum.GetValues(typeof(BlockColor));
-        // Per-candidate placement retries: enough to fill a board without looping on an impossible one.
         const int PlacementTries = 40;
         const int MaxDoorLength = 3;
 
@@ -28,7 +19,6 @@ namespace ColorBlockJam.Game.Levels.Generation
         readonly int _solverStateCap;
         readonly BlockShapeLibrary _shapes;
 
-        /// <param name="solverStateCap">Each candidate's search cap; a candidate past it is dropped, not waited on.</param>
         public LevelGenerator(LevelDefinitionValidator validator, int solverStateCap, BlockShapeLibrary shapes)
         {
             _validator = validator;
@@ -36,7 +26,6 @@ namespace ColorBlockJam.Game.Levels.Generation
             _shapes = shapes;
         }
 
-        /// <summary>The lowest and highest solution score at each difficulty (DA-33).</summary>
         public (int Min, int Max) ScoreFor(LevelDifficulty difficulty) => difficulty switch
         {
             LevelDifficulty.Normal => (1, 2),
@@ -44,7 +33,6 @@ namespace ColorBlockJam.Game.Levels.Generation
             _ => (5, int.MaxValue),
         };
 
-        /// <summary>20 s plus 10 s a block, plus 30 % for Hard and 60 % for Very Hard (DA-33).</summary>
         public int TimerFor(int blocks, LevelDifficulty difficulty)
         {
             float seconds = 20 + 10 * blocks;
@@ -75,7 +63,6 @@ namespace ColorBlockJam.Game.Levels.Generation
             for (int first = 1; first <= request.Attempts; first += batch)
             {
                 int count = Math.Min(batch, request.Attempts - first + 1);
-                // Built in order from the one seeded random, exactly as one at a time would.
                 for (int i = 0; i < count; i++)
                 {
                     candidates[i] = TryBuild(request, random);
@@ -88,7 +75,6 @@ namespace ColorBlockJam.Game.Levels.Generation
                         try
                         {
                             solutions[i] = Check(candidates[i], solver, max, searches[i].Token);
-                            // An earlier fitting candidate always wins, so the later ones need not finish.
                             if (Fits(solutions[i], min, max))
                                 for (int later = i + 1; later < count; later++)
                                     searches[later].Cancel();
@@ -104,7 +90,6 @@ namespace ColorBlockJam.Game.Levels.Generation
                 for (int i = 0; i < count; i++)
                     searches[i].Dispose();
 
-                // Read in attempt order, so the earliest fitting candidate wins as it would one at a time.
                 for (int i = 0; i < count; i++)
                 {
                     SolveResult solution = solutions[i];
@@ -132,10 +117,6 @@ namespace ColorBlockJam.Game.Levels.Generation
         static bool Fits(SolveResult solution, int min, int max) =>
             solution != null && solution.Status == SolveStatus.Solvable && solution.Score >= min && solution.Score <= max;
 
-        /// <summary>
-        /// The candidate's solution, or null when it has a validator error. Every solution takes at least one exit
-        /// wave, so one needing <paramref name="maxScore"/> moves or more could never fit and is not searched for.
-        /// </summary>
         SolveResult Check(LevelData candidate, LevelSolver solver, int maxScore, CancellationToken token) =>
             candidate == null || _validator.HasErrors(_validator.Validate(candidate))
                 ? null
@@ -196,7 +177,6 @@ namespace ColorBlockJam.Game.Levels.Generation
             return false;
         }
 
-        /// <summary>A preset shape, turned so its span along its door's wall fits the door, on free cells.</summary>
         List<Vector2Int> TryPlaceBlock(LevelGenerationRequest request, DoorData door, HashSet<Vector2Int> taken, Random random)
         {
             bool alongX = door.Side is WallSide.Bottom or WallSide.Top;
@@ -228,7 +208,6 @@ namespace ColorBlockJam.Game.Levels.Generation
         }
     }
 
-    /// <summary>A generated level, or why none came out.</summary>
     public sealed class LevelGenerationResult
     {
         LevelGenerationResult(LevelData level, SolveResult solution, int attempts, bool matchesDifficulty, string failure)
@@ -244,7 +223,6 @@ namespace ColorBlockJam.Game.Levels.Generation
         public SolveResult Solution { get; }
         public int Attempts { get; }
 
-        /// <summary>False when the closest solvable level is returned because none hit the difficulty's band.</summary>
         public bool MatchesDifficulty { get; }
 
         public string Failure { get; }

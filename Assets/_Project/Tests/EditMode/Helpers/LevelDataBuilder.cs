@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Tests.EditMode.Helpers
 {
-    /// <summary>Builds <see cref="LevelData"/> in a test: <c>new LevelDataBuilder(4, 4).Block(...).Door(...).Build()</c>.</summary>
     public sealed class LevelDataBuilder
     {
         readonly int _width;
@@ -33,7 +32,6 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
             return this;
         }
 
-        /// <param name="cells">Pairs of x, y: <c>Block(Red, 0, 0, 1, 0)</c> covers (0, 0) and (1, 0).</param>
         public LevelDataBuilder Block(BlockColor color, params int[] cells)
         {
             var points = new List<Vector2Int>();
@@ -43,7 +41,6 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
             return this;
         }
 
-        /// <summary>A block frozen until <paramref name="ice"/> other blocks have left (T-34); cells as in <see cref="Block"/>.</summary>
         public LevelDataBuilder FrozenBlock(BlockColor color, int ice, params int[] cells)
         {
             var points = new List<Vector2Int>();
@@ -53,7 +50,6 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
             return this;
         }
 
-        /// <summary>A block with <paramref name="blockers"/> (arrow, ice, ...); cells as in <see cref="Block"/>.</summary>
         public LevelDataBuilder Blocked(BlockColor color, BlockerSet blockers, params int[] cells)
         {
             var points = new List<Vector2Int>();

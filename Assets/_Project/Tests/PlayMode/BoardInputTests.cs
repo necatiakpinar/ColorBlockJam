@@ -14,11 +14,9 @@ using VContainer;
 
 namespace ColorBlockJam.Tests.PlayMode
 {
-    /// <summary>Pointer events on the real Gameplay board arrive as board cells through the signal bus.</summary>
     public sealed class BoardInputTests
     {
         static readonly Vector2Int BoardSize = new(5, 7);
-        // Large enough to lie under every point of the screen, so a HUD button is drawn over the board.
         static readonly Vector2Int ScreenCoveringBoardSize = new(60, 60);
 
         BoardInputView _input;
@@ -39,7 +37,6 @@ namespace ColorBlockJam.Tests.PlayMode
 
             _space.SetSize(size);
             _input.FitToBoard();
-            // The collider resize reaches the physics scene on the next simulation step.
             yield return new WaitForFixedUpdate();
             _received.Clear();
             _signalBus.Subscribe<BoardPointerSignal>(_received.Add);
@@ -118,7 +115,6 @@ namespace ColorBlockJam.Tests.PlayMode
         public IEnumerator Release_ShouldEndTheTouchAtTheLastCell_WhenTheReleaseRayMissesTheBoardPlane()
         {
             yield return SetUpBoard(BoardSize);
-            // Far above the screen the tilted camera's ray points over the horizon and never meets the plane.
             var aboveHorizon = new PointerEventData(EventSystem.current)
             {
                 position = new Vector2(Screen.width * 0.5f, Screen.height * 10f),

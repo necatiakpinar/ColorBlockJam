@@ -6,10 +6,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Levels
 {
-    /// <summary>
-    /// Checks a level against the structural rules in level-data.md §2 and reports every broken one.
-    /// Editor-time code: clarity over allocation.
-    /// </summary>
     public sealed class LevelDefinitionValidator
     {
         static readonly Vector2Int[] Neighbours = { Vector2Int.right, Vector2Int.left, Vector2Int.up, Vector2Int.down };
@@ -130,7 +126,6 @@ namespace ColorBlockJam.Game.Levels
                 for (int other = 0; other < d; other++)
                 {
                     DoorData earlier = level.Doors[other];
-                    // An earlier door with no length was already reported and spans nothing.
                     if (earlier.Length < 1)
                         continue;
                     if (earlier.Side == door.Side && earlier.Start <= door.End && door.Start <= earlier.End)
@@ -175,7 +170,6 @@ namespace ColorBlockJam.Game.Levels
             return false;
         }
 
-        /// <summary>An arrow block reaches only the walls across its axis: left and right, or bottom and top.</summary>
         bool ArrowAllows(BlockData block, WallSide side) => block.Blockers.Arrow.Axis switch
         {
             ArrowAxis.Horizontal => side is WallSide.Left or WallSide.Right,
@@ -183,7 +177,6 @@ namespace ColorBlockJam.Game.Levels
             _ => true,
         };
 
-        /// <summary>How many cells the block covers along a wall: its width for Bottom/Top, height for Left/Right.</summary>
         int SpanAlong(BlockData block, WallSide side)
         {
             bool alongX = side is WallSide.Bottom or WallSide.Top;

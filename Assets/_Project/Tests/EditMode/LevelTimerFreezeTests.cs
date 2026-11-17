@@ -12,7 +12,6 @@ using static ColorBlockJam.Game.Levels.WallSide;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>The freeze booster holding the level timer still (gameplay.md §6, DA-36), on a fake clock.</summary>
     public sealed class LevelTimerFreezeTests
     {
         const int TimerSeconds = 30;

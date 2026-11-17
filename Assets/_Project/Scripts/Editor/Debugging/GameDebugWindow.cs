@@ -11,11 +11,6 @@ using VContainer.Unity;
 
 namespace ColorBlockJam.Editor.Debugging
 {
-    /// <summary>
-    /// The game's own debug panel (debug-tools.md): win or lose the level now, set the timer, give coins, jump
-    /// to a level, clear the saves. In play mode it drives <see cref="GameplayDebugCommands"/> from the
-    /// Gameplay scope, so every shortcut goes through the real services; it only reads and repaints the state.
-    /// </summary>
     public sealed class GameDebugWindow : EditorWindow
     {
         const string MenuPath = "ColorBlockJam/Debug Window %#d";
@@ -35,7 +30,6 @@ namespace ColorBlockJam.Editor.Debugging
         [MenuItem(MenuPath)]
         static void Open() => GetWindow<GameDebugWindow>("CBJ Debug").Show();
 
-        // The game changes on its own while it plays: repaint a few times a second to show it.
         void OnInspectorUpdate()
         {
             if (EditorApplication.isPlaying)

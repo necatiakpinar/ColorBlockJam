@@ -11,7 +11,6 @@ using static ColorBlockJam.Game.Levels.WallSide;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>The movement and exit rules (gameplay.md §3, DA-4, DA-5).</summary>
     public sealed class BoardStateTests
     {
         static readonly Vector2Int StepRight = Vector2Int.right;
@@ -136,8 +135,6 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void TryStep_ShouldBeBlocked_WhenAnotherBlockStandsInTheWayOut()
         {
-            // L-shaped red: its top row touches the right wall. Blue sits two cells ahead of the bottom
-            // cell, so the one-cell step itself is free but the straight path out is not.
             var board = new BoardState(new LevelDataBuilder(4, 4)
                 .Block(Red, 1, 0, 1, 1, 2, 1, 3, 1)
                 .Block(Blue, 3, 0)
@@ -151,7 +148,6 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void TryStep_ShouldExit_WhenOnlyThePartNearestTheWallTouchesIt()
         {
-            // Same L shape with the path clear: the bottom row slides out behind the top row.
             var board = new BoardState(new LevelDataBuilder(4, 4)
                 .Block(Red, 2, 0, 2, 1, 3, 1)
                 .Door(Right, 0, 2, Red)
@@ -238,8 +234,6 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void TryStep_ShouldNotAllocate_WhenMovingOrBlocked()
         {
-            // Red shuttles through open cells and pushes a doorless wall; blue pushes a door of the wrong
-            // colour; the green L fits its door but pink stands in its way out, so the path check runs.
             var board = new BoardState(new LevelDataBuilder(6, 6)
                 .Block(Red, 0, 3, 1, 3, 1, 4)
                 .Block(Blue, 4, 5)

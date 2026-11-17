@@ -6,7 +6,6 @@ using UnityEngine.TestTools;
 
 namespace ColorBlockJam.Tests.PlayMode
 {
-    /// <summary>The real Home scene: the level path, and the settings popup from its prefab (T-23 – T-25).</summary>
     public sealed class HomeScreenTests
     {
         [UnityTest]

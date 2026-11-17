@@ -6,10 +6,6 @@ using ColorBlockJam.Game.Gameplay.Signals;
 
 namespace ColorBlockJam.Game.Gameplay.Feedback
 {
-    /// <summary>
-    /// Turns board events into haptic taps (DA-21): a light one when a block leaves through its door. The
-    /// strength comes from <see cref="GameplayConfig"/>.
-    /// </summary>
     public sealed class GameplayHaptics : IDisposable
     {
         readonly SignalBus _signalBus;

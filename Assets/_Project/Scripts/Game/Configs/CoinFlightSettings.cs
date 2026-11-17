@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Configs
 {
-    /// <summary>How the won coins fly to the HUD counter (T-51, DA-12). Distances are in canvas units (1080x1920).</summary>
     [Serializable]
     public sealed class CoinFlightSettings
     {

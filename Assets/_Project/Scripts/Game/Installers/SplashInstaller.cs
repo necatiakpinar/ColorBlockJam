@@ -5,9 +5,6 @@ using VContainer.Unity;
 
 namespace ColorBlockJam.Game.Installers
 {
-    /// <summary>
-    /// Splash-scene services. Boot steps run in the order they are registered here.
-    /// </summary>
     public sealed class SplashInstaller : IInstaller
     {
         public void Install(IContainerBuilder builder)

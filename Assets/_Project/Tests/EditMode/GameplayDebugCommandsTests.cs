@@ -16,7 +16,6 @@ using static ColorBlockJam.Game.Levels.WallSide;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>The debug window's shortcuts go through the real services (debug-tools.md).</summary>
     public sealed class GameplayDebugCommandsTests
     {
         const int TimerSeconds = 60;

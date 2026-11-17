@@ -9,7 +9,6 @@ using VContainer;
 
 namespace ColorBlockJam.Game.Splash
 {
-    /// <summary>Binds the authored splash canvas. Owns the sequences it starts; builds no motion itself.</summary>
     public sealed class SplashView : MonoBehaviour
     {
         [SerializeField]
@@ -45,7 +44,6 @@ namespace ColorBlockJam.Game.Splash
                 _progressFill, progress, _config.ProgressFillSeconds, _config.ProgressFillEase));
         }
 
-        /// <summary>Completes when the intro and the latest progress fill have finished playing.</summary>
         public UniTask WaitForPresentationAsync(CancellationToken cancellation)
         {
             return UniTask.WhenAll(

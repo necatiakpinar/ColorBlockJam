@@ -31,6 +31,6 @@ description: Run a bounded local review of the current diff with independent rea
 | --- | --- |
 | **Blocking** | does not compile; failing test; data written inside a flow or after an animation; per-frame code; inline tween in a view or service; subscription outside construction; missing `.meta` |
 | **Major** | behavior without a test; doc now wrong; magic number; missing cancellation; untraced gameplay decision (no task, no `DA-n`) |
-| **Minor** | naming, comment quality, small duplication |
+| **Minor** | naming, a comment left in code, small duplication |
 
 Every finding names `file:line`, the rule it breaks (`CLAUDE.md` section or page §) and a concrete fix.

@@ -8,10 +8,6 @@ using Object = UnityEngine.Object;
 
 namespace ColorBlockJam.Tests.EditMode.Helpers
 {
-    /// <summary>
-    /// The lives of one test on in-memory saves and a hand-moved trusted clock: the default
-    /// <see cref="LivesConfig"/> (5 lives, 30 minutes each, refill 100 coins), a loaded wallet and lives.
-    /// </summary>
     public sealed class LivesRig : IDisposable
     {
         public LivesRig(SignalBus bus, IWalletService wallet = null)

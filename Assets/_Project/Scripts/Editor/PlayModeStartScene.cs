@@ -5,12 +5,6 @@ using UnityEngine.SceneManagement;
 
 namespace ColorBlockJam.Editor
 {
-    /// <summary>
-    /// Pressing Play always boots through the first build scene (Splash), whichever scene is open,
-    /// so the app is never entered in a state a player can't reach. Toggle from the menu.
-    /// The start scene is set only while entering Play Mode and cleared on return, because the test
-    /// runner enters Play Mode from its own init scene and never starts when a start scene is forced.
-    /// </summary>
     [InitializeOnLoad]
     public static class PlayModeStartScene
     {

@@ -3,10 +3,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Levels
 {
-    /// <summary>
-    /// A coloured opening in the wall ring (DA-17). <see cref="Start"/> is the first board cell it spans
-    /// along its wall: a column for Bottom/Top, a row for Left/Right.
-    /// </summary>
     [Serializable]
     public sealed class DoorData
     {

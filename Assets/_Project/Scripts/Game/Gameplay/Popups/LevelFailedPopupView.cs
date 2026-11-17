@@ -6,7 +6,6 @@ using VContainer;
 
 namespace ColorBlockJam.Game.Gameplay.Popups
 {
-    /// <summary>"Level failed!" after the player gives up the extra time (T-20, DA-31): Retry, or close to Home.</summary>
     public sealed class LevelFailedPopupView : PopupView
     {
         [SerializeField]

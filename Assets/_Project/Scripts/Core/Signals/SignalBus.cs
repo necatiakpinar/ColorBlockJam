@@ -3,10 +3,6 @@ using System.Collections.Generic;
 
 namespace ColorBlockJam.Core.Signals
 {
-    /// <summary>
-    /// Typed, synchronous publish/subscribe channel. Handlers run in subscription order.
-    /// Subscribing or unsubscribing from inside a handler is safe: the change applies to the next fire.
-    /// </summary>
     public sealed class SignalBus
     {
         readonly Dictionary<Type, object> _channels = new();
@@ -63,7 +59,6 @@ namespace ColorBlockJam.Core.Signals
 
                 if (_fireDepth > 0)
                 {
-                    // Removing now would shift indices under the running loop: null the slot, compact after.
                     _handlers[index] = null;
                     _hasPendingRemovals = true;
                     return;
@@ -77,7 +72,6 @@ namespace ColorBlockJam.Core.Signals
                 _fireDepth++;
                 try
                 {
-                    // Count is captured so a handler added during this fire starts receiving from the next one.
                     int count = _handlers.Count;
                     for (int i = 0; i < count; i++)
                         _handlers[i]?.Invoke(signal);

@@ -18,7 +18,6 @@ namespace ColorBlockJam.Tests.EditMode
         [SetUp]
         public void SetUp()
         {
-            // Defaults: board 3-10, timer 10-600 s.
             _rules = ScriptableObject.CreateInstance<LevelRulesConfig>();
             _validator = new LevelDefinitionValidator(_rules);
         }
@@ -26,7 +25,6 @@ namespace ColorBlockJam.Tests.EditMode
         [TearDown]
         public void TearDown() => Object.DestroyImmediate(_rules);
 
-        /// <summary>A small valid level the failing cases change one thing in.</summary>
         static LevelDataBuilder ValidLevel() => new LevelDataBuilder(4, 4)
             .Block(Red, 0, 0, 1, 0)
             .Door(Bottom, 0, 2, Red);
@@ -143,7 +141,6 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void Validate_ShouldReportOnlyTheLength_WhenAZeroLengthDoorTouchesAnotherDoor()
         {
-            // Start 2 with length 0 ends at cell 1, inside door 1 (cells 0-1); only the length is wrong.
             var level = ValidLevel().Door(Bottom, 2, 0, Red);
 
             AssertSingleError(Validate(level), "a door spans at least one cell");
@@ -160,7 +157,6 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void Validate_ShouldReportOnlyTheLength_WhenAZeroLengthDoorComesFirst()
         {
-            // Door 1 (start 1, length 0) ends at cell 0, inside door 2 (cells 0-1).
             var level = new LevelDataBuilder(4, 4)
                 .Block(Red, 0, 0, 1, 0)
                 .Door(Bottom, 1, 0, Red)
@@ -186,7 +182,6 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void Validate_ShouldAcceptNarrowBlock_WhenADoorOnTheCrossWallFitsIt()
         {
-            // Three cells wide but one cell tall: a one-cell door on the left wall lets it out.
             var level = new LevelDataBuilder(4, 4).Block(Red, 0, 0, 1, 0, 2, 0).Door(Left, 0, 1, Red);
 
             Assert.That(Validate(level), Is.Empty);

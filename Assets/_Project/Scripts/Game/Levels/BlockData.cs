@@ -5,10 +5,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Levels
 {
-    /// <summary>
-    /// A block as authored: one colour, the board cells it covers at the start (DA-18), and its blockers (ice, ...;
-    /// blockers.md).
-    /// </summary>
     [Serializable]
     public sealed class BlockData
     {
@@ -22,7 +18,6 @@ namespace ColorBlockJam.Game.Levels
         [SerializeField]
         BlockerSet _blockers = new();
 
-        // Unity calls this when it creates a block added in the inspector.
         BlockData()
         {
             _cells = new List<Vector2Int>();

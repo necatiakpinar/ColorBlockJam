@@ -17,7 +17,6 @@ using static ColorBlockJam.Game.Levels.WallSide;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>Starting the level and routing the HUD and the pause popup (gameplay.md §7).</summary>
     public sealed class GameplayFlowTests
     {
         TestViews _views;
@@ -87,7 +86,6 @@ namespace ColorBlockJam.Tests.EditMode
         {
             var wallet = new WalletService(new InMemoryKeyValueStorage(), new RecordingLogger(), _bus);
             wallet.Load();
-            // The HUD listens on its own bus so these tests observe the flow, not the HUD's reveal.
             var hud = _views.CreateHud(new SignalBus(), wallet, out _restartButton, out _pauseButton);
             _pausePopup = _views.CreatePausePopup(_bus, _settings, out _closeButton, out _homeButton, out _toggles);
             _livesFlow = new GameplayLivesFlow(_lives.Lives, _lives.Wallet,

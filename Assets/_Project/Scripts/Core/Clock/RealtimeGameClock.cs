@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Core.Clock
 {
-    /// <summary>Unscaled real time: a time scale never speeds up or freezes what it counts.</summary>
     public sealed class RealtimeGameClock : IGameClock
     {
         public float Now => Time.realtimeSinceStartup;

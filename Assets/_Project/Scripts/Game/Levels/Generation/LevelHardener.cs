@@ -9,33 +9,22 @@ using Random = System.Random;
 
 namespace ColorBlockJam.Game.Levels.Generation
 {
-    /// <summary>
-    /// Makes a level harder to think through (T-48, DA-40): it climbs toward more room-making moves, the moves a
-    /// player must find before blocks can leave. Each round it tries 16 small changes in parallel (move a block,
-    /// slide a door, set or clear an arrow or ice) and keeps the one that needs the most moves, as long as the
-    /// level stays valid and solvable. Proposals are drawn in order from the seed and the earliest best wins, so
-    /// a seed gives the same level on any machine. Editor-time code.
-    /// </summary>
     public sealed class LevelHardener
     {
         static readonly ArrowAxis[] Axes = { ArrowAxis.None, ArrowAxis.Horizontal, ArrowAxis.Vertical };
-        // Placement retries per proposal: a crowded board may have no room for the change.
         const int PlacementTries = 30;
         const int MaxIce = 3;
-        // Fixed, not the core count, so a seed draws the same proposals on every machine.
         const int ProposalsPerRound = 16;
 
         readonly LevelDefinitionValidator _validator;
         readonly int _solverStateCap;
 
-        /// <param name="solverStateCap">A change whose level the solver cannot settle within this cap is dropped.</param>
         public LevelHardener(LevelDefinitionValidator validator, int solverStateCap)
         {
             _validator = validator;
             _solverStateCap = solverStateCap;
         }
 
-        /// <summary>Null when <paramref name="level"/> itself is invalid or cannot be solved within the cap.</summary>
         public LevelHardeningResult Harden(LevelData level, LevelHardeningRequest request, CancellationToken token = default)
         {
             SolveResult current = Evaluate(level, new LevelSolver(_solverStateCap), token);
@@ -74,14 +63,12 @@ namespace ColorBlockJam.Game.Levels.Generation
             return new LevelHardeningResult(level, current, rounds);
         }
 
-        /// <summary>More moves wins; equal moves with more exit waves wins; a tie with the level held keeps drifting.</summary>
         static bool Better(SolveResult candidate, SolveResult than, bool thanIsCurrent)
         {
             if (candidate.Moves != than.Moves)
                 return candidate.Moves > than.Moves;
             if (candidate.Rounds != than.Rounds)
                 return candidate.Rounds > than.Rounds;
-            // Moving sideways on a plateau lets the climb find a way up; between proposals the earliest stays.
             return thanIsCurrent;
         }
 
@@ -93,7 +80,6 @@ namespace ColorBlockJam.Game.Levels.Generation
             return solution.Status == SolveStatus.Solvable ? solution : null;
         }
 
-        /// <summary>One small change to <paramref name="level"/>, or null when the drawn change does not fit.</summary>
         LevelData Propose(LevelData level, LevelHardeningRequest request, Random random)
         {
             var blocks = new List<BlockData>(level.Blocks);
@@ -188,7 +174,6 @@ namespace ColorBlockJam.Game.Levels.Generation
         }
     }
 
-    /// <summary>How hard to push a level, and with which blockers (T-48).</summary>
     public readonly struct LevelHardeningRequest
     {
         public LevelHardeningRequest(int seed, int rounds, int targetMoves, bool useArrows, bool useIce)
@@ -202,17 +187,14 @@ namespace ColorBlockJam.Game.Levels.Generation
 
         public int Seed { get; }
 
-        /// <summary>Rounds of 16 proposals before it stops.</summary>
         public int Rounds { get; }
 
-        /// <summary>It stops once the level needs this many room-making moves.</summary>
         public int TargetMoves { get; }
 
         public bool UseArrows { get; }
         public bool UseIce { get; }
     }
 
-    /// <summary>The hardened level and its solution.</summary>
     public sealed class LevelHardeningResult
     {
         public LevelHardeningResult(LevelData level, SolveResult solution, int rounds)

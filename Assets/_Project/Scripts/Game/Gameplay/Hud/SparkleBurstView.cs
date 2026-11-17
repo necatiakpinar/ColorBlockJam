@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 namespace ColorBlockJam.Game.Gameplay.Hud
 {
-    /// <summary>One authored sparkle burst (CoinSparkle.prefab): its sparkles and glow, played where a coin lands (T-51).</summary>
     public sealed class SparkleBurstView : MonoBehaviour
     {
         [SerializeField]

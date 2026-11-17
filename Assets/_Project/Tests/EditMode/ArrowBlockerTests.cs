@@ -16,12 +16,10 @@ using static ColorBlockJam.Game.Levels.WallSide;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>Arrow blocks: they move, and leave, only along their axis (T-35, DA-39, blockers.md).</summary>
     public sealed class ArrowBlockerTests
     {
         static BlockerSet Arrow(ArrowAxis axis) => new(null, new ArrowBlockerData(axis));
 
-        // A horizontal red block in the middle with doors on the left and on top; only the left one can take it.
         static LevelData Level() => new LevelDataBuilder(4, 4)
             .Blocked(Red, Arrow(ArrowAxis.Horizontal), 1, 1, 2, 1)
             .Door(Left, 1, 1, Red).Door(Top, 1, 2, Red).Build();

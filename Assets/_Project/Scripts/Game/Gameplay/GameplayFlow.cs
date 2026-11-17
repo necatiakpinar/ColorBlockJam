@@ -11,15 +11,6 @@ using VContainer.Unity;
 
 namespace ColorBlockJam.Game.Gameplay
 {
-    /// <summary>
-    /// Entry point of the gameplay scene: starts the attempt at the current level through
-    /// <see cref="LevelSession"/>, and routes the HUD and the pause popup. Restart and Home cost a started
-    /// attempt's life (Home asks first in the leave popup) (<see cref="LevelAttemptLives"/>, DA-38); restart plays again through
-    /// <see cref="GameplayLivesFlow"/>, which needs a life; pause
-    /// pauses the session (putting back a booster that waits for a target), then opens the pause popup; closing
-    /// it resumes; its switches go to
-    /// <see cref="ISettingsService"/>; Home leaves. The session and the settings own every change.
-    /// </summary>
     public sealed class GameplayFlow : IStartable, IDisposable
     {
         readonly IPlayerProgressService _playerProgress;
@@ -60,7 +51,6 @@ namespace ColorBlockJam.Game.Gameplay
 
         public void Start() => _session.Start(_playerProgress.CurrentLevel);
 
-        /// <summary>A started attempt costs its life (DA-38); playing again needs one.</summary>
         void OnRestartClicked()
         {
             _boosters.CancelTargeting();
@@ -85,7 +75,6 @@ namespace ColorBlockJam.Game.Gameplay
 
         void OnToggleClicked(GameSetting setting) => _settings.Set(setting, !_settings.IsOn(setting));
 
-        /// <summary>Home from the pause popup; when that would cost a life, ask first (DA-38).</summary>
         void OnHomeClicked()
         {
             if (!_attempt.WouldCostLife)
@@ -104,7 +93,6 @@ namespace ColorBlockJam.Game.Gameplay
             _navigation.GoToHomeAsync().Forget();
         }
 
-        /// <summary>Staying goes back to the pause popup; the level is still paused.</summary>
         void OnLeaveCancelled()
         {
             _popups.Close();

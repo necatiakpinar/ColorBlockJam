@@ -1,6 +1,5 @@
 namespace ColorBlockJam.Game.Levels
 {
-    /// <summary>One problem found by <see cref="LevelDefinitionValidator"/>, worded for a designer.</summary>
     public readonly struct LevelIssue
     {
         public readonly LevelIssueSeverity Severity;

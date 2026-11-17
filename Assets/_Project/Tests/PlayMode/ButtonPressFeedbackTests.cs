@@ -11,7 +11,6 @@ using VContainer;
 
 namespace ColorBlockJam.Tests.PlayMode
 {
-    /// <summary>A real Home button shrinks while pressed and returns to its size on release.</summary>
     public sealed class ButtonPressFeedbackTests
     {
         const float SettleMarginSeconds = 0.2f;

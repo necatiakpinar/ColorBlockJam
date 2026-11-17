@@ -54,11 +54,8 @@ namespace ColorBlockJam.Game.Scopes
         protected override void Configure(IContainerBuilder builder)
         {
             new GameplayInstaller().Install(builder);
-            // The popup prefabs are needed while this scope is configured, so they come from the root's configs now.
             var popups = Parent.Container.Resolve<GameplayPopupConfig>();
 
-            // Components are injected while the container builds, so the HUD has subscribed to its
-            // signals before any entry point below starts and fires one.
             builder.RegisterComponent(_boardCamera);
             builder.RegisterComponent(_hudView);
             builder.RegisterComponent(_boosterBarView);
@@ -69,7 +66,6 @@ namespace ColorBlockJam.Game.Scopes
             builder.RegisterComponent(_blockLayerView);
             builder.RegisterComponent(_boardCameraView);
             builder.RegisterComponent(_coinFlight).As<ICoinFlight>();
-            // Popups come from their prefabs (GameplayPopupConfig), created under the popup layer and injected.
             builder.RegisterComponentInNewPrefab(popups.PausePopup, Lifetime.Scoped).UnderTransform(_popupLayer);
             builder.RegisterComponentInNewPrefab(popups.WinPopup, Lifetime.Scoped).UnderTransform(_popupLayer);
             builder.RegisterComponentInNewPrefab(popups.OutOfTimePopup, Lifetime.Scoped).UnderTransform(_popupLayer);
@@ -78,13 +74,11 @@ namespace ColorBlockJam.Game.Scopes
             builder.RegisterComponentInNewPrefab(popups.OutOfLivesPopup, Lifetime.Scoped).UnderTransform(_popupLayer);
             builder.RegisterComponentInNewPrefab(popups.LeaveLevelPopup, Lifetime.Scoped).UnderTransform(_popupLayer);
 
-            // Flows that only listen; they need the scene's popups, so the scope registers them, not the installer.
             builder.Register<WinFlow>(Lifetime.Singleton);
             builder.Register<FailFlow>(Lifetime.Singleton);
             builder.Register<BoosterFlow>(Lifetime.Singleton);
             builder.Register<GameplayLivesFlow>(Lifetime.Singleton);
 
-            // Listen to board signals without being entry points: build them before any entry point starts.
             builder.RegisterBuildCallback(resolver =>
             {
                 resolver.Resolve<BlockDragController>();

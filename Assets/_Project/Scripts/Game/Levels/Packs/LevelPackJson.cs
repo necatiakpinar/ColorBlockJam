@@ -5,19 +5,10 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Levels.Packs
 {
-    /// <summary>
-    /// Writes and reads the level pack JSON (level-packs.md §2): readable names instead of Unity's field names and
-    /// enum numbers, so a pack can be edited by hand or in a remote config console. Reading is strict about what
-    /// it understands (format, names, numbers) and words every problem with the level and item it is in; it
-    /// ignores fields it does not know, so a newer pack can add some. Whether the levels are playable is the
-    /// validator's call, made by <see cref="LevelPackService"/>.
-    /// </summary>
     public sealed class LevelPackJson
     {
-        /// <summary>The JSON layout this build reads and writes; a pack of another format is refused.</summary>
         public const int Format = 1;
 
-        /// <param name="readable">Indented for the repository; compact for a remote config value.</param>
         public string Write(LevelPack pack, bool readable = true)
         {
             var dto = new PackDto { format = Format, revision = pack.Revision, levels = new List<LevelDto>() };
@@ -121,7 +112,6 @@ namespace ColorBlockJam.Game.Levels.Packs
                 BlockDto block = dto.blocks[i];
                 if (!TryName(block.color, out BlockColor color))
                     return Fail($"block {i + 1} has an unknown colour '{block.color}'.", out problem);
-                // An absent arrow is no arrow; a misspelt one is a mistake worth refusing.
                 ArrowAxis axis = ArrowAxis.None;
                 if (!string.IsNullOrEmpty(block.arrow) && !TryName(block.arrow, out axis))
                     return Fail($"block {i + 1} has an unknown arrow '{block.arrow}'.", out problem);
@@ -136,7 +126,6 @@ namespace ColorBlockJam.Game.Levels.Packs
             return true;
         }
 
-        /// <summary>Only an enum member's name: numbers would tie a pack to values it should not know.</summary>
         static bool TryName<T>(string name, out T value) where T : struct, Enum
         {
             value = default;
@@ -144,7 +133,6 @@ namespace ColorBlockJam.Game.Levels.Packs
                    Enum.IsDefined(typeof(T), value);
         }
 
-        // The DTO field names are the JSON schema (level-packs.md §2), so they follow it, not the C# naming rule.
 #pragma warning disable IDE1006
         [Serializable]
         sealed class PackDto

@@ -8,10 +8,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Gameplay.View
 {
-    /// <summary>
-    /// One block on screen. Its transform sits at the block's centre (so the exit shrink stays in place) and
-    /// carries the mesh pieces as children. Owns its tweens; holds no rules. Pooled and reused.
-    /// </summary>
     public sealed class BlockView : MonoBehaviour
     {
         [Tooltip("Flat outline drawn over everything while the block is held (ColorBlockJam/Selection Outline).")]
@@ -20,7 +16,6 @@ namespace ColorBlockJam.Game.Gameplay.View
 
         [SerializeField]
         MeshRenderer _outlineRenderer;
-
 
         static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
         static readonly int ClipPlaneId = Shader.PropertyToID("_ClipPlane");
@@ -37,7 +32,6 @@ namespace ColorBlockJam.Game.Gameplay.View
         TweenerCore<Vector3, Vector3, VectorOptions> _follow;
         Sequence _exit;
         Sequence _thaw;
-        // This view's own copy of the exit material, made on its first exit and reused by every later one.
         Material _exitMaterial;
         Action<BlockView> _onExitFinished;
         TweenCallback _exitFinished;
@@ -45,7 +39,6 @@ namespace ColorBlockJam.Game.Gameplay.View
         internal int PartCount => _parts.Count;
         internal bool IsOutlined => _outlineRenderer.enabled;
 
-        /// <summary>Places the block at its start cells; <paramref name="pivot"/> is its centre in cells.</summary>
         internal void Show(Vector3 pivot, float snapDuration, Ease snapEase, float followDuration, Ease followEase)
         {
             _pivot = pivot;
@@ -60,7 +53,6 @@ namespace ColorBlockJam.Game.Gameplay.View
             _follow.Pause();
         }
 
-        /// <summary>Traces the outline around the block's start cells; hidden until <see cref="SetOutlined"/>.</summary>
         internal void BuildOutline(IReadOnlyList<Vector2Int> cells, in OutlineSettings settings)
         {
             if (_outlineMesh == null)
@@ -83,10 +75,6 @@ namespace ColorBlockJam.Game.Gameplay.View
 
         internal void SetOutlined(bool outlined) => _outlineRenderer.enabled = outlined;
 
-        /// <summary>
-        /// Hangs a blocker's view (blockers.md) on the block over <paramref name="cellPosition"/> (in cells), so it
-        /// moves, swells and leaves with it. The caller takes it back before the block is released.
-        /// </summary>
         internal void AttachBlockerView(Transform blockerView, Vector3 cellPosition)
         {
             blockerView.SetParent(transform, false);
@@ -95,25 +83,20 @@ namespace ColorBlockJam.Game.Gameplay.View
             blockerView.localScale = Vector3.one;
         }
 
-        /// <summary>Paints every piece with <paramref name="material"/> (its colour, or ice over it).</summary>
         internal void SetMaterial(Material material)
         {
             for (int i = 0; i < _parts.Count; i++)
                 _parts[i].Mesh.sharedMaterial = material;
         }
 
-        /// <summary>The ice broke: the block swells for a beat.</summary>
         internal void PlayThaw(float swell, float duration)
         {
             _thaw?.Kill();
             _thaw = default(BlockThawAnimation).Play(new BlockThawAnimation.Config(transform, swell, duration));
         }
 
-        /// <summary>Puts the block at once where <paramref name="offset"/> cells from its start cells take it.</summary>
         internal void PlaceAt(Vector2Int offset) => transform.localPosition = _pivot + new Vector3(offset.x, 0f, offset.y);
 
-        /// <summary>Breaks the block where it stands (hammer, a rocket's last cell, DA-36).</summary>
-        /// <param name="onFinished">Called when the block has vanished, to return it to its pool.</param>
         internal void PlaySmash(float swell, float duration, Action<BlockView> onFinished)
         {
             Leave(onFinished);
@@ -121,8 +104,6 @@ namespace ColorBlockJam.Game.Gameplay.View
                 _exitFinished));
         }
 
-        /// <summary>Lifts the block away after <paramref name="delay"/> (vacuum, DA-36).</summary>
-        /// <param name="onFinished">Called when the block has vanished, to return it to its pool.</param>
         internal void PlayVacuum(float delay, float lift, float duration, Action<BlockView> onFinished)
         {
             Leave(onFinished);
@@ -149,32 +130,18 @@ namespace ColorBlockJam.Game.Gameplay.View
             _parts.Add((pool, part, mesh));
         }
 
-        /// <summary>
-        /// Moves the held block toward where the finger has it (fractional cells) with the short follow tween,
-        /// retargeted on every drag, so the block trails the finger slightly and never jumps on a fast flick.
-        /// </summary>
         internal void Follow(Vector2 offset)
         {
             _move.Pause();
             default(BlockMoveAnimation).Retarget(_follow, _pivot + new Vector3(offset.x, 0f, offset.y));
         }
 
-        /// <summary>Settles the block onto its cell with the snap tween.</summary>
         internal void SnapTo(Vector2Int offset)
         {
             _follow.Pause();
             default(BlockMoveAnimation).Retarget(_move, _pivot + new Vector3(offset.x, 0f, offset.y));
         }
 
-        /// <summary>
-        /// Settles the block, from wherever it is drawn, lined up at the mouth of its door (never backing away
-        /// from it), then slides it <paramref name="distance"/> cells past its last cell at
-        /// <paramref name="speed"/>, switched to the exit material so the part past
-        /// <paramref name="clipPlane"/> (world normal and distance, the board's edge) is cut away.
-        /// </summary>
-        /// <param name="offset">The cell offset the block left from, lined up with the door.</param>
-        /// <param name="onFinished">Called when the block has vanished, to return it to its pool.</param>
-        /// <returns>How long the slide through the door takes, after the settle.</returns>
         internal float PlayExit(Vector2Int offset, Vector2Int direction, float distance, float speed,
             float snapDuration, Ease snapEase, Ease ease, Material exitTemplate, Color color, Vector4 clipPlane,
             Action<BlockView> onFinished)
@@ -207,7 +174,6 @@ namespace ColorBlockJam.Game.Gameplay.View
                 _parts[i].Mesh.sharedMaterial = _exitMaterial;
         }
 
-        /// <summary>Stops its tweens and returns every piece to its pool; the view is then free for reuse.</summary>
         internal void ReleaseParts()
         {
             _exit?.Kill();

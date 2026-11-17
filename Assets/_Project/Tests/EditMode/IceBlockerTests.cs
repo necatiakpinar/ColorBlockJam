@@ -15,10 +15,8 @@ using static ColorBlockJam.Game.Levels.WallSide;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>Frozen blocks: they cannot move until enough other blocks have left (T-34, DA-37).</summary>
     public sealed class IceBlockerTests
     {
-        // Red at the left door, blue at the right door, and a yellow block frozen for 2 exits at the bottom door.
         static readonly LevelData Level = new LevelDataBuilder(4, 3)
             .Block(Red, 0, 2).Block(Blue, 3, 2).FrozenBlock(Yellow, 2, 1, 0)
             .Door(Left, 2, 1, Red).Door(Right, 2, 1, Blue).Door(Bottom, 1, 1, Yellow).Build();

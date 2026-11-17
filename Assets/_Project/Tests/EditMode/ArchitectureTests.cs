@@ -15,23 +15,17 @@ using VContainer.Unity;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>
-    /// The rules in CLAUDE.md that code review alone would let slip (T-37, testing.md): no per-frame code, Core never
-    /// depends on Game, logs go through <see cref="IGameLogger"/>, no scene lookups, and every scene's serialized
-    /// references are set.
-    /// </summary>
     public sealed class ArchitectureTests
     {
         const string ScriptsFolder = "Assets/_Project/Scripts";
+        const string TestsFolder = "Assets/_Project/Tests";
         const string CoreAsmdef = ScriptsFolder + "/Core/ColorBlockJam.Core.asmdef";
         const string GameAssembly = "ColorBlockJam.Game";
         static readonly string[] PerFrameMethods = { "Update", "LateUpdate", "FixedUpdate" };
         static readonly Type[] PerFrameInterfaces = { typeof(ITickable), typeof(ILateTickable), typeof(IFixedTickable) };
 
-        // Per-frame code with the reason the event-driven way was unavailable (CLAUDE.md "Update loop"). Empty today.
         static readonly Dictionary<string, string> PerFrameAllowed = new();
 
-        // The one place allowed to call UnityEngine.Debug.
         static readonly string[] DebugLogAllowed = { "Core/Logging/UnityGameLogger.cs" };
 
         static IEnumerable<Type> ProjectTypes()
@@ -45,7 +39,6 @@ namespace ColorBlockJam.Tests.EditMode
 
         static string Relative(string path) => path.Replace('\\', '/').Substring(ScriptsFolder.Length + 1);
 
-        /// <summary>Source lines matching <paramref name="pattern"/>, comments left out, as "file:line".</summary>
         static List<string> SourceHits(Regex pattern, ICollection<string> allowedFiles)
         {
             var hits = new List<string>();
@@ -57,13 +50,65 @@ namespace ColorBlockJam.Tests.EditMode
                 string[] lines = File.ReadAllLines(file);
                 for (int i = 0; i < lines.Length; i++)
                 {
-                    string code = lines[i].TrimStart();
-                    if (!code.StartsWith("//") && pattern.IsMatch(code))
+                    if (pattern.IsMatch(lines[i]))
                         hits.Add($"{relative}:{i + 1}");
                 }
             }
 
             return hits;
+        }
+
+        static int CommentAt(string source)
+        {
+            for (int i = 0; i < source.Length - 1; i++)
+            {
+                char c = source[i];
+                if (c == '/' && (source[i + 1] == '/' || source[i + 1] == '*'))
+                    return i;
+                if (c == '"')
+                    i = StringEnd(source, i, i > 0 && source[i - 1] == '@');
+                else if (c == '\'')
+                    i = CharEnd(source, i);
+            }
+
+            return -1;
+        }
+
+        static int StringEnd(string source, int open, bool verbatim)
+        {
+            for (int i = open + 1; i < source.Length; i++)
+            {
+                if (!verbatim && source[i] == '\\')
+                    i++;
+                else if (source[i] == '"' && verbatim && i + 1 < source.Length && source[i + 1] == '"')
+                    i++;
+                else if (source[i] == '"')
+                    return i;
+            }
+
+            return source.Length;
+        }
+
+        static int CharEnd(string source, int open)
+        {
+            int close = source.IndexOf('\'', open + (source[open + 1] == '\\' ? 3 : 2));
+            return close < 0 ? source.Length : close;
+        }
+
+        [Test]
+        public void Code_ShouldHaveNoComments_WhenWritten()
+        {
+            var found = new List<string>();
+            foreach (string folder in new[] { ScriptsFolder, TestsFolder })
+                foreach (string file in Directory.GetFiles(folder, "*.cs", SearchOption.AllDirectories))
+                {
+                    string source = File.ReadAllText(file);
+                    int at = CommentAt(source);
+                    if (at >= 0)
+                        found.Add($"{file.Replace('\\', '/')}:{source.Substring(0, at).Split('\n').Length}");
+                }
+
+            Assert.That(found, Is.Empty, "The code explains itself: no comments (CLAUDE.md, Comments).");
         }
 
         [Test]
@@ -121,7 +166,6 @@ namespace ColorBlockJam.Tests.EditMode
             var missing = new List<string>();
             foreach (EditorBuildSettingsScene buildScene in EditorBuildSettings.scenes)
             {
-                // A scene the developer already has open is read as it is and left open.
                 bool wasOpen = SceneManager.GetSceneByPath(buildScene.path).isLoaded;
                 Scene scene = wasOpen ? SceneManager.GetSceneByPath(buildScene.path) : EditorSceneManager.OpenScene(buildScene.path, OpenSceneMode.Additive);
                 try
@@ -140,7 +184,6 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(missing, Is.Empty, "A missing reference is a setup bug (CLAUDE.md, Safety).");
         }
 
-        /// <summary>Unset object references on one of the project's own components; Unity's and packages' are not ours to judge.</summary>
         static void CollectMissing(MonoBehaviour component, string sceneName, List<string> missing)
         {
             if (component == null)

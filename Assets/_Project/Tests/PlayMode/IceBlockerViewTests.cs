@@ -13,7 +13,6 @@ using VContainer;
 
 namespace ColorBlockJam.Tests.PlayMode
 {
-    /// <summary>A frozen block on screen (T-34): drawn in ice with its count, counting down and thawing.</summary>
     public sealed class IceBlockerViewTests
     {
         string _progress;
@@ -32,7 +31,6 @@ namespace ColorBlockJam.Tests.PlayMode
             PlayerPrefs.Save();
         }
 
-        // Red and blue next to their doors; yellow frozen until both have left.
         static LevelData FrozenLevel() => new(4, 3, 60,
             new[]
             {

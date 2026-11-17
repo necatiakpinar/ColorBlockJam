@@ -3,11 +3,6 @@ using ColorBlockJam.Game.Configs;
 
 namespace ColorBlockJam.Game.Gameplay.Session
 {
-    /// <summary>
-    /// Sells a lost level more time (DA-30): <see cref="GameplayConfig.ContinueSeconds"/> for
-    /// <see cref="GameplayConfig.ContinueCost"/> coins. The coins are taken before the level plays on;
-    /// nothing changes when the player cannot pay or the level is not lost.
-    /// </summary>
     public sealed class LevelContinueService
     {
         readonly LevelSession _session;

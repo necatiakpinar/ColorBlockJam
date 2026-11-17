@@ -9,10 +9,6 @@ using UnityEngine.UI;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>
-    /// The popup prefabs the scopes create from <see cref="GameplayPopupConfig"/> and <see cref="HomePopupConfig"/>
-    /// (ui.md §3).
-    /// </summary>
     public sealed class PopupPrefabTests
     {
         const string GameplayConfigPath = "Assets/_Project/Configs/GameplayPopupConfig.asset";

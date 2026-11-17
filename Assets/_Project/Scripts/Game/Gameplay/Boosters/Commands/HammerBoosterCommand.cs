@@ -4,7 +4,6 @@ using ColorBlockJam.Game.Gameplay.Board.Blockers;
 
 namespace ColorBlockJam.Game.Gameplay.Boosters.Commands
 {
-    /// <summary>Smashes the tapped block; on a frozen block it breaks the ice instead (DA-37).</summary>
     public sealed class HammerBoosterCommand : IBoosterCommand
     {
         readonly ActiveBoard _board;

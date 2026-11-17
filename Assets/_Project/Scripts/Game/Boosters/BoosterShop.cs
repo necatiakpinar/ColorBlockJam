@@ -3,7 +3,6 @@ using ColorBlockJam.Game.Configs;
 
 namespace ColorBlockJam.Game.Boosters
 {
-    /// <summary>Sells one booster for its <see cref="BoosterSettings.Price"/> in coins (DA-36).</summary>
     public sealed class BoosterShop
     {
         readonly IWalletService _wallet;
@@ -21,7 +20,6 @@ namespace ColorBlockJam.Game.Boosters
 
         public bool CanAfford(BoosterType type) => _wallet.Coins >= PriceOf(type);
 
-        /// <summary>Takes the price and adds one booster; false (and nothing changes) when the coins are short.</summary>
         public bool TryBuy(BoosterType type)
         {
             if (!_wallet.TrySpend(PriceOf(type)))

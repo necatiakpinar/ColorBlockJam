@@ -1,9 +1,5 @@
 namespace ColorBlockJam.Game.Lives
 {
-    /// <summary>
-    /// The lives changed, or a second of a refill countdown passed. <see cref="SecondsToNextLife"/> is -1 when the
-    /// lives are full or the trusted time is not known yet.
-    /// </summary>
     public readonly struct LivesChangedSignal
     {
         public readonly int Count;

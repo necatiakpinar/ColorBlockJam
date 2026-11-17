@@ -2,7 +2,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.UI
 {
-    /// <summary>Converts a screen safe area in pixels to normalized anchors for a full-screen rect.</summary>
     public readonly struct SafeArea
     {
         public readonly Vector2 AnchorMin;

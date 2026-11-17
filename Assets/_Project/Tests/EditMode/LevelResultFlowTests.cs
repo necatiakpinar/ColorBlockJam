@@ -19,7 +19,6 @@ using static ColorBlockJam.Game.Levels.WallSide;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>The win popup, and the out-of-time and level-failed popups after a loss (gameplay.md §7).</summary>
     public sealed class LevelResultFlowTests
     {
         TestViews _views;
@@ -61,7 +60,6 @@ namespace ColorBlockJam.Tests.EditMode
             _clock = new FakeGameClock();
             _popups = new RecordingPopupService();
             _navigation = new RecordingNavigation();
-            // Level 1 is Hard (25 coins); level 2 is Normal.
             var levels = new LevelProvider(_catalogs.Create(
                 new LevelDataBuilder(4, 4).Difficulty(LevelDifficulty.Hard).Block(Red, 0, 0).Door(Left, 0, 1, Red).Build(),
                 new LevelDataBuilder(5, 5).Block(Blue, 0, 0).Door(Left, 0, 1, Blue).Build()));
@@ -70,14 +68,12 @@ namespace ColorBlockJam.Tests.EditMode
             _progress.Load();
             _wallet = new WalletService(new InMemoryKeyValueStorage(), new RecordingLogger(), _bus);
             _wallet.Load();
-            // Defaults: popup 1 s after a win; 20 more seconds for 50 coins.
             _config = ScriptableObject.CreateInstance<GameplayConfig>();
             _rewardConfig = ScriptableObject.CreateInstance<LevelRewardConfig>();
 
             _winPopup = _views.CreateWinPopup(out _continueAfterWin);
             _outOfTime = _views.CreateOutOfTimePopup(out _buyTime, out _giveUp);
             _levelFailed = _views.CreateLevelFailedPopup(out _retry, out _goHome);
-            // As in the scope: the reward is paid before the win flow hears of the win.
             _rewardService = new LevelRewardService(_bus, levels, new LevelRewardProvider(_rewardConfig), _wallet);
             _coinFlight = new RecordingCoinFlight();
             _winFlow = new WinFlow(_bus, _popups, _winPopup, levels, new LevelRewardProvider(_rewardConfig), _config, _clock,

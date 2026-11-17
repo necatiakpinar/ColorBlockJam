@@ -12,7 +12,6 @@ namespace ColorBlockJam.Game.UI
         {
             if (popup == null)
                 throw new ArgumentNullException(nameof(popup));
-            // The open popup's blocker swallows taps behind it, so a second open is a wiring bug.
             if (_open != null)
                 throw new InvalidOperationException($"Cannot open a popup while {_open} is open.");
 

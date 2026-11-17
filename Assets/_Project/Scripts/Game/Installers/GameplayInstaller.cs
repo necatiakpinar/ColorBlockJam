@@ -15,7 +15,6 @@ using VContainer.Unity;
 
 namespace ColorBlockJam.Game.Installers
 {
-    /// <summary>Gameplay-scene services; their configs come from the root scope's <see cref="ConfigProvider"/>.</summary>
     public sealed class GameplayInstaller : IInstaller
     {
         public void Install(IContainerBuilder builder)

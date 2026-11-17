@@ -7,7 +7,6 @@ using ColorBlockJam.Tests.EditMode.Helpers;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>The saved toggles (persistence.md).</summary>
     public sealed class SettingsServiceTests
     {
         static readonly GameSetting[] AllSettings = { GameSetting.Music, GameSetting.Sound, GameSetting.Vibration };

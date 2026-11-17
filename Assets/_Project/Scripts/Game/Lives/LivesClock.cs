@@ -6,11 +6,6 @@ using VContainer.Unity;
 
 namespace ColorBlockJam.Game.Lives
 {
-    /// <summary>
-    /// Keeps the lives' refill countdown moving for the whole session (Root scope, lives.md): once a second,
-    /// through <see cref="IGameClock"/> delays rather than a per-frame update, it gives back lives whose time has
-    /// come and announces the countdown while any life is missing.
-    /// </summary>
     public sealed class LivesClock : IStartable, IDisposable
     {
         const float TickSeconds = 1f;
@@ -33,7 +28,6 @@ namespace ColorBlockJam.Game.Lives
                 Tick();
         }
 
-        /// <summary>One second's work; tests call it directly.</summary>
         internal void Tick()
         {
             if (_lives.IsFull)

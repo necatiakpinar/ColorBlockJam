@@ -11,7 +11,6 @@ namespace ColorBlockJam.Tests.EditMode
         const float Fov = 40f;
         static readonly FramingMargins Margins = new(0.06f, 0.22f, 0.16f);
 
-        /// <summary>Viewport position of a world point for a camera at <paramref name="position"/>.</summary>
         static Vector2 Viewport(Vector3 point, Vector3 position, float aspect)
         {
             Vector3 local = Quaternion.Inverse(Tilt) * (point - position);

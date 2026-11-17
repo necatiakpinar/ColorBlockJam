@@ -8,9 +8,6 @@ using VContainer.Unity;
 
 namespace ColorBlockJam.Game.Splash
 {
-    /// <summary>
-    /// Orchestrates the splash: presentation and routing only. All real work lives in the boot steps.
-    /// </summary>
     public sealed class SplashFlow : IAsyncStartable
     {
         readonly BootSequence _bootSequence;

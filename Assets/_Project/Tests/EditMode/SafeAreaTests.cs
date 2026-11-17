@@ -18,7 +18,6 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void Anchors_ShouldExcludeNotchAndHomeBar_WhenTallPhoneHasInsets()
         {
-            // 20:9 phone with a 100 px notch on top and a 60 px home bar at the bottom.
             var area = new SafeArea(new Rect(0f, 60f, 1080f, 2240f), new Vector2(1080f, 2400f));
 
             Assert.That(area.AnchorMin.y, Is.EqualTo(60f / 2400f).Within(1e-5f));

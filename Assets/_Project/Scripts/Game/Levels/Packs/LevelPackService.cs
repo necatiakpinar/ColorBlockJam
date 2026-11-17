@@ -6,15 +6,8 @@ using ColorBlockJam.Game.Configs;
 
 namespace ColorBlockJam.Game.Levels.Packs
 {
-    /// <summary>
-    /// The levels this launch plays (level-packs.md §3, DA-41). <see cref="Load"/> runs once at boot: a remote pack
-    /// stored by an earlier launch wins when it reads, passes the validator and is not older than the bundled pack;
-    /// otherwise the bundled pack plays and a bad stored pack is dropped. A newly fetched pack is only checked and
-    /// stored (<see cref="TryStoreRemote"/>), so the levels never change under a player mid-session.
-    /// </summary>
     public sealed class LevelPackService : ILevelSource
     {
-        /// <summary>Where the last good remote pack waits for the next launch.</summary>
         public const string RemoteKey = "level_pack_remote_v1";
 
         readonly LevelPackConfig _config;
@@ -24,7 +17,6 @@ namespace ColorBlockJam.Game.Levels.Packs
         readonly LevelDefinitionValidator _validator;
         LevelPack _current;
 
-        /// <param name="rules">The board and timer limits every level of a pack must respect.</param>
         public LevelPackService(LevelPackConfig config, LevelRulesConfig rules, IKeyValueStorage storage, IGameLogger logger)
         {
             _config = config;
@@ -35,7 +27,6 @@ namespace ColorBlockJam.Game.Levels.Packs
 
         public LevelPack Current => _current ?? throw new InvalidOperationException("Load the level pack at boot before reading levels.");
 
-        /// <summary>True when this launch plays a pack stored from remote config.</summary>
         public bool IsRemote { get; private set; }
 
         public int LevelCount => Current.Levels.Count;
@@ -64,10 +55,6 @@ namespace ColorBlockJam.Game.Levels.Packs
             _storage.Flush();
         }
 
-        /// <summary>
-        /// Checks a pack fetched from remote config and keeps it for the next launch. Returns false, storing
-        /// nothing, when it does not read, a level fails the validator, or it is older than the bundled pack.
-        /// </summary>
         public bool TryStoreRemote(string json, out string error)
         {
             if (!TryCheck(json, out LevelPack remote, out error))
@@ -85,7 +72,6 @@ namespace ColorBlockJam.Game.Levels.Packs
             return true;
         }
 
-        /// <summary>Reads the pack and runs every level through the validator; warnings pass, errors do not.</summary>
         bool TryCheck(string json, out LevelPack pack, out string problem)
         {
             if (!_json.TryRead(json, out pack, out problem))

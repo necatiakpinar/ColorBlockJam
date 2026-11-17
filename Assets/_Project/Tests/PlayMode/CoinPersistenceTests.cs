@@ -17,7 +17,6 @@ using VContainer;
 
 namespace ColorBlockJam.Tests.PlayMode
 {
-    /// <summary>A win pays its reward once, and the balance survives leaving and coming back (R-19).</summary>
     public sealed class CoinPersistenceTests
     {
         static readonly string[] SavedKeys = { WalletService.StorageKey, PlayerProgressService.StorageKey };
@@ -26,7 +25,6 @@ namespace ColorBlockJam.Tests.PlayMode
         [SetUp]
         public void SetUp()
         {
-            // These tests earn coins and win a level: put the player's saves back afterwards.
             for (int i = 0; i < SavedKeys.Length; i++)
                 _saved[i] = PlayerPrefs.HasKey(SavedKeys[i]) ? PlayerPrefs.GetString(SavedKeys[i]) : null;
         }
@@ -52,7 +50,6 @@ namespace ColorBlockJam.Tests.PlayMode
                 yield return null;
         }
 
-        /// <summary>Home is reached through the pause popup.</summary>
         static void GoHome()
         {
             SceneTestUtility.TapButton<GameplayHudView>("PauseButton");
@@ -76,7 +73,6 @@ namespace ColorBlockJam.Tests.PlayMode
             container.Resolve<SignalBus>().Fire(new BoardClearedSignal());
             int afterWin = wallet.Coins;
             yield return WaitRealtime(container.Resolve<GameplayConfig>().WinPopupDelay + 0.2f);
-            // Continue flies the coins and goes Home (T-51).
             SceneTestUtility.TapButton<WinPopupView>("ContinueButton");
             yield return SceneTestUtility.WaitForScene(SceneTestUtility.HomeScene);
             SceneTestUtility.TapButton<HomeView>("LevelButton");

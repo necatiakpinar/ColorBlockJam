@@ -8,39 +8,12 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Gameplay.Input
 {
-    /// <summary>
-    /// Lets a finger slide a block like a solid object (DA-4).
-    /// <list type="bullet">
-    /// <item>The block always aims at the finger plus the offset it was grabbed at; that offset never
-    /// changes, so the block cannot drift away from the finger.</item>
-    /// <item>Collisions work like tile physics: each pass moves it along the axis the finger is furthest
-    /// along, then the other, as far as every cell its footprint sweeps through is free. It slides along
-    /// obstacles and a fast drag cannot pass through anything.</item>
-    /// <item>Pushed into a one-cell gap from slightly off the line, it slips sideways into it
-    /// (<see cref="BoardViewConfig.CornerTolerance"/>), but only along the way the finger is mostly going.
-    /// While that push needs the line, the block does not leave the line sideways, so a slow push does not
-    /// pull it back toward the finger and slip it again every event (jitter). Nothing is locked from one
-    /// event to the next, so a block can always turn into any other gap.</item>
-    /// <item>Whenever its nearest cell changes, the move is committed to the board, so the board always holds
-    /// the cell it settles on. Lined up with a fitting door, the wall stops counting and the block exits as
-    /// soon as it is pushed <see cref="BoardViewConfig.ExitPush"/> into the door.</item>
-    /// <item>A press next to a block picks it when the finger is within
-    /// <see cref="BoardViewConfig.TouchTolerance"/> of it. A door the block cannot use is a wall to it.</item>
-    /// <item>Input counts only while the level plays: a pause, a win or a fail drops the held block onto its
-    /// cell and ignores the finger until the level starts, resumes or continues again.</item>
-    /// <item>What is drawn may lean toward the finger past an obstacle by
-    /// <see cref="BoardViewConfig.HoldGive"/>, so a held block never feels frozen; that lean is never
-    /// committed.</item>
-    /// </list>
-    /// </summary>
     public sealed class BlockDragController : IDisposable
     {
-        // Shows the drag in the Profiler (performance.md).
         static readonly ProfilerMarker DragMarker = new("ColorBlockJam.Drag");
 
         const int NoBlock = -1;
         const float Epsilon = 1e-4f;
-        // One pass moves along both axes; a pass that cannot move ends the event. Bounds the loop.
         const int MaxPassesPerEvent = 16;
 
         readonly ActiveBoard _board;
@@ -51,12 +24,8 @@ namespace ColorBlockJam.Game.Gameplay.Input
         bool _acceptsInput = true;
         Vector2 _position;
         Vector2 _grab;
-        // Where the finger wants the block this event.
         Vector2 _target;
-        // Per event: an axis the block just slipped along may not be pulled back the other way.
         Vector2Int _slipLock;
-        // Per drag: the direction of the last slip on each axis. A small pull the other way only undoes
-        // that slip's offset to the finger; it must not set off a slip of its own.
         Vector2Int _lastSlip;
 
         public BlockDragController(ActiveBoard board, BoardSpace boardSpace, BoardViewConfig config, SignalBus signalBus)
@@ -89,11 +58,6 @@ namespace ColorBlockJam.Game.Gameplay.Input
 
         void OnLevelContinued(LevelContinuedSignal signal) => _acceptsInput = true;
 
-        /// <summary>
-        /// Lets go of the held block where the board has it, and ignores the finger from now on. The last exit
-        /// completes the level from inside that exit's step, before the drag has let go of the block: a block
-        /// that has left is only forgotten, never dropped.
-        /// </summary>
         void StopInput()
         {
             _acceptsInput = false;
@@ -133,7 +97,6 @@ namespace ColorBlockJam.Game.Gameplay.Input
                     && !TryGetNearestBlock(signal.WorldPoint, out _blockId))
                 || !_board.Current.Blocks[_blockId].CanBeGrabbed)
             {
-                // A blocker (ice, T-34) can keep a block from being picked up.
                 _blockId = NoBlock;
                 return;
             }
@@ -144,11 +107,6 @@ namespace ColorBlockJam.Game.Gameplay.Input
             _signalBus.Fire(new BlockGrabbedSignal(_blockId));
         }
 
-        /// <summary>
-        /// The block whose cell is nearest the finger among the cells around it, if it is at most
-        /// <see cref="BoardViewConfig.TouchTolerance"/> away (the tolerance stays under half a cell, so the
-        /// ring of neighbours is enough).
-        /// </summary>
         bool TryGetNearestBlock(Vector3 fingerWorld, out int blockId)
         {
             blockId = NoBlock;
@@ -179,10 +137,6 @@ namespace ColorBlockJam.Game.Gameplay.Input
 
         Vector2 Target(Vector3 fingerWorld) => FingerInCells(fingerWorld) + _grab;
 
-        /// <summary>
-        /// The drawn-only lean toward the finger, at most <see cref="BoardViewConfig.HoldGive"/>, and never along an
-        /// axis a blocker forbids (an arrow, DA-39), so the block never hints at a move it cannot make.
-        /// </summary>
         Vector2 Lean(Vector2 target)
         {
             Vector2 lean = target - _position;
@@ -194,7 +148,6 @@ namespace ColorBlockJam.Game.Gameplay.Input
             return Vector2.ClampMagnitude(lean, _config.HoldGive);
         }
 
-        /// <summary>Moves the held block toward the target; false when no block is held (any more).</summary>
         bool Follow(Vector2 target)
         {
             if (_blockId == NoBlock)
@@ -216,7 +169,6 @@ namespace ColorBlockJam.Game.Gameplay.Input
             return _blockId != NoBlock;
         }
 
-        /// <summary>Slides along one axis toward <paramref name="goal"/> as far as the way is free.</summary>
         bool Slide(int axis, float goal)
         {
             float wanted = goal - _position[axis];
@@ -242,13 +194,6 @@ namespace ColorBlockJam.Game.Gameplay.Input
             return moved;
         }
 
-        /// <summary>
-        /// Whether the block must stay where it is on <paramref name="axis"/>: the finger is mostly pushing
-        /// along the other axis, that push is free on the nearest cell line of this axis, and the move would
-        /// take the block off that line into a place where the push is stopped. Holding the line is what
-        /// keeps a slow push into a gap from pulling the block back toward the finger every event. A push
-        /// that only undoes an earlier slip's offset to the finger does not count.
-        /// </summary>
         bool HoldsLine(int axis, int direction, float wanted)
         {
             int other = 1 - axis;
@@ -272,21 +217,9 @@ namespace ColorBlockJam.Game.Gameplay.Input
             return freeOnLine > freeAfter + Epsilon;
         }
 
-        /// <summary>
-        /// Whether a pull along <paramref name="axis"/> only takes back the offset to the finger that the last
-        /// slip on that axis left: it goes the other way and stays within the slip tolerance.
-        /// </summary>
         bool UndoesSlip(int axis, int direction, float wanted) =>
             _lastSlip[axis] == -direction && wanted <= _config.CornerTolerance;
 
-        /// <summary>
-        /// When a push is stopped only because the block is slightly off the cell line on the other axis (it
-        /// straddles a free and a blocked row), turns the stopped part of the push into a sideways slip onto
-        /// the nearest line, if that line opens the way. Nothing happens otherwise, and nothing happens while
-        /// the stopped push is smaller than how far the finger is off to the side: only the way the finger
-        /// is mostly going gets help, so a finger's small sideways wobble never slips the block along its
-        /// main axis.
-        /// </summary>
         bool SlipIntoGap(int axis, int direction, float blocked)
         {
             int cross = 1 - axis;
@@ -318,16 +251,10 @@ namespace ColorBlockJam.Game.Gameplay.Input
             return true;
         }
 
-        /// <summary>
-        /// How far the block can move along <paramref name="axis"/>, up to <paramref name="wanted"/>. Each of
-        /// its cells is a unit square that, when between cells, spans two rows (or columns); the scan walks the
-        /// cells ahead of its leading edge until one is blocked or the wanted distance is reached.
-        /// </summary>
         float FreeDistance(int axis, int direction, float wanted)
         {
             BoardState board = _board.Current;
             BoardBlock block = board.Blocks[_blockId];
-            // A blocker (an arrow, DA-39) can forbid this axis altogether: then the block does not give at all.
             if (!block.AllowsStep(Step(axis, direction)))
                 return 0f;
             int cross = 1 - axis;
@@ -370,7 +297,6 @@ namespace ColorBlockJam.Game.Gameplay.Input
                 Vector2Int cell = axis == 0 ? new Vector2Int(column, row) : new Vector2Int(row, column);
                 if (board.IsCellFree(cell, _blockId))
                     continue;
-                // Off the board only through the fitting door the block is lined up with.
                 bool offBoard = cell.x < 0 || cell.y < 0 || cell.x >= board.Width || cell.y >= board.Height;
                 if (doorOpen && offBoard)
                     continue;
@@ -380,10 +306,6 @@ namespace ColorBlockJam.Game.Gameplay.Input
             return false;
         }
 
-        /// <summary>
-        /// Steps the board block until it sits on the cell nearest to where it is drawn, and lets it out as
-        /// soon as it is pushed <see cref="BoardViewConfig.ExitPush"/> past its cell into a fitting door.
-        /// </summary>
         void Commit(int axis, int direction)
         {
             int nearest = Mathf.RoundToInt(_position[axis]);

@@ -21,10 +21,6 @@ using VContainer;
 
 namespace ColorBlockJam.Tests.PlayMode
 {
-    /// <summary>
-    /// Nothing of an attempt survives a restart or a trip Home (T-22, R-21, R-25): the board, the block views,
-    /// the timer, the coins and the scene's objects come back exactly as a fresh start leaves them.
-    /// </summary>
     public sealed class RestartResetsStateTests
     {
         static readonly string[] SavedKeys =
@@ -34,7 +30,6 @@ namespace ColorBlockJam.Tests.PlayMode
         [SetUp]
         public void SetUp()
         {
-            // A loss and a win change the saves: put them back afterwards.
             for (int i = 0; i < SavedKeys.Length; i++)
                 _saved[i] = PlayerPrefs.HasKey(SavedKeys[i]) ? PlayerPrefs.GetString(SavedKeys[i]) : null;
         }
@@ -62,7 +57,6 @@ namespace ColorBlockJam.Tests.PlayMode
                 yield return null;
         }
 
-        /// <summary>Everything a restart must put back, as one comparable text.</summary>
         static string Snapshot()
         {
             IObjectResolver container = Gameplay();
@@ -82,17 +76,12 @@ namespace ColorBlockJam.Tests.PlayMode
             return text.ToString();
         }
 
-        /// <summary>
-        /// Each restart of a started attempt costs a life (DA-38); ten in a row would run out, so the lives start
-        /// full every round. The saved lives are put back in TearDown.
-        /// </summary>
         static void FillLives()
         {
             PlayerPrefs.DeleteKey(LivesService.StorageKey);
             Gameplay().Resolve<LivesService>().Load();
         }
 
-        /// <summary>Drags the first block one cell to the right with the real input, starting the timer.</summary>
         static void DragFirstBlock()
         {
             var input = SceneTestUtility.FindInActiveScene<BoardInputView>();
@@ -176,7 +165,6 @@ namespace ColorBlockJam.Tests.PlayMode
             int level = progress.CurrentLevel;
             int coins = wallet.Coins;
 
-            // A gameplay listener left behind would touch a destroyed view or change the saves here.
             Assert.DoesNotThrow(() =>
             {
                 bus.Fire(new LevelStartedSignal(level));
@@ -186,7 +174,6 @@ namespace ColorBlockJam.Tests.PlayMode
                 bus.Fire(new LevelCompletedSignal(level));
                 bus.Fire(new LevelFailedSignal(level));
                 bus.Fire(new CoinsChangedSignal(coins, 0));
-                // A gameplay popup that was never opened must not keep listening either (lives.md).
                 bus.Fire(new LivesChangedSignal(4, 5, 60));
             });
             yield return WaitRealtime(1.5f);

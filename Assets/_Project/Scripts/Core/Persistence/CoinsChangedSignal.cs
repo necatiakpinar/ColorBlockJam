@@ -1,6 +1,5 @@
 namespace ColorBlockJam.Core.Persistence
 {
-    /// <summary>The wallet changed and is already saved.</summary>
     public readonly struct CoinsChangedSignal
     {
         public readonly int Coins;

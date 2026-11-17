@@ -13,13 +13,6 @@ using VContainer;
 
 namespace ColorBlockJam.Game.Gameplay.View
 {
-    /// <summary>
-    /// Draws the blocks: builds each one from modular pieces when a board loads, follows the finger while a
-    /// block is held, settles it on its cell when dropped and plays its exit. Boosters (DA-36) smash or vacuum
-    /// blocks away, and a blasted cell rebuilds its block from the cells left; while a booster waits for a target
-    /// every block is outlined. Reacts to signals only; the board model has already committed every change. (Blocks move only by dragging, so the per-cell
-    /// <see cref="BlockMovedSignal"/> needs no view of its own.)
-    /// </summary>
     public sealed class BlockLayerView : MonoBehaviour
     {
         [SerializeField]
@@ -41,7 +34,6 @@ namespace ColorBlockJam.Game.Gameplay.View
         ColorMaterialCache _iceMaterials;
         ObjectPool<IceBlockerView> _icePool;
         ObjectPool<ArrowBlockerView> _arrowPool;
-        // The blocker views each block wears (blockers.md); taken back when the blocker lets go or the block is released.
         readonly Dictionary<BlockView, IceBlockerView> _iceViews = new();
         readonly Dictionary<BlockView, ArrowBlockerView> _arrowViews = new();
         System.Action<ExitBurstView> _releaseBurst;
@@ -50,7 +42,6 @@ namespace ColorBlockJam.Game.Gameplay.View
         ObjectPool<ExitBurstView> _burstPool;
         ObjectPool<ExitBurstView> _shatterPool;
         System.Action<ExitBurstView> _releaseShatter;
-        // The last spray started at each door, to fold exits close together into it.
         readonly Dictionary<(WallSide Side, int CrossMin, int CrossMax), (ExitBurstView Burst, float StartedAt)> _lastBursts = new();
         ActiveBoard _board;
         OutlineSettings _outline;
@@ -115,7 +106,6 @@ namespace ColorBlockJam.Game.Gameplay.View
             _signalBus.Subscribe<BlockThawedSignal>(OnBlockThawed);
         }
 
-        /// <summary>Block views on screen, indexed by block id; null once a block has exited.</summary>
         internal IReadOnlyList<BlockView> Views => _views;
 
         void OnBoardLoaded(BoardLoadedSignal signal)
@@ -124,7 +114,6 @@ namespace ColorBlockJam.Game.Gameplay.View
             _root.localPosition = _boardSpace.Origin;
             _root.localScale = Vector3.one * _boardSpace.CellSize;
 
-            // The board is built before it is announced, so every block (and its blockers) is already there.
             foreach (BoardBlock block in _board.Current.Blocks)
             {
                 BlockView view = _blockPool.Get();
@@ -134,18 +123,12 @@ namespace ColorBlockJam.Game.Gameplay.View
             }
         }
 
-        /// <summary>The arrow view on block <paramref name="blockId"/>, or null when it has no arrow.</summary>
         internal ArrowBlockerView ArrowViewOf(int blockId) =>
             _views[blockId] != null && _arrowViews.TryGetValue(_views[blockId], out ArrowBlockerView arrow) ? arrow : null;
 
-        /// <summary>The ice view on block <paramref name="blockId"/>, or null when it is not frozen.</summary>
         internal IceBlockerView IceViewOf(int blockId) =>
             _views[blockId] != null && _iceViews.TryGetValue(_views[blockId], out IceBlockerView ice) ? ice : null;
 
-        /// <summary>
-        /// Lays the pieces of the block's cells (start cells) into the view and dresses it in its blockers: a frozen
-        /// block is drawn in ice with the IceBlocker view showing its count.
-        /// </summary>
         void Build(BlockView view, BoardBlock block)
         {
             IReadOnlyList<Vector2Int> cells = block.StartCells;
@@ -180,7 +163,6 @@ namespace ColorBlockJam.Game.Gameplay.View
             _iceViews[view] = iceView;
         }
 
-        /// <summary>How many cells the block covers along <paramref name="axis"/>.</summary>
         int Span(IReadOnlyList<Vector2Int> cells, ArrowAxis axis)
         {
             int min = int.MaxValue, max = int.MinValue;
@@ -194,7 +176,6 @@ namespace ColorBlockJam.Game.Gameplay.View
             return max - min + 1;
         }
 
-        /// <summary>Takes the block's blocker views back to their pools.</summary>
         void Undress(BlockView view)
         {
             if (_arrowViews.Remove(view, out ArrowBlockerView arrowView))
@@ -206,7 +187,6 @@ namespace ColorBlockJam.Game.Gameplay.View
             UndressIce(view);
         }
 
-        /// <summary>Takes back only the ice view: a thaw leaves the other blockers on.</summary>
         void UndressIce(BlockView view)
         {
             if (!_iceViews.Remove(view, out IceBlockerView iceView))
@@ -215,10 +195,6 @@ namespace ColorBlockJam.Game.Gameplay.View
             _icePool.Release(iceView);
         }
 
-        /// <summary>
-        /// Where the ice count sits: the block's centre when that lies on the block (a 2x2 block's middle), else the
-        /// middle of its cell nearest the centre, so it is always on the block.
-        /// </summary>
         Vector3 LabelCell(IReadOnlyList<Vector2Int> cells, Vector3 centre)
         {
             foreach (Vector2Int cell in cells)
@@ -260,10 +236,6 @@ namespace ColorBlockJam.Game.Gameplay.View
             view.SnapTo(signal.Offset);
         }
 
-        /// <summary>
-        /// Slides the block through its door at <see cref="BoardViewConfig.ExitSpeed"/>, cut at the board's edge,
-        /// while cubes of its colour spray out of the door for as long as it takes.
-        /// </summary>
         void OnBlockExited(BlockExitedSignal signal)
         {
             BlockView view = _views[signal.BlockId];
@@ -275,9 +247,7 @@ namespace ColorBlockJam.Game.Gameplay.View
             float distance = path.Length + _config.ExitCutOffset + _config.ExitClearance;
             Vector3 doorLocal = path.DoorCentre(_config.ExitDebrisHeight);
 
-            // Keep what lies on the board side of the door: -d . p + d . edge >= 0.
             var outward = new Vector3(signal.Direction.x, 0f, signal.Direction.y);
-            // Cut a little inside the door, so the block covers the floor's edge the opening door uncovers.
             Vector3 edgeWorld = _root.TransformPoint(doorLocal + outward * _config.ExitCutOffset);
             var clipPlane = new Vector4(-outward.x, 0f, -outward.z, Vector3.Dot(outward, edgeWorld));
 
@@ -288,7 +258,6 @@ namespace ColorBlockJam.Game.Gameplay.View
             Spray(path, doorLocal + outward * _config.WallThickness, color, slide);
         }
 
-        /// <summary>A booster took the whole block: it breaks where it stands, or the vacuum lifts it away in turn.</summary>
         void OnBlockRemoved(BlockRemovedSignal signal)
         {
             BlockView view = _views[signal.BlockId];
@@ -308,10 +277,6 @@ namespace ColorBlockJam.Game.Gameplay.View
             Burst(centre, _config.TintOf(block.Color), _config.SmashDebrisPerCell * block.CellCount);
         }
 
-        /// <summary>
-        /// The rocket blasted one cell: the block is rebuilt from the cells it has left, where it is (a piece that split
-        /// off follows with <see cref="BlockSplitOffSignal"/>).
-        /// </summary>
         void OnBlockCellRemoved(BlockCellRemovedSignal signal)
         {
             BoardBlock block = _board.Current.Blocks[signal.BlockId];
@@ -324,7 +289,6 @@ namespace ColorBlockJam.Game.Gameplay.View
                 _config.SmashDebrisPerCell);
         }
 
-        /// <summary>A block left: every frozen block shows its new count.</summary>
         void OnIceCountedDown(IceCountedDownSignal signal)
         {
             for (int id = 0; id < _views.Count; id++)
@@ -335,7 +299,6 @@ namespace ColorBlockJam.Game.Gameplay.View
             }
         }
 
-        /// <summary>The ice broke: the block takes its colour back with a swell while shards of ice fly off.</summary>
         void OnBlockThawed(BlockThawedSignal signal)
         {
             BoardBlock block = _board.Current.Blocks[signal.BlockId];
@@ -349,7 +312,6 @@ namespace ColorBlockJam.Game.Gameplay.View
                 _config.ThawDuration, 0f, _config.ThawDebrisPerCell * block.CellCount, _releaseShatter);
         }
 
-        /// <summary>A piece the rocket split off is a block of its own now: it gets its own view where it lies.</summary>
         void OnBlockSplitOff(BlockSplitOffSignal signal)
         {
             BoardBlock block = _board.Current.Blocks[signal.BlockId];
@@ -357,7 +319,6 @@ namespace ColorBlockJam.Game.Gameplay.View
             view.transform.SetParent(_root, false);
             Build(view, block);
             view.PlaceAt(block.Offset);
-            // Board ids are the views' indices; a split-off block always takes the next one.
             _views.Add(view);
         }
 
@@ -367,7 +328,6 @@ namespace ColorBlockJam.Game.Gameplay.View
                 view?.SetOutlined(signal.Active);
         }
 
-        /// <summary>Cubes of <paramref name="color"/> thrown up from where a block broke or thawed.</summary>
         void Burst(Vector3 local, Color color, float cubes)
         {
             ExitBurstView burst = _burstPool.Get();
@@ -375,11 +335,6 @@ namespace ColorBlockJam.Game.Gameplay.View
                 _config.SmashDuration, 0f, cubes, _releaseBurst);
         }
 
-        /// <summary>
-        /// Starts the debris out of the door, outside the wall ring so the wall does not hide it. A block
-        /// leaving the same door within <see cref="BoardViewConfig.ExitBurstCoalesceWindow"/> of the last
-        /// one adds its cubes to that spray instead of starting another particle system.
-        /// </summary>
         void Spray(in ExitPath path, Vector3 sprayLocal, Color color, float slide)
         {
             var door = (path.Side, path.CrossMin, path.CrossMax);
@@ -407,7 +362,6 @@ namespace ColorBlockJam.Game.Gameplay.View
 
         void ReleaseAll()
         {
-            // Blocks still sliding out belong to the previous board; they go back to the pool with it.
             for (int i = _exiting.Count - 1; i >= 0; i--)
                 Recycle(_exiting[i]);
             foreach (BlockView view in _views)

@@ -15,7 +15,6 @@ using VContainer;
 
 namespace ColorBlockJam.Tests.PlayMode
 {
-    /// <summary>Winning shows the win popup; Continue flies the coins to the counter and goes Home, which plays the next level (T-51).</summary>
     public sealed class LevelProgressionFlowTests
     {
         static readonly string[] SavedKeys = { PlayerProgressService.StorageKey, WalletService.StorageKey };
@@ -24,7 +23,6 @@ namespace ColorBlockJam.Tests.PlayMode
         [SetUp]
         public void SetUp()
         {
-            // These tests win levels, which saves the player's progress and coins: put them back afterwards.
             for (int i = 0; i < SavedKeys.Length; i++)
                 _saved[i] = PlayerPrefs.HasKey(SavedKeys[i]) ? PlayerPrefs.GetString(SavedKeys[i]) : null;
         }

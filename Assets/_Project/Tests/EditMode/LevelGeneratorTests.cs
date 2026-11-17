@@ -8,7 +8,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>Generated levels are valid, finishable and match their settings (T-47, DA-33).</summary>
     public sealed class LevelGeneratorTests
     {
         LevelRulesConfig _rules;
@@ -18,7 +17,6 @@ namespace ColorBlockJam.Tests.EditMode
         [SetUp]
         public void SetUp()
         {
-            // Defaults: board 3-10, timer 10-600 s.
             _rules = ScriptableObject.CreateInstance<LevelRulesConfig>();
             _validator = new LevelDefinitionValidator(_rules);
             _generator = new LevelGenerator(_validator, 2000, new BlockShapeLibrary());

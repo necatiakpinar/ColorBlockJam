@@ -3,13 +3,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Gameplay.View
 {
-    /// <summary>
-    /// The spray of small cubes out of a door while a block slides through it: a burst when the block
-    /// reaches the door, then a stream for as long as it slides, all inside a cone that opens toward where
-    /// the block goes. Pooled; the particle system
-    /// (authored in <c>BlockExitBurst.prefab</c>, stop action Callback) hands the view back when its last
-    /// particle is gone.
-    /// </summary>
     public sealed class ExitBurstView : MonoBehaviour
     {
         [SerializeField]
@@ -17,11 +10,6 @@ namespace ColorBlockJam.Game.Gameplay.View
 
         Action<ExitBurstView> _onFinished;
 
-        /// <param name="localPosition">Middle of the door opening the block passes, in board cells.</param>
-        /// <param name="width">Width of the block across the door, in cells.</param>
-        /// <param name="delay">How long the block takes to reach the door: the spray starts then.</param>
-        /// <param name="duration">How long the block takes to pass: the spray lasts as long.</param>
-        /// <param name="burstPerCell">Cubes thrown at once when the block reaches the door, per cell of width.</param>
         internal void Play(Vector3 localPosition, Vector2Int direction, float width, Color color, float delay,
             float duration, float debrisPerCellPerSecond, float burstPerCell, Action<ExitBurstView> onFinished)
         {
@@ -34,7 +22,6 @@ namespace ColorBlockJam.Game.Gameplay.View
             main.startDelay = delay;
             main.duration = duration;
             main.startColor = color;
-            // The cone's mouth spans the block's width across the door.
             ParticleSystem.ShapeModule shape = _particles.shape;
             shape.radius = width * 0.5f;
             ParticleSystem.EmissionModule emission = _particles.emission;
@@ -43,14 +30,12 @@ namespace ColorBlockJam.Game.Gameplay.View
             _particles.Play(true);
         }
 
-        /// <summary>Adds <paramref name="count"/> cubes of <paramref name="color"/> to a spray already running.</summary>
         internal void Add(int count, Color color)
         {
             var emit = new ParticleSystem.EmitParams { startColor = color };
             _particles.Emit(emit, count);
         }
 
-        // Sent by the particle system (stop action Callback) once every particle has died.
         void OnParticleSystemStopped() => _onFinished?.Invoke(this);
     }
 }

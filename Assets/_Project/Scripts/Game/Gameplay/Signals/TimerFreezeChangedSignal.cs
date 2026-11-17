@@ -1,10 +1,5 @@
 namespace ColorBlockJam.Game.Gameplay.Signals
 {
-    /// <summary>
-    /// The freeze booster's state changed (DA-36): it started, stopped or resumed counting with the level, or ended
-    /// (<see cref="SecondsLeft"/> is 0). While <see cref="Counting"/>, the freeze runs out in
-    /// <see cref="SecondsLeft"/> seconds of real time.
-    /// </summary>
     public readonly struct TimerFreezeChangedSignal
     {
         public readonly float SecondsLeft;

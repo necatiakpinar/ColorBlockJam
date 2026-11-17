@@ -27,10 +27,8 @@ namespace ColorBlockJam.Tests.EditMode
 
         void Build(params Vector2Int[] cells) => Build((IReadOnlyList<Vector2Int>)cells);
 
-        /// <summary>Each corner is an arc of Segments + 1 points, two band vertices each.</summary>
         static int VerticesFor(int corners) => corners * (Segments + 1) * 2;
 
-        /// <summary>Signed distance from a vertex to a rounded rectangle shaped like a bar block's model.</summary>
         static float DistanceToRoundedBar(Vector3 vertex, Vector2 size)
         {
             Vector2 half = size * 0.5f;
@@ -90,8 +88,6 @@ namespace ColorBlockJam.Tests.EditMode
         {
             Build(Vector2Int.zero);
 
-            // A square band would reach sqrt(2) * (0.5 + gap + width) from the centre; the rounded one stays
-            // inside the block's own corner arc pushed out by gap + width.
             float rounded = (0.5f - Radius) * Mathf.Sqrt(2f) + Radius + Gap + Width;
             var centre = new Vector3(0.5f, BaseHeight, 0.5f);
             foreach (Vector3 vertex in _vertices)
@@ -101,8 +97,6 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void Build_ShouldGiveEveryVertexItsSidesOutwardNormalAndTheRimLift_WhenBuilt()
         {
-            // The shader lifts a vertex to the top rim when the camera cannot see its side; it needs the
-            // side's outward direction and how far up the rim is.
             Build(Vector2Int.zero);
 
             Assert.That(_normals.Count, Is.EqualTo(_vertices.Count));

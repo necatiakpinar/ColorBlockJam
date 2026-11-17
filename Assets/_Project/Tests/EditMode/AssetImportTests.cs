@@ -7,7 +7,6 @@ using UnityEngine.U2D;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>Guards the import rules in art-pipeline.md so a reimport or a new file cannot drift.</summary>
     public sealed class AssetImportTests
     {
         const string UiFolder = "Assets/_Project/Art/UI";
@@ -57,7 +56,6 @@ namespace ColorBlockJam.Tests.EditMode
                 string path = AssetDatabase.GetAssetPath(packable);
                 var importer = (TextureImporter)AssetImporter.GetAtPath(path);
 
-                // A compressed source is compressed twice when packed, and loses detail (art-pipeline.md §2).
                 Assert.That(importer.textureCompression, Is.EqualTo(TextureImporterCompression.Uncompressed), path);
                 Assert.That(importer.GetPlatformTextureSettings("Android").overridden, Is.False, path);
             }
@@ -81,7 +79,6 @@ namespace ColorBlockJam.Tests.EditMode
                 .GetMethod("GetPreviewTextures", BindingFlags.Static | BindingFlags.NonPublic)
                 .Invoke(null, new object[] { atlas });
 
-            // A second page splits the UI's draw calls and doubles its memory (art-pipeline.md §2).
             Assert.That(previews, Has.Length.EqualTo(1));
         }
 

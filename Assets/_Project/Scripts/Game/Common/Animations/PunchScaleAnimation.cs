@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Common.Animations
 {
-    /// <summary>A quick swell and settle back to scale 1, e.g. a counter taking a coin. Runs on unscaled time.</summary>
     public readonly struct PunchScaleAnimation : IAnimation<PunchScaleAnimation.Config>
     {
         const int Vibrato = 1;

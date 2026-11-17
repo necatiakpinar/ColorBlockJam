@@ -5,12 +5,10 @@ using ColorBlockJam.Core.Network;
 
 namespace ColorBlockJam.Tests.EditMode.Helpers
 {
-    /// <summary>Holds each probe until the test answers it with <see cref="Answer"/>.</summary>
     public sealed class FakeProbeRequest : IProbeRequest
     {
         readonly Queue<UniTaskCompletionSource<ProbeResult>> _pending = new();
 
-        /// <summary>Probes sent so far.</summary>
         public int Sent { get; private set; }
 
         public int Pending => _pending.Count;
@@ -24,7 +22,6 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
             return source.Task;
         }
 
-        /// <summary>Answers the oldest waiting probe.</summary>
         public void Answer(bool succeeded, string dateHeader = null) =>
             _pending.Dequeue().TrySetResult(new ProbeResult(succeeded, dateHeader));
     }

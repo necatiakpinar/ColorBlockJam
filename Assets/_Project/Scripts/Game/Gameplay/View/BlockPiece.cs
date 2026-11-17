@@ -2,10 +2,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Gameplay.View
 {
-    /// <summary>
-    /// One mesh piece of a block, in cell units relative to the block layer's origin. A negative scale axis
-    /// mirrors the authored piece into another corner; Unity flips the face winding to match.
-    /// </summary>
     public readonly struct BlockPiece
     {
         public readonly BlockPieceKind Kind;

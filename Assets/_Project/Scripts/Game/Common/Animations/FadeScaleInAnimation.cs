@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Common.Animations
 {
-    /// <summary>Fades a canvas group in while its target scales up to 1. Runs on unscaled time.</summary>
     public readonly struct FadeScaleInAnimation : IAnimation<FadeScaleInAnimation.Config>
     {
         public readonly struct Config

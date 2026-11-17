@@ -6,11 +6,6 @@ using ColorBlockJam.Game.Configs;
 
 namespace ColorBlockJam.Game.Boosters
 {
-    /// <summary>
-    /// How many of each booster the player owns (boosters.md). A booster missing from the save (a new player, or
-    /// a booster added later) starts at its <see cref="BoosterSettings.StartingCount"/>. Every change is saved at
-    /// once and announced with <see cref="BoosterCountChangedSignal"/>.
-    /// </summary>
     public sealed class BoosterInventory
     {
         public const string StorageKey = "boosters_v1";
@@ -48,7 +43,6 @@ namespace ColorBlockJam.Game.Boosters
 
         public int Count(BoosterType type) => Stock(type).Count;
 
-        /// <summary>Adds a positive number of one booster; zero or less is a bug and throws.</summary>
         public void Add(BoosterType type, int amount)
         {
             if (amount <= 0)
@@ -56,7 +50,6 @@ namespace ColorBlockJam.Game.Boosters
             Change(Stock(type), amount);
         }
 
-        /// <summary>Takes one booster if the player has one; false (and no change) if not.</summary>
         public bool TryUse(BoosterType type)
         {
             BoosterStock stock = Stock(type);

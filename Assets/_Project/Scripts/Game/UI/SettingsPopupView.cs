@@ -7,11 +7,6 @@ using VContainer;
 
 namespace ColorBlockJam.Game.UI
 {
-    /// <summary>
-    /// The settings popup (T-25, ui.md §6): vibration, sound and music switches showing the saved settings, a
-    /// close button, and placeholder buttons with press feedback only (R-14). Its layout is the
-    /// <c>SettingsPopup</c> base prefab; each scene uses a variant of it.
-    /// </summary>
     public class SettingsPopupView : PopupView, IDisposable
     {
         [SerializeField]
@@ -40,7 +35,6 @@ namespace ColorBlockJam.Game.UI
             }
         }
 
-        /// <summary>Shows the saved switches; call before opening.</summary>
         public void Refresh()
         {
             foreach (SettingToggleView toggle in _toggles)
@@ -56,10 +50,6 @@ namespace ColorBlockJam.Game.UI
 
         void OnCloseClicked() => CloseClicked?.Invoke();
 
-        /// <summary>
-        /// The scope disposes the popup with its scene. Unity calls <see cref="OnDestroy"/> only on objects that were
-        /// once active, and a popup never opened never was, so this is what lets go of the app-wide signal bus.
-        /// </summary>
         public void Dispose() => _signalBus.Unsubscribe<SettingChangedSignal>(OnSettingChanged);
 
         protected override void OnDestroy()

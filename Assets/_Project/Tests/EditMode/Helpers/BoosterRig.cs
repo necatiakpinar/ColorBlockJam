@@ -12,11 +12,6 @@ using Object = UnityEngine.Object;
 
 namespace ColorBlockJam.Tests.EditMode.Helpers
 {
-    /// <summary>
-    /// The booster services of one gameplay scene on a fake clock and in-memory saves: the default
-    /// <see cref="BoosterConfig"/> (one of each, freeze 10 s), a loaded inventory and wallet, the level timer, the
-    /// shop and the service. Dispose it in TearDown.
-    /// </summary>
     public sealed class BoosterRig : IDisposable
     {
         public BoosterRig(ActiveBoard board, LevelSession session, SignalBus bus)
@@ -47,7 +42,6 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
         public BoosterShop Shop { get; }
         public BoosterService Service { get; }
 
-        /// <summary>Spends every booster of <paramref name="type"/> the player owns.</summary>
         public void UseUp(BoosterType type)
         {
             while (Inventory.TryUse(type))

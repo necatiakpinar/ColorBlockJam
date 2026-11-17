@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Configs
 {
-    /// <summary>Screen space the board must leave free, as viewport fractions (HUD on top, boosters below).</summary>
     [Serializable]
     public struct FramingMargins
     {

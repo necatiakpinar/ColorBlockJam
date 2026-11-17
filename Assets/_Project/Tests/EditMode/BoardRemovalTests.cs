@@ -11,10 +11,8 @@ using static ColorBlockJam.Game.Levels.WallSide;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>Boosters taking blocks and cells off the board (boosters.md §2, DA-36).</summary>
     public sealed class BoardRemovalTests
     {
-        // A red bar of three over a blue cell and a red cell; the doors let each colour out.
         static readonly LevelData Level = new LevelDataBuilder(4, 4)
             .Block(Red, 0, 3, 1, 3, 2, 3).Block(Blue, 0, 0).Block(Red, 3, 0)
             .Door(Top, 0, 3, Red).Door(Bottom, 0, 1, Blue).Door(Right, 0, 1, Red).Build();
@@ -127,7 +125,6 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void SplitPieces_ShouldMoveAndLeaveOnTheirOwn_WhenTheBlockFellApart()
         {
-            // The bar loses its middle: each end is a block now and leaves through the top door by itself.
             _board.RemoveCell(0, new Vector2Int(1, 3));
 
             StepResult piece = _board.TryStep(3, Vector2Int.up);

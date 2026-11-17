@@ -7,7 +7,6 @@ using UnityEngine.TestTools;
 
 namespace ColorBlockJam.Tests.PlayMode
 {
-    /// <summary>End to end: the real boot reaches Home, and Home and Gameplay route to each other.</summary>
     public sealed class NavigationFlowTests
     {
         [UnityTest]
@@ -27,7 +26,6 @@ namespace ColorBlockJam.Tests.PlayMode
             SceneTestUtility.TapButton<HomeView>("LevelButton");
             yield return SceneTestUtility.WaitForScene(SceneTestUtility.GameplayScene);
 
-            // Home says "Level 7"; the HUD's level badge shows the number under its own "Level" caption.
             Assert.That("Level " + SceneTestUtility.FindInActiveScene<GameplayHudView>().LevelLabelText, Is.EqualTo(homeLabel));
         }
 

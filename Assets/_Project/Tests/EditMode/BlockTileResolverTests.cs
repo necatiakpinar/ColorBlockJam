@@ -6,7 +6,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>Which modular pieces draw a block shape (art-pipeline.md §4).</summary>
     public sealed class BlockTileResolverTests
     {
         readonly BlockTileResolver _resolver = new();
@@ -58,20 +57,17 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void Resolve_ShouldPlaceOneInnerCornerAtTheConcaveVertex_WhenTheBlockIsAnL()
         {
-            // (0,0), (1,0), (0,1): the vertex at (1, 1) has three block cells around it.
             List<BlockPiece> pieces = _resolver.Resolve(Cells(0, 0, 1, 0, 0, 1));
 
             AssertCounts(pieces, center: 0, edge: 4, outer: 5, inner: 1);
             BlockPiece inner = pieces.Single(piece => piece.Kind == BlockPieceKind.InnerCorner);
             Assert.That(inner.Position, Is.EqualTo(new Vector3(1f, 0f, 1f)));
-            // The notch faces the missing cell (1, 1), up and right of the vertex.
             Assert.That((inner.Scale.x, inner.Scale.z), Is.EqualTo((1f, 1f)));
         }
 
         [Test]
         public void Resolve_ShouldTurnTheNotchTowardTheMissingCell_WhenTheLIsMirrored()
         {
-            // (1,0), (0,1), (1,1): the missing cell (0,0) lies down and left of the vertex (1, 1).
             BlockPiece inner = _resolver.Resolve(Cells(1, 0, 0, 1, 1, 1)).Single(piece => piece.Kind == BlockPieceKind.InnerCorner);
 
             Assert.That((inner.Scale.x, inner.Scale.z), Is.EqualTo((-1f, -1f)));
@@ -80,7 +76,6 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void Resolve_ShouldTurnEdgeWallsOutward_WhenTheBlockIsAVerticalBar()
         {
-            // A vertical bar's side walls face left and right: those edges are the 90° variant.
             List<BlockPiece> edges = _resolver.Resolve(Cells(0, 0, 0, 1)).Where(piece => piece.Kind == BlockPieceKind.Edge).ToList();
 
             Assert.That(edges.Count, Is.EqualTo(4));
@@ -90,8 +85,6 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void Resolve_ShouldCoverEveryQuarterOnce_WhenTheShapeIsComplex()
         {
-            // A T with an inner corner on each side of the stem: 4 cells × 4 quarters = 16, and each inner
-            // corner piece replaces three quarters.
             List<BlockPiece> pieces = _resolver.Resolve(Cells(0, 1, 1, 1, 2, 1, 1, 0));
             int quarters = pieces.Sum(piece => piece.Kind == BlockPieceKind.InnerCorner ? 3 : 1);
 

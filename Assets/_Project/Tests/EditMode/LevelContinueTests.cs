@@ -13,7 +13,6 @@ using static ColorBlockJam.Game.Levels.WallSide;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>Buying more time after the timer ran out (DA-30): wallet, session and timer together.</summary>
     public sealed class LevelContinueTests
     {
         const int TimerSeconds = 12;
@@ -37,7 +36,6 @@ namespace ColorBlockJam.Tests.EditMode
             _session = new LevelSession(new ActiveBoard(new BoardSpace(1f), _bus), levels, _bus);
             _wallet = new WalletService(new InMemoryKeyValueStorage(), new RecordingLogger(), _bus);
             _wallet.Load();
-            // Defaults: 20 more seconds for 50 coins.
             _config = ScriptableObject.CreateInstance<GameplayConfig>();
             _clock = new FakeGameClock();
             _timer = new LevelTimer(_session, _clock, _bus);

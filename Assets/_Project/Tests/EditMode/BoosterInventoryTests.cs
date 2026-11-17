@@ -9,7 +9,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>The saved booster stock and the coin shop (boosters.md §1, DA-36).</summary>
     public sealed class BoosterInventoryTests
     {
         InMemoryKeyValueStorage _storage;

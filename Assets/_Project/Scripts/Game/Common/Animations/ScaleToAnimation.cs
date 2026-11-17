@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Common.Animations
 {
-    /// <summary>Scales a transform uniformly from its current scale to a target. Runs on unscaled time.</summary>
     public readonly struct ScaleToAnimation : IAnimation<ScaleToAnimation.Config>
     {
         public readonly struct Config

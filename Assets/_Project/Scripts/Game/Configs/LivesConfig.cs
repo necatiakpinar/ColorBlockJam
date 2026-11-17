@@ -2,7 +2,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Configs
 {
-    /// <summary>The lives system's tunables (lives.md, DA-38).</summary>
     [CreateAssetMenu(menuName = "ColorBlockJam/Configs/Lives Config", fileName = "LivesConfig")]
     public sealed class LivesConfig : ScriptableObject
     {

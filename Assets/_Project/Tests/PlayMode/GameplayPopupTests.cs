@@ -10,7 +10,6 @@ using VContainer;
 
 namespace ColorBlockJam.Tests.PlayMode
 {
-    /// <summary>The authored popups open, route and close in the real Gameplay scene (ui.md §3, gameplay.md §7).</summary>
     public sealed class GameplayPopupTests
     {
         LevelSession _session;

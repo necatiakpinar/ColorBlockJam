@@ -5,17 +5,11 @@ using UnityEngine.UI;
 
 namespace ColorBlockJam.Game.Gameplay.Animations
 {
-    /// <summary>
-    /// A burst of sparkles out of a point (T-51): every sparkle flies out along its own direction, swells and
-    /// fades, while a soft glow behind them grows and fades. UI images, so it shows on the overlay HUD canvas,
-    /// where particle systems cannot draw. Runs on unscaled time.
-    /// </summary>
     public readonly struct SparkleBurstAnimation : IAnimation<SparkleBurstAnimation.Config>
     {
         const float GlowFromScale = 0.3f;
         const float GlowToScale = 1.4f;
         const float PeakScale = 1f;
-        // A share of the burst spent growing; the rest shrinking.
         const float GrowShare = 0.35f;
 
         public readonly struct Config
@@ -43,7 +37,6 @@ namespace ColorBlockJam.Game.Gameplay.Animations
             {
                 Image sparkle = config.Sparkles[i];
                 RectTransform rect = sparkle.rectTransform;
-                // Every other sparkle flies a little shorter, so the ring does not look stamped.
                 float angle = 360f * i / count * Mathf.Deg2Rad;
                 float reach = config.Distance * (i % 2 == 0 ? 1f : 0.7f);
                 rect.anchoredPosition = Vector2.zero;

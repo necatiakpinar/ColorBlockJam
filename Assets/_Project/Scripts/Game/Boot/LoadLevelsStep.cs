@@ -5,7 +5,6 @@ using ColorBlockJam.Game.Levels.Packs;
 
 namespace ColorBlockJam.Game.Boot
 {
-    /// <summary>Picks this launch's level pack, a stored remote one or the bundled one, before Home shows a level (level-packs.md).</summary>
     public sealed class LoadLevelsStep : IBootStep
     {
         readonly LevelPackService _levels;

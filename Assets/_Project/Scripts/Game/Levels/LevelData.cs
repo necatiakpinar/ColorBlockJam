@@ -4,11 +4,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Levels
 {
-    /// <summary>
-    /// One level in the single format the editor writes and the game reads (DA-13). Plain data in cell
-    /// coordinates: cell (0, 0) is bottom-left. Rules live in the board model, checks in
-    /// <see cref="LevelDefinitionValidator"/>.
-    /// </summary>
     [Serializable]
     public sealed class LevelData
     {
@@ -31,7 +26,6 @@ namespace ColorBlockJam.Game.Levels
         [SerializeField]
         List<DoorData> _doors;
 
-        // Unity calls this when it creates the object for an asset that has no data yet.
         LevelData()
         {
             _blocks = new List<BlockData>();
@@ -56,7 +50,6 @@ namespace ColorBlockJam.Game.Levels
         public IReadOnlyList<BlockData> Blocks => _blocks;
         public IReadOnlyList<DoorData> Doors => _doors;
 
-        /// <summary>Number of board cells along a wall: the width for Bottom/Top, the height for Left/Right.</summary>
         public int WallLength(WallSide side) => side is WallSide.Bottom or WallSide.Top ? _width : _height;
     }
 }

@@ -9,10 +9,6 @@ using VContainer;
 
 namespace ColorBlockJam.Game.Gameplay.Hud
 {
-    /// <summary>
-    /// The HUD's booster bar (T-36, ui.md §5): shows each booster's stock and reports taps. While one waits for a
-    /// target it grows and the others fade; the freeze fades while it is running.
-    /// </summary>
     public sealed class BoosterBarView : MonoBehaviour
     {
         [SerializeField]

@@ -15,7 +15,6 @@ using static ColorBlockJam.Game.Levels.WallSide;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>Using boosters during a level: the freeze, and the targeted rocket, hammer and vacuum (boosters.md §2).</summary>
     public sealed class BoosterServiceTests
     {
         const int TimerSeconds = 30;
@@ -33,7 +32,6 @@ namespace ColorBlockJam.Tests.EditMode
             _catalogs = new TestCatalog();
             _bus = new SignalBus();
             _board = new ActiveBoard(new BoardSpace(1f), _bus);
-            // Two red blocks and a blue one; nothing can leave without a move, so only boosters clear it here.
             var levels = new LevelProvider(_catalogs.Create(new LevelDataBuilder(4, 4).Timer(TimerSeconds)
                 .Block(Red, 0, 0, 1, 0).Block(Blue, 3, 3).Block(Red, 3, 0)
                 .Door(Left, 3, 1, Red).Door(Top, 0, 1, Blue).Build()));

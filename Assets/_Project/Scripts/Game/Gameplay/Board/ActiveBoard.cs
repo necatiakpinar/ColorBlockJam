@@ -8,14 +8,8 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Gameplay.Board
 {
-    /// <summary>
-    /// Owns the board of the current attempt and announces what happens to it. Every load builds a new
-    /// <see cref="BoardState"/>; every step goes through here so moves, exits and the clear are announced
-    /// in one place, whoever asked for the step.
-    /// </summary>
     public sealed class ActiveBoard
     {
-        // Shows each one-cell step in the Profiler (performance.md).
         static readonly ProfilerMarker MoveMarker = new("ColorBlockJam.Move");
 
         readonly BoardSpace _boardSpace;
@@ -36,7 +30,6 @@ namespace ColorBlockJam.Game.Gameplay.Board
             _signalBus.Fire(new BoardLoadedSignal(level));
         }
 
-        /// <summary>Removes a whole block (hammer) and announces it; the last one clears the board.</summary>
         public void RemoveBlock(int blockId)
         {
             Current.RemoveBlock(blockId);
@@ -45,18 +38,12 @@ namespace ColorBlockJam.Game.Gameplay.Board
             AnnounceIfCleared();
         }
 
-        /// <summary>Breaks a frozen block's ice at once (the hammer, DA-37) and announces it.</summary>
         public void Thaw(int blockId)
         {
             Current.Thaw(blockId);
             _signalBus.Fire(new BlockThawedSignal(blockId));
         }
 
-        /// <summary>
-        /// Removes one cell of a block (rocket) and announces <see cref="BlockCellRemovedSignal"/>, then a
-        /// <see cref="BlockSplitOffSignal"/> for each piece that became a block of its own; or
-        /// <see cref="BlockRemovedSignal"/> when it was the block's last cell.
-        /// </summary>
         public void RemoveCell(int blockId, Vector2Int cell)
         {
             if (Current.RemoveCell(blockId, cell))
@@ -75,8 +62,6 @@ namespace ColorBlockJam.Game.Gameplay.Board
             AnnounceIfCleared();
         }
 
-        /// <summary>Removes every block of <paramref name="color"/> on the board (vacuum), in id order.</summary>
-        /// <returns>How many blocks went.</returns>
         public int RemoveColor(BlockColor color)
         {
             int removed = 0;
@@ -95,10 +80,6 @@ namespace ColorBlockJam.Game.Gameplay.Board
             return removed;
         }
 
-        /// <summary>
-        /// After a block left: <see cref="IceCountedDownSignal"/> when frozen blocks counted it, then
-        /// <see cref="BlockThawedSignal"/> for each block it thawed.
-        /// </summary>
         void AnnounceThaws()
         {
             if (!HasIce())
@@ -109,7 +90,6 @@ namespace ColorBlockJam.Game.Gameplay.Board
                 _signalBus.Fire(new BlockThawedSignal(thawed[i]));
         }
 
-        /// <summary>True when some block on the board is frozen or was just thawed.</summary>
         bool HasIce()
         {
             if (Current.JustThawed.Count > 0)
@@ -126,11 +106,6 @@ namespace ColorBlockJam.Game.Gameplay.Board
                 _signalBus.Fire(new BoardClearedSignal());
         }
 
-        /// <summary>
-        /// Pushes a block one cell (<see cref="BoardState.TryStep"/>) and announces the outcome:
-        /// <see cref="BlockMovedSignal"/>, or <see cref="BlockExitedSignal"/> followed by
-        /// <see cref="BoardClearedSignal"/> when it was the last block.
-        /// </summary>
         public StepResult TryStep(int blockId, Vector2Int direction)
         {
             using ProfilerMarker.AutoScope scope = MoveMarker.Auto();

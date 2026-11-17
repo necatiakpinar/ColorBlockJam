@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Boosters
 {
-    /// <summary>The saved booster stock: one entry per booster the player has ever had (persistence.md).</summary>
     [Serializable]
     public sealed class BoosterInventoryData
     {
@@ -14,7 +13,6 @@ namespace ColorBlockJam.Game.Boosters
         public List<BoosterStock> Stocks => _stocks;
     }
 
-    /// <summary>How many of one booster the player owns.</summary>
     [Serializable]
     public sealed class BoosterStock
     {

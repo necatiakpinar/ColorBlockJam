@@ -15,7 +15,6 @@ using Is = UnityEngine.TestTools.Constraints.Is;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>The finger slides blocks like solid objects: freely through space, never through blocks (DA-4).</summary>
     public sealed class BlockDragControllerTests
     {
         SignalBus _bus;
@@ -34,7 +33,6 @@ namespace ColorBlockJam.Tests.EditMode
             _bus = new SignalBus();
             _space = new BoardSpace(1f);
             _board = new ActiveBoard(_space, _bus);
-            // No lean, so drawn positions equal the colliding position; the lean has its own test.
             _config = CreateConfig(holdGive: 0f);
             _controller = new BlockDragController(_board, _space, _config, _bus);
             _drags.Clear();
@@ -63,7 +61,6 @@ namespace ColorBlockJam.Tests.EditMode
             return config;
         }
 
-        /// <summary>A finger at (x, y) in cells, where whole numbers are cell centres.</summary>
         void Finger(BoardPointerPhase phase, float x, float y)
         {
             Vector3 world = _space.CellToWorld(Vector2Int.zero) + new Vector3(x, 0f, y) * _space.CellSize;
@@ -145,7 +142,6 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void Drag_ShouldTurnTheCorner_WhenTheMainAxisIsBlockedAndTheFingerAlsoMovedTheOtherWay()
         {
-            // Red is stopped by blue to its right; the finger also went up, so red takes the free cells above.
             _board.Load(new LevelDataBuilder(5, 5).Block(Red, 0, 0).Block(Blue, 1, 0).Build());
 
             Finger(BoardPointerPhase.Pressed, 0, 0);
@@ -174,14 +170,12 @@ namespace ColorBlockJam.Tests.EditMode
             Finger(BoardPointerPhase.Pressed, 0, 0);
             Finger(BoardPointerPhase.Dragged, 1.5f, 0.6f);
 
-            // Blue and green wall off the right side; the block keeps the finger's upward part.
             AssertVector(LastDrag, 0f, 0.6f);
         }
 
         [Test]
         public void Drag_ShouldEaseIntoAOneCellGap_WhenPushedThroughItSlightlyOffTheCellLine()
         {
-            // Purple and red leave a one-cell gap above orange; the finger drifted 0.2 to the right first.
             _board.Load(new LevelDataBuilder(5, 5).Block(Purple, 0, 2).Block(Red, 2, 2).Block(Orange, 1, 0).Build());
             Finger(BoardPointerPhase.Pressed, 1, 0);
             Finger(BoardPointerPhase.Dragged, 1.2f, 0);
@@ -195,8 +189,6 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void Drag_ShouldNotJitter_WhenPushedSlowlyIntoAOneCellGapSlightlyOffTheCellLine()
         {
-            // Same gap as above, but the finger creeps up in tiny steps: the slip toward the gap must hold
-            // from one event to the next instead of being pulled back toward the finger every time.
             _board.Load(new LevelDataBuilder(5, 5).Block(Purple, 0, 2).Block(Red, 2, 2).Block(Orange, 1, 0).Build());
             Finger(BoardPointerPhase.Pressed, 1, 0);
             Finger(BoardPointerPhase.Dragged, 1.2f, 0);
@@ -213,11 +205,6 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(LastDrag.y, NUnit.Framework.Is.GreaterThan(1f), "It went into the gap.");
         }
 
-        /// <summary>
-        /// Purple (2,1)-(2,2) in the middle of a board with a one-cell gap above it at column 2 (between yellow
-        /// and orange) and a corridor at column 3 (between purple's column and blue); red blocks row 1 of
-        /// column 3, so purple can turn right only from one row up.
-        /// </summary>
         void LoadCorridorBoard() => _board.Load(new LevelDataBuilder(5, 6)
             .Block(Yellow, 0, 4, 1, 4, 0, 5, 1, 5)
             .Block(Purple, 2, 1, 2, 2)
@@ -230,8 +217,6 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void Drag_ShouldTurnIntoASideCorridor_WhenItSlippedTowardAnotherGapFirst()
         {
-            // Pushed up with the finger 0.2 to the right, purple slips toward the gap above; the finger then
-            // comes back down and goes right. Nothing from the first slip may keep it out of the corridor.
             LoadCorridorBoard();
             Finger(BoardPointerPhase.Pressed, 2, 1.5f);
             for (float y = 1.5f; y <= 2.7f; y += 0.1f)
@@ -247,8 +232,6 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void Drag_ShouldEnterTheGap_WhenTheFingerWobblesSidewaysAtItsMouth()
         {
-            // A finger is never perfectly still: tiny sideways wobbles at the mouth of the gap must not lock
-            // the block out of it.
             LoadCorridorBoard();
             Finger(BoardPointerPhase.Pressed, 2, 1.5f);
             float[] wobble = { 0.01f, -0.01f, 0.005f, -0.008f };
@@ -275,7 +258,6 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void Drag_ShouldNotSqueezeBetweenRows_WhenOnlyOneOfTheTwoRowsItSpansIsFree()
         {
-            // Half a cell up, the block spans rows 0 and 1; blue blocks row 0 to the right.
             _board.Load(new LevelDataBuilder(5, 5).Block(Red, 0, 0).Block(Blue, 1, 0).Build());
             Finger(BoardPointerPhase.Pressed, 0, 0);
             Finger(BoardPointerPhase.Dragged, 0, 0.4f);
@@ -325,8 +307,6 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void Drag_ShouldStayWithTheFinger_WhenItSlippedIntoAGapAndCameOutAgain()
         {
-            // After the slip the block passes the gap; above it the finger's 0.2 to the right applies again,
-            // so the block has not drifted away from the finger.
             _board.Load(new LevelDataBuilder(5, 5).Block(Purple, 0, 2).Block(Red, 2, 2).Block(Orange, 1, 0).Build());
             Finger(BoardPointerPhase.Pressed, 1, 0);
             Finger(BoardPointerPhase.Dragged, 1.2f, 0);
@@ -340,7 +320,6 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void Grab_ShouldPickTheNearestBlock_WhenThePressMissesItByLittle()
         {
-            // Red covers x 0..1 (finger 0 is its centre): 0.75 is 0.25 cell past its edge, within 0.35.
             _board.Load(new LevelDataBuilder(5, 5).Block(Red, 0, 0).Block(Blue, 3, 3).Build());
             var grabbed = new List<BlockGrabbedSignal>();
             _bus.Subscribe<BlockGrabbedSignal>(grabbed.Add);
@@ -379,7 +358,6 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void Win_ShouldForgetTheExitedBlockWithoutDroppingIt_WhenTheLastExitCompletesTheLevel()
         {
-            // The level completes from inside the last exit's step, while the drag still holds the block.
             _board.Load(new LevelDataBuilder(4, 4).Block(Red, 0, 1).Door(Left, 1, 1, Red).Build());
             _bus.Subscribe<BoardClearedSignal>(_ => _bus.Fire(new LevelCompletedSignal(1)));
             Finger(BoardPointerPhase.Pressed, 0, 1);
@@ -449,7 +427,6 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void Drag_ShouldExit_WhenTheBlockIsPushedJustIntoItsDoor()
         {
-            // Red sits next to the left wall; its door is there. A push of ExitPush (0.15) is enough.
             _board.Load(new LevelDataBuilder(4, 4).Block(Red, 0, 1).Block(Blue, 3, 3).Door(Left, 1, 1, Red).Build());
             Finger(BoardPointerPhase.Pressed, 0, 1);
 
@@ -516,7 +493,6 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void Drag_ShouldNotAllocate_WhenAFingerMovesABlockBackAndForth()
         {
-            // A separate bus with no listeners: only the controller and board are measured.
             var bus = new SignalBus();
             var space = new BoardSpace(1f);
             var board = new ActiveBoard(space, bus);

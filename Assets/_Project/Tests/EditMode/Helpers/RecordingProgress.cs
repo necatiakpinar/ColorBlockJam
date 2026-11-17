@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace ColorBlockJam.Tests.EditMode.Helpers
 {
-    /// <summary>Synchronous IProgress (System.Progress posts to a SynchronizationContext).</summary>
     public sealed class RecordingProgress : IProgress<float>
     {
         public List<float> Reports { get; } = new();

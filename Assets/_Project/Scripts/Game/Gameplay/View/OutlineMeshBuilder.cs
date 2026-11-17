@@ -3,14 +3,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Gameplay.View
 {
-    /// <summary>
-    /// Builds the selection outline of a block: one closed band that hugs the block's footprint, a small gap
-    /// outside it, with corners rounded like the block's own (convex corners on a wider arc, notches on a
-    /// tighter one), so it traces any polyomino. Coordinates are cells, relative to <c>origin</c>.
-    /// The band is built at <see cref="OutlineSettings.BaseHeight"/>; each vertex carries its outward normal
-    /// and, in uv0.x, how far up the top rim is. The outline shader lifts every vertex whose side the camera
-    /// cannot see up to that rim, so the band traces the block's on-screen silhouette from any angle.
-    /// </summary>
     public sealed class OutlineMeshBuilder
     {
         readonly HashSet<Vector2Int> _own = new();
@@ -41,7 +33,6 @@ namespace ColorBlockJam.Game.Gameplay.View
             }
         }
 
-        /// <summary>Every cell edge that borders a cell outside the block, directed with the block on its left.</summary>
         void CollectBoundary(IReadOnlyList<Vector2Int> cells)
         {
             _own.Clear();
@@ -75,10 +66,6 @@ namespace ColorBlockJam.Game.Gameplay.View
             ends.Add(to);
         }
 
-        /// <summary>
-        /// Walks one boundary loop from the given edge and keeps only the points where it turns. Where two
-        /// loops touch at a single point it turns left, so each loop stays around its own cells.
-        /// </summary>
         void TraceCorners(Vector2Int from, Vector2Int to)
         {
             _corners.Clear();
@@ -109,10 +96,6 @@ namespace ColorBlockJam.Game.Gameplay.View
             return ends[0];
         }
 
-        /// <summary>
-        /// The band's centre line: the corners pushed out by the gap plus half the band, each one replaced by
-        /// a quarter arc. Convex corners take the block's radius plus that offset, notches the radius minus it.
-        /// </summary>
         void BuildPath(in OutlineSettings settings)
         {
             _path.Clear();
@@ -125,7 +108,6 @@ namespace ColorBlockJam.Game.Gameplay.View
                 Vector2 next = _corners[(i + 1) % count];
                 Vector2 a = (corner - previous).normalized;
                 Vector2 b = (next - corner).normalized;
-                // The block is on the left of the walk, so outward is the right-hand normal.
                 Vector2 shifted = corner + (RightOf(a) + RightOf(b)) * offset;
                 bool convex = a.x * b.y - a.y * b.x > 0f;
                 float radius = Mathf.Max(0f, convex ? settings.CornerRadius + offset : settings.CornerRadius - offset);
@@ -162,7 +144,6 @@ namespace ColorBlockJam.Game.Gameplay.View
                 lifts.Add(lift);
             }
 
-            // The outline shader draws both faces, so the winding does not matter.
             for (int i = 0; i < count; i++)
             {
                 int a = first + i * 2;

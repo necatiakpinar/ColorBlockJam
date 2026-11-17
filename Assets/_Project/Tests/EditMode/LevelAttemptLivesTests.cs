@@ -14,7 +14,6 @@ using static ColorBlockJam.Game.Levels.WallSide;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>What an attempt costs in lives, and playing again without any (lives.md, DA-38).</summary>
     public sealed class LevelAttemptLivesTests
     {
         TestViews _views;

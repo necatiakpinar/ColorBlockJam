@@ -11,13 +11,6 @@ using VContainer;
 
 namespace ColorBlockJam.Game.Gameplay.View
 {
-    /// <summary>
-    /// Builds the static board for each attempt: floor tiles over a base (the gaps read as grid lines), the
-    /// wall ring, coloured doors with an arrow in the middle pointing out, and rounded corners. Parts sit under a root at <see cref="BoardSpace.Origin"/>
-    /// scaled by the cell size, so positions here are in cells. The wall and door meshes are straight
-    /// extrusions, so each stretch of wall between doors (or corners) is one segment stretched along it and
-    /// each door one segment stretched over its cells: the ring reads as continuous bars on any board size.
-    /// </summary>
     public sealed class BoardView : MonoBehaviour
     {
         [SerializeField]
@@ -31,12 +24,9 @@ namespace ColorBlockJam.Game.Gameplay.View
         ActiveBoard _board;
         SignalBus _signalBus;
         ColorMaterialCache _doorMaterials;
-        // Length of the wall mesh along its run, in cells (art-pipeline.md §4).
         const float WallSegmentLength = 0.5f;
 
         readonly List<(PartPool Pool, GameObject Part)> _built = new();
-        // The door segment covering each wall cell (every cell of a door maps to its one segment), and the
-        // gate tween each segment is playing.
         readonly Dictionary<(WallSide Side, int Index), Transform> _doorSegments = new();
         readonly Dictionary<Transform, Sequence> _gates = new();
         LevelData _level;
@@ -60,10 +50,8 @@ namespace ColorBlockJam.Game.Gameplay.View
             _signalBus.Subscribe<BlockExitedSignal>(OnBlockExited);
         }
 
-        /// <summary>Parts currently making up the board.</summary>
         internal int BuiltPartCount => _built.Count;
 
-        /// <summary>The door segment on <paramref name="side"/> at <paramref name="index"/> cells along it.</summary>
         internal Transform DoorSegmentAt(WallSide side, int index) => _doorSegments[(side, index)];
 
         void OnBoardLoaded(BoardLoadedSignal signal)
@@ -90,7 +78,6 @@ namespace ColorBlockJam.Game.Gameplay.View
                     Place(_tiles, new Vector3(x + 0.5f, 0f, y + 0.5f), 0f, Vector3.one);
         }
 
-        /// <summary>One wall segment per stretch between doors, one door segment per door.</summary>
         void BuildWall(LevelData level, WallSide side)
         {
             int length = level.WallLength(side);
@@ -114,12 +101,10 @@ namespace ColorBlockJam.Game.Gameplay.View
             PlaceWallRun(level, side, runStart, length);
         }
 
-        /// <summary>The wall from cell <paramref name="from"/> up to (not including) <paramref name="to"/>.</summary>
         void PlaceWallRun(LevelData level, WallSide side, int from, int to)
         {
             if (to <= from)
                 return;
-            // The wall mesh runs along its local z, WallSegmentLength cells long; along x walls turn a quarter.
             float yaw = side is WallSide.Bottom or WallSide.Top ? 90f : 0f;
             var stretch = new Vector3(1f, 1f, (to - from) / WallSegmentLength);
             Place(_walls, WallPoint(level, side, (from + to) * 0.5f), yaw, stretch);
@@ -127,7 +112,6 @@ namespace ColorBlockJam.Game.Gameplay.View
 
         void PlaceDoor(LevelData level, WallSide side, DoorData door)
         {
-            // The door mesh runs along its local x, one cell long.
             var stretch = new Vector3(door.Length, 1f, 1f);
             GameObject part = Place(_doors, WallPoint(level, side, door.Start + door.Length * 0.5f), DoorYaw(side), stretch);
             part.GetComponentInChildren<MeshRenderer>().sharedMaterial = _doorMaterials.Get(door.Color);
@@ -136,10 +120,6 @@ namespace ColorBlockJam.Game.Gameplay.View
             PlaceArrow(part.transform, door.Length);
         }
 
-        /// <summary>
-        /// One arrow on top of the door, in its middle however wide it is (DA-24). It hangs under the door so it
-        /// sinks with it, undoing the door's stretch; the door's local -z points out of the board on every side.
-        /// </summary>
         void PlaceArrow(Transform door, int doorLength)
         {
             GameObject arrow = _arrows.Get(door);
@@ -151,7 +131,6 @@ namespace ColorBlockJam.Game.Gameplay.View
 
         void BuildCorners(int width, int height)
         {
-            // The corner mesh rounds toward +x +z; each board corner turns it outward.
             float half = _config.WallThickness * 0.5f;
             Place(_corners, new Vector3(width + half, 0f, height + half), 0f, Vector3.one);
             Place(_corners, new Vector3(width + half, 0f, -half), 90f, Vector3.one);
@@ -159,7 +138,6 @@ namespace ColorBlockJam.Game.Gameplay.View
             Place(_corners, new Vector3(-half, 0f, height + half), 270f, Vector3.one);
         }
 
-        /// <summary>A point on the centre line of a wall, <paramref name="along"/> cells from its start.</summary>
         Vector3 WallPoint(LevelData level, WallSide side, float along)
         {
             float half = _config.WallThickness * 0.5f;
@@ -172,7 +150,6 @@ namespace ColorBlockJam.Game.Gameplay.View
             };
         }
 
-        /// <summary>The door mesh runs along x; side walls turn it a quarter, the top wall faces it inward.</summary>
         float DoorYaw(WallSide side) => side switch
         {
             WallSide.Bottom => 0f,
@@ -199,17 +176,11 @@ namespace ColorBlockJam.Game.Gameplay.View
             return part;
         }
 
-        /// <summary>
-        /// Opens the door a block leaves through, the whole door however wide the block: it sinks into the
-        /// floor while the block settles, stays down while it slides through, then rises back.
-        /// </summary>
         void OnBlockExited(BlockExitedSignal signal)
         {
-            // The board's cells, not the level's: a rocket may have blasted some away (DA-36).
             var path = new ExitPath(_board.Current.Blocks[signal.BlockId].StartCells, signal.Offset, signal.Direction,
                 _boardSpace.Size);
             float hold = (path.Length + _config.ExitCutOffset + _config.ExitClearance) / _config.ExitSpeed;
-            // A block leaves only through a door that spans it, so its first cell names that door.
             Transform door = _doorSegments[(path.Side, path.CrossMin)];
             if (_gates.TryGetValue(door, out Sequence running))
                 running.Kill();

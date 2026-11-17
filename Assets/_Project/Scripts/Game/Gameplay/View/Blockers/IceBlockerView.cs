@@ -3,10 +3,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Gameplay.View.Blockers
 {
-    /// <summary>
-    /// The ice blocker on screen (IceBlocker.prefab, blockers.md): the count of exits the frozen block still waits
-    /// for, lying on top of it. The block's ice material is set by <see cref="BlockLayerView"/>. Pooled.
-    /// </summary>
     public sealed class IceBlockerView : MonoBehaviour
     {
         [SerializeField]

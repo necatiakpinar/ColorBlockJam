@@ -8,10 +8,6 @@ using VContainer;
 
 namespace ColorBlockJam.Game.Gameplay.Hud
 {
-    /// <summary>
-    /// The freeze booster on screen (DA-36): an ice frame around the screen and a meter under the timer that empties
-    /// as the freeze runs out, standing still while the level is paused.
-    /// </summary>
     public sealed class FreezeView : MonoBehaviour
     {
         [SerializeField]

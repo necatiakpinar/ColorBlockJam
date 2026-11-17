@@ -4,7 +4,6 @@ using VContainer.Unity;
 
 namespace ColorBlockJam.Game.Installers
 {
-    /// <summary>Home-scene services.</summary>
     public sealed class HomeInstaller : IInstaller
     {
         public void Install(IContainerBuilder builder)

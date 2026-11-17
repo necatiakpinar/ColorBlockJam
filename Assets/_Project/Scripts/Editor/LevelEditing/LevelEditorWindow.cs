@@ -13,12 +13,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Editor.LevelEditing
 {
-    /// <summary>
-    /// The level editor (T-26 – T-31, T-33, T-47; level-editor.md): the catalog on the left, the level drawn
-    /// top-down in the middle, tools, properties, checks, the solution and the generator on the right. Every
-    /// tool has a shortcut (DA-34). It edits a <see cref="LevelDraft"/> and writes it to the level's asset on
-    /// save; the rules come from the game's validator and solver, never a copy.
-    /// </summary>
     public sealed class LevelEditorWindow : EditorWindow
     {
         const string CatalogPath = "Assets/_Project/Levels/LevelCatalog.asset";
@@ -28,12 +22,9 @@ namespace ColorBlockJam.Editor.LevelEditing
         const string RewardsPath = "Assets/_Project/Configs/LevelRewardConfig.asset";
         const float ListWidth = 210f;
         const float InspectorWidth = 320f;
-        // The generator's own search cap: candidates past it are dropped, not waited on.
         const int GeneratorStateCap = 2000;
-        // Make harder: its search cap per proposal, and rounds of 16 proposals per press.
         const int HardenerStateCap = 5000;
         const int HardenerRounds = 25;
-        // How long the edits must pause before the solver starts; a drag or a slider never waits for it.
         const int SolveSettleMilliseconds = 250;
         static readonly Color IceTint = new(0.85f, 0.95f, 1f);
 
@@ -61,7 +52,6 @@ namespace ColorBlockJam.Editor.LevelEditing
         int _level = -1;
         Tool _tool = Tool.Select;
         int _color;
-        // -1 is free painting; 0 and up are the preset shapes.
         int _shape = -1;
         int _stampTurns;
         int _selectedBlock = -1;
@@ -70,7 +60,6 @@ namespace ColorBlockJam.Editor.LevelEditing
         Vector2 _listScroll;
         Vector2 _inspectorScroll;
 
-        // Mouse gestures in progress.
         readonly List<Vector2Int> _stroke = new();
         bool _dragging;
         Vector2Int _dragFrom;
@@ -80,7 +69,6 @@ namespace ColorBlockJam.Editor.LevelEditing
 
         int _previewStep;
 
-        // Worked out once per change, not on every GUI event.
         bool _isDirty;
         readonly List<string> _blockLabels = new();
         string[] _levelLabels = Array.Empty<string>();
@@ -92,7 +80,6 @@ namespace ColorBlockJam.Editor.LevelEditing
         bool _generating;
         CancellationTokenSource _generation;
 
-        // Generator settings.
         int _genWidth = 6;
         int _genHeight = 7;
         int _genColors = 4;
@@ -104,12 +91,10 @@ namespace ColorBlockJam.Editor.LevelEditing
         [MenuItem("ColorBlockJam/Level Editor %#l")]
         static void Open() => GetWindow<LevelEditorWindow>("Level Editor").Show();
 
-        /// <summary>Rewrites levels.json from the catalog; every catalog change does this already (level-packs.md).</summary>
         [MenuItem("ColorBlockJam/Write Level Pack (levels.json)")]
         static void WritePack() =>
             new LevelCatalogEditing(AssetDatabase.LoadAssetAtPath<LevelCatalog>(CatalogPath), LevelsFolder).WritePack();
 
-        /// <summary>Puts levels.json, compact, on the clipboard, ready to paste as the remote config value (level-packs.md §4).</summary>
         [MenuItem("ColorBlockJam/Copy Level Pack for Remote Config")]
         static void CopyPackForRemote()
         {
@@ -171,10 +156,6 @@ namespace ColorBlockJam.Editor.LevelEditing
             Repaint();
         }
 
-        /// <summary>
-        /// Everything that depends on the draft, worked out once per change: the checks (solved in the background),
-        /// the unsaved mark and the block labels.
-        /// </summary>
         void OnDraftChanged()
         {
             if (_level < 0)
@@ -206,8 +187,6 @@ namespace ColorBlockJam.Editor.LevelEditing
         }
 
         SolveResult Solution => _checker.Solution;
-
-        // ---------------------------------------------------------------- layout
 
         void OnGUI()
         {
@@ -283,8 +262,6 @@ namespace ColorBlockJam.Editor.LevelEditing
             GUILayout.EndArea();
         }
 
-        // ---------------------------------------------------------------- canvas
-
         void DrawCanvas(Rect area)
         {
             if (_level < 0)
@@ -342,7 +319,6 @@ namespace ColorBlockJam.Editor.LevelEditing
             switch (e.type)
             {
                 case EventType.MouseMove:
-                    // Redraw only when the hover reaches another cell or wall cell, not on every pixel.
                     int hover = onWall ? -1 - (int)side - index : onCell ? 1 + cell.x * 1000 + cell.y : 0;
                     if (hover != _hoverKey)
                     {
@@ -484,7 +460,6 @@ namespace ColorBlockJam.Editor.LevelEditing
                         i == moving, BlockLabel(i));
         }
 
-        /// <summary>A frozen block is drawn paler, like ice over its colour.</summary>
         Color BlockTint(DraftBlock block) =>
             block.Blockers.Ice.IsActive ? Color.Lerp(_canvas.ColorOf(block.Color), IceTint, 0.6f) : _canvas.ColorOf(block.Color);
 
@@ -500,8 +475,6 @@ namespace ColorBlockJam.Editor.LevelEditing
                 label += " ↕";
             return blockers.Ice.IsActive ? $"{label} · ice {blockers.Ice.Exits}" : label;
         }
-
-        // ---------------------------------------------------------------- inspector
 
         void DrawInspector(Rect area)
         {
@@ -691,8 +664,6 @@ namespace ColorBlockJam.Editor.LevelEditing
                 EditorGUILayout.HelpBox(_genMessage, MessageType.None);
         }
 
-        // ---------------------------------------------------------------- actions
-
         void HandleShortcuts(Event e)
         {
             if (e.type != EventType.KeyDown || _level < 0 && e.keyCode != KeyCode.N)
@@ -759,9 +730,6 @@ namespace ColorBlockJam.Editor.LevelEditing
                 _stampTurns = (_stampTurns + 1) % 4;
         }
 
-        /// <summary>
-        /// The selected block's blockers (blockers.md), one row per kind; a new blocker kind adds its row here.
-        /// </summary>
         void DrawBlockers(DraftBlock block)
         {
             EditorGUILayout.Space(4f);
@@ -779,7 +747,6 @@ namespace ColorBlockJam.Editor.LevelEditing
             EditorGUI.indentLevel--;
         }
 
-        /// <summary>More or less ice on the selected block, never below 0 or above the other blocks' count.</summary>
         void AddIce(int delta)
         {
             if (_selectedBlock < 0)
@@ -790,7 +757,6 @@ namespace ColorBlockJam.Editor.LevelEditing
                 Change("Set ice", () => block.Blockers.Ice.Exits = ice);
         }
 
-        /// <summary>The selected block's arrow goes None → Horizontal → Vertical → None.</summary>
         void CycleArrow()
         {
             if (_selectedBlock < 0)
@@ -851,7 +817,6 @@ namespace ColorBlockJam.Editor.LevelEditing
             ClampSelection();
         }
 
-        /// <summary>Records undo, then applies the change.</summary>
         void Change(string name, Action change)
         {
             Undo.RecordObject(_state, name);
@@ -860,7 +825,6 @@ namespace ColorBlockJam.Editor.LevelEditing
             Repaint();
         }
 
-        /// <summary>Records undo and applies the change; a refused change leaves nothing to undo.</summary>
         bool TryChange(string name, Func<bool> change)
         {
             string before = JsonUtility.ToJson(Draft);
@@ -886,7 +850,6 @@ namespace ColorBlockJam.Editor.LevelEditing
 
         bool IsDirty => _level >= 0 && _isDirty;
 
-        /// <summary>Asks before dropping unsaved changes; true when it is fine to leave this level.</summary>
         bool ConfirmLeave()
         {
             if (!IsDirty)
@@ -914,7 +877,6 @@ namespace ColorBlockJam.Editor.LevelEditing
                 return;
             }
 
-            // A solve still running is not waited on: its verdict shows under Checks when it lands.
             if (Solution != null && Solution.Status != SolveStatus.Solvable &&
                 !EditorUtility.DisplayDialog("Save anyway?", "The solver could not finish this level. Players may get stuck.", "Save", "Cancel"))
                 return;
@@ -980,7 +942,6 @@ namespace ColorBlockJam.Editor.LevelEditing
                 GenerateAsync().Forget();
         }
 
-        /// <summary>Generates on a worker thread; the editor stays usable and the result lands when it is ready.</summary>
         async UniTaskVoid GenerateAsync()
         {
             _generating = true;
@@ -995,7 +956,6 @@ namespace ColorBlockJam.Editor.LevelEditing
             }
             catch (OperationCanceledException)
             {
-                // The window closed while it ran.
                 return;
             }
             finally
@@ -1015,7 +975,6 @@ namespace ColorBlockJam.Editor.LevelEditing
                 HardenAsync().Forget();
         }
 
-        /// <summary>Hardens the draft on worker threads (T-49); the editor stays usable meanwhile.</summary>
         async UniTaskVoid HardenAsync()
         {
             _generating = true;
@@ -1031,7 +990,6 @@ namespace ColorBlockJam.Editor.LevelEditing
             }
             catch (OperationCanceledException)
             {
-                // The window closed while it ran.
                 return;
             }
             finally
@@ -1083,8 +1041,6 @@ namespace ColorBlockJam.Editor.LevelEditing
             _previewStep = (_previewStep + 1) % (Solution.Steps.Count + 1);
         }
 
-        // ---------------------------------------------------------------- small helpers
-
         int RewardFor(LevelDifficulty difficulty)
         {
             foreach (DifficultyReward reward in _rewards.Rewards)
@@ -1093,7 +1049,6 @@ namespace ColorBlockJam.Editor.LevelEditing
             return 0;
         }
 
-        /// <summary>The difficulty whose score band (DA-33) holds <paramref name="score"/>.</summary>
         LevelDifficulty DifficultyFor(int score)
         {
             foreach (LevelDifficulty difficulty in Enum.GetValues(typeof(LevelDifficulty)))

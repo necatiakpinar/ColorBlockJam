@@ -7,7 +7,6 @@ using ColorBlockJam.Tests.EditMode.Helpers;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>The HUD shows what the gameplay signals announce.</summary>
     public sealed class GameplayHudViewTests
     {
         TestViews _views;

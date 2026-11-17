@@ -9,7 +9,6 @@ using UnityEngine.UI;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>The Home screen's flow: level, balance, play, settings (T-24, T-25).</summary>
     public sealed class HomeFlowTests
     {
         TestViews _views;

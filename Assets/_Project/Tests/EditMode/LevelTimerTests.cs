@@ -13,7 +13,6 @@ using static ColorBlockJam.Game.Levels.WallSide;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>The level's countdown (gameplay.md §6), driven by a fake clock.</summary>
     public sealed class LevelTimerTests
     {
         const int TimerSeconds = 12;
@@ -33,7 +32,6 @@ namespace ColorBlockJam.Tests.EditMode
             _catalogs = new TestCatalog();
             _bus = new SignalBus();
             _board = new ActiveBoard(new BoardSpace(1f), _bus);
-            // Each block has its own door; one exit alone does not win the level.
             var levels = new LevelProvider(_catalogs.Create(new LevelDataBuilder(4, 4).Timer(TimerSeconds)
                 .Block(Red, 1, 1).Block(Blue, 3, 3).Door(Left, 1, 1, Red).Door(Right, 3, 1, Blue).Build()));
             _session = new LevelSession(_board, levels, _bus);
@@ -53,7 +51,6 @@ namespace ColorBlockJam.Tests.EditMode
             _catalogs.Dispose();
         }
 
-        /// <summary>Starts the level and grabs a block, which starts the count.</summary>
         void StartAndTouch()
         {
             _session.Start(1);

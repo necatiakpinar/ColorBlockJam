@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Gameplay.Animations
 {
-    /// <summary>A block whose ice broke swells for a beat and settles back to its size. Runs on unscaled time.</summary>
     public readonly struct BlockThawAnimation : IAnimation<BlockThawAnimation.Config>
     {
         public readonly struct Config

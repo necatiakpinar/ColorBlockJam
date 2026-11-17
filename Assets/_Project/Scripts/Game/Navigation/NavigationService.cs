@@ -22,15 +22,12 @@ namespace ColorBlockJam.Game.Navigation
 
         async UniTask LoadAsync(SceneId sceneId)
         {
-            // A second tap while a scene is loading must not queue a second load.
             if (_isLoading)
                 return;
 
             _isLoading = true;
             try
             {
-                // The load destroys the calling scene's scope and cancels its token; listening to that
-                // token would report the load's own success as a cancellation.
                 await _sceneLoader.LoadAsync(sceneId, CancellationToken.None);
             }
             finally

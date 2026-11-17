@@ -7,7 +7,6 @@ using ColorBlockJam.Game.Lives;
 
 namespace ColorBlockJam.Game.Boot
 {
-    /// <summary>Reads the player's saves before anything shows them: progress, wallet, settings, boosters and lives.</summary>
     public sealed class LoadPlayerDataStep : IBootStep
     {
         readonly IPlayerProgressService _playerProgress;

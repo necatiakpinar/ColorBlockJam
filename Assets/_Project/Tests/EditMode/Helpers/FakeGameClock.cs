@@ -5,10 +5,6 @@ using ColorBlockJam.Core.Clock;
 
 namespace ColorBlockJam.Tests.EditMode.Helpers
 {
-    /// <summary>
-    /// Time that moves only when a test calls <see cref="Advance"/>. Delays finish in order of their due time,
-    /// each at its own moment, and their continuations run inside <see cref="Advance"/>.
-    /// </summary>
     public sealed class FakeGameClock : IGameClock
     {
         readonly List<(float Due, UniTaskCompletionSource Source)> _waits = new();

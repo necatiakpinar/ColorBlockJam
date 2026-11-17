@@ -5,7 +5,6 @@ using ColorBlockJam.Core.Scenes;
 
 namespace ColorBlockJam.Tests.EditMode.Helpers
 {
-    /// <summary>Records loads and keeps each one pending until the test completes it.</summary>
     public sealed class ControllableSceneLoader : ISceneLoader
     {
         UniTaskCompletionSource _pending;

@@ -13,17 +13,12 @@ using UnityEngine.UI;
 
 namespace ColorBlockJam.Tests.EditMode.Helpers
 {
-    /// <summary>
-    /// Builds views with their serialized references wired, as the authored scenes would, so flows can
-    /// be tested without loading a scene. Destroy everything with <see cref="Dispose"/>.
-    /// </summary>
     public sealed class TestViews : System.IDisposable
     {
         readonly List<Object> _created = new();
 
         public HomeView CreateHomeView(out Button levelButton) => CreateHomeView(out levelButton, out _);
 
-        /// <summary>The Home view with a three-tile level path.</summary>
         public HomeView CreateHomeView(out Button levelButton, out Button settingsButton)
         {
             var root = Track(new GameObject("HomeView"));
@@ -45,7 +40,6 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
             return view;
         }
 
-        /// <summary>The Home settings popup: the shared settings with no Home button.</summary>
         public SettingsPopupView CreateSettingsPopup(SignalBus signalBus, ISettingsService settings,
             out Button closeButton, out SettingToggleView[] toggles)
         {
@@ -56,7 +50,6 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
             return view;
         }
 
-        /// <summary>The HUD with its taps exposed: restart and pause.</summary>
         public GameplayHudView CreateHud(SignalBus signalBus, IWalletService wallet, out Button restartButton,
             out Button pauseButton)
         {
@@ -76,7 +69,6 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
             return view;
         }
 
-        /// <summary>The pause popup with one switch per setting, in <see cref="GameSetting"/> order.</summary>
         public PausePopupView CreatePausePopup(SignalBus signalBus, ISettingsService settings, out Button closeButton,
             out Button homeButton, out SettingToggleView[] toggles)
         {
@@ -90,7 +82,6 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
             return view;
         }
 
-        /// <summary>Wires the shared settings parts: one switch per setting, in <see cref="GameSetting"/> order.</summary>
         Button WireSettings(SettingsPopupView view, GameObject root, out SettingToggleView[] toggles)
         {
             var closeButton = Child(root, "CloseButton").AddComponent<Button>();
@@ -146,7 +137,6 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
             return view;
         }
 
-        /// <summary>The lives popup with its Refill and close buttons.</summary>
         public OutOfLivesPopupView CreateOutOfLivesPopup(SignalBus signalBus, out Button refillButton, out Button closeButton)
         {
             var root = Track(new GameObject("OutOfLivesPopup"));
@@ -164,7 +154,6 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
             return view;
         }
 
-        /// <summary>The Home lives bar: count, status and "+".</summary>
         public LivesBarView CreateLivesBar(SignalBus signalBus, out Button plusButton)
         {
             var root = Track(new GameObject("LivesBar"));

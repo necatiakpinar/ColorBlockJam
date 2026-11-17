@@ -3,10 +3,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Gameplay.Board.Blockers
 {
-    /// <summary>
-    /// An arrow (T-35, DA-39): the block moves, and leaves through a door, only along its axis. It never lets go:
-    /// other blocks leaving change nothing.
-    /// </summary>
     public sealed class ArrowBlocker : IBlocker
     {
         public ArrowBlocker(ArrowAxis axis) => Axis = axis;

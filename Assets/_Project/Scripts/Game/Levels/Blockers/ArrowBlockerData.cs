@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Levels.Blockers
 {
-    /// <summary>The arrow blocker as authored (T-35, DA-39): the block moves only along <see cref="Axis"/>.</summary>
     [Serializable]
     public sealed class ArrowBlockerData
     {

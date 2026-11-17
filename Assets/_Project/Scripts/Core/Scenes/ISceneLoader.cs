@@ -7,7 +7,6 @@ namespace ColorBlockJam.Core.Scenes
     {
         string GetSceneName(SceneId sceneId);
 
-        /// <summary>Replaces every loaded scene with <paramref name="sceneId"/>.</summary>
         UniTask LoadAsync(SceneId sceneId, CancellationToken cancellationToken);
     }
 }

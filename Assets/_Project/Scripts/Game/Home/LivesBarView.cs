@@ -8,10 +8,6 @@ using VContainer;
 
 namespace ColorBlockJam.Game.Home
 {
-    /// <summary>
-    /// The Home lives bar (lives.md): the lives held in the heart, "Full" or the countdown to the next life, and a
-    /// "+" that opens the lives popup.
-    /// </summary>
     public sealed class LivesBarView : MonoBehaviour
     {
         const string FullText = "Full";

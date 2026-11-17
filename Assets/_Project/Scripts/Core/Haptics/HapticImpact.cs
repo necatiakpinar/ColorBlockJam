@@ -1,6 +1,5 @@
 namespace ColorBlockJam.Core.Haptics
 {
-    /// <summary>How hard a haptic tap feels.</summary>
     public enum HapticImpact
     {
         Light = 1000,

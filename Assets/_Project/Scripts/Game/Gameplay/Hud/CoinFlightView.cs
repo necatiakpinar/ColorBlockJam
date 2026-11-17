@@ -10,10 +10,6 @@ using VContainer;
 
 namespace ColorBlockJam.Game.Gameplay.Hud
 {
-    /// <summary>
-    /// The coin flight on the top layer of the HUD canvas (T-51, ui.md §5). Its coins and sparkle bursts are
-    /// authored prefabs, made once and reused. While the coins fly, a blocker takes every tap.
-    /// </summary>
     public sealed class CoinFlightView : MonoBehaviour, ICoinFlight
     {
         [Tooltip("The HUD's coin counter, held and counted up here.")]
@@ -97,11 +93,9 @@ namespace ColorBlockJam.Game.Gameplay.Hud
             await _flight.ToUniTask(cancellationToken: cancellation);
         }
 
-        /// <summary>A coin reaches the counter: it adds its share, the counter swells and sparkles.</summary>
         void Land(int index)
         {
             _coins[index].gameObject.SetActive(false);
-            // The coins split the reward; the last one to land takes what is left.
             int share = _landings == 1 ? _coinsToAdd : _coinsToAdd / _landings;
             _coinsToAdd -= share;
             _landings--;

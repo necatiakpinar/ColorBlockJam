@@ -12,7 +12,6 @@ using VContainer;
 
 namespace ColorBlockJam.Tests.PlayMode
 {
-    /// <summary>The real Gameplay scene counts the level's time down on the HUD.</summary>
     public sealed class GameplayTimerTests
     {
         IObjectResolver _container;
@@ -56,7 +55,6 @@ namespace ColorBlockJam.Tests.PlayMode
         {
             yield return BootToGameplay();
             var timer = _container.Resolve<LevelTimer>();
-            // Unity's own background event, delivered to the reporter on the Root scope.
             var reporter = _container.Resolve<ApplicationPauseReporter>();
             _container.Resolve<SignalBus>().Fire(new BlockGrabbedSignal(0));
             yield return WaitRealtime(0.2f);

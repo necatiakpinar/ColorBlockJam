@@ -10,7 +10,6 @@ using static ColorBlockJam.Game.Levels.WallSide;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>The level pack JSON: readable, round-trips every field, and words what it refuses (level-packs.md §2).</summary>
     public sealed class LevelPackJsonTests
     {
         readonly LevelPackJson _json = new();

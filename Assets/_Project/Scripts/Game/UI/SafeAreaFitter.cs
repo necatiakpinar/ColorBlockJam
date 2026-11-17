@@ -2,11 +2,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.UI
 {
-    /// <summary>
-    /// Keeps a canvas content root inside <see cref="Screen.safeArea"/>. Re-fits when the canvas
-    /// resizes (resolution or simulator change) instead of polling every frame. Backgrounds stay
-    /// outside this root so they still fill the whole screen.
-    /// </summary>
     [RequireComponent(typeof(RectTransform))]
     public sealed class SafeAreaFitter : MonoBehaviour
     {
@@ -20,7 +15,6 @@ namespace ColorBlockJam.Game.UI
 
         void OnRectTransformDimensionsChange()
         {
-            // Unity can call this before Awake, while the hierarchy is first laid out.
             if (_rect != null)
                 Fit();
         }

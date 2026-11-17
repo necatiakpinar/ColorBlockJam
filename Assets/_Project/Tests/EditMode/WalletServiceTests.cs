@@ -7,7 +7,6 @@ using ColorBlockJam.Tests.EditMode.Helpers;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>The saved wallet (persistence.md).</summary>
     public sealed class WalletServiceTests
     {
         InMemoryKeyValueStorage _storage;

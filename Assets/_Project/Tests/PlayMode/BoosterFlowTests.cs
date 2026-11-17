@@ -18,10 +18,6 @@ using VContainer;
 
 namespace ColorBlockJam.Tests.PlayMode
 {
-    /// <summary>
-    /// The boosters through the real HUD, input and views (T-36, boosters.md): a tap on the bar, a tap on the board,
-    /// and what the player sees.
-    /// </summary>
     public sealed class BoosterFlowTests
     {
         static readonly string[] SavedKeys =
@@ -31,7 +27,6 @@ namespace ColorBlockJam.Tests.PlayMode
         [SetUp]
         public void SetUp()
         {
-            // These tests spend boosters and coins: put the saves back afterwards.
             for (int i = 0; i < SavedKeys.Length; i++)
                 _saved[i] = PlayerPrefs.HasKey(SavedKeys[i]) ? PlayerPrefs.GetString(SavedKeys[i]) : null;
         }
@@ -66,7 +61,6 @@ namespace ColorBlockJam.Tests.PlayMode
                 inventory.Add(type, 1);
         }
 
-        /// <summary>Presses and lifts a finger on a board cell through the real input view.</summary>
         static void TapCell(Vector2Int cell)
         {
             var input = SceneTestUtility.FindInActiveScene<BoardInputView>();
@@ -96,7 +90,6 @@ namespace ColorBlockJam.Tests.PlayMode
             yield return SceneTestUtility.BootToGameplay();
             Own(BoosterType.Hammer);
             int owned = Gameplay().Resolve<BoosterInventory>().Count(BoosterType.Hammer);
-            // The save decides the level; a frozen block would only lose its ice (DA-37), so pick a plain one.
             BoardBlock block = FirstUnfrozen(Gameplay().Resolve<ActiveBoard>().Current);
 
             SceneTestUtility.TapButton<BoosterBarView>("HammerBooster");
@@ -136,7 +129,6 @@ namespace ColorBlockJam.Tests.PlayMode
             TapCell(block.GetCell(0));
             yield return null;
 
-            // The cells left are the block's and those of any piece that split off as a block of its own.
             int left = block.CellCount;
             for (int id = blocksBefore; id < board.Blocks.Count; id++)
                 left += board.Blocks[id].CellCount;

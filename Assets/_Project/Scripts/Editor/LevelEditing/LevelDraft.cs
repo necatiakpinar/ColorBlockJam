@@ -6,18 +6,15 @@ using UnityEngine;
 
 namespace ColorBlockJam.Editor.LevelEditing
 {
-    /// <summary>A block being edited: a colour and the cells it covers.</summary>
     [Serializable]
     public sealed class DraftBlock
     {
         public BlockColor Color;
         public List<Vector2Int> Cells = new();
 
-        /// <summary>Its blockers (ice, ...; blockers.md), set in the editor's Blockers panel.</summary>
         public BlockerSet Blockers = new();
     }
 
-    /// <summary>A door being edited, on one wall, from <see cref="Start"/> for <see cref="Length"/> cells.</summary>
     [Serializable]
     public sealed class DraftDoor
     {
@@ -30,12 +27,6 @@ namespace ColorBlockJam.Editor.LevelEditing
         public bool Covers(WallSide side, int index) => Side == side && index >= Start && index <= End;
     }
 
-    /// <summary>
-    /// The level the editor works on (level-editor.md §3): the same content as <see cref="LevelData"/> in a form
-    /// that edits in place. Every change keeps the board buildable — no overlap, nothing outside the board,
-    /// no door past its wall or over another — and answers false instead of changing anything when it would
-    /// not. The rules about colours and fit stay in <see cref="LevelDefinitionValidator"/>.
-    /// </summary>
     [Serializable]
     public sealed class LevelDraft
     {
@@ -77,7 +68,6 @@ namespace ColorBlockJam.Editor.LevelEditing
 
         public bool IsInside(Vector2Int cell) => cell.x >= 0 && cell.y >= 0 && cell.x < Width && cell.y < Height;
 
-        /// <summary>The block covering the cell, or -1.</summary>
         public int BlockAt(Vector2Int cell)
         {
             for (int i = 0; i < Blocks.Count; i++)
@@ -86,7 +76,6 @@ namespace ColorBlockJam.Editor.LevelEditing
             return -1;
         }
 
-        /// <summary>The door covering that wall cell, or -1.</summary>
         public int DoorAt(WallSide side, int index)
         {
             for (int i = 0; i < Doors.Count; i++)
@@ -95,7 +84,6 @@ namespace ColorBlockJam.Editor.LevelEditing
             return -1;
         }
 
-        /// <summary>Whether the cells are on the board, distinct, and free of every block but <paramref name="ignore"/>.</summary>
         public bool CanPlace(IReadOnlyList<Vector2Int> cells, int ignore = -1)
         {
             var seen = new HashSet<Vector2Int>();
@@ -111,7 +99,6 @@ namespace ColorBlockJam.Editor.LevelEditing
             return cells.Count > 0;
         }
 
-        /// <summary>Whether the cells form one edge-connected piece (DA-18).</summary>
         public bool IsConnected(IReadOnlyList<Vector2Int> cells)
         {
             if (cells.Count == 0)
@@ -150,7 +137,6 @@ namespace ColorBlockJam.Editor.LevelEditing
             return true;
         }
 
-        /// <summary>Turns the block a quarter clockwise in place; if that leaves the board, nudges it back inside.</summary>
         public bool TryRotateBlock(int index)
         {
             List<Vector2Int> cells = Blocks[index].Cells;
@@ -180,7 +166,6 @@ namespace ColorBlockJam.Editor.LevelEditing
             return true;
         }
 
-        /// <summary>Moves or resizes a door along its wall.</summary>
         public bool TrySetDoorSpan(int index, int start, int length)
         {
             DraftDoor door = Doors[index];
@@ -202,7 +187,6 @@ namespace ColorBlockJam.Editor.LevelEditing
             return true;
         }
 
-        /// <summary>Changes the board size; returns what no longer fits and was removed.</summary>
         public (int Blocks, int Doors) Resize(int width, int height)
         {
             Width = width;
@@ -212,7 +196,6 @@ namespace ColorBlockJam.Editor.LevelEditing
             return (blocks, doors);
         }
 
-        /// <summary>What <see cref="Resize"/> would remove, without changing anything.</summary>
         public (int Blocks, int Doors) WouldLoseOnResize(int width, int height)
         {
             int blocks = 0;

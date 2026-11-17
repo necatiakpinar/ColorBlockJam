@@ -9,10 +9,6 @@ using VContainer;
 
 namespace ColorBlockJam.Game.Gameplay.Popups
 {
-    /// <summary>
-    /// Offers one booster for coins when the player has none left (T-36, DA-36): its name, icon and what it does,
-    /// and a Buy button with the price that cannot be pressed when the coins are short.
-    /// </summary>
     public sealed class BoosterPurchasePopupView : PopupView
     {
         [SerializeField]
@@ -36,7 +32,6 @@ namespace ColorBlockJam.Game.Gameplay.Popups
         public event Action<BoosterType> BuyClicked;
         public event Action CloseClicked;
 
-        /// <summary>The booster on offer.</summary>
         public BoosterType Offer { get; private set; }
 
         public string TitleText => _titleLabel.text;

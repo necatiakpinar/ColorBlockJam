@@ -35,7 +35,7 @@ new fake.
 | `LevelDefinitionValidatorTests` | one test per level rule in level-data.md §2 |
 | `LevelDefinitionTests` | level data survives asset serialization; wall lengths |
 | `BoardStateTests` | moves, walls, blocks, door fit on every wall, clear path out, win, fresh restart, `CanStep`, zero allocation |
-| `ArchitectureTests` | no per-frame code, Core never references Game, logs only through `IGameLogger`, no `Camera.main` or `Find*`, every build scene's serialized references set |
+| `ArchitectureTests` | no comments in scripts or tests, no per-frame code, Core never references Game, logs only through `IGameLogger`, no `Camera.main` or `Find*`, every build scene's serialized references set |
 | `LevelProviderTests` | level number to catalog entry; looping; empty catalog |
 | `LevelPackJsonTests` | the level pack JSON: round trip, names not numbers, compact output, unknown fields ignored, refusals worded with level and item |
 | `LevelPackServiceTests` | bundled or stored remote pack per launch; stale and broken packs dropped; remote packs stored only when good, for the next launch |

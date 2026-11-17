@@ -7,7 +7,6 @@ using Object = UnityEngine.Object;
 
 namespace ColorBlockJam.Tests.EditMode.Helpers
 {
-    /// <summary>Builds in-memory level catalogs for tests; <see cref="Dispose"/> destroys every asset it made.</summary>
     public sealed class TestCatalog : IDisposable
     {
         readonly List<Object> _created = new();

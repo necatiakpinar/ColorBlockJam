@@ -5,7 +5,6 @@ using UnityEngine.Networking;
 
 namespace ColorBlockJam.Core.Network
 {
-    /// <summary>A real probe: one GET; any 2xx answer is a success.</summary>
     public sealed class UnityWebRequestProbe : IProbeRequest
     {
         public async UniTask<ProbeResult> SendAsync(string url, float timeoutSeconds, CancellationToken cancellation)
@@ -18,7 +17,6 @@ namespace ColorBlockJam.Core.Network
             }
             catch (UnityWebRequestException)
             {
-                // No connection, a timeout or an error status: an expected answer meaning "offline".
                 return new ProbeResult(false, null);
             }
 

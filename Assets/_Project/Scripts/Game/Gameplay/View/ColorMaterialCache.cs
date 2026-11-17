@@ -7,10 +7,6 @@ using Object = UnityEngine.Object;
 
 namespace ColorBlockJam.Game.Gameplay.View
 {
-    /// <summary>
-    /// One material per block colour, made from a base material and the palette on first use. Shared
-    /// materials (rather than property blocks) keep same-coloured parts batched by the SRP batcher.
-    /// </summary>
     public sealed class ColorMaterialCache : IDisposable
     {
         static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
@@ -20,7 +16,6 @@ namespace ColorBlockJam.Game.Gameplay.View
         readonly float _whiten;
         readonly Dictionary<BlockColor, Material> _materials = new();
 
-        /// <param name="whiten">How far each palette colour is pulled toward white (0 keeps it; ice uses more).</param>
         public ColorMaterialCache(Material baseMaterial, BoardViewConfig config, float whiten = 0f)
         {
             _baseMaterial = baseMaterial;

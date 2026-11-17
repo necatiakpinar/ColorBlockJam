@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Core.Persistence
 {
-    /// <summary>The saved toggles. Everything is on for a new player (DA-10).</summary>
     [Serializable]
     public sealed class SettingsData
     {

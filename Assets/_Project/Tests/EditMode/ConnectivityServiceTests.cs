@@ -9,7 +9,6 @@ using ColorBlockJam.Tests.EditMode.Helpers;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>The probe loop (network.md, DA-25), with probes answered by hand and a fake clock.</summary>
     public sealed class ConnectivityServiceTests
     {
         const float Online = 10f;

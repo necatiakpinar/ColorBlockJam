@@ -7,7 +7,6 @@ using ColorBlockJam.Tests.EditMode.Helpers;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>Lives, their trusted-time refill and the coin refill (lives.md, DA-38).</summary>
     public sealed class LivesServiceTests
     {
         static readonly TimeSpan Refill = TimeSpan.FromMinutes(30);
@@ -105,7 +104,6 @@ namespace ColorBlockJam.Tests.EditMode
         {
             Lives.TryLoseOne();
 
-            // Only the trusted clock is read; nothing else can move the countdown.
             Lives.Refresh();
 
             Assert.That(Lives.Count, Is.EqualTo(4));

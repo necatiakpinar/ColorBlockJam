@@ -1,7 +1,7 @@
 # Development Assumptions
 
 > **Binding agent rules.** A player-visible decision the [design](../Design/README.md) does not settle is registered here
-> before it ships, and its id (`DA-n`) is cited in the code comment and the commit footer.
+> before it ships, and its id (`DA-n`) is cited in the commit footer and the docs that describe the behaviour; code has no comments.
 
 Each entry: the decision, why it was needed, what would change if it is decided otherwise, and
 its status (`Open`, `Confirmed <date>`, `Withdrawn <date>`).

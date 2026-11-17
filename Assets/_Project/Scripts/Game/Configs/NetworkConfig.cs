@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Configs
 {
-    /// <summary>The online requirement's tunables (network.md, DA-25).</summary>
     [CreateAssetMenu(menuName = "ColorBlockJam/Configs/Network Config", fileName = "NetworkConfig")]
     public sealed class NetworkConfig : ScriptableObject
     {

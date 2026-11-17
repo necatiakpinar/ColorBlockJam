@@ -3,10 +3,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Levels.Blockers
 {
-    /// <summary>
-    /// The ice blocker as authored (T-34, DA-37): the block is frozen until <see cref="Exits"/> other blocks have left
-    /// the board. 0 means the block has no ice.
-    /// </summary>
     [Serializable]
     public sealed class IceBlockerData
     {

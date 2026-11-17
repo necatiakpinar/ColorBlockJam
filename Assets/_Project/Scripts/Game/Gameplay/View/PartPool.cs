@@ -3,10 +3,6 @@ using UnityEngine.Pool;
 
 namespace ColorBlockJam.Game.Gameplay.View
 {
-    /// <summary>
-    /// Recycles instances of one part prefab, so rebuilding the board on restart or the next level reuses
-    /// objects instead of instantiating and destroying them. Released parts wait inactive under storage.
-    /// </summary>
     public sealed class PartPool
     {
         readonly GameObject _prefab;

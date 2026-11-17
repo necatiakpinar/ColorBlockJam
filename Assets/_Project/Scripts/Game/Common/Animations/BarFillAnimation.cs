@@ -4,10 +4,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Common.Animations
 {
-    /// <summary>
-    /// Moves a bar's fill to a share of its track by its right anchor, so a nine-sliced fill keeps its rounded ends at
-    /// any length (a Filled image would cut them off). Runs on unscaled time.
-    /// </summary>
     public readonly struct BarFillAnimation : IAnimation<BarFillAnimation.Config>
     {
         public readonly struct Config

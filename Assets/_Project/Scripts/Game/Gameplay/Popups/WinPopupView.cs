@@ -8,10 +8,6 @@ using VContainer;
 
 namespace ColorBlockJam.Game.Gameplay.Popups
 {
-    /// <summary>
-    /// "Level complete" with the coins the win paid (already in the wallet) and Continue (T-21, DA-12). Its coin
-    /// pile is where the flying coins start when Continue is tapped (T-51).
-    /// </summary>
     public sealed class WinPopupView : PopupView
     {
         const string RewardFormat = "+{0}";

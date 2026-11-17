@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.UI
 {
-    /// <summary>A coin balance as the counters show it: the number up to 999, then thousands ("1.28k").</summary>
     public sealed class CoinAmountText : MonoBehaviour
     {
         const int ThousandsFrom = 1000;

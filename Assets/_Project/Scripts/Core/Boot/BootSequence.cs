@@ -5,9 +5,6 @@ using Cysharp.Threading.Tasks;
 
 namespace ColorBlockJam.Core.Boot
 {
-    /// <summary>
-    /// Runs the registered boot steps in registration order and reports weighted progress in [0, 1].
-    /// </summary>
     public sealed class BootSequence
     {
         readonly IReadOnlyList<IBootStep> _steps;

@@ -8,12 +8,6 @@ using VContainer.Unity;
 
 namespace ColorBlockJam.Game.Home
 {
-    /// <summary>
-    /// Entry point of the Home scene (T-24): shows the current level, the balance and the lives, plays the level,
-    /// and opens the settings popup, whose switches go to <see cref="ISettingsService"/> and whose close button
-    /// closes it. Playing needs a life (DA-38): with none, the level button opens the lives popup instead, as the
-    /// lives bar's "+" does; its Refill fills the lives through <see cref="LivesService"/>.
-    /// </summary>
     public sealed class HomeFlow : IStartable, IDisposable
     {
         readonly HomeView _view;

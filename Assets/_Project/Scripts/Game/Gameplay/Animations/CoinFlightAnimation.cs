@@ -7,11 +7,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Gameplay.Animations
 {
-    /// <summary>
-    /// The won coins' flight (T-51): each coin pops out of its pile spot, then flies to the counter along a bent
-    /// path (sideways and upward eased differently), shrinking as it lands, one after another. Positions are
-    /// world positions on the overlay canvas. Runs on unscaled time.
-    /// </summary>
     public readonly struct CoinFlightAnimation : IAnimation<CoinFlightAnimation.Config>
     {
         public readonly struct Config
@@ -19,10 +14,8 @@ namespace ColorBlockJam.Game.Gameplay.Animations
             public readonly IReadOnlyList<RectTransform> Coins;
             public readonly IReadOnlyList<Vector3> From;
             public readonly Vector3 To;
-            // World units per canvas unit, so the settings' distances hold on any screen.
             public readonly float UnitScale;
             public readonly CoinFlightSettings Settings;
-            // Called with the coin's index as it lands.
             public readonly Action<int> Landed;
             public readonly GameObject Link;
 
@@ -48,7 +41,6 @@ namespace ColorBlockJam.Game.Gameplay.Animations
             {
                 RectTransform coin = config.Coins[i];
                 Vector3 from = config.From[i];
-                // Spread evenly around the pile, so the burst reads as one.
                 float angle = (90f + 360f * i / count) * Mathf.Deg2Rad;
                 Vector3 scatter = from + new Vector3(Mathf.Cos(angle), Mathf.Sin(angle)) * (settings.Scatter * config.UnitScale);
                 float start = i * settings.Stagger;

@@ -6,17 +6,11 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Gameplay.Board
 {
-    /// <summary>
-    /// The rules of one attempt, in cells. Built fresh from <see cref="LevelData"/> every time a level
-    /// starts or restarts, so nothing carries over between attempts (R-25). Blocks move one cell per
-    /// <see cref="TryStep"/>; a step allocates nothing.
-    /// </summary>
     public sealed class BoardState
     {
         const int Empty = -1;
 
         readonly int[] _occupancy;
-        // Grows when the rocket splits a block into pieces (DA-36); ids stay their index.
         readonly List<BoardBlock> _blocks;
         readonly DoorResolver _doorResolver;
         readonly List<int> _thawed = new();
@@ -48,13 +42,8 @@ namespace ColorBlockJam.Game.Gameplay.Board
         public int RemainingBlocks { get; private set; }
         public bool IsCleared => RemainingBlocks == 0;
 
-        /// <summary>Blocks the last <see cref="RemoveCell"/> split off as blocks of their own (DA-36); empty when none.</summary>
         public IReadOnlyList<int> JustSplitOff => _splitOff;
 
-        /// <summary>
-        /// Blocks the last exit or removal released from a blocker's hold (ice thawed, T-34), in id order; empty when
-        /// none were.
-        /// </summary>
         public IReadOnlyList<int> JustThawed => _thawed;
 
         public bool TryGetBlockAt(Vector2Int cell, out int blockId)
@@ -63,12 +52,6 @@ namespace ColorBlockJam.Game.Gameplay.Board
             return blockId != Empty;
         }
 
-        /// <summary>
-        /// Pushes a block one cell. It moves when every cell it enters is free. When the push would take it
-        /// past a wall it exits only if it fits a door there and nothing stands between it and the wall
-        /// (DA-5); otherwise it is blocked.
-        /// </summary>
-        /// <param name="direction">Exactly one cell right, left, up or down.</param>
         public StepResult TryStep(int blockId, Vector2Int direction)
         {
             StepResult result = CanStep(blockId, direction);
@@ -88,20 +71,17 @@ namespace ColorBlockJam.Game.Gameplay.Board
             return result;
         }
 
-        /// <summary>Takes a block off the board at once (a booster, DA-36): its cells free up and it counts as gone.</summary>
         public void RemoveBlock(int blockId)
         {
             MarkGone(RequireOnBoard(blockId));
         }
 
-        /// <summary>Breaks a block's ice at once (the hammer on a frozen block, DA-37).</summary>
         public void Thaw(int blockId)
         {
             if (RequireOnBoard(blockId).TryGetBlocker(out IceBlocker ice))
                 ice.Thaw();
         }
 
-        /// <summary>A block left: its cells free up and every blocker of the others hears of it (ice counts down, DA-37).</summary>
         void MarkGone(BoardBlock block)
         {
             Clear(block);
@@ -121,12 +101,6 @@ namespace ColorBlockJam.Game.Gameplay.Board
             }
         }
 
-        /// <summary>
-        /// Takes the block's cell at <paramref name="cell"/> out of it (the rocket, DA-36). When the rest falls apart,
-        /// the biggest piece (the first on a tie) stays the block and every other piece becomes a block of its own,
-        /// with the same colour and ice, listed in <see cref="JustSplitOff"/>.
-        /// </summary>
-        /// <returns>True when that was its last cell and the block is gone.</returns>
         public bool RemoveCell(int blockId, Vector2Int cell)
         {
             _splitOff.Clear();
@@ -150,7 +124,6 @@ namespace ColorBlockJam.Game.Gameplay.Board
             throw new ArgumentException($"Block {blockId} has no cell at {cell}.", nameof(cell));
         }
 
-        /// <summary>Every edge-connected piece of the block but the biggest becomes a new block where it lies.</summary>
         void SplitIntoPieces(BoardBlock block)
         {
             List<List<Vector2Int>> pieces = Pieces(block);
@@ -166,7 +139,6 @@ namespace ColorBlockJam.Game.Gameplay.Board
             {
                 if (i == keep)
                     continue;
-                // The new block starts where the piece lies now, so its offset starts at zero.
                 var piece = new BoardBlock(_blocks.Count, block.Color, pieces[i], block.CloneBlockersForPiece());
                 block.RemoveBoardCells(pieces[i]);
                 _blocks.Add(piece);
@@ -177,7 +149,6 @@ namespace ColorBlockJam.Game.Gameplay.Board
             }
         }
 
-        /// <summary>The block's board cells grouped into edge-connected pieces, in the order of its cells.</summary>
         List<List<Vector2Int>> Pieces(BoardBlock block)
         {
             var cells = new HashSet<Vector2Int>();
@@ -222,15 +193,10 @@ namespace ColorBlockJam.Game.Gameplay.Board
             return block;
         }
 
-        /// <summary>
-        /// Lays every block out at once, at <paramref name="offsets"/> or gone (<paramref name="exited"/>). The
-        /// level solver uses it to visit board states with these same rules; play never does.
-        /// </summary>
         internal void Arrange(IReadOnlyList<Vector2Int> offsets, IReadOnlyList<bool> exited)
         {
             Array.Fill(_occupancy, Empty);
             RemainingBlocks = 0;
-            // Every exit counts every frozen block down by one, so the ice follows from how many have left.
             int gone = 0;
             for (int id = 0; id < _blocks.Count; id++)
                 if (exited[id])
@@ -245,10 +211,8 @@ namespace ColorBlockJam.Game.Gameplay.Board
             }
         }
 
-        /// <summary>True when the cell is on the board and empty or taken by the block itself.</summary>
         public bool IsCellFree(Vector2Int cell, int blockId) => IsInside(cell) && IsFreeFor(cell, blockId);
 
-        /// <summary>What <see cref="TryStep"/> would do, without changing the board.</summary>
         public StepResult CanStep(int blockId, Vector2Int direction)
         {
             if (Mathf.Abs(direction.x) + Mathf.Abs(direction.y) != 1)
@@ -278,7 +242,6 @@ namespace ColorBlockJam.Game.Gameplay.Board
                 : StepResult.Blocked;
         }
 
-        /// <summary>A block slides out in a straight line, so every cell between it and the wall must be free.</summary>
         bool HasClearPathToWall(BoardBlock block, Vector2Int direction)
         {
             for (int i = 0; i < block.CellCount; i++)

@@ -5,11 +5,6 @@ using ColorBlockJam.Game.Lives;
 
 namespace ColorBlockJam.Game.Gameplay.Session
 {
-    /// <summary>
-    /// Takes the life an attempt costs (lives.md, DA-38): an attempt the player has started (their first grab)
-    /// costs one life when it is abandoned (given up after running out of time, restarted, or left for Home); a
-    /// won attempt costs nothing. One attempt never costs more than one life.
-    /// </summary>
     public sealed class LevelAttemptLives : IDisposable
     {
         readonly LivesService _lives;
@@ -26,10 +21,8 @@ namespace ColorBlockJam.Game.Gameplay.Session
             _signalBus.Subscribe<LevelCompletedSignal>(OnLevelCompleted);
         }
 
-        /// <summary>Abandoning now would cost a life: the attempt has started and is not settled.</summary>
         public bool WouldCostLife => _started && !_settled;
 
-        /// <summary>The attempt is being abandoned: it costs a life if it had started and was not settled yet.</summary>
         public void Abandon()
         {
             if (!_started || _settled)
@@ -46,7 +39,6 @@ namespace ColorBlockJam.Game.Gameplay.Session
 
         void OnBlockGrabbed(BlockGrabbedSignal signal) => _started = true;
 
-        /// <summary>A win keeps the life.</summary>
         void OnLevelCompleted(LevelCompletedSignal signal) => _settled = true;
 
         public void Dispose()

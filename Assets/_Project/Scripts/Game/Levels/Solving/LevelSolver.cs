@@ -5,21 +5,12 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Levels.Solving
 {
-    /// <summary>
-    /// Decides whether a level can be finished (T-33, DA-32), with the game's own rules, read once into a
-    /// <see cref="SearchBoard"/> so each search step is a few bit operations. A move takes one block along any
-    /// path of free cells, as the drag allows. Leaving never hurts (it only frees cells), so every block that can
-    /// reach its door leaves at once, in waves: each wave is every block that can leave at that moment. The search
-    /// only branches over moves that make room, breadth first, so the solution it returns has the fewest such
-    /// moves. It keeps search buffers between calls, so use one instance per thread.
-    /// </summary>
     public sealed class LevelSolver
     {
         const char GoneKey = char.MaxValue;
 
         readonly int _stateCap;
 
-        // Reused buffers: the search visits thousands of states and must not allocate per state for them.
         readonly List<int> _targets = new();
         readonly List<int> _reach = new();
         readonly List<SolveStep> _leaving = new();
@@ -36,32 +27,18 @@ namespace ColorBlockJam.Game.Levels.Solving
 
         sealed class Node
         {
-            // Each block's position on the SearchBoard; meaningless once it has exited.
             public int[] Positions;
             public bool[] Exited;
             public Node Parent;
             public List<SolveStep> Steps;
-            // Exit waves from the start up to this node.
             public int Rounds;
-            // Room-making moves from the start up to this node: its depth in the search.
             public int Moves;
         }
 
-        /// <summary>The level must pass the validator's errors first; the solver assumes a buildable board.</summary>
         public SolveResult Solve(LevelData level) => Solve(level, CancellationToken.None);
 
-        /// <summary>
-        /// As <see cref="Solve(LevelData)"/>, stopping with <see cref="OperationCanceledException"/> once
-        /// <paramref name="token"/> is cancelled: the level editor solves on a worker thread and drops a search the
-        /// next edit makes stale.
-        /// </summary>
         public SolveResult Solve(LevelData level, CancellationToken token) => Solve(level, int.MaxValue, token);
 
-        /// <summary>
-        /// As <see cref="Solve(LevelData, CancellationToken)"/>, trying only solutions with at most
-        /// <paramref name="maxMoves"/> room-making moves: the generator skips what could never score low enough.
-        /// A level that needs more says <see cref="SolveStatus.Unknown"/>.
-        /// </summary>
         public SolveResult Solve(LevelData level, int maxMoves, CancellationToken token)
         {
             Prepare(level);
@@ -72,8 +49,6 @@ namespace ColorBlockJam.Game.Levels.Solving
             start.Rounds = LeaveWhilePossible(start.Positions, start.Exited, start.Steps);
 
             var visited = new HashSet<string>(KeyComparer.Instance) { Key(start.Positions, start.Exited) };
-            // Boards right after a move, before anyone leaves: the same one always ends the same way, so it is
-            // played out once, however many moves reach it.
             var played = new HashSet<string>(KeyComparer.Instance);
             var queue = new Queue<Node>();
             queue.Enqueue(start);
@@ -137,7 +112,6 @@ namespace ColorBlockJam.Game.Levels.Solving
                 _key = new char[_board.BlockCount];
         }
 
-        /// <summary>The cells every block still on the board covers, and how many have left.</summary>
         void Occupancy(int[] positions, bool[] exited, out ulong low, out ulong high, out int gone)
         {
             low = 0;
@@ -156,10 +130,6 @@ namespace ColorBlockJam.Game.Levels.Solving
             }
         }
 
-        /// <summary>
-        /// Lets blocks leave in waves until none can: each wave takes every block that can reach its door on the
-        /// board as it stands. Returns how many waves there were.
-        /// </summary>
         int LeaveWhilePossible(int[] positions, bool[] exited, List<SolveStep> steps)
         {
             int waves = 0;
@@ -193,7 +163,6 @@ namespace ColorBlockJam.Game.Levels.Solving
             }
         }
 
-        /// <summary>Whether the block can reach a spot from which it leaves, the others standing still.</summary>
         bool TryFindExit(int id, int position, ulong othersLow, ulong othersHigh, int gone, out SolveStep exit, out int from)
         {
             Reachable(id, position, othersLow, othersHigh, gone, _reach);
@@ -212,7 +181,6 @@ namespace ColorBlockJam.Game.Levels.Solving
             return false;
         }
 
-        /// <summary>Fills <paramref name="reached"/> with every position the block can reach through free cells, its own first.</summary>
         void Reachable(int id, int position, ulong othersLow, ulong othersHigh, int gone, List<int> reached)
         {
             reached.Clear();
@@ -246,10 +214,6 @@ namespace ColorBlockJam.Game.Levels.Solving
             return new string(_key);
         }
 
-        /// <summary>
-        /// Keys hold small position numbers, which the runtime's string hash spreads badly enough to make the sets
-        /// crawl on some levels; this one mixes every character in.
-        /// </summary>
         sealed class KeyComparer : IEqualityComparer<string>
         {
             public static readonly KeyComparer Instance = new();

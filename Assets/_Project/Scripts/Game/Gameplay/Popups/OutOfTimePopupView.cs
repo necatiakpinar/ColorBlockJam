@@ -7,10 +7,6 @@ using VContainer;
 
 namespace ColorBlockJam.Game.Gameplay.Popups
 {
-    /// <summary>
-    /// "Out of time!" when the timer runs out (T-20, DA-30): more seconds for coins, or close to give up. The
-    /// Continue button cannot be pressed when the player cannot pay.
-    /// </summary>
     public sealed class OutOfTimePopupView : PopupView
     {
         const string SecondsFormat = "+{0}";

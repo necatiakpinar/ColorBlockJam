@@ -13,11 +13,6 @@ using VContainer;
 
 namespace ColorBlockJam.Game.Gameplay.Hud
 {
-    /// <summary>
-    /// The authored gameplay HUD (T-18, ui.md §5): level badge, time panel, restart and pause buttons, coin
-    /// counter and the booster bar. It shows what the signals announce and reports taps; the boosters and the
-    /// coin "+" are placeholders with press feedback only (DA-16).
-    /// </summary>
     public sealed class GameplayHudView : MonoBehaviour
     {
         [SerializeField]
@@ -46,10 +41,8 @@ namespace ColorBlockJam.Game.Gameplay.Hud
         GameplayConfig _config;
         IWalletService _wallet;
         Sequence _revealSequence;
-        // After a win the counter shows the coins as they fly in, not the paid balance at once (T-51).
         bool _holdingCoins;
         int _shownCoins;
-        // mm:ss written in place, so a tick allocates nothing on device (in the editor TMP mirrors it into a string).
         readonly char[] _timerChars = new char[5];
 
         public event Action RestartClicked;
@@ -72,7 +65,6 @@ namespace ColorBlockJam.Game.Gameplay.Hud
         public string TimerLabelText => _timerLabel.text;
         public string CoinLabelText => _coins.Text;
 
-        /// <summary>Shows <paramref name="coins"/> and ignores balance changes until the next level starts.</summary>
         public void HoldCoins(int coins)
         {
             _holdingCoins = true;
@@ -80,7 +72,6 @@ namespace ColorBlockJam.Game.Gameplay.Hud
             _coins.Show(coins);
         }
 
-        /// <summary>Counts <paramref name="coins"/> more onto the held counter, as a flying coin lands.</summary>
         public void AddHeldCoins(int coins)
         {
             _shownCoins += coins;

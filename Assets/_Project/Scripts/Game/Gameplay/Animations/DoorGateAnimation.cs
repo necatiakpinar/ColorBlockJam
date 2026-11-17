@@ -4,10 +4,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Gameplay.Animations
 {
-    /// <summary>
-    /// A door segment opening for a leaving block: it sinks into the floor, stays open while the block
-    /// slides through, then rises back. Runs on unscaled time.
-    /// </summary>
     public readonly struct DoorGateAnimation : IAnimation<DoorGateAnimation.Config>
     {
         public readonly struct Config

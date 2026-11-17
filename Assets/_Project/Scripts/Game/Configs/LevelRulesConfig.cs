@@ -2,7 +2,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Configs
 {
-    /// <summary>Limits every level must respect; the validator and the level editor read them.</summary>
     [CreateAssetMenu(menuName = "ColorBlockJam/Configs/Level Rules Config", fileName = "LevelRulesConfig")]
     public sealed class LevelRulesConfig : ScriptableObject
     {

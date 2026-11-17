@@ -3,7 +3,6 @@ using ColorBlockJam.Game.Levels.Blockers;
 
 namespace ColorBlockJam.Game.Gameplay.Board.Blockers
 {
-    /// <summary>Turns a block's authored <see cref="BlockerSet"/> into the rules it carries during an attempt.</summary>
     public sealed class BlockerFactory
     {
         public List<IBlocker> Create(BlockerSet set)

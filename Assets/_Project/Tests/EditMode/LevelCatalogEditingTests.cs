@@ -11,7 +11,6 @@ using static ColorBlockJam.Game.Levels.WallSide;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>The level editor's catalog actions on a throw-away catalog in a temporary folder (T-26).</summary>
     public sealed class LevelCatalogEditingTests
     {
         const string Folder = "Assets/__LevelEditorTests";

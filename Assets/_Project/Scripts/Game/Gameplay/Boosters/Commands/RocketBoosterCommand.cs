@@ -3,7 +3,6 @@ using ColorBlockJam.Game.Gameplay.Board;
 
 namespace ColorBlockJam.Game.Gameplay.Boosters.Commands
 {
-    /// <summary>Blasts the tapped cell out of its block.</summary>
     public sealed class RocketBoosterCommand : IBoosterCommand
     {
         readonly ActiveBoard _board;

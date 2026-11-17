@@ -6,7 +6,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Tests.EditMode.Helpers
 {
-    /// <summary>Records the coin flight; a flight lasts until <see cref="Land"/>, so tests see what waits for it.</summary>
     public sealed class RecordingCoinFlight : ICoinFlight
     {
         UniTaskCompletionSource _landing;
@@ -23,7 +22,6 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
             return _landing.Task;
         }
 
-        /// <summary>The last coin lands.</summary>
         public void Land() => _landing.TrySetResult();
     }
 }

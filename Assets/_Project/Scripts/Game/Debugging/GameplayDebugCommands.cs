@@ -8,11 +8,6 @@ using Cysharp.Threading.Tasks;
 
 namespace ColorBlockJam.Game.Debugging
 {
-    /// <summary>
-    /// Shortcuts for testing the gameplay scene by hand (debug-tools.md): win or lose now, set the timer, give
-    /// coins or boosters, jump to a level. Every shortcut goes through the service that owns the change, so the game reacts
-    /// exactly as it does in play (popups, rewards, saves). Used by the editor's debug window.
-    /// </summary>
     public sealed class GameplayDebugCommands
     {
         readonly LevelSession _session;
@@ -40,7 +35,6 @@ namespace ColorBlockJam.Game.Debugging
         public float SecondsLeft => _timer.SecondsLeft;
         public int Coins => _wallet.Coins;
 
-        /// <summary>Wins the level as if its last block had left: the reward is paid and the win popup opens.</summary>
         public bool Win()
         {
             if (_session.State != LevelState.Playing)
@@ -49,7 +43,6 @@ namespace ColorBlockJam.Game.Debugging
             return true;
         }
 
-        /// <summary>Runs the timer out now: the level fails and the out-of-time popup opens.</summary>
         public bool RunOutOfTime()
         {
             if (_session.State != LevelState.Playing)
@@ -71,7 +64,6 @@ namespace ColorBlockJam.Game.Debugging
 
         public void AddBooster(BoosterType type, int amount) => _boosters.Add(type, amount);
 
-        /// <summary>Spends every <paramref name="type"/> the player owns, to see the purchase offer.</summary>
         public void ClearBooster(BoosterType type)
         {
             while (_boosters.TryUse(type))
@@ -79,7 +71,6 @@ namespace ColorBlockJam.Game.Debugging
             }
         }
 
-        /// <summary>Saves <paramref name="level"/> as the current level and reloads the scene to play it.</summary>
         public void PlayLevel(int level)
         {
             _progress.SetCurrentLevel(level);

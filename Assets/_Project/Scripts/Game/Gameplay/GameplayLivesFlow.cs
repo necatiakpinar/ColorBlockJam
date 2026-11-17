@@ -8,11 +8,6 @@ using ColorBlockJam.Core.Persistence;
 
 namespace ColorBlockJam.Game.Gameplay
 {
-    /// <summary>
-    /// Playing a level again needs a life (lives.md, DA-38). With one, the level restarts at once; without, the
-    /// lives popup offers a refill for coins: Refill fills the lives (through <see cref="LivesService"/>) and
-    /// restarts, close goes Home. The restart and Retry buttons both come through here.
-    /// </summary>
     public sealed class GameplayLivesFlow : IDisposable
     {
         readonly LivesService _lives;
@@ -35,7 +30,6 @@ namespace ColorBlockJam.Game.Gameplay
             _popup.CloseClicked += OnCloseClicked;
         }
 
-        /// <summary>Restarts the level if a life is left; otherwise pauses it and offers a refill.</summary>
         public void PlayAgain()
         {
             if (_lives.Count > 0)

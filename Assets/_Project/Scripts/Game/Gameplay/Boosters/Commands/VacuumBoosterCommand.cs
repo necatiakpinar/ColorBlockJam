@@ -3,7 +3,6 @@ using ColorBlockJam.Game.Gameplay.Board;
 
 namespace ColorBlockJam.Game.Gameplay.Boosters.Commands
 {
-    /// <summary>Clears every block of the tapped block's colour.</summary>
     public sealed class VacuumBoosterCommand : IBoosterCommand
     {
         readonly ActiveBoard _board;

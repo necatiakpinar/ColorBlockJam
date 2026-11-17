@@ -10,12 +10,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>
-    /// Every level in the shipped catalog is valid and can be finished (proved by <see cref="LevelSolver"/> on the
-    /// real board rules). Levels 1–8 ramp up gently: more blocks, a higher solver score, and from level 3 on blocks
-    /// that must be moved out of the way first. From level 9 they come in groups of six with a breather and a peak
-    /// that needs more room-making moves than the last group's (T-32, T-49, DA-40, level-data.md §3).
-    /// </summary>
     public sealed class ShippedLevelsTests
     {
         const string CatalogPath = "Assets/_Project/Levels/LevelCatalog.asset";
@@ -38,13 +32,11 @@ namespace ColorBlockJam.Tests.EditMode
             return moves;
         }
 
-        /// <summary>A Hard level after the ramp gives the player a rest between peaks.</summary>
         static bool IsBreather(int index) => index >= RampLevels && Levels()[index].Data.Difficulty == LevelDifficulty.Hard;
 
         [Test]
         public void BundledPack_ShouldHoldTheCatalogsLevels_WhenTheGameShips()
         {
-            // The game plays levels.json; the editor rewrites it on every catalog change (level-packs.md).
             TextAsset bundled = AssetDatabase.LoadAssetAtPath<LevelPackConfig>(PackConfigPath).BundledPack;
 
             Assert.That(new LevelPackJson().TryRead(bundled.text, out LevelPack pack, out string error), Is.True, error);
@@ -85,7 +77,6 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void ShippedLevels_ShouldIncludeArrowBlocks_WhenLevelsSevenAndEightArePlayed()
         {
-            // Levels 7 and 8 show the arrow blocker (T-35): 2 and 3 of their blocks move along one axis only.
             int[] expected = { 2, 3 };
             for (int k = 0; k < expected.Length; k++)
             {
@@ -100,7 +91,6 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void ShippedLevels_ShouldIncludeFrozenBlocks_WhenLevelSixIsPlayed()
         {
-            // Level 6 shows the ice blocker (T-34): two of its blocks wait for others to leave.
             int frozen = 0;
             foreach (BlockData block in Levels()[5].Data.Blocks)
                 if (block.Blockers.Ice.IsActive)

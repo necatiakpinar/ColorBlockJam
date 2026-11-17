@@ -10,11 +10,6 @@ using VContainer.Unity;
 
 namespace ColorBlockJam.Editor.LevelEditing
 {
-    /// <summary>
-    /// Plays a level straight from the level editor (T-30, level-editor.md §2): saves it as the player's current
-    /// level, enters play mode through Splash as always, and once Home is up opens Gameplay on its own, so the
-    /// designer lands in the level they were editing. Editor-only; the game has no play-test code.
-    /// </summary>
     [InitializeOnLoad]
     public static class LevelPlayTest
     {
@@ -43,7 +38,6 @@ namespace ColorBlockJam.Editor.LevelEditing
             OpenGameplayAsync(home.Container.Resolve<INavigationService>()).Forget();
         }
 
-        /// <summary>Home is loaded while the route that loads it is still finishing; wait for it, then play.</summary>
         static async UniTaskVoid OpenGameplayAsync(INavigationService navigation)
         {
             while (navigation.IsLoading)

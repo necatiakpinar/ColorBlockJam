@@ -7,11 +7,6 @@ using UnityEngine.UI;
 
 namespace ColorBlockJam.Game.Gameplay.Hud
 {
-    /// <summary>
-    /// One authored booster button of the HUD bar (ui.md §5): its stock in a blue badge, or a green "+" badge when
-    /// none are left (a tap then offers one for coins). It grows while its booster waits for a target, and fades
-    /// while it cannot be used.
-    /// </summary>
     public sealed class BoosterButtonView : MonoBehaviour
     {
         [SerializeField]

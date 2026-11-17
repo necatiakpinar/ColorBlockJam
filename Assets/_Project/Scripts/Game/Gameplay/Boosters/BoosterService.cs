@@ -9,13 +9,6 @@ using ColorBlockJam.Game.Gameplay.Signals;
 
 namespace ColorBlockJam.Game.Gameplay.Boosters
 {
-    /// <summary>
-    /// Uses the boosters during a level (boosters.md, DA-36). Each booster's effect is an
-    /// <see cref="IBoosterCommand"/>; this service owns only the shared rules. A command that needs no target runs
-    /// at once. One that does first waits: the level pauses (no timer, no dragging) until the player taps a block or
-    /// cancels. The booster is taken from the stock before the board changes, and the level resumes first, so
-    /// removing the last block wins as any exit does.
-    /// </summary>
     public sealed class BoosterService : IDisposable
     {
         readonly ActiveBoard _board;
@@ -32,24 +25,16 @@ namespace ColorBlockJam.Game.Gameplay.Boosters
             _session = session;
             _inventory = inventory;
             _signalBus = signalBus;
-            // Add throws on a second command for the same booster: a setup bug that must fail loudly.
             for (int i = 0; i < commands.Count; i++)
                 _commands.Add(commands[i].Type, commands[i]);
             _signalBus.Subscribe<BoardPointerSignal>(OnBoardPointer);
             _signalBus.Subscribe<LevelStartedSignal>(OnLevelStarted);
         }
 
-        /// <summary>A booster is waiting for the player to tap a block.</summary>
         public bool IsTargeting => _pending != null;
 
-        /// <summary>The booster waiting for a target; meaningful only while <see cref="IsTargeting"/>.</summary>
         public BoosterType Targeting => _pending.Type;
 
-        /// <summary>
-        /// Starts using a booster: one that needs no target works at once, the others wait for one. Nothing happens
-        /// when the player has none left (<see cref="BoosterUse.NeedsPurchase"/>) or the level cannot take it now
-        /// (not playing, already choosing a target, or the command refuses).
-        /// </summary>
         public BoosterUse Activate(BoosterType type)
         {
             if (_inventory.Count(type) == 0)
@@ -70,7 +55,6 @@ namespace ColorBlockJam.Game.Gameplay.Boosters
             return BoosterUse.Targeting;
         }
 
-        /// <summary>Gives up choosing a target: the booster is kept and the level plays on.</summary>
         public void CancelTargeting()
         {
             if (!IsTargeting)
@@ -103,7 +87,6 @@ namespace ColorBlockJam.Game.Gameplay.Boosters
                 ? command
                 : throw new InvalidOperationException($"No command is registered for the {type} booster.");
 
-        /// <summary>A restart drops a target being chosen; the new attempt already plays.</summary>
         void OnLevelStarted(LevelStartedSignal signal)
         {
             if (IsTargeting)

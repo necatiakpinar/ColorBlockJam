@@ -6,19 +6,6 @@ using ColorBlockJam.Game.Levels;
 
 namespace ColorBlockJam.Game.Gameplay.Session
 {
-    /// <summary>
-    /// Owns the attempt at the current level and the only legal ways its <see cref="LevelState"/> changes
-    /// (gameplay.md §6):
-    /// <code>
-    /// Loading --Start--> Playing --Pause--> Paused --Resume--> Playing
-    /// Playing --(board cleared)--> Won        Playing --Fail--> Failed
-    /// Playing | Paused | Failed --Restart--> Playing (a fresh board from the level data)
-    /// Won --Next(n)--> Playing (the next level, on a fresh board)
-    /// Failed --Continue(s)--> Playing (the same board, s more seconds on the timer)
-    /// </code>
-    /// Anything else is refused: the method returns false and nothing changes or fires, so a double tap or
-    /// a late timer cannot corrupt the attempt. The state is committed before its signal fires.
-    /// </summary>
     public sealed class LevelSession : IDisposable
     {
         readonly ActiveBoard _board;
@@ -35,10 +22,8 @@ namespace ColorBlockJam.Game.Gameplay.Session
 
         public LevelState State { get; private set; } = LevelState.Loading;
 
-        /// <summary>The level being attempted, 1-based (DA-2); 0 before the first start.</summary>
         public int LevelNumber { get; private set; }
 
-        /// <summary>Starts an attempt at <paramref name="levelNumber"/> on a fresh board.</summary>
         public bool Start(int levelNumber)
         {
             if (State != LevelState.Loading)
@@ -65,7 +50,6 @@ namespace ColorBlockJam.Game.Gameplay.Session
             return true;
         }
 
-        /// <summary>Plays the same level again from its data: nothing of the previous attempt stays (DA-15).</summary>
         public bool Restart()
         {
             if (State is not (LevelState.Playing or LevelState.Paused or LevelState.Failed))
@@ -74,7 +58,6 @@ namespace ColorBlockJam.Game.Gameplay.Session
             return true;
         }
 
-        /// <summary>After a win, starts the attempt at <paramref name="levelNumber"/> (the next level).</summary>
         public bool Next(int levelNumber)
         {
             if (State != LevelState.Won)
@@ -83,10 +66,6 @@ namespace ColorBlockJam.Game.Gameplay.Session
             return true;
         }
 
-        /// <summary>
-        /// After a loss, plays on with the board as it is and <paramref name="extraSeconds"/> more on the timer
-        /// (DA-30). <see cref="LevelContinueService"/> takes the price before it calls this.
-        /// </summary>
         public bool Continue(int extraSeconds)
         {
             if (State != LevelState.Failed)

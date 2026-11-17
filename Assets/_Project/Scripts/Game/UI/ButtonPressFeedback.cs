@@ -7,11 +7,6 @@ using UnityEngine.UI;
 
 namespace ColorBlockJam.Game.UI
 {
-    /// <summary>
-    /// Scales a button down while pressed and springs it back on release. Every button in the game
-    /// carries one (R-12, R-14), so it reads its config asset directly instead of through the
-    /// container: it has no service dependency and would otherwise need registering per button.
-    /// </summary>
     [RequireComponent(typeof(Button))]
     public sealed class ButtonPressFeedback : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
@@ -62,7 +57,6 @@ namespace ColorBlockJam.Game.UI
 
         void OnDisable()
         {
-            // A button hidden mid-press must come back at its authored size.
             _sequence?.Kill();
             _isPressed = false;
             _target.localScale = _restScale;

@@ -22,7 +22,6 @@ namespace ColorBlockJam.Game.Scopes
         protected override void Configure(IContainerBuilder builder)
         {
             new HomeInstaller().Install(builder);
-            // The popup prefabs are needed while this scope is configured, so they come from the root's configs now.
             var popups = Parent.Container.Resolve<HomePopupConfig>();
 
             builder.RegisterComponent(_homeView);

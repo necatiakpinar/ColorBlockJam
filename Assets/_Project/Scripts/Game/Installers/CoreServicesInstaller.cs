@@ -16,10 +16,6 @@ using VContainer.Unity;
 
 namespace ColorBlockJam.Game.Installers
 {
-    /// <summary>
-    /// App-wide services that live for the whole session. Installers hold plain services only, so tests
-    /// can build the same container without a scene; entry points are registered by the scope.
-    /// </summary>
     public sealed class CoreServicesInstaller : IInstaller
     {
         readonly ConfigProvider _configs;

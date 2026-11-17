@@ -8,11 +8,6 @@ using VContainer;
 
 namespace ColorBlockJam.Game.UI
 {
-    /// <summary>
-    /// The lives popup of Home and Gameplay (lives.md, DA-38): the lives held, the countdown to the next one, and
-    /// a Refill button that fills every missing life for coins. The countdown follows <see cref="LivesChangedSignal"/>
-    /// while the popup is open; the flow sets the offer when it opens it.
-    /// </summary>
     public sealed class OutOfLivesPopupView : PopupView, IDisposable
     {
         [Tooltip("\"Out of Lives\" with none left, \"Lives\" otherwise.")]
@@ -60,7 +55,6 @@ namespace ColorBlockJam.Game.UI
             TimerPrefix.CopyTo(0, _timer, 0, TimerPrefix.Length);
         }
 
-        /// <summary>What the popup offers when it opens.</summary>
         public void SetOffer(LivesChangedSignal lives, int price, bool canAfford)
         {
             _priceLabel.SetText("{0}", price);
@@ -91,7 +85,6 @@ namespace ColorBlockJam.Game.UI
                 return;
             }
 
-            // mm:ss written in place, so a tick allocates nothing on device.
             int minutes = Math.Min(99, lives.SecondsToNextLife / 60);
             int seconds = lives.SecondsToNextLife % 60;
             int i = TimerPrefix.Length;
@@ -107,10 +100,6 @@ namespace ColorBlockJam.Game.UI
 
         void OnCloseClicked() => CloseClicked?.Invoke();
 
-        /// <summary>
-        /// The scope disposes the popup with its scene. Unity calls <see cref="OnDestroy"/> only on objects that were
-        /// once active, and a popup never opened never was, so this is what lets go of the app-wide signal bus.
-        /// </summary>
         public void Dispose() => _signalBus.Unsubscribe<LivesChangedSignal>(OnLivesChanged);
 
         protected override void OnDestroy()

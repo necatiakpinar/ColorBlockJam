@@ -7,7 +7,6 @@ namespace ColorBlockJam.Tests.EditMode
 {
     public sealed class ExitPathTests
     {
-        // An L: (0,0) (1,0) (0,1) on a 5x6 board.
         static readonly Vector2Int[] L = { new(0, 0), new(1, 0), new(0, 1) };
         static readonly Vector2Int Board = new(5, 6);
 

@@ -14,7 +14,6 @@ using static ColorBlockJam.Game.Levels.WallSide;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>Win rewards by difficulty (economy.md, DA-7): the provider's table and the service paying it.</summary>
     public sealed class LevelRewardTests
     {
         const string ShippedConfigPath = "Assets/_Project/Configs/LevelRewardConfig.asset";
@@ -30,13 +29,11 @@ namespace ColorBlockJam.Tests.EditMode
         public void SetUp()
         {
             _catalogs = new TestCatalog();
-            // Default table: Normal 10, Hard 25, Very Hard 50.
             _config = ScriptableObject.CreateInstance<LevelRewardConfig>();
             _provider = new LevelRewardProvider(_config);
             _bus = new SignalBus();
             _wallet = new WalletService(new InMemoryKeyValueStorage(), new RecordingLogger(), _bus);
             _wallet.Load();
-            // Levels 1, 2 and 3 are Normal, Hard and Very Hard.
             var levels = new LevelProvider(_catalogs.Create(
                 Level(LevelDifficulty.Normal), Level(LevelDifficulty.Hard), Level(LevelDifficulty.VeryHard)));
             _service = new LevelRewardService(_bus, levels, _provider, _wallet);

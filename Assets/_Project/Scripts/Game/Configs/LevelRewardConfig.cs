@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Configs
 {
-    /// <summary>Coins a win pays for each level difficulty (economy.md, DA-7). Read through <c>LevelRewardProvider</c>.</summary>
     [CreateAssetMenu(menuName = "ColorBlockJam/Configs/Level Reward Config", fileName = "LevelRewardConfig")]
     public sealed class LevelRewardConfig : ScriptableObject
     {
@@ -21,7 +20,6 @@ namespace ColorBlockJam.Game.Configs
         public IReadOnlyList<DifficultyReward> Rewards => _rewards;
     }
 
-    /// <summary>The coins a win at one difficulty pays.</summary>
     [Serializable]
     public struct DifficultyReward
     {

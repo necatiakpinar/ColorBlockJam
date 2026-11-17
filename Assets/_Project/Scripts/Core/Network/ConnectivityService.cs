@@ -8,13 +8,6 @@ using ColorBlockJam.Core.Signals;
 
 namespace ColorBlockJam.Core.Network
 {
-    /// <summary>
-    /// Probes the internet in a loop from <see cref="Start"/> (DA-25): every
-    /// <see cref="ConnectivitySettings.OnlineInterval"/> while online, every
-    /// <see cref="ConnectivitySettings.OfflineInterval"/> while offline, and at once when the app comes back
-    /// from the background or <see cref="ProbeNowAsync"/> is called. Each successful probe hands its server
-    /// time to the <see cref="TrustedClock"/>. Waits are <see cref="IGameClock"/> delays, never per frame.
-    /// </summary>
     public sealed class ConnectivityService : IConnectivityService, IDisposable
     {
         readonly IProbeRequest _probe;
@@ -24,9 +17,7 @@ namespace ColorBlockJam.Core.Network
         readonly IGameLogger _logger;
         readonly ConnectivitySettings _settings;
         readonly CancellationTokenSource _lifetime = new();
-        // Completes the wait between probes early; replaced for every wait.
         UniTaskCompletionSource _wake;
-        // Completed with the result of the next probe; created by whoever waits for it.
         UniTaskCompletionSource<bool> _nextResult;
 
         public ConnectivityService(IProbeRequest probe, IGameClock clock, TrustedClock trustedClock, SignalBus signalBus,
@@ -44,7 +35,6 @@ namespace ColorBlockJam.Core.Network
         public bool IsOnline { get; private set; }
         public bool HasProbed { get; private set; }
 
-        /// <summary>Starts probing. Called once by the Root scope when it is built.</summary>
         public void Start() => RunAsync(_lifetime.Token).Forget();
 
         public UniTask<bool> ProbeNowAsync()
@@ -75,7 +65,6 @@ namespace ColorBlockJam.Core.Network
             }
             catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
             {
-                // Disposed: the loop ends.
             }
         }
 
@@ -118,7 +107,6 @@ namespace ColorBlockJam.Core.Network
         public void Dispose()
         {
             _signalBus.Unsubscribe<ApplicationPausedSignal>(OnApplicationPaused);
-            // Cancelled, not disposed: a request still finishing may link to its token afterwards.
             _lifetime.Cancel();
             _nextResult?.TrySetCanceled();
         }

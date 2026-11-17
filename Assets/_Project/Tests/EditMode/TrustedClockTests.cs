@@ -5,7 +5,6 @@ using ColorBlockJam.Tests.EditMode.Helpers;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>The server time a probe brings, moved on by monotonic time (network.md, DA-27).</summary>
     public sealed class TrustedClockTests
     {
         FakeGameClock _clock;

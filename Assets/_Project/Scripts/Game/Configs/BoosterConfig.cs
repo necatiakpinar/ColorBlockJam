@@ -5,10 +5,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Configs
 {
-    /// <summary>
-    /// Every booster's tunables (boosters.md, DA-36): the stock a new player gets, the price of one more, the words
-    /// the HUD and the purchase popup show, and how long the freeze lasts.
-    /// </summary>
     [CreateAssetMenu(menuName = "ColorBlockJam/Configs/Booster Config", fileName = "BoosterConfig")]
     public sealed class BoosterConfig : ScriptableObject
     {
@@ -38,7 +34,6 @@ namespace ColorBlockJam.Game.Configs
         }
     }
 
-    /// <summary>One booster's stock, price and words.</summary>
     [Serializable]
     public sealed class BoosterSettings
     {

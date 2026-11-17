@@ -13,10 +13,6 @@ using static ColorBlockJam.Game.Levels.WallSide;
 
 namespace ColorBlockJam.Tests.EditMode
 {
-    /// <summary>
-    /// The level editor's checks: the validator answers at once and the solver runs in the background, so an edit
-    /// never waits for it (level-editor.md §3).
-    /// </summary>
     public sealed class LevelCheckerTests
     {
         const int WaitMilliseconds = 5000;

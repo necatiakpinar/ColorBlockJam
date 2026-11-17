@@ -4,10 +4,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Configs
 {
-    /// <summary>
-    /// The authored popup prefabs of the Gameplay scene (ui.md §3). The scope instantiates each one under its
-    /// popup layer and injects it, so the scene holds no popup hierarchy of its own.
-    /// </summary>
     [CreateAssetMenu(menuName = "ColorBlockJam/Configs/Gameplay Popup Config", fileName = "GameplayPopupConfig")]
     public sealed class GameplayPopupConfig : ScriptableObject
     {

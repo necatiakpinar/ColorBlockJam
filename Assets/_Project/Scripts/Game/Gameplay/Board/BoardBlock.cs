@@ -5,11 +5,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Gameplay.Board
 {
-    /// <summary>
-    /// A block during one attempt. Only <see cref="BoardState"/> moves or removes it. The rocket booster can take
-    /// single cells out of it and split it into blocks (DA-36), so its cells may change during the attempt; the
-    /// level data never does. Its <see cref="Blockers"/> (blockers.md) may keep it from being picked up or moved.
-    /// </summary>
     public sealed class BoardBlock
     {
         readonly List<Vector2Int> _startCells;
@@ -27,19 +22,14 @@ namespace ColorBlockJam.Game.Gameplay.Board
         public BlockColor Color { get; }
         public int CellCount => _startCells.Count;
 
-        /// <summary>The cells it still has, where the level placed them (add <see cref="Offset"/> for the board).</summary>
         public IReadOnlyList<Vector2Int> StartCells => _startCells;
 
-        /// <summary>The rules it carries (ice, ...).</summary>
         public IReadOnlyList<IBlocker> Blockers => _blockers;
 
-        /// <summary>How far the block has moved from where the level placed it.</summary>
         public Vector2Int Offset { get; private set; }
 
-        /// <summary>Gone from the board: out through a door, or removed by a booster.</summary>
         public bool HasExited { get; private set; }
 
-        /// <summary>No blocker keeps the player from picking it up.</summary>
         public bool CanBeGrabbed
         {
             get
@@ -51,7 +41,6 @@ namespace ColorBlockJam.Game.Gameplay.Board
             }
         }
 
-        /// <summary>The blocker of kind <typeparamref name="T"/> it carries, if any.</summary>
         public bool TryGetBlocker<T>(out T blocker) where T : class, IBlocker
         {
             for (int i = 0; i < _blockers.Count; i++)
@@ -68,7 +57,6 @@ namespace ColorBlockJam.Game.Gameplay.Board
 
         public Vector2Int GetCell(int index) => _startCells[index] + Offset;
 
-        /// <summary>Every blocker lets the block take this step.</summary>
         internal bool AllowsStep(Vector2Int direction)
         {
             for (int i = 0; i < _blockers.Count; i++)
@@ -77,7 +65,6 @@ namespace ColorBlockJam.Game.Gameplay.Board
             return true;
         }
 
-        /// <summary>The blockers of a piece split off this block: the same rules, in their current state.</summary>
         internal List<IBlocker> CloneBlockersForPiece()
         {
             var copies = new List<IBlocker>(_blockers.Count);
@@ -92,7 +79,6 @@ namespace ColorBlockJam.Game.Gameplay.Board
 
         internal void RemoveCellAt(int index) => _startCells.RemoveAt(index);
 
-        /// <summary>Drops the cells that now lie at <paramref name="boardCells"/> (a piece that split off).</summary>
         internal void RemoveBoardCells(List<Vector2Int> boardCells)
         {
             for (int i = _startCells.Count - 1; i >= 0; i--)
@@ -100,7 +86,6 @@ namespace ColorBlockJam.Game.Gameplay.Board
                     _startCells.RemoveAt(i);
         }
 
-        /// <summary>Puts the block anywhere at once, its blockers as they are after that many exits (solver only).</summary>
         internal void Reset(Vector2Int offset, bool hasExited, int blocksGone)
         {
             Offset = offset;

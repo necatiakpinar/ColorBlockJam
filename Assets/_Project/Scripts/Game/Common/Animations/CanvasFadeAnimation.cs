@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace ColorBlockJam.Game.Common.Animations
 {
-    /// <summary>Fades a canvas group from its current alpha to a target. Runs on unscaled time.</summary>
     public readonly struct CanvasFadeAnimation : IAnimation<CanvasFadeAnimation.Config>
     {
         public readonly struct Config
