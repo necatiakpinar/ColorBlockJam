@@ -10,6 +10,7 @@ owns one area; when a fact changes, it changes in the page that owns it.
 | [Design/README.md](Design/README.md) | the game, requirements, scope, open questions, task status — the design authority |
 | [Design/tasks.md](Design/tasks.md) | per-task subtasks, acceptance criteria, tests and docs |
 | [Design/asset-feedback.md](Design/asset-feedback.md) | problems found in the art assets |
+| [Design/deconstruction.md](Design/deconstruction.md) | what the reference game shows on screen, measured from recordings, and how this project matches it |
 
 ## General (binding pages)
 
