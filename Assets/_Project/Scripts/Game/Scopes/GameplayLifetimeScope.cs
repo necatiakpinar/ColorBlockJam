@@ -1,5 +1,6 @@
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Gameplay;
+using ColorBlockJam.Game.Gameplay.Feedback;
 using ColorBlockJam.Game.Gameplay.Hud;
 using ColorBlockJam.Game.Gameplay.Input;
 using ColorBlockJam.Game.Gameplay.View;
@@ -49,8 +50,12 @@ namespace ColorBlockJam.Game.Scopes
             builder.RegisterComponent(_blockLayerView);
             builder.RegisterComponent(_boardCameraView);
 
-            // Listens to board input without being an entry point: build it before any entry point starts.
-            builder.RegisterBuildCallback(resolver => resolver.Resolve<BlockDragController>());
+            // Listen to board signals without being entry points: build them before any entry point starts.
+            builder.RegisterBuildCallback(resolver =>
+            {
+                resolver.Resolve<BlockDragController>();
+                resolver.Resolve<GameplayHaptics>();
+            });
 
             builder.RegisterEntryPoint<GameplayFlow>();
         }

@@ -8,7 +8,9 @@ using ColorBlockJam.Core.Scenes;
 using ColorBlockJam.Core.Signals;
 using ColorBlockJam.Game.Boot;
 using ColorBlockJam.Game.Configs;
+using ColorBlockJam.Core.Haptics;
 using ColorBlockJam.Game.Gameplay.Board;
+using ColorBlockJam.Game.Gameplay.Feedback;
 using ColorBlockJam.Game.Gameplay.Input;
 using ColorBlockJam.Game.Installers;
 using ColorBlockJam.Game.Levels;
@@ -63,6 +65,7 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(container.Resolve<INavigationService>(), Is.Not.Null);
             Assert.That(container.Resolve<UiConfig>(), Is.Not.Null);
             Assert.That(container.Resolve<LevelCatalog>(), Is.Not.Null);
+            Assert.That(container.Resolve<IHapticService>(), Is.Not.Null);
         }
 
         [Test]
@@ -131,6 +134,7 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(container.Resolve<LevelProvider>(), Is.Not.Null);
             Assert.That(container.Resolve<ActiveBoard>(), Is.Not.Null);
             Assert.That(container.Resolve<BlockDragController>(), Is.Not.Null);
+            Assert.That(container.Resolve<GameplayHaptics>(), Is.Not.Null);
         }
 
         [Test]

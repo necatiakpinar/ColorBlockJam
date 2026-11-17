@@ -28,6 +28,8 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 - [ ] 👁 Dragging feels smooth: the block trails the finger by about a tenth of a second and never teleports.
 - [ ] ⚙ A press just next to a block picks it; a press further away picks nothing — `BlockDragControllerTests.Grab_ShouldPickTheNearestBlock_WhenThePressMissesItByLittle`, `Grab_ShouldPickNothing_WhenThePressIsBeyondTheTouchTolerance`
 - [ ] ⚙ Pushing a block into a door it cannot use knocks it once per push and lets it spring back; a plain wall does nothing — `BlockDragControllerTests.Drag_ShouldRejectOncePerPush_WhenPushedIntoADoorOfAnotherColour`, `Drag_ShouldNotReject_WhenPushedIntoAPlainWall`, `GameplayBoardTests.Reject_ShouldKnockTheBlockAndLetItSpringBack_WhenPushedIntoAWrongDoor`
+- [ ] ⚙ A refused push taps the device firmly and an exit lightly — `GameplayHapticsTests`
+- [ ] 👁 On an Android and an iOS device, the taps are short and crisp (not a long buzz).
 - [ ] ⚙ A held block with no room leans a little and snaps back — `BlockDragControllerTests.Drag_ShouldLeanTowardTheFingerButNotCommit_WhenTheBlockHasNoRoom`
 - [ ] ⚙ The held block is outlined — `GameplayBoardTests.Outline_ShouldShowWhileABlockIsHeld_WhenGrabbedAndHideOnRelease`
 - [ ] 👁 The outline stays visible where another object covers the block.

@@ -34,6 +34,7 @@ new fake.
 | `LevelDefinitionTests` | level data survives asset serialization; wall lengths |
 | `BoardStateTests` | moves, walls, blocks, door fit on every wall, clear path out, win, fresh restart, `CanStep`, zero allocation |
 | `LevelProviderTests` | level number to catalog entry; looping; empty catalog |
+| `GameplayHapticsTests` | a refused push taps medium, an exit taps light, nothing after dispose (`RecordingHaptics`) |
 | `ExitPathTests` | a leaving block's wall, length, door span, edge and door centre |
 | `ActiveBoardTests` | a load sizes the board space and starts fresh; steps announce move, exit (with the cell left from) and clear |
 | `BlockDragControllerTests` | free follow and diagonals, nearest-cell commit, fast drags, sliding, slipping into gaps without drift, jitter on a slow push, or locking out of a side corridor or a wobbled-at gap, exit on a small push into the door, picking a block a press narrowly missed, rejecting a wrong door once per push but never a plain wall, lean, grab, snap, exit, zero allocation |

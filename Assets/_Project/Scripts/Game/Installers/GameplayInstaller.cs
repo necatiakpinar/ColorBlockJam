@@ -1,5 +1,6 @@
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Gameplay.Board;
+using ColorBlockJam.Game.Gameplay.Feedback;
 using ColorBlockJam.Game.Gameplay.Input;
 using ColorBlockJam.Game.Levels;
 using ColorBlockJam.Game.UI;
@@ -29,6 +30,7 @@ namespace ColorBlockJam.Game.Installers
             builder.Register<LevelProvider>(Lifetime.Singleton);
             builder.Register<ActiveBoard>(Lifetime.Singleton);
             builder.Register<BlockDragController>(Lifetime.Singleton);
+            builder.Register<GameplayHaptics>(Lifetime.Singleton);
             builder.Register<IPopupService, PopupService>(Lifetime.Singleton);
         }
     }

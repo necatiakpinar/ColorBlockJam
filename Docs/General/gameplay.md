@@ -136,6 +136,13 @@ All board views listen to signals only; the model has committed every change bef
    On `BlockExitedSignal` the **`BoardView`** opens the door: each door segment the block passes sinks
    `DoorGateDepth` into the floor while the block settles, stays down while it slides through, then rises
    back (`DoorGateAnimation`, `DoorGateCloseDuration`) (DA-21).
+   **`GameplayHaptics`** (plain class, Gameplay scope, built by the scope's build callback) taps the
+   device on board events: `GameplayConfig.RejectHaptic` (Medium) on `BlockRejectedSignal`,
+   `ExitHaptic` (Light) on `BlockExitedSignal`. The taps go through the root scope's `IHapticService`
+   (`Core/Haptics/MobileHapticService`): Android `VibrationEffect` predefined effects (one-shot pulses
+   before API 29; the VIBRATE permission comes from `Plugins/Android/ColorBlockJamHaptics.androidlib`),
+   iOS `UIImpactFeedbackGenerator` (`Plugins/iOS/ColorBlockJamHaptics.mm`), silent in the editor. No
+   third-party haptics package. The Settings vibration toggle does not gate it yet (T-25).
 4. Every part, block view and piece comes from a pool (`PartPool`, `ObjectPool`), so a restart or the next
    level reuses objects. Colours are one shared material per colour (`ColorMaterialCache`) to keep the SRP
    batcher batching.

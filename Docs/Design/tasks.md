@@ -310,11 +310,12 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - **Subtasks:**
   - [x] Near-miss press, rejection signal and shake.
   - [x] Door gate, spray coalescing, `ExitPath`.
-  - [ ] Haptic on rejection (needs a native vibration plugin; decision pending).
+  - [x] Haptics: own `IHapticService` (Android `VibrationEffect`, iOS `UIImpactFeedbackGenerator`), medium
+    tap on rejection, light tap on exit (`GameplayHaptics`). Settings toggle gating lands with T-25.
 - **Accept:** a press 0.25 cell next to a block picks it; a push into a wrong door shakes the block once;
   doors sink open and close for a leaving block; two blocks leaving one door together make one spray.
 - **Tests:** `EM BlockDragControllerTests` (near miss, rejection), `EM BoardStateTests.IsRejectedByDoor_*`,
-  `EM ExitPathTests`, `PM GameplayBoardTests` (reject shake, door gate, shared spray).
+  `EM ExitPathTests`, `EM GameplayHapticsTests`, `PM GameplayBoardTests` (reject shake, door gate, shared spray).
 - **Docs:** `gameplay.md` §4–§5, `art-pipeline.md` §4, `testing.md`, `gameplay-qa.md`.
 
 ---

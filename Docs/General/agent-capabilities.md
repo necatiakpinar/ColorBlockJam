@@ -60,6 +60,12 @@ Updated: 2026-11-17
   wanted hunks, then `git hash-object -w --no-filters --stdin` and `git update-index --cacheinfo` (the
   index stores LF) (2026-11-17).
 
+- Platform-only code (`#if UNITY_ANDROID && !UNITY_EDITOR`) does not compile in the editor; check it with
+  `PlayerBuildInterface.CompilePlayerScripts` (target Android) from `execute_code`, a few seconds. The iOS
+  build module is not installed on this machine, so iOS-only code cannot be compiled here (2026-11-17).
+- `ProjectSettings.asset` `projectName` keeps coming back as the old cloud project name after Unity saves;
+  set it through `SerializedObject` and check the YAML before committing (2026-11-17).
+
 ## 2. Shell (Windows, Git Bash)
 
 - Long multi-file `cat <<'EOF'` heredoc chains in one Bash call can fail with "unexpected EOF while

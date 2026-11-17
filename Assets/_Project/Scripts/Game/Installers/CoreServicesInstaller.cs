@@ -1,3 +1,4 @@
+using ColorBlockJam.Core.Haptics;
 using ColorBlockJam.Core.Logging;
 using ColorBlockJam.Core.Persistence;
 using ColorBlockJam.Core.Scenes;
@@ -39,6 +40,7 @@ namespace ColorBlockJam.Game.Installers
             builder.Register<IPlayerProgressService, PlayerProgressService>(Lifetime.Singleton);
             builder.Register<ISceneLoader, SceneLoader>(Lifetime.Singleton);
             builder.Register<INavigationService, NavigationService>(Lifetime.Singleton);
+            builder.Register<IHapticService, MobileHapticService>(Lifetime.Singleton);
         }
     }
 }
