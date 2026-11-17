@@ -41,7 +41,8 @@ mistake. The level editor (T-30) refuses to save on errors and asks the designer
 | 10 | Every door has at least one block of its colour | warning |
 | 11 | The level has a difficulty (old levels read as `Normal`) | error |
 
-Rule 9 is a necessary condition only; whether the level can actually be solved is T-33.
+Rule 9 is a necessary condition only; whether the level can actually be finished is the solver's answer
+(`LevelSolver`, [level-editor.md](level-editor.md) §3), shown live in the level editor.
 
 ## 3. Runtime use
 

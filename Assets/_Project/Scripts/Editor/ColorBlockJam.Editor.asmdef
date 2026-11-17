@@ -4,7 +4,8 @@
     "references": [
         "ColorBlockJam.Core",
         "ColorBlockJam.Game",
-        "VContainer"
+        "VContainer",
+        "UniTask"
     ],
     "includePlatforms": [
         "Editor"

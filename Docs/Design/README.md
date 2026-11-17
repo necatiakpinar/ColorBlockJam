@@ -54,7 +54,7 @@ requirement keeps its id and is marked `Dropped`.
 | R-28 | The editor shows the level visually, not only as numeric fields | must | T-27 |
 | R-29 | Saved levels have one format, and the game reads that same format | must | T-08, T-30 |
 | R-30 | The 5 shipped levels are made with the editor | must | T-32 |
-| R-31 | The editor warns before saving an unsolvable level | could | T-33 |
+| R-31 | The editor warns before saving an unsolvable level | must (developer, 2026-11-17) | T-33 |
 | R-32 | Functional boosters | could | T-36 |
 | R-33 | Ice blocker | could | T-34 |
 | R-34 | Arrow block | could | T-35 |
@@ -69,6 +69,10 @@ requirement keeps its id and is marked `Dropped`.
 | R-43 | The game needs a working internet connection: without one, a full-screen "No internet connection" popup with a Retry button blocks the game at boot and during play, and closes itself once the connection is back | must | T-44, T-45, T-46 |
 | R-44 | Wall-clock game features (lives refill, daily rewards) read a trusted time taken from the internet, never the device clock | should | T-44 |
 | R-45 | Changing the device clock cannot change the level timer | must | T-15 |
+| R-46 | The editor generates a level from settings (board size, colours, block count, difficulty, seed) that passes validation and can be finished | must | T-47 |
+| R-47 | The editor checks the level live: door sizes and positions, blocks that fit no door, overlaps, and whether every block can get out; it shows a working solution step by step | must | T-30, T-33 |
+| R-48 | Every editor tool has a keyboard shortcut, listed in the editor | must | T-31 |
+| R-49 | The editor sets each level's difficulty, which sets its reward | must | T-27 |
 
 ## 2. Scope decisions
 
@@ -102,6 +106,9 @@ requirement keeps its id and is marked `Dropped`.
    real time, which the device clock does not move (R-45, T-15). The no-internet popup sits above every
    scene and every other popup, so it lives on the Root scope, outside the scenes' one-popup
    `IPopupService`. This replaces the rule that Splash never waits on the network (splash-boot.md §1).
+10. **The level editor is one task chain on branch `feature/level_editor`** (developer, 2026-11-17): T-26 –
+   T-31, the solver T-33 (pulled out of the optional scope: the developer wants every level proved
+   finishable) and the generator T-47 land there and merge into `main` together.
 
 ## 3. Open questions
 
@@ -145,14 +152,14 @@ task is marked `Dropped`, never deleted. Detail per task: [tasks.md](tasks.md).
 | T-23 | 6 | Home screen layout | Top UI, level button, tab bar match the assets at 1080x1920 and 20:9 | T-05 | Done |
 | T-24 | 6 | Home behaviors | Level button plays the current level; settings opens Settings | T-23, T-04 | Done |
 | T-25 | 7 | Settings popup | Three toggles show on/off; buttons give feedback; close returns Home | T-05, T-07 | Done |
-| T-26 | 8 | Level editor window and level list | Designer opens the editor, creates, duplicates, deletes, reorders levels | T-08 | Todo |
-| T-27 | 8 | Visual board canvas, size and timer | Board drawn as a grid; width, height and timer editable | T-26 | Todo |
-| T-28 | 8 | Block placement tools | Paint, colour, move, rotate, delete blocks on the canvas | T-27 | Todo |
-| T-29 | 8 | Door placement tools | Place, recolour, resize, delete doors on wall edges | T-27 | Todo |
-| T-30 | 8 | Save, load, play-test and structural validation | Save writes the game's format; Play opens the level in the game | T-28, T-29, T-14 | Todo |
-| T-31 | 8 | Editor usability pass and designer guide | A new user makes and plays a level with only the in-editor help | T-30 | Todo |
+| T-26 | 8 | Level editor window and level list | Designer opens the editor, creates, duplicates, deletes, reorders levels | T-08 | Done |
+| T-27 | 8 | Visual board canvas, size and timer | Board drawn as a grid; width, height and timer editable | T-26 | Done |
+| T-28 | 8 | Block placement tools | Paint, colour, move, rotate, delete blocks on the canvas | T-27 | Done |
+| T-29 | 8 | Door placement tools | Place, recolour, resize, delete doors on wall edges | T-27 | Done |
+| T-30 | 8 | Save, load, play-test and structural validation | Save writes the game's format; Play opens the level in the game | T-28, T-29, T-14 | Done |
+| T-31 | 8 | Editor usability pass and designer guide | A new user makes and plays a level with only the in-editor help | T-30 | In progress |
 | T-32 | 9 | Author levels 1–5 in the editor | Five levels, rising difficulty, each solvable within its timer | T-31, T-22 | In progress |
-| T-33 | 10 | (could) Solvability validation | Saving an unsolvable level shows a warning | T-30 | Todo |
+| T-33 | 10 | (could) Solvability validation | Saving an unsolvable level shows a warning | T-30 | Done |
 | T-34 | 10 | (could) Ice blocker | Frozen block thaws after N exits; editor places it | T-32 | Todo |
 | T-35 | 10 | (could) Arrow block | Block moves only along its arrow; editor places it | T-32 | Todo |
 | T-36 | 10 | (could) One functional booster | Freeze or hammer works with a count | T-32 | Todo |
@@ -165,6 +172,7 @@ task is marked `Dropped`, never deleted. Detail per task: [tasks.md](tasks.md).
 | T-44 | 4 | Connectivity probe and trusted time | Online state follows a real request; server time is readable once a probe succeeds | T-04 | Done |
 | T-45 | 5 | No-internet popup over every scene | Going offline anywhere shows the blocking popup; in gameplay the timer and input stop; back online closes it | T-44, T-05, T-15 | Todo |
 | T-46 | 5 | Boot waits for a connection | Splash does not reach Home offline; the popup's Retry or a returning connection continues the boot | T-44, T-45 | Todo |
+| T-47 | 8 | Level generator | Generate builds a valid, solvable level matching the chosen size, colours, block count and difficulty | T-33, T-28, T-29 | Done |
 | T-43 | 3 | Touch and door feel | Near-miss presses pick a block; wrong doors stop a block like a wall; doors open and close; close exits share one spray | T-12, T-13 | Done |
 
 Status values: `Todo`, `In progress`, `Blocked`, `Done`, `Dropped`.

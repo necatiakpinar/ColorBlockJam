@@ -4,6 +4,7 @@
     "references": [
         "ColorBlockJam.Core",
         "ColorBlockJam.Game",
+        "ColorBlockJam.Editor",
         "UniTask",
         "VContainer",
         "UnityEngine.TestRunner",

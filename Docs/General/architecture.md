@@ -25,14 +25,16 @@ Assets/_Project/
 │   ├── Boot/            boot steps, TweeningInitializer
 │   ├── Splash/          SplashFlow, SplashView
 │   ├── Home/            HomeFlow, HomeView
-│   ├── Levels/          LevelData, LevelDefinition, LevelCatalog, LevelProvider, validator
+│   ├── Levels/          LevelData, LevelDefinition, LevelCatalog, LevelProvider, validator, BlockShape
+│   │   ├── Solving/     LevelSolver (can a level be finished)
+│   │   └── Generation/  LevelGenerator (build a level from settings)
 │   ├── Economy/         LevelRewardProvider, LevelRewardService
 │   ├── Debugging/       GameplayDebugCommands (the debug window's shortcuts)
 │   ├── UI/              safe area, button press feedback, popup service, PopupView, SettingToggleView
 │   ├── Gameplay/        GameplayFlow, signals, HUD, Board/ (rules, ActiveBoard), Input/ (touch, drag),
 │   │                    View/ (board, blocks, tiling, camera), Animations/
 │   └── Common/Animations/  reusable IAnimation structs
-├── Scripts/Editor/    ColorBlockJam.Editor   editor tooling
+├── Scripts/Editor/    ColorBlockJam.Editor   editor tooling: LevelEditing/ (level editor), Debugging/
 ├── Tests/EditMode/    ColorBlockJam.Tests.EditMode
 ├── Tests/PlayMode/    ColorBlockJam.Tests.PlayMode
 ├── Scenes/            Splash (build index 0), Home, Gameplay

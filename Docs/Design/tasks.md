@@ -42,14 +42,14 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - [x] [T-23 Home screen layout](#t-23-home-screen-layout)
 - [x] [T-24 Home behaviors](#t-24-home-behaviors)
 - [x] [T-25 Settings popup](#t-25-settings-popup)
-- [ ] [T-26 Level editor window and level list](#t-26-level-editor-window-and-level-list)
-- [ ] [T-27 Visual board canvas, size and timer](#t-27-visual-board-canvas-size-and-timer)
-- [ ] [T-28 Block placement tools](#t-28-block-placement-tools)
-- [ ] [T-29 Door placement tools](#t-29-door-placement-tools)
-- [ ] [T-30 Save, load, play-test and structural validation](#t-30-save-load-play-test-and-structural-validation)
+- [x] [T-26 Level editor window and level list](#t-26-level-editor-window-and-level-list)
+- [x] [T-27 Visual board canvas, size and timer](#t-27-visual-board-canvas-size-and-timer)
+- [x] [T-28 Block placement tools](#t-28-block-placement-tools)
+- [x] [T-29 Door placement tools](#t-29-door-placement-tools)
+- [x] [T-30 Save, load, play-test and structural validation](#t-30-save-load-play-test-and-structural-validation)
 - [ ] [T-31 Editor usability pass and designer guide](#t-31-editor-usability-pass-and-designer-guide)
 - [ ] [T-32 Author levels 1–5 in the editor](#t-32-author-levels-15-in-the-editor)
-- [ ] [T-33 (could) Solvability validation](#t-33-could-solvability-validation)
+- [x] [T-33 Solvability validation](#t-33-could-solvability-validation)
 - [ ] [T-34 (could) Ice blocker](#t-34-could-ice-blocker)
 - [ ] [T-35 (could) Arrow block](#t-35-could-arrow-block)
 - [ ] [T-36 (could) One functional booster](#t-36-could-one-functional-booster)
@@ -63,6 +63,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - [x] [T-44 Connectivity probe and trusted time](#t-44-connectivity-probe-and-trusted-time)
 - [ ] [T-45 No-internet popup over every scene](#t-45-no-internet-popup-over-every-scene)
 - [ ] [T-46 Boot waits for a connection](#t-46-boot-waits-for-a-connection)
+- [x] [T-47 Level generator](#t-47-level-generator)
 
 ---
 
@@ -597,18 +598,20 @@ and (T-33) the solver from `ColorBlockJam.Game`, so the editor never has its own
   through `Undo.RecordObject`.
 - **Accept:** a designer creates, duplicates, deletes and reorders levels without touching the Project
   window; Ctrl+Z undoes each action.
-- **Tests:** `EM LevelCatalogEditingTests` (create/append/reorder on a temp catalog).
+  - [x] Built (level-editor.md); edits are undoable through `LevelEditorState`; Copy and Delete confirm.
+- **Tests:** `EM LevelCatalogEditingTests` (append, duplicate, move, delete, save on a temp catalog).
 - **Docs:** `Docs/General/level-editor.md` (designer guide + internals); `Docs/testing/level-editor-qa.md`.
 
 ### T-27 Visual board canvas, size and timer
 
-- **Req:** R-26, R-28.
-- **Arch:** centre panel draws the board as a scaled grid (walls, cells, blocks in their colours, doors on
+- **Req:** R-26, R-28, R-49.
+- **Arch:** the inspector also sets the difficulty (Normal, Hard, Very Hard) and shows its reward.
+  Centre panel draws the board as a scaled grid (walls, cells, blocks in their colours, doors on
   the wall ring); inspector panel: Width and Height steppers (bounded by `LevelRulesConfig`), Timer field in
   seconds with an `mm:ss` preview. Shrinking that would cut blocks or doors asks to confirm and lists what
   gets removed.
 - **Accept:** changing size redraws immediately; the canvas scales to the window; no numeric-only view.
-- **Tests:** `EM LevelResizeTests` (content kept, out-of-bounds items reported).
+- **Tests:** `EM LevelDraftTests` (resize keeps what fits and reports what goes).
 - **Docs:** `level-editor.md`.
 
 ### T-28 Block placement tools
@@ -618,7 +621,7 @@ and (T-33) the solver from `ColorBlockJam.Game`, so the editor never has its own
   presets (1x1, 1x2, 1x3, L, T, S, 2x2) plus free paint (drag over cells to build a connected shape).
   Rotate 90° (R key / button). Overlaps and disconnected shapes are prevented live with a red preview.
 - **Accept:** a designer places, recolours, moves, rotates and deletes blocks with the mouse only.
-- **Tests:** `EM BlockEditingTests` (rotate, move, overlap rejection) on the pure editing model.
+- **Tests:** `EM LevelDraftTests` (add, move, rotate, overlap and connectivity rejection).
 - **Docs:** `level-editor.md`.
 
 ### T-29 Door placement tools
@@ -627,12 +630,14 @@ and (T-33) the solver from `ColorBlockJam.Game`, so the editor never has its own
 - **Arch:** Door tool: click a wall cell to add a 1-cell door in the selected colour; drag along the wall to
   set length; click a door to select, change colour, resize or delete. Corners are not valid door cells.
 - **Accept:** doors appear on the canvas in their colour and length; invalid spots show why.
-- **Tests:** `EM DoorEditingTests`.
+- **Tests:** `EM LevelDraftTests` (doors stay on their wall and apart).
 - **Docs:** `level-editor.md`.
 
 ### T-30 Save, load, play-test and structural validation
 
-- **Req:** R-27, R-29, R-31 (partial).
+- **Req:** R-27, R-29, R-31 (partial), R-47.
+- Built with a simpler play-test than first planned: `LevelPlayTest` makes the level the saved current
+  level and opens Gameplay once Home is up, so the game needs no play-test code (level-editor.md §2).
 - **Arch:** Save writes the `LevelDefinition` asset (`EditorUtility.SetDirty` + `AssetDatabase.SaveAssets`);
   a dirty marker and "unsaved changes" prompt on switching levels or closing. **Play** saves, stores the
   chosen level in a `PlayTestRequest` (EditorPrefs, editor-only) and enters Play mode through Splash;
@@ -640,15 +645,17 @@ and (T-33) the solver from `ColorBlockJam.Game`, so the editor never has its own
   validator's issues show in a list; errors block save, warnings ask to confirm.
 - **Accept:** a designer makes a level, saves, presses Play and plays it with no code or file edits; the game
   loads the exact asset the editor saved.
-- **Tests:** `EM PlayTestRequestTests`; `PM PlayTestLevelTests` (requested level is the one loaded).
+- **Tests:** `EM NavigationServiceTests.IsLoading_*`; play-test checked by hand (`level-editor-qa.md`).
 - **Docs:** `level-editor.md`; `splash-boot.md` (play-test override).
 
 ### T-31 Editor usability pass and designer guide
 
-- **Req:** R-36.
+- **Req:** R-36, R-48. Implements DA-34.
 - **Subtasks:**
-  - [ ] Tooltips on every control
-  - [ ] A collapsible help box with the 5-step "make a level" guide
+  - [x] Tooltips on every control
+  - [x] A collapsible help box with the 5-step "make a level" guide
+  - [x] Shortcuts (DA-34), hover highlight, empty-catalog message
+  - [ ] Hallway test with someone new (`level-editor-qa.md`)
   keyboard shortcuts (1–4 tools, R rotate, Del delete, Ctrl+S save); hover highlight of the cell under the
   mouse; empty-state message when the catalog is empty; consistent colours and spacing.
 - **Accept:** someone who has not seen the editor builds and plays a 2-block level following only the
@@ -678,13 +685,29 @@ and (T-33) the solver from `ColorBlockJam.Game`, so the editor never has its own
 
 ## Chapter 10 — Optional scope (only after chapters 0–9 are Done)
 
-### T-33 (could) Solvability validation
+### T-33 Solvability validation (pulled into the editor chain, README §2 item 10)
 
-- **Req:** R-31.
+- **Req:** R-31, R-47. Implements DA-32.
 - **Arch:** `LevelSolver` (pure, Game assembly): breadth-first search over board states with a visited hash
   and a state cap from `LevelRulesConfig`; returns Solvable, Unsolvable or Unknown (cap hit). The editor runs
   it before save and warns.
-- **Tests:** `EM LevelSolverTests` (solvable, unsolvable, cap).
+- **Tests:** `EM LevelSolverTests` (solvable, unsolvable, cap, the returned solution clears the board).
+- The editor shows the solution as a list of moves and steps the canvas through it.
+
+### T-47 Level generator
+
+- **Req:** R-46. Implements DA-33.
+- **Arch:** `LevelGenerator` (pure, Game assembly, seeded `System.Random`): places one door per colour on
+  the wall ring, then blocks from the shape presets in those colours, each fitting a door of its colour;
+  keeps a candidate only when the validator reports no errors and `LevelSolver` proves it solvable, and
+  rates it by the solution's moves to match the difficulty. Suggests a timer. The editor's Generate panel
+  sets width, height, colours, blocks, difficulty and seed, and loads the result into the canvas to edit
+  further.
+- **Accept:** Generate gives a valid, solvable level with the chosen settings; the same seed gives the same
+  level; a level that cannot be made within the attempts says so instead of returning a broken one.
+- **Tests:** `EM LevelGeneratorTests` (valid and solvable, seed repeats, settings respected, impossible
+  settings report failure).
+- **Docs:** `level-editor.md`.
 
 ### T-34 (could) Ice blocker
 
