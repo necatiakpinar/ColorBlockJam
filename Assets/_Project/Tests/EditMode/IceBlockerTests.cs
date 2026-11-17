@@ -124,6 +124,7 @@ namespace ColorBlockJam.Tests.EditMode
 
             rig.Service.Activate(Game.Boosters.BoosterType.Hammer);
             _bus.Fire(new BoardPointerSignal(BoardPointerPhase.Pressed, new Vector2Int(1, 0), Vector3.zero));
+            _bus.Fire(new BoardPointerSignal(BoardPointerPhase.Released, new Vector2Int(1, 0), Vector3.zero));
 
             BoardBlock yellow = _board.Current.Blocks[2];
             Assert.That(yellow.HasExited, Is.False);

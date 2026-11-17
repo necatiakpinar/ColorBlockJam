@@ -22,6 +22,7 @@ namespace ColorBlockJam.Game.Gameplay.Input
         readonly SignalBus _signalBus;
         int _blockId = NoBlock;
         bool _acceptsInput = true;
+        bool _boosterTargeting;
         Vector2 _position;
         Vector2 _grab;
         Vector2 _target;
@@ -41,6 +42,7 @@ namespace ColorBlockJam.Game.Gameplay.Input
             _signalBus.Subscribe<LevelPausedSignal>(OnLevelPaused);
             _signalBus.Subscribe<LevelCompletedSignal>(OnLevelCompleted);
             _signalBus.Subscribe<LevelFailedSignal>(OnLevelFailed);
+            _signalBus.Subscribe<BoosterTargetingChangedSignal>(OnBoosterTargetingChanged);
         }
 
         void OnBoardLoaded(BoardLoadedSignal signal) => _blockId = NoBlock;
@@ -55,9 +57,21 @@ namespace ColorBlockJam.Game.Gameplay.Input
 
         void OnLevelFailed(LevelFailedSignal signal) => StopInput();
 
+        void OnBoosterTargetingChanged(BoosterTargetingChangedSignal signal)
+        {
+            _boosterTargeting = signal.Active;
+            if (signal.Active)
+                DropHeldBlock();
+        }
+
         void StopInput()
         {
             _acceptsInput = false;
+            DropHeldBlock();
+        }
+
+        void DropHeldBlock()
+        {
             if (_blockId == NoBlock)
                 return;
             if (!_board.Current.Blocks[_blockId].HasExited)
@@ -67,7 +81,7 @@ namespace ColorBlockJam.Game.Gameplay.Input
 
         void OnBoardPointer(BoardPointerSignal signal)
         {
-            if (!_acceptsInput)
+            if (!_acceptsInput || _boosterTargeting)
                 return;
             using ProfilerMarker.AutoScope scope = DragMarker.Auto();
             switch (signal.Phase)
@@ -341,6 +355,7 @@ namespace ColorBlockJam.Game.Gameplay.Input
             _signalBus.Unsubscribe<LevelResumedSignal>(OnLevelResumed);
             _signalBus.Unsubscribe<LevelPausedSignal>(OnLevelPaused);
             _signalBus.Unsubscribe<LevelCompletedSignal>(OnLevelCompleted);
+            _signalBus.Unsubscribe<BoosterTargetingChangedSignal>(OnBoosterTargetingChanged);
             _signalBus.Unsubscribe<LevelFailedSignal>(OnLevelFailed);
         }
     }

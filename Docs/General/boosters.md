@@ -41,14 +41,17 @@ shares, and looks the command up by type:
    playing, a target is being chosen, or the command cannot execute (a freeze is already on), else:
    - **No target (Freeze)**: takes one, executes the command (`LevelTimer.FreezeFor`, §3) and fires
      `BoosterUsedSignal`.
-   - **Needs a target (Rocket, Hammer, Vacuum)**: pauses the level through `LevelSession.Pause` (no timer,
-     no dragging) and fires `BoosterTargetingChangedSignal(type, true)`. Nothing is spent yet.
-2. While choosing, a press on a board cell that holds a block (`BoardPointerSignal`) picks the target:
-   targeting ends, the level resumes, one booster is taken, then the command changes the board
+   - **Needs a target (Rocket, Hammer, Vacuum)**: fires `BoosterTargetingChangedSignal(type, true)`. The
+     timer keeps running (DA-36); `BlockDragController` ignores the board while the signal says targeting,
+     so nothing can be dragged. Nothing is spent yet.
+2. While choosing, a tap (`BoardPointerSignal` Pressed then Released) on a cell that holds a block picks the
+   target on the release: targeting ends, one booster is taken, then the command changes the board
    (`ActiveBoard.RemoveCell`, `RemoveBlock`/`Thaw` or `RemoveColor`), and `BoosterUsedSignal` fires. The
-   stock is checked again at the tap: if none is left by then, the board stays as it was. A press on an
-   empty cell does nothing.
-3. `CancelTargeting` gives up: the booster is kept and the level resumes. A restart drops the choice.
+   stock is checked again at the tap: if none is left by then, the board stays as it was. A tap on an
+   empty cell does nothing. Picking on the release keeps the drag from grabbing the target whatever order
+   the two listen in: the press reaches the drag while targeting is still on.
+3. `CancelTargeting` gives up: the booster is kept. A restart, a win or running out of time drops the
+   choice.
 
 `ActiveBoard` announces the change: `BlockRemovedSignal` (with `BlockRemovalKind` Smashed, Blasted or
 Vacuumed and an order for the vacuum's stagger), `BlockCellRemovedSignal` when a rocket leaves the block
@@ -61,8 +64,9 @@ from the level data.
 
 ## 3. The freeze
 
-`LevelTimer.FreezeFor(seconds)` stops the count; the freeze's own seconds pass only while the level plays
-and the app is in front, touched or not, so a pause or the background holds both. It does not stack. When
+`LevelTimer.FreezeFor(seconds)` stops the count; the freeze's own seconds pass only while the timer would
+run (the level plays, the app is in front and the player has grabbed a block), so a freeze used before the
+first grab waits for it, and a pause or the background holds both (DA-36). It does not stack. When
 it runs out the count picks up where it stopped; a restart ends it. `TimerFreezeChangedSignal` carries the
 seconds left, the total and whether it is counting.
 

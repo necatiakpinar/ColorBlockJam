@@ -6,6 +6,7 @@ using ColorBlockJam.Game.Gameplay.Board;
 using ColorBlockJam.Game.Gameplay.Boosters.Commands;
 using ColorBlockJam.Game.Gameplay.Session;
 using ColorBlockJam.Game.Gameplay.Signals;
+using UnityEngine;
 
 namespace ColorBlockJam.Game.Gameplay.Boosters
 {
@@ -17,6 +18,8 @@ namespace ColorBlockJam.Game.Gameplay.Boosters
         readonly SignalBus _signalBus;
         readonly Dictionary<BoosterType, IBoosterCommand> _commands = new();
         IBoosterCommand _pending;
+        bool _hasPress;
+        Vector2Int _pressedCell;
 
         public BoosterService(ActiveBoard board, LevelSession session, BoosterInventory inventory,
             IReadOnlyList<IBoosterCommand> commands, SignalBus signalBus)
@@ -29,6 +32,8 @@ namespace ColorBlockJam.Game.Gameplay.Boosters
                 _commands.Add(commands[i].Type, commands[i]);
             _signalBus.Subscribe<BoardPointerSignal>(OnBoardPointer);
             _signalBus.Subscribe<LevelStartedSignal>(OnLevelStarted);
+            _signalBus.Subscribe<LevelCompletedSignal>(OnLevelCompleted);
+            _signalBus.Subscribe<LevelFailedSignal>(OnLevelFailed);
         }
 
         public bool IsTargeting => _pending != null;
@@ -49,30 +54,38 @@ namespace ColorBlockJam.Game.Gameplay.Boosters
                 return BoosterUse.Used;
             }
 
-            _session.Pause();
             _pending = command;
+            _hasPress = false;
             _signalBus.Fire(new BoosterTargetingChangedSignal(type, true));
             return BoosterUse.Targeting;
         }
 
         public void CancelTargeting()
         {
-            if (!IsTargeting)
-                return;
-            EndTargeting();
-            _session.Resume();
+            if (IsTargeting)
+                EndTargeting();
         }
 
         void OnBoardPointer(BoardPointerSignal signal)
         {
-            if (!IsTargeting || signal.Phase != BoardPointerPhase.Pressed
-                || !_board.Current.TryGetBlockAt(signal.Cell, out int blockId))
+            if (!IsTargeting)
+                return;
+            if (signal.Phase == BoardPointerPhase.Pressed)
+            {
+                _hasPress = _board.Current.TryGetBlockAt(signal.Cell, out _);
+                _pressedCell = signal.Cell;
+                return;
+            }
+
+            if (signal.Phase != BoardPointerPhase.Released || !_hasPress)
+                return;
+            _hasPress = false;
+            if (!_board.Current.TryGetBlockAt(_pressedCell, out int blockId))
                 return;
 
             IBoosterCommand command = _pending;
             EndTargeting();
-            _session.Resume();
-            Use(command, new BoosterTarget(blockId, signal.Cell));
+            Use(command, new BoosterTarget(blockId, _pressedCell));
         }
 
         void Use(IBoosterCommand command, in BoosterTarget target)
@@ -88,11 +101,11 @@ namespace ColorBlockJam.Game.Gameplay.Boosters
                 ? command
                 : throw new InvalidOperationException($"No command is registered for the {type} booster.");
 
-        void OnLevelStarted(LevelStartedSignal signal)
-        {
-            if (IsTargeting)
-                EndTargeting();
-        }
+        void OnLevelStarted(LevelStartedSignal signal) => CancelTargeting();
+
+        void OnLevelCompleted(LevelCompletedSignal signal) => CancelTargeting();
+
+        void OnLevelFailed(LevelFailedSignal signal) => CancelTargeting();
 
         void EndTargeting()
         {
@@ -105,6 +118,8 @@ namespace ColorBlockJam.Game.Gameplay.Boosters
         {
             _signalBus.Unsubscribe<BoardPointerSignal>(OnBoardPointer);
             _signalBus.Unsubscribe<LevelStartedSignal>(OnLevelStarted);
+            _signalBus.Unsubscribe<LevelCompletedSignal>(OnLevelCompleted);
+            _signalBus.Unsubscribe<LevelFailedSignal>(OnLevelFailed);
         }
     }
 }

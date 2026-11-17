@@ -99,7 +99,8 @@ and restart, so no state survives an attempt. `BoardStateTests` pins every rule 
    - release fires **`BlockDroppedSignal`** with the cell it settles on; nothing snaps before release;
    - input counts only while the level plays: `LevelPausedSignal`, `LevelCompletedSignal` and
      `LevelFailedSignal` drop the held block onto its cell (`BlockDroppedSignal`) and the finger is ignored
-     until `LevelStartedSignal` or `LevelResumedSignal` (DA-22).
+     until `LevelStartedSignal` or `LevelResumedSignal` (DA-22); `BoosterTargetingChangedSignal` does the same
+     while a booster waits for its target ([boosters.md](boosters.md) §2).
    A drag allocates nothing (`BlockDragControllerTests`).
 
 ## 5. View

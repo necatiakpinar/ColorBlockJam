@@ -111,13 +111,13 @@ namespace ColorBlockJam.Game.Gameplay.Session
 
         void Refresh()
         {
-            bool playing = _levelPlaying && !_appPaused;
-            if (IsFrozen && playing && _freezeRun == null)
+            bool counting = _levelPlaying && !_appPaused && _touched;
+            if (IsFrozen && counting && _freezeRun == null)
                 StartFreezeRun();
-            else if (_freezeRun != null && !playing)
+            else if (_freezeRun != null && !counting)
                 StopFreezeRun();
 
-            bool shouldRun = playing && _touched && !IsFrozen;
+            bool shouldRun = counting && !IsFrozen;
             if (shouldRun && !IsRunning)
             {
                 _runStart = _clock.Now;

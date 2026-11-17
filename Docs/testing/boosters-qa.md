@@ -22,6 +22,8 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 - [ ] 👁 Blast the middle of a long block: both ends are drawn as separate blocks and can be dragged one by one.
 - [x] ⚙ Through the real HUD: hammer smashes, rocket rebuilds the block, freeze shows the ice — `BoosterFlowTests`
 - [ ] 👁 Tapping the waiting booster again puts it back; tapping another switches; pause while choosing puts it back first.
+- [x] ⚙ The timer runs while a target is chosen; the target tap never grabs the block; running out of time drops the choice — `BoosterServiceTests.TargetedBooster_ShouldKeepTheTimerRunning_WhileATargetIsChosen`, `TargetTap_ShouldNeverGrabTheBlock_WhenTheDragControllerListensFirst`, `TargetTap_ShouldNeverGrabTheBlock_WhenTheBoosterServiceListensFirst`, `Targeting_ShouldEnd_WhenTheTimeRunsOut`
+- [x] ⚙ A freeze used before the first grab waits for it — `BoosterServiceTests.Freeze_ShouldWaitForTheFirstGrab_WhenUsedBeforeIt`
 
 ### Looks
 

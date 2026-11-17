@@ -1,5 +1,7 @@
 using System.Collections;
 using NUnit.Framework;
+using ColorBlockJam.Game.Gameplay.Signals;
+using ColorBlockJam.Core.Signals;
 using ColorBlockJam.Core.Persistence;
 using ColorBlockJam.Game.Boosters;
 using ColorBlockJam.Game.Configs;
@@ -100,11 +102,11 @@ namespace ColorBlockJam.Tests.PlayMode
             yield return WaitRealtime(Gameplay().Resolve<BoardViewConfig>().SmashDuration + 0.2f);
 
             Assert.That(bannerShown, Is.True);
-            Assert.That(whileChoosing, Is.EqualTo(LevelState.Paused));
+            Assert.That(whileChoosing, Is.EqualTo(LevelState.Playing), "The timer keeps running while a target is chosen.");
             Assert.That(block.HasExited, Is.True);
             Assert.That(SceneTestUtility.FindInActiveScene<BlockLayerView>().Views[block.Id], Is.Null);
             Assert.That(Gameplay().Resolve<BoosterInventory>().Count(BoosterType.Hammer), Is.EqualTo(owned - 1));
-            Assert.That(Gameplay().Resolve<LevelSession>().State, Is.Not.EqualTo(LevelState.Paused));
+            Assert.That(Gameplay().Resolve<LevelSession>().State, Is.EqualTo(LevelState.Playing));
             Assert.That(SceneTestUtility.FindInActiveScene<BoosterTargetingView>().IsShowing, Is.False);
             LogAssert.NoUnexpectedReceived();
         }
@@ -145,6 +147,7 @@ namespace ColorBlockJam.Tests.PlayMode
             yield return SceneTestUtility.BootToGameplay();
             Own(BoosterType.Freeze);
             var timer = Gameplay().Resolve<LevelTimer>();
+            Gameplay().Resolve<SignalBus>().Fire(new BlockGrabbedSignal(0));
 
             SceneTestUtility.TapButton<BoosterBarView>("FreezeBooster");
             float before = timer.SecondsLeft;

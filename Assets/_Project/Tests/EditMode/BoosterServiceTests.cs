@@ -2,9 +2,11 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using ColorBlockJam.Core.Signals;
 using ColorBlockJam.Game.Boosters;
+using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Gameplay.Board;
 using ColorBlockJam.Game.Gameplay.Boosters;
 using ColorBlockJam.Game.Gameplay.Boosters.Commands;
+using ColorBlockJam.Game.Gameplay.Input;
 using ColorBlockJam.Game.Gameplay.Session;
 using ColorBlockJam.Game.Gameplay.Signals;
 using ColorBlockJam.Game.Levels;
@@ -52,8 +54,14 @@ namespace ColorBlockJam.Tests.EditMode
             _catalogs.Dispose();
         }
 
-        void Tap(int x, int y) =>
+        void Tap(int x, int y)
+        {
             _bus.Fire(new BoardPointerSignal(BoardPointerPhase.Pressed, new Vector2Int(x, y), Vector3.zero));
+            _bus.Fire(new BoardPointerSignal(BoardPointerPhase.Released, new Vector2Int(x, y), Vector3.zero));
+        }
+
+        BlockDragController CreateDragController(BoardViewConfig config) =>
+            new(_board, new BoardSpace(1f), config, _bus);
 
         BoosterService Service => _rig.Service;
 
@@ -83,14 +91,76 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
-        public void TargetedBooster_ShouldPauseTheLevelUntilATargetIsTapped_WhenActivated()
+        public void TargetedBooster_ShouldKeepTheTimerRunning_WhileATargetIsChosen()
         {
+            _bus.Fire(new BlockGrabbedSignal(0));
+
             BoosterUse use = Service.Activate(BoosterType.Hammer);
+            _rig.Clock.Advance(3f);
 
             Assert.That(use, Is.EqualTo(BoosterUse.Targeting));
             Assert.That(Service.IsTargeting, Is.True);
-            Assert.That(_session.State, Is.EqualTo(LevelState.Paused));
+            Assert.That(_session.State, Is.EqualTo(LevelState.Playing));
+            Assert.That(_rig.Timer.SecondsLeft, Is.EqualTo(TimerSeconds - 3f).Within(1e-4f));
             Assert.That(_rig.Inventory.Count(BoosterType.Hammer), Is.EqualTo(1), "Nothing is spent before a target.");
+        }
+
+        [Test]
+        public void TargetTap_ShouldNeverGrabTheBlock_WhenTheDragControllerListensFirst()
+        {
+            _rig.Dispose();
+            var config = ScriptableObject.CreateInstance<BoardViewConfig>();
+            using BlockDragController drag = CreateDragController(config);
+            _rig = new BoosterRig(_board, _session, _bus);
+            int grabs = 0;
+            _bus.Subscribe<BlockGrabbedSignal>(_ => grabs++);
+            _rig.Service.Activate(BoosterType.Hammer);
+
+            Tap(3, 3);
+
+            Object.DestroyImmediate(config);
+            Assert.That(_board.Current.Blocks[1].HasExited, Is.True);
+            Assert.That(grabs, Is.Zero);
+        }
+
+        [Test]
+        public void TargetTap_ShouldNeverGrabTheBlock_WhenTheBoosterServiceListensFirst()
+        {
+            var config = ScriptableObject.CreateInstance<BoardViewConfig>();
+            using BlockDragController drag = CreateDragController(config);
+            int grabs = 0;
+            _bus.Subscribe<BlockGrabbedSignal>(_ => grabs++);
+            Service.Activate(BoosterType.Hammer);
+
+            Tap(3, 3);
+
+            Object.DestroyImmediate(config);
+            Assert.That(_board.Current.Blocks[1].HasExited, Is.True);
+            Assert.That(grabs, Is.Zero);
+        }
+
+        [Test]
+        public void Targeting_ShouldEnd_WhenTheTimeRunsOut()
+        {
+            Service.Activate(BoosterType.Hammer);
+
+            _session.Fail();
+
+            Assert.That(Service.IsTargeting, Is.False);
+            Assert.That(_rig.Inventory.Count(BoosterType.Hammer), Is.EqualTo(1));
+        }
+
+        [Test]
+        public void Freeze_ShouldWaitForTheFirstGrab_WhenUsedBeforeIt()
+        {
+            Service.Activate(BoosterType.Freeze);
+            _rig.Clock.Advance(5f);
+
+            _bus.Fire(new BlockGrabbedSignal(0));
+            _rig.Clock.Advance(3f);
+
+            Assert.That(_rig.Timer.SecondsLeft, Is.EqualTo(TimerSeconds).Within(1e-4f));
+            Assert.That(_rig.Timer.FreezeSecondsLeft, Is.EqualTo(_rig.Config.FreezeSeconds - 3f).Within(1e-4f));
         }
 
         [Test]
@@ -170,7 +240,7 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
-        public void CancelTargeting_ShouldKeepTheBoosterAndResume_WhenThePlayerChangesTheirMind()
+        public void CancelTargeting_ShouldKeepTheBooster_WhenThePlayerChangesTheirMind()
         {
             Service.Activate(BoosterType.Vacuum);
 
