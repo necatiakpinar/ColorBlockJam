@@ -193,6 +193,27 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
+        public void Drag_ShouldNotJitter_WhenPushedSlowlyIntoAOneCellGapSlightlyOffTheCellLine()
+        {
+            // Same gap as above, but the finger creeps up in tiny steps: the slip toward the gap must hold
+            // from one event to the next instead of being pulled back toward the finger every time.
+            _board.Load(new LevelDataBuilder(5, 5).Block(Purple, 0, 2).Block(Red, 2, 2).Block(Orange, 1, 0).Build());
+            Finger(BoardPointerPhase.Pressed, 1, 0);
+            Finger(BoardPointerPhase.Dragged, 1.2f, 0);
+
+            float previousX = float.MaxValue;
+            for (float y = 0.9f; y <= 1.4f; y += 0.02f)
+            {
+                Finger(BoardPointerPhase.Dragged, 1.2f, y);
+                Assert.That(LastDrag.x, NUnit.Framework.Is.LessThanOrEqualTo(previousX + 1e-4f), $"x went back at y {y}");
+                previousX = LastDrag.x;
+            }
+
+            Assert.That(LastDrag.x, NUnit.Framework.Is.EqualTo(0f).Within(1e-3f), "It ended up on the gap's line.");
+            Assert.That(LastDrag.y, NUnit.Framework.Is.GreaterThan(1f), "It went into the gap.");
+        }
+
+        [Test]
         public void Drag_ShouldNotSlipSideways_WhenNoCellLineOpensTheWay()
         {
             _board.Load(new LevelDataBuilder(5, 5)

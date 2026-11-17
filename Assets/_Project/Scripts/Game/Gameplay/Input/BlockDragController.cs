@@ -16,7 +16,9 @@ namespace ColorBlockJam.Game.Gameplay.Input
     /// along, then the other, as far as every cell its footprint sweeps through is free. It slides along
     /// obstacles and a fast drag cannot pass through anything.</item>
     /// <item>Pushed into a one-cell gap from slightly off the line, it slips sideways into it
-    /// (<see cref="BoardViewConfig.CornerTolerance"/>).</item>
+    /// (<see cref="BoardViewConfig.CornerTolerance"/>). The slip holds across events until the push is no
+    /// longer stopped off the line or the finger moves past the tolerance, so a slow push does not pull it
+    /// back toward the finger and slip it again every event (jitter).</item>
     /// <item>Whenever its nearest cell changes, the move is committed to the board, so the board always holds
     /// the cell it settles on. Lined up with a fitting door, the wall stops counting and the block exits once
     /// it is halfway through.</item>
@@ -31,6 +33,8 @@ namespace ColorBlockJam.Game.Gameplay.Input
         const float Epsilon = 1e-4f;
         // One pass moves along both axes; a pass that cannot move ends the event. Bounds the loop.
         const int MaxPassesPerEvent = 16;
+        // How far ahead a slip release compares the push it opened, on the line and pulled back.
+        const float SlipProbe = 0.01f;
 
         readonly ActiveBoard _board;
         readonly BoardSpace _boardSpace;
@@ -39,8 +43,12 @@ namespace ColorBlockJam.Game.Gameplay.Input
         int _blockId = NoBlock;
         Vector2 _position;
         Vector2 _grab;
-        // Per event: an axis the block just slipped along may not be pulled back the other way.
+        // The sideways direction of the last slip, and the push it opened; the slip is not pulled back while
+        // that push would still be stopped off the line.
         Vector2Int _slipLock;
+        Vector2Int _slipPush;
+        // A slip made in the current event holds for the whole event.
+        bool _slippedThisEvent;
 
         public BlockDragController(ActiveBoard board, BoardSpace boardSpace, BoardViewConfig config, SignalBus signalBus)
         {
@@ -84,6 +92,7 @@ namespace ColorBlockJam.Game.Gameplay.Input
 
             _position = CellOffset;
             _grab = _position - FingerInCells(signal.WorldPoint);
+            _slipLock = Vector2Int.zero;
             _signalBus.Fire(new BlockGrabbedSignal(_blockId));
         }
 
@@ -98,7 +107,7 @@ namespace ColorBlockJam.Game.Gameplay.Input
             if (_blockId == NoBlock)
                 return false;
 
-            _slipLock = Vector2Int.zero;
+            _slippedThisEvent = false;
             for (int pass = 0; pass < MaxPassesPerEvent && _blockId != NoBlock; pass++)
             {
                 Vector2 remaining = target - _position;
@@ -121,7 +130,7 @@ namespace ColorBlockJam.Game.Gameplay.Input
                 return false;
 
             int direction = wanted > 0f ? 1 : -1;
-            if (_slipLock[axis] == -direction)
+            if (_slipLock[axis] == -direction && !ReleasesSlip(axis, direction, Mathf.Abs(wanted)))
                 return false;
 
             float free = FreeDistance(axis, direction, Mathf.Abs(wanted));
@@ -166,9 +175,48 @@ namespace ColorBlockJam.Game.Gameplay.Input
                 return false;
 
             _position[cross] += sideways * slip;
+            _slipLock = Vector2Int.zero;
             _slipLock[cross] = sideways;
+            _slipPush = Step(axis, direction);
+            _slippedThisEvent = true;
             Commit(cross, sideways);
             return true;
+        }
+
+        /// <summary>
+        /// Whether pulling a slipped block back along <paramref name="axis"/> is allowed, and if so clears the
+        /// slip. Never in the event that made the slip, and never while the pull-back has no room (the block
+        /// is in the gap): a blocked pull-back would otherwise slip it back out of the gap, and the two slips
+        /// would take turns every event. Otherwise allowed when the finger is past the slip tolerance, or
+        /// when the push the slip opened is no more stopped at the pulled-back position than where the block
+        /// is (it is through the gap, or the finger turned back): the mirror of the condition that made the
+        /// slip.
+        /// </summary>
+        bool ReleasesSlip(int axis, int direction, float wanted)
+        {
+            if (_slippedThisEvent)
+                return false;
+
+            float pullBack = FreeDistance(axis, direction, wanted);
+            if (pullBack <= Epsilon)
+                return false;
+
+            bool released = wanted > _config.CornerTolerance;
+            if (!released)
+            {
+                int pushAxis = _slipPush.x != 0 ? 0 : 1;
+                int pushDirection = _slipPush[pushAxis];
+                float freeHere = FreeDistance(pushAxis, pushDirection, SlipProbe);
+                float current = _position[axis];
+                _position[axis] += direction * pullBack;
+                float freeBack = FreeDistance(pushAxis, pushDirection, SlipProbe);
+                _position[axis] = current;
+                released = freeBack >= freeHere - Epsilon;
+            }
+
+            if (released)
+                _slipLock = Vector2Int.zero;
+            return released;
         }
 
         /// <summary>

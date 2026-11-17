@@ -70,7 +70,10 @@ and restart, so no state survives an attempt. `BoardStateTests` pins every rule 
      fast drag crosses any number of free cells in one event but never passes through a block;
    - pushed into a one-cell gap from at most `BoardViewConfig.CornerTolerance` off the cell line, the
      stopped part of the push slips it sideways onto that line (only if the line opens the way), and the
-     finger cannot pull it back out during that event;
+     finger cannot pull it back out during that event. Later events keep the slip until pulling back
+     has room and leaves the push no more stopped than on the line (through the gap, or the finger turned
+     back), or the finger is past the tolerance; otherwise a slow push would be pulled back and slipped
+     again every event and the block would jitter;
    - the drawn position may lean toward the finger past an obstacle by `BoardViewConfig.HoldGive`, so a
      held block with no room still gives a little; the lean is never committed;
    - whenever its nearest cell changes the move is committed (`ActiveBoard.TryStep`), so the board always
