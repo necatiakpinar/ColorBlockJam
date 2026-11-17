@@ -24,6 +24,10 @@ namespace ColorBlockJam.Game.Gameplay.Hud
         [SerializeField]
         TMP_Text _levelLabel;
 
+        [Tooltip("Time left as mm:ss (T-15); T-18 places it in the timer holder art.")]
+        [SerializeField]
+        TMP_Text _timerLabel;
+
         [Tooltip("Placeholder route back to Home until the pause popup owns it (T-19).")]
         [SerializeField]
         Button _homeButton;
@@ -31,6 +35,8 @@ namespace ColorBlockJam.Game.Gameplay.Hud
         SignalBus _signalBus;
         GameplayConfig _config;
         Sequence _revealSequence;
+        // mm:ss written in place, so a tick allocates nothing on device (in the editor TMP mirrors it into a string).
+        readonly char[] _timerChars = new char[5];
 
         public event Action HomeButtonClicked;
 
@@ -40,10 +46,12 @@ namespace ColorBlockJam.Game.Gameplay.Hud
             _signalBus = signalBus;
             _config = config;
             _signalBus.Subscribe<LevelStartedSignal>(OnLevelStarted);
+            _signalBus.Subscribe<TimerChangedSignal>(OnTimerChanged);
             _homeButton.onClick.AddListener(OnHomeButtonClicked);
         }
 
         public string LevelLabelText => _levelLabel.text;
+        public string TimerLabelText => _timerLabel.text;
 
         void OnLevelStarted(LevelStartedSignal signal)
         {
@@ -54,11 +62,24 @@ namespace ColorBlockJam.Game.Gameplay.Hud
                 new FadeScaleInAnimation.Config(_group, _panel, _config.HudReveal));
         }
 
+        void OnTimerChanged(TimerChangedSignal signal)
+        {
+            int minutes = signal.SecondsLeft / 60;
+            int seconds = signal.SecondsLeft % 60;
+            _timerChars[0] = (char)('0' + minutes / 10 % 10);
+            _timerChars[1] = (char)('0' + minutes % 10);
+            _timerChars[2] = ':';
+            _timerChars[3] = (char)('0' + seconds / 10);
+            _timerChars[4] = (char)('0' + seconds % 10);
+            _timerLabel.SetCharArray(_timerChars, 0, _timerChars.Length);
+        }
+
         void OnHomeButtonClicked() => HomeButtonClicked?.Invoke();
 
         void OnDestroy()
         {
             _signalBus.Unsubscribe<LevelStartedSignal>(OnLevelStarted);
+            _signalBus.Unsubscribe<TimerChangedSignal>(OnTimerChanged);
             _homeButton.onClick.RemoveListener(OnHomeButtonClicked);
             _revealSequence?.Kill();
         }

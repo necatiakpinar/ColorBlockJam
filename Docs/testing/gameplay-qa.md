@@ -12,6 +12,9 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 - [ ] ⚙ Pausing mid-drag drops the block onto its cell; no input while paused or lost — `BlockDragControllerTests.Pause_ShouldDropTheHeldBlockOntoItsCell_WhenTheLevelPausesMidDrag`, `Input_ShouldBeIgnored_UntilTheLevelResumes`, `Input_ShouldBeIgnored_WhenTheLevelIsLost`
 - [ ] ⚙ The last exit wins the level without dropping the block that left — `BlockDragControllerTests.Win_ShouldForgetTheExitedBlockWithoutDroppingIt_WhenTheLastExitCompletesTheLevel`
 
+- [ ] ⚙ The timer waits at full time until the first block is grabbed, then counts down second by second and fails the level once at zero — `LevelTimerTests`, `GameplayTimerTests.Hud_ShouldCountTheTimerDown_OnceABlockIsGrabbed`
+- [ ] ⚙ Pausing or backgrounding the app freezes the timer; restart gives the full time — `LevelTimerTests`, `GameplayTimerTests.Timer_ShouldStandStill_WhileTheAppIsInTheBackground`
+- [ ] 👁 On a device, send the app to the background for a while mid-level: the timer shows the same time when it comes back.
 - [ ] ⚙ Winning starts the next level; after the last level the first layout comes back — `LevelProgressionFlowTests`
 - [ ] ⚙ All five shipped levels are valid and solvable — `ShippedLevelsTests`
 - [ ] 👁 Play levels 1 to 5 by hand: each one is a little harder than the one before, and each finishes well inside its timer.

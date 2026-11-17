@@ -13,6 +13,8 @@ Assets/_Project/
 │   ├── Scenes/          SceneId, ISceneLoader, SceneLoader
 │   ├── Persistence/     IKeyValueStorage, PlayerPrefsStorage, IPlayerProgressService
 │   ├── Logging/         IGameLogger, UnityGameLogger
+│   ├── Clock/           IGameClock, RealtimeGameClock
+│   ├── Lifecycle/       ApplicationPausedSignal, ApplicationPauseReporter (Root prefab component)
 │   └── Animation/       IAnimation<TConfig>
 ├── Scripts/Game/      ColorBlockJam.Game     this game
 │   ├── Scopes/          Root / Splash / Home / Gameplay LifetimeScopes

@@ -32,6 +32,7 @@ namespace ColorBlockJam.Game.Installers
             builder.Register<ActiveBoard>(Lifetime.Singleton);
             builder.Register<LevelSession>(Lifetime.Singleton);
             builder.Register<LevelProgression>(Lifetime.Singleton);
+            builder.Register<LevelTimer>(Lifetime.Singleton);
             builder.Register<BlockDragController>(Lifetime.Singleton);
             builder.Register<GameplayHaptics>(Lifetime.Singleton);
             builder.Register<IPopupService, PopupService>(Lifetime.Singleton);

@@ -8,6 +8,7 @@ using ColorBlockJam.Core.Scenes;
 using ColorBlockJam.Core.Signals;
 using ColorBlockJam.Game.Boot;
 using ColorBlockJam.Game.Configs;
+using ColorBlockJam.Core.Clock;
 using ColorBlockJam.Core.Haptics;
 using ColorBlockJam.Game.Gameplay.Board;
 using ColorBlockJam.Game.Gameplay.Feedback;
@@ -67,6 +68,7 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(container.Resolve<UiConfig>(), Is.Not.Null);
             Assert.That(container.Resolve<LevelCatalog>(), Is.Not.Null);
             Assert.That(container.Resolve<IHapticService>(), Is.Not.Null);
+            Assert.That(container.Resolve<IGameClock>(), Is.Not.Null);
         }
 
         [Test]
@@ -138,6 +140,7 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(container.Resolve<GameplayHaptics>(), Is.Not.Null);
             Assert.That(container.Resolve<LevelSession>(), Is.Not.Null);
             Assert.That(container.Resolve<LevelProgression>(), Is.Not.Null);
+            Assert.That(container.Resolve<LevelTimer>(), Is.Not.Null);
         }
 
         [Test]

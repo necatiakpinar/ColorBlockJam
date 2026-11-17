@@ -57,6 +57,7 @@ namespace ColorBlockJam.Game.Scopes
                 resolver.Resolve<BlockDragController>();
                 resolver.Resolve<GameplayHaptics>();
                 resolver.Resolve<LevelProgression>();
+                resolver.Resolve<LevelTimer>();
             });
 
             builder.RegisterEntryPoint<GameplayFlow>();

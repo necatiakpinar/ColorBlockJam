@@ -189,6 +189,25 @@ Won --Next(n)--> Playing
   advanced level number (DA-23). The pause, fail and win popups (T-19 – T-21) will call the session and
   present its signals.
 
+### Timer
+
+**`LevelTimer`** (plain class, Gameplay scope, built by the scope's build callback) counts the level's
+`TimerSeconds` down in real time (T-15, DA-6):
+
+- It shows the full time on `LevelStartedSignal` and starts counting at the attempt's first
+  `BlockGrabbedSignal` (DA-6), so a restart or the next level always gets the full time and waits for the
+  player again; later grabs change nothing.
+- It stands still while the level is paused, won or lost, and while the app is in the background
+  (`ApplicationPausedSignal`, fired by `ApplicationPauseReporter` on the Root scope object from Unity's
+  `OnApplicationPause`). It picks up where it stopped.
+- It ticks with `IGameClock` delays (`RealtimeGameClock`: unscaled real time), one delay per shown second,
+  never per frame. `TimerChangedSignal` carries the shown seconds (rounded up) when a level starts and
+  each time the shown value drops.
+- At zero it calls `LevelSession.Fail` once; the session fires `LevelFailedSignal` and input stops.
+- `GameplayHudView` shows it as `mm:ss` in `TimerLabel`, written into a char buffer
+  (`TMP_Text.SetCharArray`) so a tick allocates nothing on device. The label sits in the placeholder top
+  bar until the HUD layout (T-18) puts it in the timer holder art.
+
 ## 7. Navigation
 
 `GameplayHudView` has a Home button that routes back to Home through `GameplayFlow` and

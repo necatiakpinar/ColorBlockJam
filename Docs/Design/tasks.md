@@ -30,10 +30,10 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - [x] [T-11 Block view: modular block meshes and colours](#t-11-block-view-modular-block-meshes-and-colours)
 - [x] [T-12 Drag and slide](#t-12-drag-and-slide)
 - [x] [T-13 Exit through door and level complete](#t-13-exit-through-door-and-level-complete)
-- [ ] [T-14 Level session state machine](#t-14-level-session-state-machine)
-- [ ] [T-15 Countdown timer](#t-15-countdown-timer)
+- [x] [T-14 Level session state machine](#t-14-level-session-state-machine)
+- [x] [T-15 Countdown timer](#t-15-countdown-timer)
 - [ ] [T-16 Coin rewards](#t-16-coin-rewards)
-- [ ] [T-17 Level progression and looping](#t-17-level-progression-and-looping)
+- [x] [T-17 Level progression and looping](#t-17-level-progression-and-looping)
 - [ ] [T-18 Gameplay HUD](#t-18-gameplay-hud)
 - [ ] [T-19 Pause popup](#t-19-pause-popup)
 - [ ] [T-20 Fail popup](#t-20-fail-popup)
@@ -59,6 +59,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - [ ] [T-40 Project README](#t-40-project-readme)
 - [ ] [T-41 Android APK](#t-41-android-apk)
 - [ ] [T-42 Repository hygiene](#t-42-repository-hygiene)
+- [x] [T-43 Touch and door feel](#t-43-touch-and-door-feel)
 
 ---
 
@@ -349,9 +350,15 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
   `LevelDefinition.TimerSeconds`; ticks via `UniTask.Delay` on unscaled time with the session token, not
   `Update`. Pause/resume and app background (`OnApplicationPause`) freeze it. At zero: `Fail` once.
   `TimerChangedSignal` once per displayed second.
+  - [x] `LevelTimer`, `IGameClock` / `RealtimeGameClock`, `TimerChangedSignal`; it counts from the first
+    grab of a block (DA-6); the background comes from
+    `ApplicationPauseReporter` on the Root prefab (`ApplicationPausedSignal`).
+  - [x] `mm:ss` label in the placeholder top bar; T-18 moves it into the timer holder art.
+  - [ ] The fail popup opening at zero lands with T-20 (input already stops).
 - **Accept:** HUD counts down `mm:ss`; pause and background freeze it; at 0 input stops and the fail popup
   opens; restart restores the full time.
-- **Tests:** `EM LevelTimerTests` with a fake clock (countdown, pause, expiry once, restart).
+- **Tests:** `EM LevelTimerTests` with a fake clock (countdown, pause, background, expiry once, win,
+  restart), `EM GameplayHudViewTests` (`mm:ss`), `PM GameplayTimerTests` (real scene, background event).
 - **Docs:** `gameplay.md` §Timer.
 
 ### T-16 Coin rewards

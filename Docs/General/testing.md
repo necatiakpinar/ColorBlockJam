@@ -36,6 +36,8 @@ new fake.
 | `LevelProviderTests` | level number to catalog entry; looping; empty catalog |
 | `LevelProgressionTests` | a win advances the level once; a loss or a disposed listener does not |
 | `ShippedLevelsTests` | the catalog's five levels: no validator issues, solvable block by block, block counts that never fall |
+| `LevelTimerTests` | full time on start, counting only from the first grab, one signal per second, stands still while paused or in the background, fails once at zero, stops on a win, full again on restart, stops when disposed (`FakeGameClock`) |
+| `GameplayHudViewTests` | the timer label reads `mm:ss` |
 | `LevelSessionTests` | the attempt's transition table, refused transitions, signal order, restart equal to a fresh start |
 | `GameplayHapticsTests` | an exit taps light, nothing after dispose (`RecordingHaptics`) |
 | `ExitPathTests` | a leaving block's wall, length, door span, edge and door centre |
@@ -52,6 +54,7 @@ new fake.
 | `ButtonPressFeedbackTests` (PlayMode) | press shrinks, release restores; non-interactable and disabled cases |
 | `GameplayBoardTests` (PlayMode) | every part and block drawn; the wall ring closes corner to corner without seams; every door has one centred arrow pointing out; swipes take blocks out and clear once; a wrong door holds; outline while held; reload mid-exit; a held block glides after a sudden finger move instead of jumping; the door opens and closes for a leaving block, the whole door for a narrower block; two blocks leaving one door together share one spray; an exiting block settles at its door before sliding in, and is cut at the door at full size while debris sprays; following and snapping allocate nothing |
 | `LevelProgressionFlowTests` (PlayMode) | a full lap of wins: each starts the next level and the last loops to the first layout (restores saved progress) |
+| `GameplayTimerTests` (PlayMode) | the real scene waits for the first grab, then counts down on the HUD; Unity's background event freezes the timer |
 | `BoardInputTests` (PlayMode) | pointer events become board cells; one finger; release off the plane; disable mid-touch; UI wins the raycast |
 
 ## 3. Rules

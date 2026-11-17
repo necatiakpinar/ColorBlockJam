@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 467085394684147572}
   - component: {fileID: 5851921462679775404}
+  - component: {fileID: 8684118224795160722}
   m_Layer: 0
   m_Name: RootLifetimeScope
   m_TagString: Untagged
@@ -51,3 +52,16 @@ MonoBehaviour:
   _applicationConfig: {fileID: 11400000, guid: 9377f806c6e22e243b7f54db1b07a5c1, type: 2}
   _uiConfig: {fileID: 11400000, guid: e8978dcbd655e8148b87ae1c2488c3fc, type: 2}
   _levelCatalog: {fileID: 11400000, guid: 6cf5bcd77312b584ab3f94d326ebadf0, type: 2}
+  _pauseReporter: {fileID: 8684118224795160722}
+--- !u!114 &8684118224795160722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5756003874048141611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b688e4536b437cd4992de6dcdc6224df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

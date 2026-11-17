@@ -41,6 +41,7 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
             Assign(view, "_group", root.AddComponent<CanvasGroup>());
             Assign(view, "_panel", panel.AddComponent<RectTransform>());
             Assign(view, "_levelLabel", Child(root, "LevelLabel").AddComponent<TextMeshProUGUI>());
+            Assign(view, "_timerLabel", Child(root, "TimerLabel").AddComponent<TextMeshProUGUI>());
             Assign(view, "_homeButton", homeButton);
             view.Construct(signalBus, Track(ScriptableObject.CreateInstance<GameplayConfig>()));
             return view;

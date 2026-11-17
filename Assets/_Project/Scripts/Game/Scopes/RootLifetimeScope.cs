@@ -1,3 +1,4 @@
+using ColorBlockJam.Core.Lifecycle;
 using ColorBlockJam.Game.Boot;
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Installers;
@@ -23,9 +24,13 @@ namespace ColorBlockJam.Game.Scopes
         [SerializeField]
         LevelCatalog _levelCatalog;
 
+        [SerializeField]
+        ApplicationPauseReporter _pauseReporter;
+
         protected override void Configure(IContainerBuilder builder)
         {
             new CoreServicesInstaller(_applicationConfig, _uiConfig, _levelCatalog).Install(builder);
+            builder.RegisterComponent(_pauseReporter);
 
             builder.RegisterEntryPoint<TweeningInitializer>();
         }

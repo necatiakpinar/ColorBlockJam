@@ -65,6 +65,12 @@ Updated: 2026-11-17
   build module is not installed on this machine, so iOS-only code cannot be compiled here (2026-11-17).
 - `ProjectSettings.asset` `projectName` keeps coming back as the old cloud project name after Unity saves;
   set it through `SerializedObject` and check the YAML before committing (2026-11-17).
+- `manage_camera screenshot` renders the camera only, without Screen Space – Overlay UI; to see the HUD,
+  call `ScreenCapture.CaptureScreenshot("Temp/Screenshots/x.png")` from `execute_code` in play mode and
+  read the file a moment later (2026-11-17).
+- `TMP_Text.SetCharArray` allocates in the editor only (it mirrors the chars into `text` under
+  `#if UNITY_EDITOR`), so `Is.Not.AllocatingGCMemory()` cannot prove a TMP label update allocation-free
+  (2026-11-17).
 
 ## 2. Shell (Windows, Git Bash)
 

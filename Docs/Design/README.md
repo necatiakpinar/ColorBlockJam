@@ -124,7 +124,7 @@ task is marked `Dropped`, never deleted. Detail per task: [tasks.md](tasks.md).
 | T-12 | 3 | Drag and slide | A held block follows the finger smoothly, stops at obstacles, snaps to its cell on release | T-06, T-09, T-11 | Done |
 | T-13 | 3 | Exit through door and level complete | A block leaves through a matching door; last exit completes the level | T-12 | Done |
 | T-14 | 4 | Level session state machine | Loading → Playing ⇄ Paused → Won / Failed; restart rebuilds from data | T-09 | Done |
-| T-15 | 4 | Countdown timer | Counts down, pauses, fails the level at 0 | T-14 | Todo |
+| T-15 | 4 | Countdown timer | Counts down, pauses, fails the level at 0 | T-14 | Done |
 | T-16 | 4 | Coin rewards | Win adds the reward once, before the popup; leaving never changes coins | T-07, T-14 | Todo |
 | T-17 | 4 | Level progression and looping | Win advances the level; after level 5 the catalog loops | T-07, T-14 | Done |
 | T-18 | 5 | Gameplay HUD | Level, timer, coins, pause, boosters and lives shown and updating | T-05, T-15, T-16 | Todo |
@@ -152,6 +152,6 @@ task is marked `Dropped`, never deleted. Detail per task: [tasks.md](tasks.md).
 | T-40 | 12 | Project README | Open and run, level editor how-to, architecture decisions, known problems, asset feedback | T-39 | Todo |
 | T-41 | 12 | Android APK | APK installs and plays the full flow on a device | T-39 | Todo |
 | T-42 | 12 | Repository hygiene | Clean clone opens and runs; no Library, Temp or Build tracked | T-40, T-41 | Todo |
-| T-43 | 3 | Touch and door feel | Near-miss presses pick a block; wrong doors knock the block back; doors open and close; close exits share one spray | T-12, T-13 | Done |
+| T-43 | 3 | Touch and door feel | Near-miss presses pick a block; wrong doors stop a block like a wall; doors open and close; close exits share one spray | T-12, T-13 | Done |
 
 Status values: `Todo`, `In progress`, `Blocked`, `Done`, `Dropped`.
