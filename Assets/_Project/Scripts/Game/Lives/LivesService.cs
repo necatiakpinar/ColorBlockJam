@@ -12,6 +12,7 @@ namespace ColorBlockJam.Game.Lives
         public const string StorageKey = "lives_v1";
 
         readonly JsonRecord<LivesData> _record;
+        readonly IKeyValueStorage _storage;
         readonly LivesConfig _config;
         readonly ITrustedClock _clock;
         readonly IWalletService _wallet;
@@ -22,6 +23,7 @@ namespace ColorBlockJam.Game.Lives
             IWalletService wallet, SignalBus signalBus)
         {
             _record = new JsonRecord<LivesData>(StorageKey, storage, logger);
+            _storage = storage;
             _config = config;
             _clock = clock;
             _wallet = wallet;
@@ -80,12 +82,17 @@ namespace ColorBlockJam.Game.Lives
 
         public bool TryRefill()
         {
-            if (IsFull || !_wallet.TrySpend(RefillPrice))
+            if (IsFull)
                 return false;
-            Data.Missing = 0;
-            Data.NextLifeUtcTicks = 0;
-            Change();
-            return true;
+            using (_storage.DeferFlush())
+            {
+                if (!_wallet.TrySpend(RefillPrice))
+                    return false;
+                Data.Missing = 0;
+                Data.NextLifeUtcTicks = 0;
+                Change();
+                return true;
+            }
         }
 
         public void Announce() => _signalBus.Fire(new LivesChangedSignal(Count, Max, SecondsToNextLife()));

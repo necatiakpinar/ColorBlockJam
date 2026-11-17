@@ -1,9 +1,12 @@
+using System;
 using UnityEngine;
 
 namespace ColorBlockJam.Core.Persistence
 {
     public sealed class PlayerPrefsStorage : IKeyValueStorage
     {
+        readonly FlushGate _gate = new(PlayerPrefs.Save);
+
         public bool TryGet(string key, out string value)
         {
             if (!PlayerPrefs.HasKey(key))
@@ -20,6 +23,8 @@ namespace ColorBlockJam.Core.Persistence
 
         public void Delete(string key) => PlayerPrefs.DeleteKey(key);
 
-        public void Flush() => PlayerPrefs.Save();
+        public void Flush() => _gate.Request();
+
+        public IDisposable DeferFlush() => _gate.Defer();
     }
 }

@@ -95,13 +95,15 @@ namespace ColorBlockJam.Tests.EditMode
             wallet.Load();
             int price = _config.For(BoosterType.Vacuum).Price;
             wallet.Add(price + 5);
-            var shop = new BoosterShop(wallet, inventory, _config);
+            var shop = new BoosterShop(wallet, inventory, _config, _storage);
+            int flushes = _storage.FlushCount;
 
             bool bought = shop.TryBuy(BoosterType.Vacuum);
 
             Assert.That(bought, Is.True);
             Assert.That(wallet.Coins, Is.EqualTo(5));
             Assert.That(inventory.Count(BoosterType.Vacuum), Is.EqualTo(2));
+            Assert.That(_storage.FlushCount - flushes, Is.EqualTo(1), "The coins and the booster are saved together.");
         }
 
         [Test]
@@ -110,7 +112,7 @@ namespace ColorBlockJam.Tests.EditMode
             BoosterInventory inventory = Load();
             var wallet = new WalletService(_storage, new RecordingLogger(), _bus);
             wallet.Load();
-            var shop = new BoosterShop(wallet, inventory, _config);
+            var shop = new BoosterShop(wallet, inventory, _config, _storage);
 
             bool bought = shop.TryBuy(BoosterType.Hammer);
 

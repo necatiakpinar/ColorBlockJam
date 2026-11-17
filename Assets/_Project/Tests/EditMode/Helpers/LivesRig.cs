@@ -17,7 +17,7 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
             Clock = new FakeTrustedClock();
             if (wallet == null)
             {
-                var own = new WalletService(new InMemoryKeyValueStorage(), new RecordingLogger(), bus);
+                var own = new WalletService(Storage, new RecordingLogger(), bus);
                 own.Load();
                 wallet = own;
             }

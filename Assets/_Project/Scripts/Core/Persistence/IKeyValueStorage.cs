@@ -1,3 +1,5 @@
+using System;
+
 namespace ColorBlockJam.Core.Persistence
 {
     public interface IKeyValueStorage
@@ -6,5 +8,6 @@ namespace ColorBlockJam.Core.Persistence
         void Set(string key, string value);
         void Delete(string key);
         void Flush();
+        IDisposable DeferFlush();
     }
 }

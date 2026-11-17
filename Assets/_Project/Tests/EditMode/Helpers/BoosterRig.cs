@@ -24,7 +24,7 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
             Wallet = new WalletService(Storage, new RecordingLogger(), bus);
             Wallet.Load();
             Timer = new LevelTimer(session, Clock, bus);
-            Shop = new BoosterShop(Wallet, Inventory, Config);
+            Shop = new BoosterShop(Wallet, Inventory, Config, Storage);
             var commands = new IBoosterCommand[]
             {
                 new FreezeBoosterCommand(Timer, Config), new RocketBoosterCommand(board),

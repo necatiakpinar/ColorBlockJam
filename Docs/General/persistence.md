@@ -24,13 +24,17 @@ a `JsonRecord<T>`.
    Reading a service before its `Load` throws, so a missing load is a loud setup bug.
 2. **Save on every change.** Each change writes its record and flushes at once, so a killed app keeps it.
    Nothing waits for the app to go to the background, so there is no save-on-pause observer.
-3. **Announce after saving.** `CoinsChangedSignal(coins, delta)` and `SettingChangedSignal(setting, isOn)`
+3. **One save for one operation.** An operation that changes two records (buying a booster, refilling
+   lives, recording a win) runs inside `using (storage.DeferFlush())`: the records are written as usual and
+   flushed once when the scope ends, so a killed app keeps both or neither. Scopes nest; only the outermost
+   flushes (`FlushGate`). Signals fired inside the scope go out before that flush.
+4. **Announce after saving.** `CoinsChangedSignal(coins, delta)` and `SettingChangedSignal(setting, isOn)`
    fire after the record is written. Setting a toggle to the value it has does nothing.
-4. **Never trust stored data.** A missing record starts fresh. Corrupt JSON starts fresh and logs an error.
+5. **Never trust stored data.** A missing record starts fresh. Corrupt JSON starts fresh and logs an error.
    Values that fail the service's check (a level below 1, a negative balance) start fresh and log a warning.
-5. **Reject bad changes.** `IWalletService.Add` and `TrySpend` throw on zero or fewer coins. `TrySpend`
+6. **Reject bad changes.** `IWalletService.Add` and `TrySpend` throw on zero or fewer coins. `TrySpend`
    returns false and changes nothing when the player has too few; a spend announces a negative delta.
-6. **Versioned keys.** A change to a record's shape that old saves cannot read gets a new key (`_v2`) and
+7. **Versioned keys.** A change to a record's shape that old saves cannot read gets a new key (`_v2`) and
    a migration from the old one in that service's `Load`.
 
 ## 3. Tests

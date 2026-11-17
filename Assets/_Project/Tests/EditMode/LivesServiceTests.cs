@@ -123,6 +123,7 @@ namespace ColorBlockJam.Tests.EditMode
         {
             _rig.LoseAll();
             _rig.Wallet.Add(Lives.RefillPrice + 3);
+            int flushes = _rig.Storage.FlushCount;
 
             bool refilled = Lives.TryRefill();
 
@@ -130,6 +131,7 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(Lives.Count, Is.EqualTo(5));
             Assert.That(_rig.Wallet.Coins, Is.EqualTo(3));
             Assert.That(Lives.SecondsToNextLife(), Is.EqualTo(-1));
+            Assert.That(_rig.Storage.FlushCount - flushes, Is.EqualTo(1), "The coins and the lives are saved together.");
         }
 
         [Test]

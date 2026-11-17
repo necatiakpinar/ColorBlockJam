@@ -34,7 +34,9 @@ The HUD and Home coin counters bind `CoinsChangedSignal` with T-18 and T-23.
 
 ## 3. Spending coins
 
-Coins buy two things, each paid with `IWalletService.TrySpend` before anything is given:
+Coins buy two things, each paid with `IWalletService.TrySpend` before anything is given. Each purchase
+writes the wallet and what it buys in one save (`IKeyValueStorage.DeferFlush`), so a killed app keeps both
+or neither:
 
 - one booster when none are left: Freeze 40, Rocket 60, Hammer 80, Vacuum 120 coins (`BoosterConfig`,
   DA-36) through `BoosterShop` ([boosters.md](boosters.md) §1);
