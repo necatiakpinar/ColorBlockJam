@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using ColorBlockJam.Core.Haptics;
+using ColorBlockJam.Core.Persistence;
 using ColorBlockJam.Core.Signals;
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Gameplay.Feedback;
@@ -15,6 +16,7 @@ namespace ColorBlockJam.Tests.EditMode
         RecordingHaptics _haptics;
         GameplayConfig _config;
         GameplayHaptics _gameplayHaptics;
+        SettingsService _settings;
 
         [SetUp]
         public void SetUp()
@@ -22,7 +24,9 @@ namespace ColorBlockJam.Tests.EditMode
             _bus = new SignalBus();
             _haptics = new RecordingHaptics();
             _config = ScriptableObject.CreateInstance<GameplayConfig>();
-            _gameplayHaptics = new GameplayHaptics(_bus, _haptics, _config);
+            _settings = new SettingsService(new InMemoryKeyValueStorage(), new RecordingLogger(), _bus);
+            _settings.Load();
+            _gameplayHaptics = new GameplayHaptics(_bus, _haptics, _config, _settings);
         }
 
         [TearDown]
@@ -48,7 +52,17 @@ namespace ColorBlockJam.Tests.EditMode
             _bus.Fire(new BlockExitedSignal(0, Vector2Int.left, Vector2Int.zero));
 
             Assert.That(_haptics.Played, Is.Empty);
-            _gameplayHaptics = new GameplayHaptics(_bus, _haptics, _config);
+            _gameplayHaptics = new GameplayHaptics(_bus, _haptics, _config, _settings);
+        }
+
+        [Test]
+        public void Haptics_ShouldStayStill_WhenVibrationIsOff()
+        {
+            _settings.Set(GameSetting.Vibration, false);
+
+            _bus.Fire(new BlockExitedSignal(0, Vector2Int.left, Vector2Int.zero));
+
+            Assert.That(_haptics.Played, Is.Empty);
         }
     }
 }
