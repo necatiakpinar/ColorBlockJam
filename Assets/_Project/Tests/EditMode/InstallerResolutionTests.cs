@@ -6,6 +6,7 @@ using ColorBlockJam.Core.Logging;
 using ColorBlockJam.Core.Persistence;
 using ColorBlockJam.Core.Scenes;
 using ColorBlockJam.Core.Signals;
+using ColorBlockJam.Game.Audio;
 using ColorBlockJam.Game.Boot;
 using ColorBlockJam.Game.Boosters;
 using ColorBlockJam.Game.Configs;
@@ -121,6 +122,7 @@ namespace ColorBlockJam.Tests.EditMode
         {
             var builder = new ContainerBuilder();
             new CoreServicesInstaller(Configs()).Install(builder);
+            builder.RegisterInstance<IAudioOutput>(new Helpers.RecordingAudioOutput());
             using IObjectResolver container = builder.Build();
 
             Assert.That(container.Resolve<SignalBus>(), Is.Not.Null);
@@ -139,6 +141,7 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(container.Resolve<IHapticService>(), Is.Not.Null);
             Assert.That(container.Resolve<IGameClock>(), Is.Not.Null);
             Assert.That(container.Resolve<IConnectivityService>(), Is.Not.Null);
+            Assert.That(container.Resolve<IAudioService>(), Is.Not.Null);
             Assert.That(container.Resolve<ITrustedClock>(), Is.SameAs(container.Resolve<TrustedClock>()));
         }
 
@@ -181,6 +184,7 @@ namespace ColorBlockJam.Tests.EditMode
         {
             var builder = new ContainerBuilder();
             new CoreServicesInstaller(Configs()).Install(builder);
+            builder.RegisterInstance<IAudioOutput>(new Helpers.RecordingAudioOutput());
             new GameplayInstaller().Install(builder);
             return builder.Build();
         }
@@ -215,6 +219,7 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(container.Resolve<ActiveBoard>(), Is.Not.Null);
             Assert.That(container.Resolve<BlockDragController>(), Is.Not.Null);
             Assert.That(container.Resolve<GameplayHaptics>(), Is.Not.Null);
+            Assert.That(container.Resolve<GameplaySounds>(), Is.Not.Null);
             Assert.That(container.Resolve<LevelSession>(), Is.Not.Null);
             Assert.That(container.Resolve<LevelProgression>(), Is.Not.Null);
             Assert.That(container.Resolve<LevelTimer>(), Is.Not.Null);

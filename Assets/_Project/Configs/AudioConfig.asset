@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af4c45f1a7feed64e94a9c364c24b899, type: 3}
+  m_Name: AudioConfig
+  m_EditorClassIdentifier: 
+  _cues:
+  - _cue: 1000
+    _clip: {fileID: 8300000, guid: 5029dbaa842f9a84584f23ddb54f7156, type: 3}
+    _volume: 0.6
+  - _cue: 2000
+    _clip: {fileID: 8300000, guid: cecb0651675083d4bbe3d16b8ac180b8, type: 3}
+    _volume: 0.7
+  - _cue: 3000
+    _clip: {fileID: 8300000, guid: 874c5a24f435c5748b67e061ec148755, type: 3}
+    _volume: 0.8
+  - _cue: 4000
+    _clip: {fileID: 8300000, guid: e70b1537292610c4a9a9ea6815cfae4a, type: 3}
+    _volume: 0.8
+  - _cue: 5000
+    _clip: {fileID: 8300000, guid: 5ee8a47ba5e2c2a45952c065022024cd, type: 3}
+    _volume: 0.9
+  - _cue: 6000
+    _clip: {fileID: 8300000, guid: 5032c47d756197145b58d360347b07de, type: 3}
+    _volume: 0.85
+  - _cue: 7000
+    _clip: {fileID: 8300000, guid: 03b4647201c995f4eafc5bf23ddc2603, type: 3}
+    _volume: 0.7

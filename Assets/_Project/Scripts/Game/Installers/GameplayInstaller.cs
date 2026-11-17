@@ -37,6 +37,7 @@ namespace ColorBlockJam.Game.Installers
             builder.Register<GameplayDebugCommands>(Lifetime.Singleton);
             builder.Register<BlockDragController>(Lifetime.Singleton);
             builder.Register<GameplayHaptics>(Lifetime.Singleton);
+            builder.Register<GameplaySounds>(Lifetime.Singleton);
             builder.Register<IPopupService, PopupService>(Lifetime.Singleton);
         }
     }

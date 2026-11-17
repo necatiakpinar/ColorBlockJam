@@ -8,6 +8,7 @@ using ColorBlockJam.Game.Gameplay.Input;
 using ColorBlockJam.Game.Gameplay.Session;
 using ColorBlockJam.Game.Gameplay.View;
 using ColorBlockJam.Game.Installers;
+using ColorBlockJam.Game.UI;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -47,6 +48,10 @@ namespace ColorBlockJam.Game.Scopes
         [SerializeField]
         CoinFlightView _coinFlight;
 
+        [Tooltip("Plays the tap sound for every button under the HUD canvas, popups included.")]
+        [SerializeField]
+        ButtonTapSounds _tapSounds;
+
         [Tooltip("Full-screen layer above the HUD that the popup prefabs are created under.")]
         [SerializeField]
         Transform _popupLayer;
@@ -65,6 +70,7 @@ namespace ColorBlockJam.Game.Scopes
             builder.RegisterComponent(_boardView);
             builder.RegisterComponent(_blockLayerView);
             builder.RegisterComponent(_boardCameraView);
+            builder.RegisterComponent(_tapSounds);
             builder.RegisterComponent(_coinFlight).As<ICoinFlight>();
             builder.RegisterComponentInNewPrefab(popups.PausePopup, Lifetime.Scoped).UnderTransform(_popupLayer);
             builder.RegisterComponentInNewPrefab(popups.WinPopup, Lifetime.Scoped).UnderTransform(_popupLayer);
@@ -82,6 +88,7 @@ namespace ColorBlockJam.Game.Scopes
             {
                 resolver.Resolve<BlockDragController>();
                 resolver.Resolve<GameplayHaptics>();
+                resolver.Resolve<GameplaySounds>();
                 resolver.Resolve<LevelProgression>();
                 resolver.Resolve<LevelTimer>();
                 resolver.Resolve<LevelRewardService>();

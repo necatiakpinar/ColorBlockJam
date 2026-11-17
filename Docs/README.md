@@ -39,6 +39,7 @@ Pages marked **binding** carry rules agents must follow before touching the path
 | [General/blockers.md](General/blockers.md) | blockers (ice, ...): data, rule interface, views, editor row; how to add a kind | yes |
 | [General/boosters.md](General/boosters.md) | the four boosters: stock, shop, use, freeze, looks, routing | yes |
 | [General/level-editor.md](General/level-editor.md) | the level editor: designer guide, shortcuts, solver, generator | yes |
+| [General/audio.md](General/audio.md) | sound effects: cues, the audio service, the clips and how they are made | yes |
 | [General/debug-tools.md](General/debug-tools.md) | the debug window: win, fail, timer, coins, levels, saves | yes |
 | [General/agent-capabilities.md](General/agent-capabilities.md) | what agents verified tools can and cannot do | no |
 
@@ -54,4 +55,5 @@ Pages marked **binding** carry rules agents must follow before touching the path
 | [testing/level-editor-qa.md](testing/level-editor-qa.md) | the level editor (stub) |
 | [testing/lives-qa.md](testing/lives-qa.md) | lives, their refill and the lives popup |
 | [testing/boosters-qa.md](testing/boosters-qa.md) | the four boosters, their stock, popup and looks |
+| [testing/audio-qa.md](testing/audio-qa.md) | sound effects, the low-time tick and flash, the sound toggle |
 | [testing/network-qa.md](testing/network-qa.md) | the online requirement: connectivity, trusted time, no-internet popup (stub) |

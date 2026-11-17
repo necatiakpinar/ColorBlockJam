@@ -5,6 +5,7 @@ using ColorBlockJam.Core.Network;
 using ColorBlockJam.Core.Persistence;
 using ColorBlockJam.Core.Scenes;
 using ColorBlockJam.Core.Signals;
+using ColorBlockJam.Game.Audio;
 using ColorBlockJam.Game.Boosters;
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Lives;
@@ -41,6 +42,7 @@ namespace ColorBlockJam.Game.Installers
             builder.Register<ISceneLoader, SceneLoader>(Lifetime.Singleton);
             builder.Register<INavigationService, NavigationService>(Lifetime.Singleton);
             builder.Register<IHapticService, MobileHapticService>(Lifetime.Singleton);
+            builder.Register<IAudioService, AudioService>(Lifetime.Singleton);
             builder.Register<IGameClock, RealtimeGameClock>(Lifetime.Singleton);
             builder.Register<IProbeRequest, UnityWebRequestProbe>(Lifetime.Singleton);
             builder.Register<TrustedClock>(Lifetime.Singleton).As<ITrustedClock>().AsSelf();

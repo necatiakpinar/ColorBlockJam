@@ -1,5 +1,6 @@
 using ColorBlockJam.Core.Lifecycle;
 using ColorBlockJam.Core.Network;
+using ColorBlockJam.Game.Audio;
 using ColorBlockJam.Game.Boot;
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Installers;
@@ -19,10 +20,15 @@ namespace ColorBlockJam.Game.Scopes
         [SerializeField]
         ApplicationPauseReporter _pauseReporter;
 
+        [Tooltip("The one 2D audio source every sound effect plays through, with the session's audio listener.")]
+        [SerializeField]
+        SfxPlayer _sfxPlayer;
+
         protected override void Configure(IContainerBuilder builder)
         {
             new CoreServicesInstaller(_configs).Install(builder);
             builder.RegisterComponent(_pauseReporter);
+            builder.RegisterComponent(_sfxPlayer).As<IAudioOutput>();
 
             builder.RegisterBuildCallback(resolver => resolver.Resolve<ConnectivityService>().Start());
 

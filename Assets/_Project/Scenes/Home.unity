@@ -309,6 +309,7 @@ MonoBehaviour:
   autoInjectGameObjects: []
   _homeView: {fileID: 1592494728}
   _livesBarView: {fileID: 762156316}
+  _tapSounds: {fileID: 1592494733}
   _popupLayer: {fileID: 1407836514}
 --- !u!4 &103830668
 Transform:
@@ -4547,6 +4548,7 @@ GameObject:
   - component: {fileID: 1592494731}
   - component: {fileID: 1592494730}
   - component: {fileID: 1592494728}
+  - component: {fileID: 1592494733}
   m_Layer: 0
   m_Name: HomeCanvas
   m_TagString: Untagged
@@ -4659,6 +4661,18 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1592494733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1592494727}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e79864fafad81d340b5162254142cecd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1694213466
 GameObject:
   m_ObjectHideFlags: 0

@@ -14,6 +14,7 @@ The art set is used as imported (R-3). `AssetImportTests` enforces §2 and §3.
 | `Art/Textures/` | textures (`icetexture.jpg`) |
 | `Art/Materials/` | project materials (URP Simple Lit, GPU instancing on) |
 | `Prefabs/Board/` | one prefab per mesh part, used by the board and block views |
+| `Audio/` | sound effects (`sfx_*.wav`, made by `tools/synth_sfx.py`); forced to mono, Decompress On Load, ADPCM ([audio.md](audio.md)) |
 
 ## 2. UI sprites
 
