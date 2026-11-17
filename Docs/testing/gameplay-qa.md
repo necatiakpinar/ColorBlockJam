@@ -26,6 +26,9 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
   the pause button.
 - [ ] ⚙ The debug window's shortcuts go through the real services — `GameplayDebugCommandsTests`
 - [ ] 👁 Every HUD and popup button shrinks while pressed; boosters and the coin "+" do nothing else.
+- [ ] ⚙ Ten restarts in a row leave the same board, timer, coins and objects as a fresh start — `RestartResetsStateTests.Restart_ShouldLeaveTheSameStateAsAFreshStart_WhenRepeatedTenTimes`
+- [ ] ⚙ Going Home after a loss and back gives the same level, fresh — `RestartResetsStateTests.Home_ShouldGiveTheSameLevelAndAFreshAttempt_WhenLeftAfterALoss`
+- [ ] ⚙ No gameplay listener survives going Home — `RestartResetsStateTests.SceneUnload_ShouldLeaveNoGameplayListener_WhenGoingHome`
 - [ ] ⚙ Winning starts the next level; after the last level the first layout comes back — `LevelProgressionFlowTests`
 - [ ] ⚙ All five shipped levels are valid and solvable — `ShippedLevelsTests`
 - [ ] 👁 Play levels 1 to 5 by hand: each one is a little harder than the one before, and each finishes well inside its timer.

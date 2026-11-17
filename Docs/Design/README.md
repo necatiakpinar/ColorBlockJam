@@ -141,7 +141,7 @@ task is marked `Dropped`, never deleted. Detail per task: [tasks.md](tasks.md).
 | T-19 | 5 | Pause popup | Pause freezes timer and input; resume, restart, home work | T-18 | Done |
 | T-20 | 5 | Fail popup | Opens on timeout; restart and home work | T-18 | Done |
 | T-21 | 5 | Win popup | Shows the reward; Continue loads the next level | T-18, T-17 | Done |
-| T-22 | 5 | Restart and home correctness | No state leaks across attempts; Play Mode tests prove it | T-19–T-21 | Todo |
+| T-22 | 5 | Restart and home correctness | No state leaks across attempts; Play Mode tests prove it | T-19–T-21 | Done |
 | T-23 | 6 | Home screen layout | Top UI, level button, tab bar match the assets at 1080x1920 and 20:9 | T-05 | Done |
 | T-24 | 6 | Home behaviors | Level button plays the current level; settings opens Settings | T-23, T-04 | Done |
 | T-25 | 7 | Settings popup | Three toggles show on/off; buttons give feedback; close returns Home | T-05, T-07 | Done |

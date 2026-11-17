@@ -38,7 +38,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - [x] [T-19 Pause popup](#t-19-pause-popup)
 - [x] [T-20 Fail popup](#t-20-fail-popup)
 - [x] [T-21 Win popup](#t-21-win-popup)
-- [ ] [T-22 Restart and home correctness](#t-22-restart-and-home-correctness)
+- [x] [T-22 Restart and home correctness](#t-22-restart-and-home-correctness)
 - [x] [T-23 Home screen layout](#t-23-home-screen-layout)
 - [x] [T-24 Home behaviors](#t-24-home-behaviors)
 - [x] [T-25 Settings popup](#t-25-settings-popup)
@@ -519,15 +519,16 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 
 - **Req:** R-21, R-25.
 - **Subtasks:**
-  - [ ] Kill every board tween on restart
-  - [ ] Return all pooled views
-  - [ ] Reset drag state
-  - [ ] Clear popups
-  verify no signal subscriber survives a scene unload.
+  - [x] Kill every board tween on restart (a reload kills the block, door and spray tweens)
+  - [x] Return all pooled views (`BoardView` and `BlockLayerView` release every part on a load)
+  - [x] Reset drag state (`BlockDragController` drops its block on `BoardLoadedSignal`)
+  - [x] Clear popups (Retry closes its popup before restarting; restart is only reachable with none open)
+  - [x] No signal subscriber survives a scene unload (`RestartResetsStateTests` fires every gameplay signal
+    on Home).
 - **Accept:** ten restarts in a row leave identical board, timer and coin state; no warnings, no leaked
   objects in the hierarchy.
-- **Tests:** `PM RestartResetsStateTests` (move blocks, restart, compare to fresh), `PM` Home round-trip
-  after a fail.
+- **Tests:** `PM RestartResetsStateTests`: ten restarts compared with a fresh start (board, views, timer,
+  coins, state, object count); Home round-trip after a loss; no gameplay listener left after going Home.
 - **Docs:** `gameplay-qa.md`.
 
 ---
