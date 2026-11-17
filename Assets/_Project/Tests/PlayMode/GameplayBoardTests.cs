@@ -121,7 +121,7 @@ namespace ColorBlockJam.Tests.PlayMode
 
                 BoardViewConfig config = _container.Resolve<BoardViewConfig>();
                 // The blocks here are one cell long: they slide that plus the clearance at the exit speed.
-                yield return WaitRealtime((1f + config.ExitClearance) / config.ExitSpeed + 0.2f);
+                yield return WaitRealtime((1f + config.ExitCutOffset + config.ExitClearance) / config.ExitSpeed + 0.2f);
                 Assert.That(redView.gameObject.activeInHierarchy, Is.False, "The exited block view returns to its pool.");
 
                 Swipe(new Vector2Int(3, 1), new Vector2Int(5, 1));
@@ -181,35 +181,6 @@ namespace ColorBlockJam.Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator Reject_ShouldKnockTheBlockAndLetItSpringBack_WhenPushedIntoAWrongDoor()
-        {
-            yield return BootToBoard();
-            // Blue's door is on the right; push it left into red's door instead.
-            _board.Load(new LevelData(4, 3, 60,
-                new[] { new BlockData(BlockColor.Blue, new[] { new Vector2Int(0, 1) }) },
-                new[]
-                {
-                    new DoorData(WallSide.Left, 1, 1, BlockColor.Red),
-                    new DoorData(WallSide.Right, 1, 1, BlockColor.Blue),
-                }));
-            BlockView blue = _blocks.Views[0];
-            Transform body = blue.transform.GetChild(blue.transform.childCount - 1);
-            float duration = _container.Resolve<BoardViewConfig>().RejectDuration;
-
-            _input.OnPointerDown(PointerAt(0, 1));
-            _input.OnDrag(PointerAt(-1, 1));
-            yield return WaitRealtime(duration * 0.2f);
-            float knocked = body.localPosition.magnitude;
-            yield return WaitRealtime(duration);
-            _input.OnPointerUp(PointerAt(-1, 1));
-
-            Assert.That(body.name, Is.EqualTo("Body"));
-            Assert.That(knocked, Is.GreaterThan(0.01f), "Knocked toward the door.");
-            Assert.That(body.localPosition.magnitude, Is.LessThan(1e-3f), "Back in place.");
-            Assert.That(_board.Current.Blocks[0].HasExited, Is.False);
-        }
-
-        [UnityTest]
         public IEnumerator Exit_ShouldOpenTheDoorAndCloseItAfter_WhenTheBlockLeaves()
         {
             yield return BootToBoard();
@@ -221,7 +192,7 @@ namespace ColorBlockJam.Tests.PlayMode
             Swipe(new Vector2Int(0, 1), new Vector2Int(-2, 1));
             yield return WaitRealtime(config.ExitSnapDuration + 0.05f);
             float whileOpen = door.localPosition.y;
-            yield return WaitRealtime((1f + config.ExitClearance) / config.ExitSpeed + config.DoorGateCloseDuration + 0.2f);
+            yield return WaitRealtime((1f + config.ExitCutOffset + config.ExitClearance) / config.ExitSpeed + config.DoorGateCloseDuration + 0.2f);
 
             Assert.That(whileOpen, Is.LessThan(closedY - config.DoorGateDepth * 0.5f), "Sunk into the floor.");
             Assert.That(door.localPosition.y, Is.EqualTo(closedY).Within(1e-3f), "Closed again.");
@@ -283,10 +254,11 @@ namespace ColorBlockJam.Tests.PlayMode
                 if (mesh.sharedMaterial.shader.name != "ColorBlockJam/Block Exit")
                     continue;
                 cut++;
-                // The plane keeps the board side of the left edge (x = origin.x) and cuts what is past it.
+                // The plane keeps the board side of a line ExitCutOffset inside the left door and cuts the rest.
                 Vector4 plane = mesh.sharedMaterial.GetVector("_ClipPlane");
+                float cutX = _space.Origin.x - _container.Resolve<BoardViewConfig>().ExitCutOffset * _space.CellSize;
                 Assert.That(new Vector3(plane.x, plane.y, plane.z), Is.EqualTo(Vector3.right));
-                Assert.That(plane.w, Is.EqualTo(-_space.Origin.x).Within(1e-4f));
+                Assert.That(plane.w, Is.EqualTo(-cutX).Within(1e-4f));
             }
 
             Assert.That(cut, Is.EqualTo(red.PartCount), "Every piece of the exiting block uses the exit material.");

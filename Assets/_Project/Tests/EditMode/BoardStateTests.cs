@@ -264,31 +264,5 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(Steps, Is.Not.AllocatingGCMemory());
             Assert.That(board.TryStep(2, StepRight), Is.EqualTo(StepResult.Blocked), "The path case must stay blocked.");
         }
-
-        [Test]
-        public void IsRejectedByDoor_ShouldBeTrue_WhenADoorOfAnotherColourFacesTheBlock()
-        {
-            var board = new BoardState(new LevelDataBuilder(4, 4).Block(Red, 0, 1).Door(Left, 1, 1, Blue).Build());
-
-            Assert.That(board.IsRejectedByDoor(0, StepLeft), Is.True);
-        }
-
-        [Test]
-        public void IsRejectedByDoor_ShouldBeTrue_WhenTheDoorIsTooNarrowForTheBlock()
-        {
-            var board = new BoardState(new LevelDataBuilder(4, 4).Block(Red, 0, 1, 0, 2).Door(Left, 1, 1, Red).Build());
-
-            Assert.That(board.IsRejectedByDoor(0, StepLeft), Is.True);
-        }
-
-        [Test]
-        public void IsRejectedByDoor_ShouldBeFalse_WhenItIsAPlainWallOrAFittingDoor()
-        {
-            var board = new BoardState(new LevelDataBuilder(4, 4)
-                .Block(Red, 0, 1).Block(Blue, 3, 1).Door(Left, 1, 1, Red).Build());
-
-            Assert.That(board.IsRejectedByDoor(1, StepRight), Is.False, "No door on the right wall.");
-            Assert.That(board.IsRejectedByDoor(0, StepLeft), Is.False, "Its own door lets it out.");
-        }
     }
 }

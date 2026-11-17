@@ -166,22 +166,15 @@ namespace ColorBlockJam.Game.Configs
         [SerializeField]
         Ease _exitEase = Ease.Linear;
 
+        [Tooltip("How far past the board's edge an exiting block is cut, in cells: a little inside the door, so "
+            + "the block covers the floor's edge that the sinking door uncovers.")]
+        [SerializeField, Min(0f)]
+        float _exitCutOffset = 0.15f;
+
         [Tooltip("Material an exiting block switches to (ColorBlockJam/Block Exit): lit like M_Block, cut at "
             + "the board's edge.")]
         [SerializeField]
         Material _blockExitMaterial;
-
-        [Header("Rejected push")]
-        [Tooltip("How far a block is knocked toward a door it cannot use, in cells, before it springs back.")]
-        [SerializeField, Min(0f)]
-        float _rejectStrength = 0.12f;
-
-        [SerializeField, Min(0.01f)]
-        float _rejectDuration = 0.3f;
-
-        [Tooltip("How many times the knocked block wobbles while it springs back.")]
-        [SerializeField, Range(1, 20)]
-        int _rejectVibrato = 8;
 
         [Header("Door gate")]
         [Tooltip("How far a door sinks into the floor to let a block through, in cells.")]
@@ -230,9 +223,6 @@ namespace ColorBlockJam.Game.Configs
         public float HoldGive => _holdGive;
         public float ExitPush => _exitPush;
         public float TouchTolerance => _touchTolerance;
-        public float RejectStrength => _rejectStrength;
-        public float RejectDuration => _rejectDuration;
-        public int RejectVibrato => _rejectVibrato;
         public float DoorGateDepth => _doorGateDepth;
         public float DoorGateCloseDuration => _doorGateCloseDuration;
         public float ExitBurstCoalesceWindow => _exitBurstCoalesceWindow;
@@ -251,6 +241,7 @@ namespace ColorBlockJam.Game.Configs
         public float ExitSpeed => _exitSpeed;
         public float ExitClearance => _exitClearance;
         public Ease ExitEase => _exitEase;
+        public float ExitCutOffset => _exitCutOffset;
         public Material BlockExitMaterial => _blockExitMaterial;
         public ExitBurstView ExitBurst => _exitBurst;
         public float ExitDebrisRate => _exitDebrisRate;

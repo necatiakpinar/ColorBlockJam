@@ -2,6 +2,8 @@
 // (which every resting block uses, with no texture and no specular), plus a world-space clip plane at the
 // board's edge, so the block is cut away as it slides into the door instead of shrinking. Only an exiting
 // block uses it (its own material copy carries the plane), so the resting blocks keep their batching.
+// Back faces are drawn too, lit as if they faced out: where the plane opens the hollow mesh, the inside
+// reads as a solid cut face instead of a hole showing the floor behind (seen on doors facing the camera).
 Shader "ColorBlockJam/Block Exit"
 {
     Properties
@@ -19,6 +21,7 @@ Shader "ColorBlockJam/Block Exit"
         {
             Name "ForwardLit"
             Tags { "LightMode" = "UniversalForward" }
+            Cull Off
 
             HLSLPROGRAM
             #pragma vertex Vert
@@ -59,7 +62,7 @@ Shader "ColorBlockJam/Block Exit"
                 return output;
             }
 
-            half4 Frag(Varyings input) : SV_Target
+            half4 Frag(Varyings input, FRONT_FACE_TYPE face : FRONT_FACE_SEMANTIC) : SV_Target
             {
                 // Keep what is still on the board side of the door; the rest has gone in.
                 clip(dot(_ClipPlane.xyz, input.positionWS) + _ClipPlane.w);
@@ -67,7 +70,7 @@ Shader "ColorBlockJam/Block Exit"
                 InputData inputData = (InputData)0;
                 inputData.positionWS = input.positionWS;
                 inputData.positionCS = input.positionCS;
-                inputData.normalWS = normalize(input.normalWS);
+                inputData.normalWS = normalize(input.normalWS) * IS_FRONT_VFACE(face, 1, -1);
                 inputData.viewDirectionWS = GetWorldSpaceNormalizeViewDir(input.positionWS);
                 inputData.shadowCoord = TransformWorldToShadowCoord(input.positionWS);
                 inputData.fogCoord = input.fogFactor;

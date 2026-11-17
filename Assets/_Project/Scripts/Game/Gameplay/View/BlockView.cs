@@ -21,11 +21,6 @@ namespace ColorBlockJam.Game.Gameplay.View
         [SerializeField]
         MeshRenderer _outlineRenderer;
 
-        [Tooltip("Child that carries the pieces and the outline; the reject shake moves it, never the root, so "
-            + "the shake cannot fight the follow and snap tweens on the root.")]
-        [SerializeField]
-        Transform _body;
-
         static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
         static readonly int ClipPlaneId = Shader.PropertyToID("_ClipPlane");
 
@@ -40,7 +35,6 @@ namespace ColorBlockJam.Game.Gameplay.View
         TweenerCore<Vector3, Vector3, VectorOptions> _move;
         TweenerCore<Vector3, Vector3, VectorOptions> _follow;
         Sequence _exit;
-        Sequence _reject;
         // This view's own copy of the exit material, made on its first exit and reused by every later one.
         Material _exitMaterial;
         Action<BlockView> _onExitFinished;
@@ -60,16 +54,6 @@ namespace ColorBlockJam.Game.Gameplay.View
             _move.Pause();
             _follow ??= default(BlockMoveAnimation).Create(transform, followDuration, followEase);
             _follow.Pause();
-            _reject?.Kill();
-            _body.localPosition = Vector3.zero;
-        }
-
-        /// <summary>Knocks the block toward a door it cannot use and lets it spring back.</summary>
-        internal void PlayReject(Vector2Int direction, float strength, float duration, int vibrato)
-        {
-            _reject?.Kill();
-            var punch = new Vector3(direction.x, 0f, direction.y) * strength;
-            _reject = default(BlockRejectAnimation).Play(new BlockRejectAnimation.Config(_body, punch, duration, vibrato));
         }
 
         /// <summary>Traces the outline around the block's start cells; hidden until <see cref="SetOutlined"/>.</summary>
@@ -98,7 +82,7 @@ namespace ColorBlockJam.Game.Gameplay.View
         internal void AddPart(PartPool pool, GameObject part, Renderer mesh, Vector3 cellPosition, float yaw,
             Vector3 scale)
         {
-            part.transform.SetParent(_body, false);
+            part.transform.SetParent(transform, false);
             part.transform.localPosition = cellPosition - _pivot;
             part.transform.localRotation = Quaternion.Euler(0f, yaw, 0f);
             part.transform.localScale = scale;
@@ -137,8 +121,6 @@ namespace ColorBlockJam.Game.Gameplay.View
         {
             _move.Pause();
             _follow.Pause();
-            _reject?.Kill();
-            _body.localPosition = Vector3.zero;
             SetOutlined(false);
             UseExitMaterial(exitTemplate, color, clipPlane);
             _onExitFinished = onFinished;
@@ -182,7 +164,6 @@ namespace ColorBlockJam.Game.Gameplay.View
         {
             _move?.Kill();
             _follow?.Kill();
-            _reject?.Kill();
             _exit?.Kill();
             Destroy(_outlineMesh);
             Destroy(_exitMaterial);

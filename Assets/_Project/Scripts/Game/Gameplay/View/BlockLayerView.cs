@@ -77,7 +77,6 @@ namespace ColorBlockJam.Game.Gameplay.View
             _signalBus.Subscribe<BlockDraggedSignal>(OnBlockDragged);
             _signalBus.Subscribe<BlockDroppedSignal>(OnBlockDropped);
             _signalBus.Subscribe<BlockExitedSignal>(OnBlockExited);
-            _signalBus.Subscribe<BlockRejectedSignal>(OnBlockRejected);
         }
 
         /// <summary>Block views on screen, indexed by block id; null once a block has exited.</summary>
@@ -144,12 +143,13 @@ namespace ColorBlockJam.Game.Gameplay.View
 
             BlockData block = _level.Blocks[signal.BlockId];
             var path = new ExitPath(block.Cells, signal.Offset, signal.Direction, _boardSpace.Size);
-            float distance = path.Length + _config.ExitClearance;
+            float distance = path.Length + _config.ExitCutOffset + _config.ExitClearance;
             Vector3 doorLocal = path.DoorCentre(_config.ExitDebrisHeight);
 
             // Keep what lies on the board side of the door: -d . p + d . edge >= 0.
             var outward = new Vector3(signal.Direction.x, 0f, signal.Direction.y);
-            Vector3 edgeWorld = _root.TransformPoint(doorLocal);
+            // Cut a little inside the door, so the block covers the floor's edge the opening door uncovers.
+            Vector3 edgeWorld = _root.TransformPoint(doorLocal + outward * _config.ExitCutOffset);
             var clipPlane = new Vector4(-outward.x, 0f, -outward.z, Vector3.Dot(outward, edgeWorld));
 
             Color color = _config.TintOf(block.Color);
@@ -181,9 +181,6 @@ namespace ColorBlockJam.Game.Gameplay.View
             _lastBursts[door] = (burst, now);
         }
 
-        void OnBlockRejected(BlockRejectedSignal signal) => _views[signal.BlockId].PlayReject(
-            signal.Direction, _config.RejectStrength, _config.RejectDuration, _config.RejectVibrato);
-
         void Recycle(BlockView view)
         {
             _exiting.Remove(view);
@@ -209,7 +206,6 @@ namespace ColorBlockJam.Game.Gameplay.View
             _signalBus.Unsubscribe<BlockDraggedSignal>(OnBlockDragged);
             _signalBus.Unsubscribe<BlockDroppedSignal>(OnBlockDropped);
             _signalBus.Unsubscribe<BlockExitedSignal>(OnBlockExited);
-            _signalBus.Unsubscribe<BlockRejectedSignal>(OnBlockRejected);
             _materials.Dispose();
         }
     }

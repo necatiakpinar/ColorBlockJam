@@ -364,39 +364,6 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
-        public void Drag_ShouldRejectOncePerPush_WhenPushedIntoADoorOfAnotherColour()
-        {
-            _board.Load(new LevelDataBuilder(4, 4).Block(Red, 0, 1).Block(Blue, 3, 3).Door(Left, 1, 1, Blue).Build());
-            var rejected = new List<BlockRejectedSignal>();
-            _bus.Subscribe<BlockRejectedSignal>(rejected.Add);
-            Finger(BoardPointerPhase.Pressed, 0, 1);
-
-            Finger(BoardPointerPhase.Dragged, -0.3f, 1);
-            Finger(BoardPointerPhase.Dragged, -0.6f, 1);
-            int afterFirstPush = rejected.Count;
-            Finger(BoardPointerPhase.Dragged, 0.4f, 1);
-            Finger(BoardPointerPhase.Dragged, -0.3f, 1);
-
-            Assert.That(afterFirstPush, NUnit.Framework.Is.EqualTo(1), "A held push rejects once.");
-            Assert.That(rejected.Count, NUnit.Framework.Is.EqualTo(2), "Pulling away and pushing again rejects again.");
-            Assert.That(rejected[0].Direction, NUnit.Framework.Is.EqualTo(Vector2Int.left));
-            Assert.That(_exits, NUnit.Framework.Is.Empty);
-        }
-
-        [Test]
-        public void Drag_ShouldNotReject_WhenPushedIntoAPlainWall()
-        {
-            _board.Load(new LevelDataBuilder(4, 4).Block(Red, 0, 1).Door(Left, 3, 1, Blue).Build());
-            var rejected = new List<BlockRejectedSignal>();
-            _bus.Subscribe<BlockRejectedSignal>(rejected.Add);
-            Finger(BoardPointerPhase.Pressed, 0, 1);
-
-            Finger(BoardPointerPhase.Dragged, -0.6f, 1);
-
-            Assert.That(rejected, NUnit.Framework.Is.Empty);
-        }
-
-        [Test]
         public void Drag_ShouldDoNothing_WhenThePressMissedEveryBlock()
         {
             _board.Load(new LevelDataBuilder(5, 5).Block(Red, 0, 0).Build());

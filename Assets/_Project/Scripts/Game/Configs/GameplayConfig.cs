@@ -12,16 +12,11 @@ namespace ColorBlockJam.Game.Configs
         FadeScaleInSettings _hudReveal = new(0.35f, 0.9f, Ease.OutCubic);
 
         [Header("Haptics")]
-        [Tooltip("Tap when a door refuses a pushed block.")]
-        [SerializeField]
-        HapticImpact _rejectHaptic = HapticImpact.Medium;
-
         [Tooltip("Tap when a block leaves through its door.")]
         [SerializeField]
         HapticImpact _exitHaptic = HapticImpact.Light;
 
         public FadeScaleInSettings HudReveal => _hudReveal;
-        public HapticImpact RejectHaptic => _rejectHaptic;
         public HapticImpact ExitHaptic => _exitHaptic;
     }
 }
