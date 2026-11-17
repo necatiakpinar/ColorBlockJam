@@ -3,6 +3,8 @@ using NUnit.Framework;
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Gameplay.Board;
 using ColorBlockJam.Game.Levels;
+using ColorBlockJam.Game.Levels.Generation;
+using ColorBlockJam.Game.Levels.Solving;
 using UnityEditor;
 using UnityEngine;
 
@@ -55,6 +57,22 @@ namespace ColorBlockJam.Tests.EditMode
             }
 
             Assert.That(previous, Is.EqualTo(LevelDifficulty.VeryHard), "The last level is the hardest kind.");
+        }
+
+        [Test]
+        public void ShippedLevels_ShouldPlayAsHardAsTheirDifficultySays_WhenSolved()
+        {
+            var rules = AssetDatabase.LoadAssetAtPath<LevelRulesConfig>(RulesPath);
+            var solver = new LevelSolver(rules.SolverStateCap);
+            var generator = new LevelGenerator(new LevelDefinitionValidator(rules), solver, new BlockShapeLibrary());
+            for (int i = 0; i < Levels().Count; i++)
+            {
+                LevelData level = Levels()[i].Data;
+                SolveResult result = solver.Solve(level);
+                (int min, int max) = generator.ScoreFor(level.Difficulty);
+                Assert.That(result.Status, Is.EqualTo(SolveStatus.Solvable), $"Level {i + 1}");
+                Assert.That(result.Score, Is.InRange(min, max), $"Level {i + 1} is labelled {level.Difficulty}");
+            }
         }
 
         [Test]

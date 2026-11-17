@@ -37,12 +37,13 @@ new fake.
 | `BoardStateTests` | moves, walls, blocks, door fit on every wall, clear path out, win, fresh restart, `CanStep`, zero allocation |
 | `LevelProviderTests` | level number to catalog entry; looping; empty catalog |
 | `LevelProgressionTests` | a win advances the level once; a loss or a disposed listener does not |
-| `ShippedLevelsTests` | the catalog's five levels: no validator issues, solvable block by block, block counts that never fall |
+| `ShippedLevelsTests` | the catalog's five levels: no validator issues, solvable block by block, as hard as their label (solver score), block counts that never fall |
 | `ConnectivityServiceTests` | first answer announced even offline, only changes after, online and offline intervals, probe on app resume, Retry probes at once and returns the answer, server time handed to the trusted clock, stops when disposed (`FakeProbeRequest`, `FakeGameClock`) |
 | `TrustedClockTests` | no time before a server time; HTTP date read as UTC; moves on with monotonic time; a bad header keeps the last time |
 | `WalletServiceTests` | starts empty, throws before load, adds and saves at once with one signal, rejects zero or less, corrupt or negative saves start fresh |
 | `SettingsServiceTests` | all on for a new player, throws before load, a change saves and announces only that toggle, an unchanged value does nothing, a corrupt save starts fresh |
 | `LevelSolverTests` | one-round and waiting levels, a level that needs room made first, unsolvable and capped searches, shipped level scores; every solution replays on a real board |
+| `LevelGeneratorTests` | valid, solvable levels in each difficulty's band; settings respected; seeds repeat; impossible settings refused; timer formula |
 | `LevelRewardTests` | coins by difficulty, a missing entry throws, the shipped table rises with difficulty, a win pays its layout's reward (also when looped), a loss or a disposed service pays nothing |
 | `GameplayFlowTests` | start, HUD restart, pause opens the settings popup only while playing, close resumes, switches flip settings, Home, nothing after dispose (`RecordingPopupService`) |
 | `LevelResultFlowTests` | win popup after the delay with the reward, Continue plays the next level; out-of-time offer, buying time, giving up, Retry, Home |
