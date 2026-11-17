@@ -14,11 +14,12 @@ a `JsonRecord<T>`.
 | `IPlayerProgressService` | `player_progress_v1` | `PlayerProgressData`: current level (1-based, DA-2); `SetCurrentLevel` jumps (debug window) | level 1 |
 | `IWalletService` | `wallet_v1` | `WalletData`: coins | 0 coins (DA-7) |
 | `ISettingsService` | `settings_v1` | `SettingsData`: music, sound, vibration toggles (`GameSetting`) | all on (DA-10) |
+| `LivesService` | `lives_v1` | `LivesData`: lives missing, next life in trusted UTC ticks | full lives (DA-38) |
 | `BoosterInventory` | `boosters_v1` | `BoosterInventoryData`: one stock per booster | each booster's starting stock (DA-36) |
 
 ## 2. Rules
 
-1. **Load once, at boot.** `LoadPlayerDataStep` (Splash) loads all four before Home shows anything.
+1. **Load once, at boot.** `LoadPlayerDataStep` (Splash) loads all five before Home shows anything.
    Reading a service before its `Load` throws, so a missing load is a loud setup bug.
 2. **Save on every change.** Each change writes its record and flushes at once, so a killed app keeps it.
    Nothing waits for the app to go to the background, so there is no save-on-pause observer.

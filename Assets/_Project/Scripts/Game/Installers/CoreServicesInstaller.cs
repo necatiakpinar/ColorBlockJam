@@ -7,6 +7,7 @@ using ColorBlockJam.Core.Scenes;
 using ColorBlockJam.Core.Signals;
 using ColorBlockJam.Game.Boosters;
 using ColorBlockJam.Game.Configs;
+using ColorBlockJam.Game.Lives;
 using ColorBlockJam.Game.Levels;
 using ColorBlockJam.Game.Navigation;
 using VContainer;
@@ -25,10 +26,12 @@ namespace ColorBlockJam.Game.Installers
         readonly LevelCatalog _levelCatalog;
         readonly NetworkConfig _networkConfig;
         readonly BoosterConfig _boosterConfig;
+        readonly LivesConfig _livesConfig;
 
         public CoreServicesInstaller(ApplicationConfig applicationConfig, UiConfig uiConfig, LevelCatalog levelCatalog,
-            NetworkConfig networkConfig, BoosterConfig boosterConfig)
+            NetworkConfig networkConfig, BoosterConfig boosterConfig, LivesConfig livesConfig)
         {
+            _livesConfig = livesConfig;
             _applicationConfig = applicationConfig;
             _uiConfig = uiConfig;
             _levelCatalog = levelCatalog;
@@ -43,6 +46,7 @@ namespace ColorBlockJam.Game.Installers
             builder.RegisterInstance(_levelCatalog);
             builder.RegisterInstance(_networkConfig);
             builder.RegisterInstance(_boosterConfig);
+            builder.RegisterInstance(_livesConfig);
 
             builder.Register<SignalBus>(Lifetime.Singleton);
             builder.Register<IGameLogger, UnityGameLogger>(Lifetime.Singleton);
@@ -51,6 +55,7 @@ namespace ColorBlockJam.Game.Installers
             builder.Register<IWalletService, WalletService>(Lifetime.Singleton);
             builder.Register<ISettingsService, SettingsService>(Lifetime.Singleton);
             builder.Register<BoosterInventory>(Lifetime.Singleton);
+            builder.Register<LivesService>(Lifetime.Singleton);
             builder.Register<ISceneLoader, SceneLoader>(Lifetime.Singleton);
             builder.Register<INavigationService, NavigationService>(Lifetime.Singleton);
             builder.Register<IHapticService, MobileHapticService>(Lifetime.Singleton);
