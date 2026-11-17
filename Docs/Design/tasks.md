@@ -68,6 +68,10 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - [x] [T-49 Twenty levels and the level hardener](#t-49-twenty-levels-and-the-level-hardener)
 - [x] [T-50 Level packs (JSON, remote-ready)](#t-50-level-packs-json-remote-ready)
 - [x] [T-51 Coin flight on a win](#t-51-coin-flight-on-a-win)
+- [ ] [T-52 Whole lives bar opens the lives popup](#t-52-whole-lives-bar-opens-the-lives-popup)
+- [ ] [T-53 Sound effects](#t-53-sound-effects)
+- [ ] [T-54 Low-time warning](#t-54-low-time-warning)
+- [ ] [T-55 Level editor look](#t-55-level-editor-look)
 
 ---
 
@@ -877,3 +881,53 @@ and (T-33) the solver from `ColorBlockJam.Game`, so the editor never has its own
 - **Tests:** `EM LevelResultFlowTests`, `GameplayHudViewTests`, `ArchitectureTests` (scene wiring);
   `PM LevelProgressionFlowTests`, `CoinPersistenceTests`.
 - **Docs:** gameplay.md §7, ui.md, DA-12, gameplay-qa.md.
+
+### T-52 Whole lives bar opens the lives popup
+
+- **Req:** R-54.
+- **Arch:** `LivesBarView` raises `Clicked` from one `Button` that covers the whole `TopBar/Lives` area;
+  the "+" stays as art inside it. `HomeFlow` opens the lives popup on it as before.
+- **Accept:** a tap on the heart, the count, the countdown or the "+" opens the lives popup.
+- **Tests:** `EM HomeFlowTests`; `PM HomeScreenTests` taps the bar.
+- **Docs:** lives.md §3, lives-qa.md.
+
+### T-53 Sound effects
+
+- **Req:** R-55. Implements DA-43.
+- **Arch:**
+  - `IAudioService` (`Play(AudioCue)`) on the Root scope, reading `ISettingsService` so the sound toggle
+    mutes it; it plays through `IAudioOutput`, the `SfxPlayer` on the Root prefab (one 2D source, the
+    listener).
+  - `AudioConfig` (Root, in `ConfigProvider`) maps each cue to a clip and a volume.
+  - Gameplay `GameplaySounds` (plain class, signals): grab, exit, booster used, win, fail. Taps:
+    `ButtonTapSounds` on each scene's canvas adds the tap cue to every button under it.
+  - Clips under `Assets/_Project/Audio/`, synthesized by `tools/synth_sfx.py`, mono, short, ADPCM.
+- **Accept:** each event plays its clip once; with sound off nothing plays; no allocation per play.
+- **Tests:** `EM` audio service with a fake output (mute, cue mapping), `GameplaySoundsTests`;
+  `ArchitectureTests` (config listed, no `Update`).
+- **Docs:** new `Docs/General/audio.md`, CLAUDE.md trigger, art-pipeline.md (audio import), DA-10, DA-43,
+  new `Docs/testing/audio-qa.md`.
+
+### T-54 Low-time warning
+
+- **Req:** R-56. Implements DA-42.
+- **Arch:** `LevelTimer` already announces each second (`TimerChangedSignal`). On each second in
+  `GameplayConfig`'s low-time range (10 s to 1 s) `GameplayHudView` flashes the timer red and swells it
+  (`TimerWarningAnimation`) and `GameplaySounds` plays the tick; no signal while paused or frozen means no
+  flash or tick; a level start resets the label.
+- **Accept:** at 10 s left the timer turns red and pulses and a tick plays every second; a pause, the
+  freeze, a win, a fail or a restart stops both; a restart shows the normal timer.
+- **Tests:** `EM GameplayHudViewTests`, `GameplaySoundsTests`.
+- **Docs:** gameplay.md HUD section, DA-42, gameplay-qa.md, audio-qa.md.
+
+### T-55 Level editor look
+
+- **Req:** R-57.
+- **Arch:** one `LevelEditorSkin` (editor assembly) builds the skin once: rounded, coloured buttons from
+  generated textures, a header toolbar, card panels, a selected state for the active tool and colour.
+  `LevelEditorWindow` and `LevelCanvas` draw with it; behaviour, shortcuts (DA-34) and data stay as they are.
+- **Accept:** every tool, shortcut and panel works as before; the window reads at a glance in the
+  light and dark editor themes.
+- **Tests:** `EM` level editor tests stay green; level-editor-qa.md manual look check.
+- **Docs:** level-editor.md (screens), level-editor-qa.md.
+

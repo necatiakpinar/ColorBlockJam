@@ -77,6 +77,10 @@ requirement keeps its id and is marked `Dropped`.
 | R-51 | 20 shipped levels on a mixed difficulty curve; the hard ones are real puzzles that make the player move blocks around in the right order | must (developer, 2026-11-17; first asked for 50, then 20) | T-49 |
 | R-52 | Levels can be changed later from remote config without an app update: they ship as JSON, and a remote pack is checked before it plays | must (developer, 2026-11-17) | T-50 |
 | R-53 | Winning flies the reward's coins to the coin counter with a sparkle effect, then returns Home, where the next level starts | must (developer, 2026-11-17) | T-51 |
+| R-54 | Tapping anywhere on the Home lives bar opens the lives popup, not only its "+" | must (developer, 2026-11-17) | T-52 |
+| R-55 | The game plays sound effects for button taps, a win, a fail, a booster use, a block grab and a block leaving through its door; the sound toggle mutes them | must (developer, 2026-11-17) | T-53 |
+| R-56 | In the last seconds of a level the timer ticks audibly every second and flashes red | must (developer, 2026-11-17) | T-54 |
+| R-57 | The level editor looks modern and friendly: styled buttons and panels instead of the default IMGUI look, with the same tools and shortcuts | must (developer, 2026-11-17) | T-55 |
 
 ## 2. Scope decisions
 
@@ -185,5 +189,9 @@ task is marked `Dropped`, never deleted. Detail per task: [tasks.md](tasks.md).
 | T-49 | 8 | Twenty levels and the level hardener | 20 catalog levels, valid and solvable, on a saw-tooth curve whose peaks need many room-making moves; the editor can harden a level | T-47, T-34, T-35 | Done |
 | T-50 | 8 | Level packs (JSON, remote-ready) | The game plays levels.json; the editor writes it on every change; a remote pack is validated, stored and played from the next launch; bad or older packs fall back to the bundled one | T-49, T-07 | Done |
 | T-51 | 5 | Coin flight on a win | Continue flies the pile's coins to the HUD counter with sparkles, counting the reward in, then goes Home | T-21 | Done |
+| T-52 | 5 | Whole lives bar opens the lives popup | A tap anywhere on the Home lives bar opens the popup | T-48 | Todo |
+| T-53 | 6 | Sound effects | Taps, win, fail, booster use, grab and exit each play their clip; the sound toggle mutes them | T-25 | Todo |
+| T-54 | 6 | Low-time warning | From 10 s left the timer ticks every second and flashes red; it stops on pause, win, fail or restart | T-53, T-15 | Todo |
+| T-55 | 9 | Level editor look | Styled toolbar, buttons and panels; every tool and shortcut works as before | T-31 | Todo |
 
 Status values: `Todo`, `In progress`, `Blocked`, `Done`, `Dropped`.
