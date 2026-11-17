@@ -1,6 +1,7 @@
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Economy;
 using ColorBlockJam.Game.Gameplay;
+using ColorBlockJam.Game.Gameplay.Boosters;
 using ColorBlockJam.Game.Gameplay.Feedback;
 using ColorBlockJam.Game.Gameplay.Hud;
 using ColorBlockJam.Game.Gameplay.Input;
@@ -31,6 +32,15 @@ namespace ColorBlockJam.Game.Scopes
         GameplayHudView _hudView;
 
         [SerializeField]
+        BoosterBarView _boosterBarView;
+
+        [SerializeField]
+        BoosterTargetingView _boosterTargetingView;
+
+        [SerializeField]
+        FreezeView _freezeView;
+
+        [SerializeField]
         BoardInputView _boardInputView;
 
         [SerializeField]
@@ -57,6 +67,9 @@ namespace ColorBlockJam.Game.Scopes
             // signals before any entry point below starts and fires one.
             builder.RegisterComponent(_boardCamera);
             builder.RegisterComponent(_hudView);
+            builder.RegisterComponent(_boosterBarView);
+            builder.RegisterComponent(_boosterTargetingView);
+            builder.RegisterComponent(_freezeView);
             builder.RegisterComponent(_boardInputView);
             builder.RegisterComponent(_boardView);
             builder.RegisterComponent(_blockLayerView);
@@ -66,10 +79,12 @@ namespace ColorBlockJam.Game.Scopes
             builder.RegisterComponentInNewPrefab(_popupConfig.WinPopup, Lifetime.Scoped).UnderTransform(_popupLayer);
             builder.RegisterComponentInNewPrefab(_popupConfig.OutOfTimePopup, Lifetime.Scoped).UnderTransform(_popupLayer);
             builder.RegisterComponentInNewPrefab(_popupConfig.LevelFailedPopup, Lifetime.Scoped).UnderTransform(_popupLayer);
+            builder.RegisterComponentInNewPrefab(_popupConfig.BoosterPurchasePopup, Lifetime.Scoped).UnderTransform(_popupLayer);
 
             // Flows that only listen; they need the scene's popups, so the scope registers them, not the installer.
             builder.Register<WinFlow>(Lifetime.Singleton);
             builder.Register<FailFlow>(Lifetime.Singleton);
+            builder.Register<BoosterFlow>(Lifetime.Singleton);
 
             // Listen to board signals without being entry points: build them before any entry point starts.
             builder.RegisterBuildCallback(resolver =>
@@ -81,6 +96,8 @@ namespace ColorBlockJam.Game.Scopes
                 resolver.Resolve<LevelRewardService>();
                 resolver.Resolve<WinFlow>();
                 resolver.Resolve<FailFlow>();
+                resolver.Resolve<BoosterService>();
+                resolver.Resolve<BoosterFlow>();
             });
 
             builder.RegisterEntryPoint<GameplayFlow>();

@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using ColorBlockJam.Core.Persistence;
+using ColorBlockJam.Game.Boosters;
 using ColorBlockJam.Game.Debugging;
 using ColorBlockJam.Game.Scopes;
 using UnityEditor;
@@ -19,7 +20,10 @@ namespace ColorBlockJam.Editor.Debugging
     {
         const string MenuPath = "ColorBlockJam/Debug Window %#d";
         static readonly string[] SaveKeys =
-            { PlayerProgressService.StorageKey, WalletService.StorageKey, Core.Persistence.SettingsService.StorageKey };
+            {
+                PlayerProgressService.StorageKey, WalletService.StorageKey, Core.Persistence.SettingsService.StorageKey,
+                BoosterInventory.StorageKey,
+            };
 
         readonly StringBuilder _log = new();
         int _coins = 100;
@@ -58,7 +62,7 @@ namespace ColorBlockJam.Editor.Debugging
                 EditorApplication.isPlaying = true;
 
             Header("Saves");
-            if (GUILayout.Button("Clear player saves (progress, coins, settings)"))
+            if (GUILayout.Button("Clear player saves (progress, coins, settings, boosters)"))
                 ClearSaves();
         }
 
@@ -106,6 +110,20 @@ namespace ColorBlockJam.Editor.Debugging
                 if (GUILayout.Button($"+{quick}"))
                     Do($"+{quick} coins", () => commands.AddCoins(quick));
             EditorGUILayout.EndHorizontal();
+
+            Header("Boosters");
+            foreach (BoosterType type in (BoosterType[])Enum.GetValues(typeof(BoosterType)))
+            {
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField(type.ToString(), commands.BoosterCount(type).ToString());
+                if (GUILayout.Button("+1", GUILayout.Width(40)))
+                    Do($"+1 {type}", () => commands.AddBooster(type, 1));
+                if (GUILayout.Button("+5", GUILayout.Width(40)))
+                    Do($"+5 {type}", () => commands.AddBooster(type, 5));
+                if (GUILayout.Button("0", GUILayout.Width(40)))
+                    Do($"No {type} left", () => commands.ClearBooster(type));
+                EditorGUILayout.EndHorizontal();
+            }
 
             Header("Levels");
             EditorGUILayout.BeginHorizontal();

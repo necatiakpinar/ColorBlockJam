@@ -12,8 +12,9 @@ namespace ColorBlockJam.Game.Gameplay.View
 {
     /// <summary>
     /// Draws the blocks: builds each one from modular pieces when a board loads, follows the finger while a
-    /// block is held, settles it on its cell when dropped and plays its exit. Reacts to signals only; the
-    /// board model has already committed every change. (Blocks move only by dragging, so the per-cell
+    /// block is held, settles it on its cell when dropped and plays its exit. Boosters (DA-36) smash or vacuum
+    /// blocks away, and a blasted cell rebuilds its block from the cells left; while a booster waits for a target
+    /// every block is outlined. Reacts to signals only; the board model has already committed every change. (Blocks move only by dragging, so the per-cell
     /// <see cref="BlockMovedSignal"/> needs no view of its own.)
     /// </summary>
     public sealed class BlockLayerView : MonoBehaviour
@@ -40,14 +41,15 @@ namespace ColorBlockJam.Game.Gameplay.View
         ObjectPool<ExitBurstView> _burstPool;
         // The last spray started at each door, to fold exits close together into it.
         readonly Dictionary<(WallSide Side, int CrossMin, int CrossMax), (ExitBurstView Burst, float StartedAt)> _lastBursts = new();
-        LevelData _level;
+        ActiveBoard _board;
         OutlineSettings _outline;
 
         [Inject]
-        public void Construct(BoardViewConfig config, BoardSpace boardSpace, SignalBus signalBus)
+        public void Construct(BoardViewConfig config, BoardSpace boardSpace, ActiveBoard board, SignalBus signalBus)
         {
             _config = config;
             _boardSpace = boardSpace;
+            _board = board;
             _signalBus = signalBus;
             _materials = new ColorMaterialCache(config.BlockMaterial, config);
             _outline = new OutlineSettings(config.OutlineWidth, config.OutlineBaseHeight, config.BlockTopHeight,
@@ -77,6 +79,9 @@ namespace ColorBlockJam.Game.Gameplay.View
             _signalBus.Subscribe<BlockDraggedSignal>(OnBlockDragged);
             _signalBus.Subscribe<BlockDroppedSignal>(OnBlockDropped);
             _signalBus.Subscribe<BlockExitedSignal>(OnBlockExited);
+            _signalBus.Subscribe<BlockRemovedSignal>(OnBlockRemoved);
+            _signalBus.Subscribe<BlockCellRemovedSignal>(OnBlockCellRemoved);
+            _signalBus.Subscribe<BoosterTargetingChangedSignal>(OnBoosterTargetingChanged);
         }
 
         /// <summary>Block views on screen, indexed by block id; null once a block has exited.</summary>
@@ -85,28 +90,25 @@ namespace ColorBlockJam.Game.Gameplay.View
         void OnBoardLoaded(BoardLoadedSignal signal)
         {
             ReleaseAll();
-            _level = signal.Level;
             _root.localPosition = _boardSpace.Origin;
             _root.localScale = Vector3.one * _boardSpace.CellSize;
 
             foreach (BlockData block in signal.Level.Blocks)
-                _views.Add(Build(block));
+            {
+                BlockView view = _blockPool.Get();
+                view.transform.SetParent(_root, false);
+                Build(view, block.Cells, block.Color);
+                _views.Add(view);
+            }
         }
 
-        BlockView Build(BlockData block)
+        /// <summary>Lays the pieces of a block with <paramref name="cells"/> (start cells) into the view.</summary>
+        void Build(BlockView view, IReadOnlyList<Vector2Int> cells, BlockColor color)
         {
-            Vector2 sum = Vector2.zero;
-            foreach (Vector2Int cell in block.Cells)
-                sum += cell;
-            Vector2 centre = sum / block.Cells.Count + new Vector2(0.5f, 0.5f);
+            view.Show(Centre(cells), _config.SnapDuration, _config.SnapEase, _config.FollowDuration, _config.FollowEase);
 
-            BlockView view = _blockPool.Get();
-            view.transform.SetParent(_root, false);
-            view.Show(new Vector3(centre.x, 0f, centre.y), _config.SnapDuration, _config.SnapEase,
-                _config.FollowDuration, _config.FollowEase);
-
-            Material material = _materials.Get(block.Color);
-            foreach (BlockPiece piece in _tileResolver.Resolve(block.Cells))
+            Material material = _materials.Get(color);
+            foreach (BlockPiece piece in _tileResolver.Resolve(cells))
             {
                 PartPool pool = _piecePools[piece.Kind];
                 GameObject part = pool.Get(view.transform);
@@ -115,9 +117,16 @@ namespace ColorBlockJam.Game.Gameplay.View
                 view.AddPart(pool, part, mesh, piece.Position, piece.Yaw, piece.Scale);
             }
 
-            view.BuildOutline(block.Cells, _outline);
+            view.BuildOutline(cells, _outline);
+        }
 
-            return view;
+        Vector3 Centre(IReadOnlyList<Vector2Int> cells)
+        {
+            Vector2 sum = Vector2.zero;
+            foreach (Vector2Int cell in cells)
+                sum += cell;
+            Vector2 centre = sum / cells.Count + new Vector2(0.5f, 0.5f);
+            return new Vector3(centre.x, 0f, centre.y);
         }
 
         void OnBlockGrabbed(BlockGrabbedSignal signal) => _views[signal.BlockId].SetOutlined(true);
@@ -141,8 +150,8 @@ namespace ColorBlockJam.Game.Gameplay.View
             _views[signal.BlockId] = null;
             _exiting.Add(view);
 
-            BlockData block = _level.Blocks[signal.BlockId];
-            var path = new ExitPath(block.Cells, signal.Offset, signal.Direction, _boardSpace.Size);
+            BoardBlock block = _board.Current.Blocks[signal.BlockId];
+            var path = new ExitPath(block.StartCells, signal.Offset, signal.Direction, _boardSpace.Size);
             float distance = path.Length + _config.ExitCutOffset + _config.ExitClearance;
             Vector3 doorLocal = path.DoorCentre(_config.ExitDebrisHeight);
 
@@ -157,6 +166,51 @@ namespace ColorBlockJam.Game.Gameplay.View
                 _config.ExitSnapDuration, _config.ExitSnapEase, _config.ExitEase, _config.BlockExitMaterial, color,
                 clipPlane, Recycle);
             Spray(path, doorLocal + outward * _config.WallThickness, color, slide);
+        }
+
+        /// <summary>A booster took the whole block: it breaks where it stands, or the vacuum lifts it away in turn.</summary>
+        void OnBlockRemoved(BlockRemovedSignal signal)
+        {
+            BlockView view = _views[signal.BlockId];
+            _views[signal.BlockId] = null;
+            _exiting.Add(view);
+
+            BoardBlock block = _board.Current.Blocks[signal.BlockId];
+            if (signal.Kind == BlockRemovalKind.Vacuumed)
+            {
+                view.PlayVacuum(signal.Order * _config.VacuumStagger, _config.VacuumLift, _config.VacuumDuration,
+                    Recycle);
+                return;
+            }
+
+            view.PlaySmash(_config.SmashSwell, _config.SmashDuration, Recycle);
+            Vector3 centre = Centre(block.StartCells) + new Vector3(block.Offset.x, 0f, block.Offset.y);
+            Burst(centre, block.Color, block.CellCount);
+        }
+
+        /// <summary>The rocket blasted one cell: the block is rebuilt from the cells it has left, where it is.</summary>
+        void OnBlockCellRemoved(BlockCellRemovedSignal signal)
+        {
+            BoardBlock block = _board.Current.Blocks[signal.BlockId];
+            BlockView view = _views[signal.BlockId];
+            view.ReleaseParts();
+            Build(view, block.StartCells, block.Color);
+            view.PlaceAt(block.Offset);
+            Burst(new Vector3(signal.Cell.x + 0.5f, 0f, signal.Cell.y + 0.5f), block.Color, 1);
+        }
+
+        void OnBoosterTargetingChanged(BoosterTargetingChangedSignal signal)
+        {
+            foreach (BlockView view in _views)
+                view?.SetOutlined(signal.Active);
+        }
+
+        /// <summary>Cubes of the block's colour thrown up from where it broke.</summary>
+        void Burst(Vector3 local, BlockColor color, int cells)
+        {
+            ExitBurstView burst = _burstPool.Get();
+            burst.Play(local + Vector3.up * _config.ExitDebrisHeight, Vector2Int.up, 1f, _config.TintOf(color), 0f,
+                _config.SmashDuration, 0f, _config.SmashDebrisPerCell * cells, _releaseBurst);
         }
 
         /// <summary>
@@ -206,6 +260,9 @@ namespace ColorBlockJam.Game.Gameplay.View
             _signalBus.Unsubscribe<BlockDraggedSignal>(OnBlockDragged);
             _signalBus.Unsubscribe<BlockDroppedSignal>(OnBlockDropped);
             _signalBus.Unsubscribe<BlockExitedSignal>(OnBlockExited);
+            _signalBus.Unsubscribe<BlockRemovedSignal>(OnBlockRemoved);
+            _signalBus.Unsubscribe<BlockCellRemovedSignal>(OnBlockCellRemoved);
+            _signalBus.Unsubscribe<BoosterTargetingChangedSignal>(OnBoosterTargetingChanged);
             _materials.Dispose();
         }
     }

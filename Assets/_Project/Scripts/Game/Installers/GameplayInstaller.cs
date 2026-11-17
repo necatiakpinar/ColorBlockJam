@@ -1,7 +1,9 @@
+using ColorBlockJam.Game.Boosters;
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Debugging;
 using ColorBlockJam.Game.Economy;
 using ColorBlockJam.Game.Gameplay.Board;
+using ColorBlockJam.Game.Gameplay.Boosters;
 using ColorBlockJam.Game.Gameplay.Feedback;
 using ColorBlockJam.Game.Gameplay.Input;
 using ColorBlockJam.Game.Gameplay.Session;
@@ -42,6 +44,8 @@ namespace ColorBlockJam.Game.Installers
             builder.Register<LevelProgression>(Lifetime.Singleton);
             builder.Register<LevelTimer>(Lifetime.Singleton);
             builder.Register<LevelContinueService>(Lifetime.Singleton);
+            builder.Register<BoosterShop>(Lifetime.Singleton);
+            builder.Register<BoosterService>(Lifetime.Singleton);
             builder.Register<GameplayDebugCommands>(Lifetime.Singleton);
             builder.Register<BlockDragController>(Lifetime.Singleton);
             builder.Register<GameplayHaptics>(Lifetime.Singleton);

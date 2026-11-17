@@ -58,8 +58,10 @@ and restart, so no state survives an attempt. `BoardStateTests` pins every rule 
    `BoardState`, sizes `BoardSpace` and fires **`BoardLoadedSignal`**; every board view rebuilds from it.
 2. **`ActiveBoard.TryStep`** is the only way a block moves during play. It calls `BoardState.TryStep` and
    announces the outcome: `BlockMovedSignal` per cell, `BlockExitedSignal` on an exit and
-   **`BoardClearedSignal`** once, after the exit of the last block. Anything that moves blocks (the drag
-   today, a booster later) goes through it.
+   **`BoardClearedSignal`** once, after the exit of the last block. Anything that moves blocks (the drag)
+   goes through it; boosters take blocks away through its `RemoveBlock`, `RemoveCell` and `RemoveColor`,
+   which fire `BlockRemovedSignal` / `BlockCellRemovedSignal` and the same `BoardClearedSignal`
+   ([boosters.md](boosters.md)).
 3. **`BlockDragController`** (`Input/`, plain class, built by the scope's build callback) lets the finger
    slide the touched block like a solid object (DA-4):
    - a press fires **`BlockGrabbedSignal`**; a press that misses every block still picks the block whose
@@ -204,6 +206,7 @@ Failed --Continue(s)--> Playing
   never per frame. `TimerChangedSignal` carries the shown seconds (rounded up) when a level starts and
   each time the shown value drops.
 - At zero it calls `LevelSession.Fail` once; the session fires `LevelFailedSignal` and input stops.
+- `FreezeFor` (the freeze booster) holds it still for a while; see [boosters.md](boosters.md) §3.
 - `SetSecondsLeft` puts the timer at any value and keeps it counting if it was; the debug window uses it
   ([debug-tools.md](debug-tools.md)).
 - `GameplayHudView` shows it as `mm:ss` in `TimerLabel`, written into a char buffer
@@ -212,7 +215,7 @@ Failed --Continue(s)--> Playing
 
 ## 7. Popups and navigation
 
-Three flows route the HUD and the popups ([ui.md](ui.md) §5); the session, the wallet and the settings
+Four flows route the HUD and the popups ([ui.md](ui.md) §5); the session, the wallet and the settings
 own every change:
 
 - **`GameplayFlow`** (entry point) starts the level. HUD restart calls `LevelSession.Restart`. HUD pause
@@ -221,6 +224,8 @@ own every change:
 - **`WinFlow`** opens the win popup `GameplayConfig.WinPopupDelay` (1 s, through `IGameClock`) after
   `LevelCompletedSignal`, so the last block is seen leaving, with the reward the win already paid.
   Continue plays the next level with `LevelSession.Next` (T-21, DA-12).
+- **`BoosterFlow`** routes the booster bar and the booster purchase popup ([boosters.md](boosters.md) §5);
+  `GameplayFlow` puts a booster that waits for a target back before pausing.
 - **`FailFlow`** opens the out-of-time popup on `LevelFailedSignal`. Continue buys
   `GameplayConfig.ContinueSeconds` (20) for `ContinueCost` (50) coins through `LevelContinueService`:
   the wallet pays first (`IWalletService.TrySpend`), then `LevelSession.Continue` plays on with the same

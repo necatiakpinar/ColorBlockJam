@@ -49,6 +49,7 @@ namespace ColorBlockJam.Game.Gameplay.View
             _pivot = pivot;
             _exit?.Kill();
             transform.localPosition = pivot;
+            transform.localRotation = Quaternion.identity;
             transform.localScale = Vector3.one;
             _move ??= default(BlockMoveAnimation).Create(transform, snapDuration, snapEase);
             _move.Pause();
@@ -78,6 +79,36 @@ namespace ColorBlockJam.Game.Gameplay.View
         }
 
         internal void SetOutlined(bool outlined) => _outlineRenderer.enabled = outlined;
+
+        /// <summary>Puts the block at once where <paramref name="offset"/> cells from its start cells take it.</summary>
+        internal void PlaceAt(Vector2Int offset) => transform.localPosition = _pivot + new Vector3(offset.x, 0f, offset.y);
+
+        /// <summary>Breaks the block where it stands (hammer, a rocket's last cell, DA-36).</summary>
+        /// <param name="onFinished">Called when the block has vanished, to return it to its pool.</param>
+        internal void PlaySmash(float swell, float duration, Action<BlockView> onFinished)
+        {
+            Leave(onFinished);
+            _exit = default(BlockSmashAnimation).Play(new BlockSmashAnimation.Config(transform, swell, duration,
+                _exitFinished));
+        }
+
+        /// <summary>Lifts the block away after <paramref name="delay"/> (vacuum, DA-36).</summary>
+        /// <param name="onFinished">Called when the block has vanished, to return it to its pool.</param>
+        internal void PlayVacuum(float delay, float lift, float duration, Action<BlockView> onFinished)
+        {
+            Leave(onFinished);
+            _exit = default(BlockVacuumAnimation).Play(new BlockVacuumAnimation.Config(transform, delay, lift, duration,
+                _exitFinished));
+        }
+
+        void Leave(Action<BlockView> onFinished)
+        {
+            _move.Pause();
+            _follow.Pause();
+            SetOutlined(false);
+            _onExitFinished = onFinished;
+            _exitFinished ??= OnExitFinished;
+        }
 
         internal void AddPart(PartPool pool, GameObject part, Renderer mesh, Vector3 cellPosition, float yaw,
             Vector3 scale)

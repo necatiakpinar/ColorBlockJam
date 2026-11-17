@@ -52,7 +52,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - [x] [T-33 Solvability validation](#t-33-could-solvability-validation)
 - [ ] [T-34 (could) Ice blocker](#t-34-could-ice-blocker)
 - [ ] [T-35 (could) Arrow block](#t-35-could-arrow-block)
-- [ ] [T-36 (could) One functional booster](#t-36-could-one-functional-booster)
+- [x] [T-36 Four functional boosters](#t-36-four-functional-boosters)
 - [ ] [T-37 Architecture tests](#t-37-architecture-tests)
 - [ ] [T-38 Performance pass](#t-38-performance-pass)
 - [ ] [T-39 Full QA pass on device and aspect ratios](#t-39-full-qa-pass-on-device-and-aspect-ratios)
@@ -723,12 +723,24 @@ and (T-33) the solver from `ColorBlockJam.Game`, so the editor never has its own
   directions. Editor: axis selector on a selected block.
 - **Tests:** `EM` axis-constrained move tests.
 
-### T-36 (could) One functional booster
+### T-36 Four functional boosters
 
-- **Req:** R-32.
-- **Arch:** `IBooster` with one implementation (timer freeze for N seconds or hammer removing one block);
-  count stored in the wallet; HUD shows count.
-- **Tests:** `EM` booster tests.
+- **Req:** R-32. Implements DA-36; replaces DA-16.
+- **Arch:** as built in [boosters.md](../General/boosters.md): `BoosterInventory` (Root, saved stock),
+  `BoosterShop`, `BoosterService` (freeze at once; rocket, hammer and vacuum pause the level and wait for a
+  tapped block), `ActiveBoard.RemoveBlock` / `RemoveCell` / `RemoveColor`, `LevelTimer.FreezeFor`;
+  `BoosterFlow` routes the bar and the purchase popup. No `IBooster` interface: the four differ only in what
+  they do to the board, which one switch in the service says plainly.
+- **Subtasks:**
+  - [x] Stock, prices and words in `BoosterConfig`; saved stock; shop
+  - [x] Freeze, rocket, hammer, vacuum on the board and the timer
+  - [x] Bar counts and "+", targeting banner and backdrop, ice frame and meter, smash and vacuum animations
+  - [x] Purchase popup prefab; debug window booster shortcuts
+- **Accept:** each booster works from the HUD as boosters.md describes; with none left a tap offers one for
+  coins; a booster can win the level.
+- **Tests:** `EM BoardRemovalTests`, `BoosterInventoryTests`, `BoosterServiceTests`, `LevelTimerFreezeTests`;
+  `PM BoosterFlowTests`.
+- **Docs:** `boosters.md`, `boosters-qa.md`.
 
 ---
 

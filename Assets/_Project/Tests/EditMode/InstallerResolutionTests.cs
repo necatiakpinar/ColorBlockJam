@@ -14,6 +14,7 @@ using ColorBlockJam.Core.Clock;
 using ColorBlockJam.Core.Haptics;
 using ColorBlockJam.Core.Network;
 using ColorBlockJam.Game.Gameplay.Board;
+using ColorBlockJam.Game.Gameplay.Boosters;
 using ColorBlockJam.Game.Gameplay.Feedback;
 using ColorBlockJam.Game.Gameplay.Session;
 using ColorBlockJam.Game.Gameplay.Input;
@@ -154,6 +155,8 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(container.Resolve<LevelProgression>(), Is.Not.Null);
             Assert.That(container.Resolve<LevelTimer>(), Is.Not.Null);
             Assert.That(container.Resolve<LevelRewardService>(), Is.Not.Null);
+            Assert.That(container.Resolve<BoosterShop>(), Is.Not.Null);
+            Assert.That(container.Resolve<BoosterService>(), Is.Not.Null);
         }
 
         [Test]

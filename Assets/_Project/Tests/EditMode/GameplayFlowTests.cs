@@ -27,6 +27,7 @@ namespace ColorBlockJam.Tests.EditMode
         SignalBus _bus;
         ActiveBoard _activeBoard;
         LevelSession _session;
+        BoosterRig _boosters;
         SettingsService _settings;
         Button _restartButton;
         Button _pauseButton;
@@ -48,6 +49,7 @@ namespace ColorBlockJam.Tests.EditMode
                 new LevelDataBuilder(5, 6).Block(Blue, 0, 0).Door(Left, 0, 1, Blue).Build()));
             _activeBoard = new ActiveBoard(new BoardSpace(1f), _bus);
             _session = new LevelSession(_activeBoard, levels, _bus);
+            _boosters = new BoosterRig(_activeBoard, _session, _bus);
             _settings = new SettingsService(new InMemoryKeyValueStorage(), new RecordingLogger(), _bus);
             _settings.Load();
         }
@@ -55,6 +57,7 @@ namespace ColorBlockJam.Tests.EditMode
         [TearDown]
         public void TearDown()
         {
+            _boosters.Dispose();
             _session.Dispose();
             _views.Dispose();
             _catalogs.Dispose();
@@ -76,7 +79,8 @@ namespace ColorBlockJam.Tests.EditMode
             // The HUD listens on its own bus so these tests observe the flow, not the HUD's reveal.
             var hud = _views.CreateHud(new SignalBus(), wallet, out _restartButton, out _pauseButton);
             _pausePopup = _views.CreatePausePopup(_bus, _settings, out _closeButton, out _homeButton, out _toggles);
-            return new GameplayFlow(CreateProgressAtLevel(level), _session, hud, _pausePopup, _popups, _settings, _navigation);
+            return new GameplayFlow(CreateProgressAtLevel(level), _session, hud, _pausePopup, _popups, _settings, _navigation,
+                _boosters.Service);
         }
 
         [Test]

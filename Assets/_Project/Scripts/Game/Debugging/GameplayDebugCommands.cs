@@ -1,5 +1,6 @@
 using ColorBlockJam.Core.Persistence;
 using ColorBlockJam.Core.Signals;
+using ColorBlockJam.Game.Boosters;
 using ColorBlockJam.Game.Gameplay.Session;
 using ColorBlockJam.Game.Gameplay.Signals;
 using ColorBlockJam.Game.Navigation;
@@ -9,7 +10,7 @@ namespace ColorBlockJam.Game.Debugging
 {
     /// <summary>
     /// Shortcuts for testing the gameplay scene by hand (debug-tools.md): win or lose now, set the timer, give
-    /// coins, jump to a level. Every shortcut goes through the service that owns the change, so the game reacts
+    /// coins or boosters, jump to a level. Every shortcut goes through the service that owns the change, so the game reacts
     /// exactly as it does in play (popups, rewards, saves). Used by the editor's debug window.
     /// </summary>
     public sealed class GameplayDebugCommands
@@ -20,10 +21,12 @@ namespace ColorBlockJam.Game.Debugging
         readonly IPlayerProgressService _progress;
         readonly INavigationService _navigation;
         readonly SignalBus _signalBus;
+        readonly BoosterInventory _boosters;
 
         public GameplayDebugCommands(LevelSession session, LevelTimer timer, IWalletService wallet,
-            IPlayerProgressService progress, INavigationService navigation, SignalBus signalBus)
+            IPlayerProgressService progress, INavigationService navigation, SignalBus signalBus, BoosterInventory boosters)
         {
+            _boosters = boosters;
             _session = session;
             _timer = timer;
             _wallet = wallet;
@@ -63,6 +66,18 @@ namespace ColorBlockJam.Game.Debugging
         public void AddCoins(int amount) => _wallet.Add(amount);
 
         public bool SpendCoins(int amount) => _wallet.TrySpend(amount);
+
+        public int BoosterCount(BoosterType type) => _boosters.Count(type);
+
+        public void AddBooster(BoosterType type, int amount) => _boosters.Add(type, amount);
+
+        /// <summary>Spends every <paramref name="type"/> the player owns, to see the purchase offer.</summary>
+        public void ClearBooster(BoosterType type)
+        {
+            while (_boosters.TryUse(type))
+            {
+            }
+        }
 
         /// <summary>Saves <paramref name="level"/> as the current level and reloads the scene to play it.</summary>
         public void PlayLevel(int level)

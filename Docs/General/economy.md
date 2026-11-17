@@ -34,9 +34,13 @@ The HUD and Home coin counters bind `CoinsChangedSignal` with T-18 and T-23.
 
 ## 3. Spending coins
 
-The only thing to buy is more time after the timer runs out: `GameplayConfig.ContinueSeconds` (20) for
-`ContinueCost` (50) coins (DA-30). `LevelContinueService` takes the coins with `IWalletService.TrySpend`
-before `LevelSession.Continue` lets the level play on ([gameplay.md](gameplay.md) §7).
+Coins buy two things, each paid with `IWalletService.TrySpend` before anything is given:
+
+- more time after the timer runs out: `GameplayConfig.ContinueSeconds` (20) for `ContinueCost` (50) coins
+  (DA-30). `LevelContinueService` pays, then `LevelSession.Continue` lets the level play on
+  ([gameplay.md](gameplay.md) §7);
+- one booster when none are left: Freeze 40, Rocket 60, Hammer 80, Vacuum 120 coins (`BoosterConfig`,
+  DA-36) through `BoosterShop` ([boosters.md](boosters.md) §1).
 
 ## 4. Tests
 

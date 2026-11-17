@@ -122,7 +122,7 @@ for the player. Read [economy.md](Docs/General/economy.md) before touching `Scri
 level's difficulty.**
 
 **Read [debug-tools.md](Docs/General/debug-tools.md) before touching `Scripts/*/Debugging/` or adding a debug
-shortcut.**
+shortcut. Read [boosters.md](Docs/General/boosters.md) before touching a booster, its stock or its popup.**
 
 **Read [network.md](Docs/General/network.md) before touching `Scripts/Core/Network/`, `NetworkConfig` or anything
 that reads the time of day.**
