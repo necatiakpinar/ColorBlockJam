@@ -50,7 +50,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - [x] [T-31 Editor usability pass and designer guide](#t-31-editor-usability-pass-and-designer-guide)
 - [x] [T-32 Author levels 1–5 in the editor](#t-32-author-levels-15-in-the-editor)
 - [x] [T-33 Solvability validation](#t-33-could-solvability-validation)
-- [ ] [T-34 (could) Ice blocker](#t-34-could-ice-blocker)
+- [x] [T-34 Ice blocker](#t-34-ice-blocker)
 - [ ] [T-35 (could) Arrow block](#t-35-could-arrow-block)
 - [x] [T-36 Four functional boosters](#t-36-four-functional-boosters)
 - [ ] [T-37 Architecture tests](#t-37-architecture-tests)
@@ -709,12 +709,18 @@ and (T-33) the solver from `ColorBlockJam.Game`, so the editor never has its own
   settings report failure).
 - **Docs:** `level-editor.md`.
 
-### T-34 (could) Ice blocker
+### T-34 Ice blocker
 
-- **Req:** R-33.
-- **Arch:** `BlockModifier.Ice` with `ThawAfterExits`; frozen blocks cannot move; counter on the block; ice
-  material from `icetexture.jpg`. Editor: ice toggle and count on a selected block.
-- **Tests:** `EM` frozen-move and thaw tests.
+- **Req:** R-33. Implements DA-37.
+- **Arch:** as built: `BlockData.Ice` (exits to thaw) instead of a modifier type, since ice is one number;
+  `BoardBlock.Ice` counts down in `BoardState.MarkGone` on every exit or booster removal; a frozen block's
+  steps are `Blocked` and the drag ignores it; `ActiveBoard` fires `IceCountedDownSignal` and
+  `BlockThawedSignal`; the hammer thaws. View: `M_Ice` shows the `icetexture` as it is, `IceLabel` count,
+  thaw swell and `IceShatter` (ice-textured shards, `M_IceShard`). Editor: Ice slider and `I` / `Shift+I` on a selected block; the validator and the solver know ice.
+- **Accept:** a frozen block cannot move until N other blocks have left, shows its count going down, and
+  thaws; the editor places it and the solver finishes levels with it.
+- **Tests:** `EM IceBlockerTests`; `PM IceBlockerViewTests`.
+- **Docs:** level-data.md, gameplay.md §3, level-editor.md, boosters.md.
 
 ### T-35 (could) Arrow block
 

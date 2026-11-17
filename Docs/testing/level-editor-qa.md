@@ -25,6 +25,11 @@ Checks for [level-editor.md](../General/level-editor.md). `⚙` = automated (tes
 - [ ] 👁 Space steps the solution on the canvas; the moving block is outlined.
 - [ ] 👁 Save is refused while there are errors and asks before saving an unsolvable level.
 
+### Ice (T-34)
+
+- [ ] ⚙ The draft keeps a block's ice; the validator refuses more ice than other blocks — `IceBlockerTests`
+- [ ] 👁 Ice slider and `I` / `Shift+I` set the selected block's ice; frozen blocks draw pale with "ice N".
+
 ### Play-test (T-30)
 
 - [ ] 👁 ▶ Play opens Gameplay straight on the edited level (through Splash), with the saved content.

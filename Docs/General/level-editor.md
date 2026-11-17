@@ -24,6 +24,8 @@ game's own format ([level-data.md](level-data.md)), and checks them with the gam
    corners are not wall cells. Click a door to select it and change its colour, start or length.
 3. **Blocks.** Block tool (`2`): pick a colour and a shape, click to stamp it (`R` turns the stamp), or pick
    **Free** and drag over cells to paint any connected shape. A red preview means it cannot go there.
+   To freeze a block, select it and set **Ice** (or press `I` / `Shift+I`): it stays put until that many
+   other blocks have left. Frozen blocks are drawn pale with "ice N" on them.
 4. **Checks.** Fix every red line. The level must say **Solvable**; it also says how it plays
    (Normal, Hard, Very Hard) so you can match the Difficulty you set.
 5. **Save and play.** `Ctrl+S`, then ▶ Play (`P`): the game starts straight in this level.
@@ -38,6 +40,7 @@ Or press **Generate** (`G`) and edit what it builds.
 | `Q` / `E` | previous / next colour (recolours the selection) |
 | `Tab` / `Shift+Tab` | next / previous shape (Free, 1x1, 1x2, 1x3, 2x2, L, T, S) |
 | `R` | turn the selected block, or the stamp |
+| `I` / `Shift+I` | one more / one less ice on the selected block |
 | arrows | move the selected block one cell |
 | `Delete` | remove the selected block or door |
 | `Esc` | clear the selection |
@@ -99,7 +102,10 @@ never hurts, so after every move all blocks that can reach their door leave, in 
 block that can leave at that moment). The search branches only over room-making moves, breadth first, and
 stops at `LevelRulesConfig.SolverStateCap` (20 000 states) with *Unknown*.
 
-**Difficulty (DA-33).** A solution's score is its exit waves plus its room-making moves: Normal 1–2, Hard 3–4,
+Ice needs no extra state in the search: every exit counts every frozen block down by one, so a block's ice
+is its starting ice minus the blocks already gone (`BoardState.Arrange`).
+
+**Difficulty (DA-33). A solution's score is its exit waves plus its room-making moves: Normal 1–2, Hard 3–4,
 Very Hard 5 or more. The shipped levels score 1, 2, 4, 4 and 8, matching their labels
 (`ShippedLevelsTests`).
 

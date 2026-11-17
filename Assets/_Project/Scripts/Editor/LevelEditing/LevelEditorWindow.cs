@@ -26,6 +26,7 @@ namespace ColorBlockJam.Editor.LevelEditing
         const float InspectorWidth = 320f;
         // The generator's own search cap: candidates past it are dropped, not waited on.
         const int GeneratorStateCap = 2000;
+        static readonly Color IceTint = new(0.85f, 0.95f, 1f);
 
         enum Tool
         {
@@ -214,8 +215,8 @@ namespace ColorBlockJam.Editor.LevelEditing
                 DrawSolutionPreview();
             else
                 for (int i = 0; i < Draft.Blocks.Count; i++)
-                    _canvas.DrawBlock(Draft.Blocks[i].Cells, Vector2Int.zero, _canvas.ColorOf(Draft.Blocks[i].Color), i == _selectedBlock,
-                        (i + 1).ToString());
+                    _canvas.DrawBlock(Draft.Blocks[i].Cells, Vector2Int.zero, BlockTint(Draft.Blocks[i]), i == _selectedBlock,
+                        BlockLabel(i));
 
             Event e = Event.current;
             if (area.Contains(e.mousePosition))
@@ -388,8 +389,18 @@ namespace ColorBlockJam.Editor.LevelEditing
             int moving = _solution.Steps[count - 1].BlockId;
             for (int i = 0; i < Draft.Blocks.Count; i++)
                 if (!exited[i] || i == moving)
-                    _canvas.DrawBlock(Draft.Blocks[i].Cells, offsets[i], _canvas.ColorOf(Draft.Blocks[i].Color) * (exited[i] ? 0.45f : 1f),
-                        i == moving, (i + 1).ToString());
+                    _canvas.DrawBlock(Draft.Blocks[i].Cells, offsets[i], BlockTint(Draft.Blocks[i]) * (exited[i] ? 0.45f : 1f),
+                        i == moving, BlockLabel(i));
+        }
+
+        /// <summary>A frozen block is drawn paler, like ice over its colour.</summary>
+        Color BlockTint(DraftBlock block) =>
+            block.Ice > 0 ? Color.Lerp(_canvas.ColorOf(block.Color), IceTint, 0.6f) : _canvas.ColorOf(block.Color);
+
+        string BlockLabel(int index)
+        {
+            int ice = Draft.Blocks[index].Ice;
+            return ice > 0 ? $"{index + 1} · ice {ice}" : (index + 1).ToString();
         }
 
         // ---------------------------------------------------------------- inspector
@@ -423,7 +434,8 @@ namespace ColorBlockJam.Editor.LevelEditing
                 "4. Fix every red line under Checks; it must say Solvable.\n" +
                 "5. Save (Ctrl+S) and press ▶ Play (P) to try it.\n\n" +
                 "Or let Generate build one and edit it.\n\n" +
-                "Shortcuts: 1 Select · 2 Block · 3 Door · 4 Erase · Q/E colour · Tab shape · R rotate · arrows move · " +
+                "A frozen block (Ice above 0 on a selected block) cannot move until that many other blocks have left.\n\n" +
+                "Shortcuts: 1 Select · 2 Block · 3 Door · 4 Erase · Q/E colour · Tab shape · R rotate · I / Shift+I ice · arrows move · " +
                 "Del remove · Esc deselect · Ctrl+Z / Ctrl+Y undo / redo · Ctrl+S save · N new · Shift+D copy · " +
                 "C check · Space step the solution · G generate · P play · [ ] previous / next level · F1 help",
                 MessageType.None);
@@ -486,6 +498,11 @@ namespace ColorBlockJam.Editor.LevelEditing
                 if (color != block.Color)
                     Change("Recolour block", () => block.Color = color);
                 EditorGUILayout.LabelField("Cells", block.Cells.Count.ToString());
+                int ice = EditorGUILayout.IntSlider(new GUIContent("Ice",
+                        "Other blocks that must leave before it thaws and can move; 0 = not frozen (I / Shift+I)."),
+                    block.Ice, 0, Mathf.Max(0, Draft.Blocks.Count - 1));
+                if (ice != block.Ice)
+                    Change("Set ice", () => block.Ice = ice);
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button(new GUIContent("Rotate", "Turn a quarter clockwise (R).")))
                     RotateSelected();
@@ -588,6 +605,7 @@ namespace ColorBlockJam.Editor.LevelEditing
                 case KeyCode.E: SetColor((_color + 1) % Colors.Length); break;
                 case KeyCode.Tab: _shape = (_shape + (e.shift ? _shapes.Shapes.Count : 2)) % (_shapes.Shapes.Count + 1) - 1; break;
                 case KeyCode.R: RotateSelected(); break;
+                case KeyCode.I: AddIce(e.shift ? -1 : 1); break;
                 case KeyCode.LeftArrow: Nudge(Vector2Int.left); break;
                 case KeyCode.RightArrow: Nudge(Vector2Int.right); break;
                 case KeyCode.UpArrow: Nudge(Vector2Int.up); break;
@@ -633,6 +651,17 @@ namespace ColorBlockJam.Editor.LevelEditing
             }
             else
                 _stampTurns = (_stampTurns + 1) % 4;
+        }
+
+        /// <summary>More or less ice on the selected block, never below 0 or above the other blocks' count.</summary>
+        void AddIce(int delta)
+        {
+            if (_selectedBlock < 0)
+                return;
+            DraftBlock block = Draft.Blocks[_selectedBlock];
+            int ice = Mathf.Clamp(block.Ice + delta, 0, Mathf.Max(0, Draft.Blocks.Count - 1));
+            if (ice != block.Ice)
+                Change("Set ice", () => block.Ice = ice);
         }
 
         void Nudge(Vector2Int delta)
