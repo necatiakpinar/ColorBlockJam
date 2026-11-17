@@ -240,7 +240,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 
 - **Req:** R-17, R-13.
 - **Arch:** `BoardView` (Gameplay scene component) builds the board from pooled part prefabs: base, floor
-  tiles, wall segments and corners, doors (one per door cell, tinted by colour). `BoardCameraView` +
+  tiles, wall segments (one per stretch between doors) and corners, doors (one per door, tinted by colour). `BoardCameraView` +
   pure `BoardFraming` frame the board for its size and the aspect, with margins from `BoardViewConfig`.
   Parts hang under a root at `BoardSpace.Origin` scaled by the cell size, so no cell-size literal in view
   code. `LevelProvider` + `ActiveBoard` load the current level and announce it (`BoardLoadedSignal`,
@@ -302,20 +302,21 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 ### T-43 Touch and door feel
 
 - **Req:** R-42. Implements DA-21.
-- **Arch:** `BlockDragController` picks the nearest block within `TouchTolerance` on a missed press and
-  fires `BlockRejectedSignal` once per push into a door `BoardState.IsRejectedByDoor` refuses.
-  `BlockView` shakes its `Body` child (`BlockRejectAnimation`). `BoardView` opens the door segments a
+- **Arch:** `BlockDragController` picks the nearest block within `TouchTolerance` on a missed press; a
+  door the block cannot use stays a plain wall (a shake and haptic there were tried and dropped, DA-21).
+  `BoardView` opens the door segments a
   leaving block passes (`DoorGateAnimation`). `BlockLayerView` folds exits through one door within
   `ExitBurstCoalesceWindow` into one `ExitBurstView`. `ExitPath` is the shared exit geometry.
 - **Subtasks:**
-  - [x] Near-miss press, rejection signal and shake.
+  - [x] Near-miss press.
+  - [x] ~~Rejection signal, shake and haptic at a wrong door~~ (dropped: a wrong door is a wall).
   - [x] Door gate, spray coalescing, `ExitPath`.
-  - [x] Haptics: own `IHapticService` (Android `VibrationEffect`, iOS `UIImpactFeedbackGenerator`), medium
-    tap on rejection, light tap on exit (`GameplayHaptics`). Settings toggle gating lands with T-25.
-- **Accept:** a press 0.25 cell next to a block picks it; a push into a wrong door shakes the block once;
-  doors sink open and close for a leaving block; two blocks leaving one door together make one spray.
-- **Tests:** `EM BlockDragControllerTests` (near miss, rejection), `EM BoardStateTests.IsRejectedByDoor_*`,
-  `EM ExitPathTests`, `EM GameplayHapticsTests`, `PM GameplayBoardTests` (reject shake, door gate, shared spray).
+  - [x] Haptics: own `IHapticService` (Android `VibrationEffect`, iOS `UIImpactFeedbackGenerator`), light
+    tap on exit (`GameplayHaptics`). Settings toggle gating lands with T-25.
+- **Accept:** a press 0.25 cell next to a block picks it; a wrong door stops a block like a wall; doors
+  sink open and close for a leaving block; two blocks leaving one door together make one spray.
+- **Tests:** `EM BlockDragControllerTests` (near miss, wrong door is a wall), `EM ExitPathTests`,
+  `EM GameplayHapticsTests`, `PM GameplayBoardTests` (door gate, shared spray).
 - **Docs:** `gameplay.md` §4–§5, `art-pipeline.md` §4, `testing.md`, `gameplay-qa.md`.
 
 ---
@@ -325,16 +326,21 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 ### T-14 Level session state machine
 
 - **Req:** R-18, R-20, R-21, R-24, R-25.
-- **Arch:** `ILevelSessionService` (Gameplay scope) owns `LevelState` (`Loading`, `Playing`, `Paused`,
-  `Won`, `Failed`), `Start(definition)`, `Pause`, `Resume`, `Restart`, `Complete`, `Fail`. Each attempt gets
-  a new `BoardState`, timer and drag controller state. Signals: `LevelStartedSignal` (exists),
-  `LevelPausedSignal`, `LevelResumedSignal`, `LevelCompletedSignal`, `LevelFailedSignal`. `GameplayFlow`
-  orchestrates presentation only (popups), per *Flows are orchestration only*.
+- **Arch:** `LevelSession` (Gameplay scope; a concrete class: one implementation, pure and tested
+  directly, so no interface) owns `LevelState` (`Loading`, `Playing`, `Paused`, `Won`, `Failed`) and
+  `LevelNumber`, with `Start(n)`, `Pause`, `Resume`, `Restart`, `Fail`; it turns `BoardClearedSignal` into
+  `Won` itself. Each attempt gets a new `BoardState`; the drag controller drops its block and ignores input
+  outside `Playing` (DA-22). Signals: `LevelStartedSignal` (exists), `LevelPausedSignal`,
+  `LevelResumedSignal`, `LevelCompletedSignal`, `LevelFailedSignal`. `GameplayFlow` only starts the session
+  and routes, per *Flows are orchestration only*.
+- **Subtasks:**
+  - [x] `LevelSession`, `LevelState`, the four signals; `GameplayFlow` starts the session.
+  - [x] Drag input gated on the level state.
 - **Accept:** illegal transitions are rejected (e.g. Pause after Won); restart yields a state equal to a
   fresh start.
-- **Tests:** `EM LevelSessionServiceTests` (transition table, restart equality), update
-  `EM GameplayFlowTests`.
-- **Docs:** `gameplay.md` §Flow (state diagram).
+- **Tests:** `EM LevelSessionTests` (transition table, refusals, signal order, restart equality),
+  `EM GameplayFlowTests` (starts the session), `EM BlockDragControllerTests` (drop on pause, ignore input).
+- **Docs:** `gameplay.md` §6 (state diagram).
 
 ### T-15 Countdown timer
 
@@ -365,9 +371,11 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
   `LevelProvider` maps level number → `LevelData` (`(n - 1) % catalog.Count`) — done with T-10.
 - **Subtasks:**
   - [x] `LevelProvider` with looping (`LevelProviderTests`).
-  - [ ] Advance the level on win before the win popup.
+  - [x] Advance the level on win before the win popup (`LevelProgression`; `GameplayFlow` starts the
+    next level after `NextLevelDelay` until T-21, DA-23).
 - **Accept:** winning level 3 makes Home show "Level 4"; after level 5, level 6 plays level 1's layout.
-- **Tests:** `EM LevelProviderTests` (mapping, loop), `EM` progress advance test.
+- **Tests:** `EM LevelProviderTests` (mapping, loop), `EM LevelProgressionTests`,
+  `EM LevelSessionTests.Next_*`, `PM LevelProgressionFlowTests` (a full lap of the catalog).
 - **Docs:** `gameplay.md` §Progression.
 
 ---
@@ -561,10 +569,12 @@ and (T-33) the solver from `ColorBlockJam.Game`, so the editor never has its own
 - **Subtasks:** design a difficulty ramp — L1 tutorial-sized (≈ 4x4, 2–3 blocks), L2 more colours, L3 blocks
   that must move out of the way first, L4 larger board and narrow doors, L5 combination; set timers with
   margin; play each to completion; record solution notes in the QA page.
+  - [x] Five levels with a rising ramp, made in code and proved solvable (level-data.md §3).
+  - [ ] Remake them with the level editor once it exists (R-30).
 - **Accept:** all five come from the editor (no hand-edited YAML); each solvable within its timer by a
   first-time player.
-- **Tests:** `EM ShippedLevelsTests`: every catalog level passes the validator (and the solver once T-33
-  exists).
+- **Tests:** `EM ShippedLevelsTests`: five levels, no validator issues, solvable block by block with the
+  real board rules, block count never falls from one level to the next.
 - **Docs:** `gameplay-qa.md` (per-level checks).
 
 ---

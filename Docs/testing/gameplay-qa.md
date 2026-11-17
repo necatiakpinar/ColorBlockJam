@@ -5,6 +5,17 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 
 ## Cases
 
+### Level session
+
+- [ ] ⚙ Start, pause, resume, win, fail and restart follow the state table; anything else is refused — `LevelSessionTests`
+- [ ] ⚙ Restart gives a board equal to a fresh start — `LevelSessionTests.Restart_ShouldGiveAFreshBoardEqualToAFirstStart_WhenPlayingPausedOrFailed`
+- [ ] ⚙ Pausing mid-drag drops the block onto its cell; no input while paused or lost — `BlockDragControllerTests.Pause_ShouldDropTheHeldBlockOntoItsCell_WhenTheLevelPausesMidDrag`, `Input_ShouldBeIgnored_UntilTheLevelResumes`, `Input_ShouldBeIgnored_WhenTheLevelIsLost`
+- [ ] ⚙ The last exit wins the level without dropping the block that left — `BlockDragControllerTests.Win_ShouldForgetTheExitedBlockWithoutDroppingIt_WhenTheLastExitCompletesTheLevel`
+
+- [ ] ⚙ Winning starts the next level; after the last level the first layout comes back — `LevelProgressionFlowTests`
+- [ ] ⚙ All five shipped levels are valid and solvable — `ShippedLevelsTests`
+- [ ] 👁 Play levels 1 to 5 by hand: each one is a little harder than the one before, and each finishes well inside its timer.
+
 ### Rules
 
 - [ ] ⚙ Blocks stop at walls and at other blocks — `BoardStateTests.TryStep_ShouldStopAtWall_WhenNoDoorIsThere`, `TryStep_ShouldStopAtAnotherBlock_WhenItIsInTheWay`
@@ -17,6 +28,9 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 ### Board and controls
 
 - [ ] ⚙ The board draws floor, walls, doors, corners and every block — `GameplayBoardTests.Board_ShouldDrawEveryPartAndBlock_WhenGameplayStarts`
+- [ ] ⚙ The wall ring is continuous bars from corner to corner, with no seams — `GameplayBoardTests.Board_ShouldCloseTheWallRingWithoutSeams_WhenWallsAreStretchedBetweenDoors`
+- [ ] ⚙ Each door shows one arrow, centred, pointing out of the board — `GameplayBoardTests.Doors_ShouldShowOneCentredArrowPointingOutOfTheBoard_WhenTheBoardIsBuilt`
+- [ ] 👁 The arrows sit on the door (not floating, not sunk) and go down and up with it when a block leaves.
 - [ ] ⚙ A held block follows the finger between cells — `BlockDragControllerTests.Drag_ShouldFollowTheFingerBetweenCells_WhenTheWayIsFree`
 - [ ] ⚙ A fast drag crosses free cells but stops on the edge of an obstacle — `BlockDragControllerTests.Drag_ShouldCrossSeveralFreeCellsInOneEvent_WhenTheFingerMovesFast`, `Drag_ShouldStopOnTheCellEdge_WhenAFastFingerPassesAnObstacle`
 - [ ] ⚙ A released block settles on the nearest cell — `BlockDragControllerTests.Release_ShouldSnapToTheNearestCell_WhenTheBlockIsBetweenCells`
@@ -27,9 +41,10 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 - [ ] ⚙ A held block glides after the finger instead of jumping on a sudden move — `GameplayBoardTests.BlockView_ShouldGlideAfterTheFinger_WhenItMovesSuddenly`
 - [ ] 👁 Dragging feels smooth: the block trails the finger by about a tenth of a second and never teleports.
 - [ ] ⚙ A press just next to a block picks it; a press further away picks nothing — `BlockDragControllerTests.Grab_ShouldPickTheNearestBlock_WhenThePressMissesItByLittle`, `Grab_ShouldPickNothing_WhenThePressIsBeyondTheTouchTolerance`
-- [ ] ⚙ Pushing a block into a door it cannot use knocks it once per push and lets it spring back; a plain wall does nothing — `BlockDragControllerTests.Drag_ShouldRejectOncePerPush_WhenPushedIntoADoorOfAnotherColour`, `Drag_ShouldNotReject_WhenPushedIntoAPlainWall`, `GameplayBoardTests.Reject_ShouldKnockTheBlockAndLetItSpringBack_WhenPushedIntoAWrongDoor`
-- [ ] ⚙ A refused push taps the device firmly and an exit lightly — `GameplayHapticsTests`
-- [ ] 👁 On an Android and an iOS device, the taps are short and crisp (not a long buzz).
+- [ ] ⚙ An exit taps the device lightly — `GameplayHapticsTests`
+- [ ] 👁 On an Android and an iOS device, the tap is short and crisp (not a long buzz).
+- [ ] 👁 Pushing a block into a door of another colour stops it like a wall: no shake, no tap.
+- [ ] 👁 A block leaving through a bottom door (facing the camera) sits flush at the door while it is cut away; no gap shows between block and door.
 - [ ] ⚙ A held block with no room leans a little and snaps back — `BlockDragControllerTests.Drag_ShouldLeanTowardTheFingerButNotCommit_WhenTheBlockHasNoRoom`
 - [ ] ⚙ The held block is outlined — `GameplayBoardTests.Outline_ShouldShowWhileABlockIsHeld_WhenGrabbedAndHideOnRelease`
 - [ ] 👁 The outline stays visible where another object covers the block.
@@ -43,6 +58,8 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 - [ ] ⚙ A block leaves as soon as it is pushed a little into its own door — `BlockDragControllerTests.Drag_ShouldExit_WhenTheBlockIsPushedJustIntoItsDoor`
 - [ ] ⚙ An exiting block settles at its door before it starts to disappear — `GameplayBoardTests.Exit_ShouldSettleAtTheDoorBeforeSlidingIn_WhenTheBlockLeaves`
 - [ ] ⚙ The door sinks open for a leaving block and closes after it — `GameplayBoardTests.Exit_ShouldOpenTheDoorAndCloseItAfter_WhenTheBlockLeaves`
+- [ ] ⚙ A block narrower than its door sinks the whole door — `GameplayBoardTests.Exit_ShouldSinkTheWholeDoor_WhenASmallerBlockLeavesThroughIt`
+- [ ] 👁 Debris bursts out of the door in a cone pointing away from the board (left door to the left, bottom door down).
 - [ ] ⚙ Blocks leaving one door together share one spray — `GameplayBoardTests.Exit_ShouldShareOneSpray_WhenTwoBlocksLeaveTheSameDoorTogether`
 - [ ] ⚙ An exiting block keeps its size, is cut at the board's edge and sprays debris — `GameplayBoardTests.Exit_ShouldCutTheBlockAtTheDoorAndSprayDebris_WhenItLeaves`
 - [ ] 👁 An exiting block lines up with its door, slides into it at a steady speed and disappears into the door while cubes of its colour spray out; nothing pops.

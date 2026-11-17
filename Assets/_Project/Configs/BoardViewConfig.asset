@@ -21,6 +21,7 @@ MonoBehaviour:
   _wallSegment: {fileID: 4664084461936823299, guid: c68a5e05707212c44b2dc12da584b762, type: 3}
   _wallCorner: {fileID: 58693812072964934, guid: bf003d45e0714074c88e730b40cd9268, type: 3}
   _doorSegment: {fileID: 8546702245937840912, guid: 31886e94a3da98841b61f02a0a2d420c, type: 3}
+  _doorArrow: {fileID: 5134314776015683526, guid: 3c0b756dc05eb09419b65dd5292fbd2e, type: 3}
   _blockCenter: {fileID: 8000946113667698349, guid: db192a472fd71cd45b6bdf9327ac9f7f, type: 3}
   _blockEdge: {fileID: 3548412625239514458, guid: 74d63feda4fe0ee4dbee6c1dc67a80ca, type: 3}
   _blockOuterCorner: {fileID: 3016221141936260903, guid: 1ba411feaaf91424d9d3d3e29316ecd6, type: 3}
@@ -51,6 +52,8 @@ MonoBehaviour:
   _framedHeight: 0.5
   _cornerTolerance: 0.4
   _holdGive: 0.12
+  _touchTolerance: 0.35
+  _exitPush: 0.15
   _outlineWidth: 0.06
   _outlineBaseHeight: 0.01
   _blockTopHeight: 0.33
@@ -61,10 +64,17 @@ MonoBehaviour:
   _followEase: 6
   _snapDuration: 0.12
   _snapEase: 27
+  _exitSnapDuration: 0.08
+  _exitSnapEase: 6
   _exitSpeed: 6
   _exitClearance: 0.1
   _exitEase: 5
+  _exitCutOffset: 0.15
   _blockExitMaterial: {fileID: 2100000, guid: ccb884cc04d739b4799978c8b7c6ac62, type: 2}
+  _doorGateDepth: 0.35
+  _doorGateCloseDuration: 0.15
   _exitBurst: {fileID: 1701743703172660094, guid: 04976142d90840e458042ab11e0e34a1, type: 3}
-  _exitDebrisRate: 110
+  _exitDebrisBurst: 24
+  _exitDebrisRate: 40
+  _exitBurstCoalesceWindow: 0.15
   _exitDebrisHeight: 0.3

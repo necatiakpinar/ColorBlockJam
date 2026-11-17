@@ -16,7 +16,7 @@ Use this page when tuning feel; record a decision that follows from it in the
 | Board fills the width between the HUD and the booster bar | about 92% of the screen width | `BoardViewConfig.Framing` margins |
 | No shadows on blocks or walls | none visible | shadows off in `Mobile_RPAsset` and the scene light |
 | Blocks are glossy studded bricks, one flat colour each, rounded corners | — | `M_Block` (Simple Lit), `BlockCornerRadius` 0.27 |
-| Doors are colour strips on the wall ring with an arrow pointing out | — | `BoardView` door segments |
+| Doors are colour strips on the wall ring with an arrow pointing out | — | `BoardView` door segments with one centred `Door_Arrow` (DA-24) |
 
 ## 2. Holding and dragging
 

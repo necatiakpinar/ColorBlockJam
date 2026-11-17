@@ -59,12 +59,25 @@ namespace ColorBlockJam.Tests.PlayMode
                 yield return null;
         }
 
+        /// <summary>
+        /// Base, tiles, corners, one segment and one arrow per door, and one segment per stretch of wall between
+        /// doors.
+        /// </summary>
         static int ExpectedBoardParts(LevelData level)
         {
-            int parts = 1 + level.Width * level.Height + 4; // base, tiles, corners
+            int parts = 1 + level.Width * level.Height + 4 + level.Doors.Count * 2;
             foreach (WallSide side in new[] { WallSide.Bottom, WallSide.Top, WallSide.Left, WallSide.Right })
+            {
+                bool inWall = false;
                 for (int i = 0; i < level.WallLength(side); i++)
-                    parts += IsDoorCell(level, side, i) ? 1 : 2;
+                {
+                    bool wallCell = !IsDoorCell(level, side, i);
+                    if (wallCell && !inWall)
+                        parts++;
+                    inWall = wallCell;
+                }
+            }
+
             return parts;
         }
 
@@ -100,6 +113,102 @@ namespace ColorBlockJam.Tests.PlayMode
             Assert.That(_blocks.Views.Count, Is.EqualTo(level.Blocks.Count));
             foreach (BlockView view in _blocks.Views)
                 Assert.That(view.PartCount, Is.GreaterThan(0));
+        }
+
+        [UnityTest]
+        public IEnumerator Board_ShouldCloseTheWallRingWithoutSeams_WhenWallsAreStretchedBetweenDoors()
+        {
+            yield return BootToBoard();
+            _board.Load(new LevelData(6, 5, 60,
+                new[] { new BlockData(BlockColor.Red, new[] { new Vector2Int(0, 0) }) },
+                new[]
+                {
+                    new DoorData(WallSide.Top, 1, 3, BlockColor.Red),
+                    new DoorData(WallSide.Left, 0, 1, BlockColor.Blue),
+                    new DoorData(WallSide.Right, 2, 2, BlockColor.Green),
+                }));
+
+            var ring = new List<Bounds>();
+            foreach (MeshRenderer part in SceneTestUtility.FindInActiveScene<BoardView>().GetComponentsInChildren<MeshRenderer>())
+            {
+                string name = part.transform.parent.name;
+                if (name.StartsWith("Wall_") || name.StartsWith("Door_"))
+                    ring.Add(part.bounds);
+            }
+
+            // Every side, corner to corner, is covered by parts that meet end to end.
+            AssertSideIsClosed(ring, b => b.min.x, b => b.min.z, b => b.max.z, lowest: true);
+            AssertSideIsClosed(ring, b => b.max.x, b => b.min.z, b => b.max.z, lowest: false);
+            AssertSideIsClosed(ring, b => b.min.z, b => b.min.x, b => b.max.x, lowest: true);
+            AssertSideIsClosed(ring, b => b.max.z, b => b.min.x, b => b.max.x, lowest: false);
+        }
+
+        [UnityTest]
+        public IEnumerator Doors_ShouldShowOneCentredArrowPointingOutOfTheBoard_WhenTheBoardIsBuilt()
+        {
+            yield return BootToBoard();
+            var level = new LevelData(5, 4, 60,
+                new[] { new BlockData(BlockColor.Red, new[] { new Vector2Int(2, 2) }) },
+                new[]
+                {
+                    new DoorData(WallSide.Bottom, 1, 2, BlockColor.Red),
+                    new DoorData(WallSide.Top, 0, 3, BlockColor.Blue),
+                    new DoorData(WallSide.Left, 2, 1, BlockColor.Green),
+                    new DoorData(WallSide.Right, 1, 2, BlockColor.Yellow),
+                });
+            _board.Load(level);
+            var boardView = SceneTestUtility.FindInActiveScene<BoardView>();
+
+            foreach (DoorData door in level.Doors)
+            {
+                Transform segment = boardView.DoorSegmentAt(door.Side, door.Start);
+                Vector3 outward = door.Side switch
+                {
+                    WallSide.Bottom => Vector3.back,
+                    WallSide.Top => Vector3.forward,
+                    WallSide.Left => Vector3.left,
+                    _ => Vector3.right,
+                };
+                var arrows = new List<Transform>();
+                foreach (Transform child in segment)
+                    if (child.name.StartsWith("Door_Arrow"))
+                        arrows.Add(child);
+
+                Assert.That(arrows.Count, Is.EqualTo(1), $"{door.Side} door");
+                Transform arrow = arrows[0];
+                Assert.That(Vector3.Dot(-arrow.forward, outward), Is.EqualTo(1f).Within(1e-3f), "Points out.");
+                Assert.That(arrow.lossyScale.x, Is.EqualTo(arrow.lossyScale.z).Within(1e-4f), "Not stretched.");
+                Vector3 offset = arrow.position - segment.position;
+                offset -= Vector3.Project(offset, Vector3.up);
+                Assert.That(offset.magnitude, Is.LessThan(0.01f * _space.CellSize), $"{door.Side} arrow is centred");
+            }
+        }
+
+        void AssertSideIsClosed(List<Bounds> ring, System.Func<Bounds, float> across, System.Func<Bounds, float> start,
+            System.Func<Bounds, float> end, bool lowest)
+        {
+            float tolerance = 0.002f * _space.CellSize;
+            float edge = across(ring[0]);
+            foreach (Bounds part in ring)
+                edge = lowest ? Mathf.Min(edge, across(part)) : Mathf.Max(edge, across(part));
+            var side = new List<Bounds>();
+            foreach (Bounds part in ring)
+                if (Mathf.Abs(across(part) - edge) < tolerance)
+                    side.Add(part);
+            side.Sort((a, b) => start(a).CompareTo(start(b)));
+
+            for (int i = 1; i < side.Count; i++)
+                Assert.That(start(side[i]), Is.EqualTo(end(side[i - 1])).Within(tolerance), $"gap before part {i}");
+            float ringStart = float.MaxValue;
+            float ringEnd = float.MinValue;
+            foreach (Bounds part in ring)
+            {
+                ringStart = Mathf.Min(ringStart, start(part));
+                ringEnd = Mathf.Max(ringEnd, end(part));
+            }
+
+            Assert.That(start(side[0]), Is.EqualTo(ringStart).Within(tolerance));
+            Assert.That(end(side[side.Count - 1]), Is.EqualTo(ringEnd).Within(tolerance));
         }
 
         [UnityTest]
@@ -196,6 +305,27 @@ namespace ColorBlockJam.Tests.PlayMode
 
             Assert.That(whileOpen, Is.LessThan(closedY - config.DoorGateDepth * 0.5f), "Sunk into the floor.");
             Assert.That(door.localPosition.y, Is.EqualTo(closedY).Within(1e-3f), "Closed again.");
+        }
+
+        [UnityTest]
+        public IEnumerator Exit_ShouldSinkTheWholeDoor_WhenASmallerBlockLeavesThroughIt()
+        {
+            yield return BootToBoard();
+            // A three-cell red door on the left wall; a one-cell red block leaves through its middle.
+            _board.Load(new LevelData(4, 3, 60,
+                new[] { new BlockData(BlockColor.Red, new[] { new Vector2Int(0, 1) }) },
+                new[] { new DoorData(WallSide.Left, 0, 3, BlockColor.Red) }));
+            var boardView = SceneTestUtility.FindInActiveScene<BoardView>();
+            Transform door = boardView.DoorSegmentAt(WallSide.Left, 1);
+            BoardViewConfig config = _container.Resolve<BoardViewConfig>();
+
+            Swipe(new Vector2Int(0, 1), new Vector2Int(-2, 1));
+            yield return WaitRealtime(config.ExitSnapDuration + 0.05f);
+
+            Assert.That(boardView.DoorSegmentAt(WallSide.Left, 0), Is.SameAs(door), "One segment for the whole door.");
+            Assert.That(boardView.DoorSegmentAt(WallSide.Left, 2), Is.SameAs(door));
+            Assert.That(door.localScale.x, Is.EqualTo(3f), "Stretched over its three cells.");
+            Assert.That(door.localPosition.y, Is.LessThan(-config.DoorGateDepth * 0.5f), "The whole door sank.");
         }
 
         [UnityTest]

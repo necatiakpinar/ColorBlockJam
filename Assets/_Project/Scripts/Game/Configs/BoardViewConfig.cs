@@ -56,6 +56,10 @@ namespace ColorBlockJam.Game.Configs
         [SerializeField]
         GameObject _doorSegment;
 
+        [Tooltip("Arrow on top of a door, one per door cell, pointing out of the board (its tip toward local -z).")]
+        [SerializeField]
+        GameObject _doorArrow;
+
         [Header("Block parts")]
         [SerializeField]
         GameObject _blockCenter;
@@ -189,6 +193,10 @@ namespace ColorBlockJam.Game.Configs
         [SerializeField]
         ExitBurstView _exitBurst;
 
+        [Tooltip("Cubes thrown at once when a block reaches its door, for each cell of its width.")]
+        [SerializeField, Min(0f)]
+        float _exitDebrisBurst = 24f;
+
         [Tooltip("Cubes sprayed per second for each cell of the block's width across the door.")]
         [SerializeField, Min(0f)]
         float _exitDebrisRate = 70f;
@@ -211,6 +219,7 @@ namespace ColorBlockJam.Game.Configs
         public GameObject WallSegment => _wallSegment;
         public GameObject WallCorner => _wallCorner;
         public GameObject DoorSegment => _doorSegment;
+        public GameObject DoorArrow => _doorArrow;
         public GameObject BlockCenter => _blockCenter;
         public GameObject BlockEdge => _blockEdge;
         public GameObject BlockOuterCorner => _blockOuterCorner;
@@ -245,6 +254,7 @@ namespace ColorBlockJam.Game.Configs
         public Material BlockExitMaterial => _blockExitMaterial;
         public ExitBurstView ExitBurst => _exitBurst;
         public float ExitDebrisRate => _exitDebrisRate;
+        public float ExitDebrisBurst => _exitDebrisBurst;
         public float ExitDebrisHeight => _exitDebrisHeight;
 
         public Color TintOf(BlockColor color)

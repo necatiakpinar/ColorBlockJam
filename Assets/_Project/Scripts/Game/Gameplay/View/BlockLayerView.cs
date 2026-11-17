@@ -176,8 +176,8 @@ namespace ColorBlockJam.Game.Gameplay.View
             }
 
             ExitBurstView burst = _burstPool.Get();
-            burst.Play(sprayLocal, path.Direction, path.Width, _config.ExitDebrisHeight, color,
-                _config.ExitSnapDuration, slide, _config.ExitDebrisRate, _releaseBurst);
+            burst.Play(sprayLocal, path.Direction, path.Width, color, _config.ExitSnapDuration, slide,
+                _config.ExitDebrisRate, _config.ExitDebrisBurst, _releaseBurst);
             _lastBursts[door] = (burst, now);
         }
 

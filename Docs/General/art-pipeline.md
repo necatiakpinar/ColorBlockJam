@@ -43,18 +43,21 @@ The art set is used as imported (R-3). `AssetImportTests` enforces §2 and §3.
 
 ## 4. Part prefabs
 
-Each prefab is an axis-aligned root with one `Mesh` child (`MeshFilter` + `MeshRenderer`). Views place
-and rotate the root only.
+Each prefab is an axis-aligned root with one `Mesh` child (`MeshFilter` + `MeshRenderer`). Views place,
+rotate and stretch the root only. The `Wall`, `Door_1x1` and `Corner_1` meshes are a hair off centre and
+off size in the source file (up to 0.002 cell); their `Mesh` child is offset and scaled so the footprint
+is exact (the `Door_Arrow` child is turned like the other `WallAndDoor` parts and lifted onto the door's
+top), otherwise a wall stretched over many cells opens a visible seam at the corner.
 
 | Prefab | Mesh | Footprint (cells) | Notes |
 | --- | --- | --- | --- |
 | `Floor_Tile` | `Grid` | 0.98 × 0.98 | centred on its cell; the gap shows the grid |
 | `Board_Base` | `Grid` | stretched to the board | darker base under the tiles; the gaps read as grid lines |
-| `Wall_Segment` | `Wall` | 0.5 × 0.5 | two segments per cell side |
+| `Wall_Segment` | `Wall` | 0.5 × 0.5, along z | one per stretch of wall, stretched along it |
 | `Wall_Corner1`, `Wall_Corner5` | `Corner_1`, `corner_5` | 0.5 × 0.5 | outer ring corners, rounded toward +x +z; `Wall_Corner1` is used |
 | `Wall_Corner3` | `corner_3` | 1 × 1 | L-shaped corner |
-| `Door_Segment` | `Door_1x1` | 1 × 0.5, along x | one per door cell, tinted by colour |
-| `Door_Arrow` | `Door_Arrow` | 0.2 | marker for arrow doors |
+| `Door_Segment` | `Door_1x1` | 1 × 0.5, along x | one per door, stretched over its cells, tinted by colour |
+| `Door_Arrow` | `Door_Arrow` | 0.2 | one per door, centred on its top, tip toward local -z (out of the board) |
 | `BlockPart_Center`, `_Edge`, `_OuterCorner` | `ModularBlock_*` | 0.5 × 0.5 quarter cell | pivot at the quarter's corner; four quarters make one cell |
 | `BlockPart_InnerCorner` | `ModularBlock_InnerCorner` | 1 × 1 centred | fills a concave corner between cells |
 | `Arrow_1`, `Arrow_2`, `Arrow_3` | `Arrow_*` | 0.45 × 0.8 / 1.75 / 2.71 | arrow over a 1-, 2- or 3-cell block |
@@ -63,11 +66,10 @@ Block height is 0.8 world units (the top face rim sits 0.33 above the floor, stu
 outer and inner, are rounded with radius 0.27, `BoardViewConfig.BlockCornerRadius`); the `_Center` part is the top cap only. Each quarter piece is authored in
 the +x +z quarter of its cell and is mirrored into the other quarters with a negative scale (the Edge
 wall's other orientation adds a 90° turn); `BlockTileResolver` picks the piece and its transform.
-`BlockView.prefab` is the empty pooled root of a block; its `Body` child carries the pieces and the
-`Outline`, so the reject shake moves the body while the tweens move the root. `BlockExitBurst.prefab` is the
+`BlockView.prefab` is the empty pooled root a block's pieces hang under. `BlockExitBurst.prefab` is the
 pooled spray of debris out of a door: a particle system of small cubes (built-in cube mesh,
-`M_ExitDebris`, colour set per exit, world space, unscaled time, stop action Callback) with
-`ExitBurstView`.
+`M_ExitDebris`, colour set per exit, world space, unscaled time, stop action Callback) shot from
+a 30° cone pointing out of the door, with `ExitBurstView`.
 
 ## 5. Materials
 

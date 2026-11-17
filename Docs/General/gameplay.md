@@ -52,8 +52,9 @@ and restart, so no state survives an attempt. `BoardStateTests` pins every rule 
 
 ## 4. Loading and controls
 
-1. `GameplayFlow.Start` asks `LevelProvider` for the current level (the catalog loops after its last level,
-   DA-8), loads it into `ActiveBoard` and then fires `LevelStartedSignal`. `ActiveBoard.Load` builds a new
+1. `GameplayFlow.Start` starts the attempt through `LevelSession.Start` (§6), which asks `LevelProvider`
+   for the level (the catalog loops after its last level, DA-8), loads it into `ActiveBoard` and then
+   fires `LevelStartedSignal`. `ActiveBoard.Load` builds a new
    `BoardState`, sizes `BoardSpace` and fires **`BoardLoadedSignal`**; every board view rebuilds from it.
 2. **`ActiveBoard.TryStep`** is the only way a block moves during play. It calls `BoardState.TryStep` and
    announces the outcome: `BlockMovedSignal` per cell, `BlockExitedSignal` on an exit and
@@ -84,10 +85,11 @@ and restart, so no state survives an attempt. `BoardStateTests` pins every rule 
      holds the cell it settles on;
    - lined up with a fitting door (`BoardState.CanStep` says `Exited`), the wall stops being an obstacle
      and the block exits as soon as it is pushed `BoardViewConfig.ExitPush` (0.15 cell) into the door;
-   - pushed `ExitPush` into a door it cannot use (another colour, or too narrow:
-     `BoardState.IsRejectedByDoor`; a plain wall does not count), the block stays and
-     **`BlockRejectedSignal`** fires once for that push; it fires again only after the block has moved;
-   - release fires **`BlockDroppedSignal`** with the cell it settles on; nothing snaps before release.
+   - a door the block cannot use (another colour, or too narrow) is a wall to it: no feedback (DA-21);
+   - release fires **`BlockDroppedSignal`** with the cell it settles on; nothing snaps before release;
+   - input counts only while the level plays: `LevelPausedSignal`, `LevelCompletedSignal` and
+     `LevelFailedSignal` drop the held block onto its cell (`BlockDroppedSignal`) and the finger is ignored
+     until `LevelStartedSignal` or `LevelResumedSignal` (DA-22).
    A drag allocates nothing (`BlockDragControllerTests`).
 
 ## 5. View
@@ -98,8 +100,12 @@ All board views listen to signals only; the model has committed every change bef
 1. Board views parent their parts to a root at `BoardSpace.Origin` scaled by `CellSize`, so parts are laid
    out in cell units: cell `(x, y)` is centred at `(x + 0.5, 0, y + 0.5)`.
 2. **`BoardView`** builds, per load: a base under the floor tiles (the gaps read as grid lines), one tile per
-   cell, the wall ring (two half-cell segments per cell, `BoardViewConfig.WallThickness` outside the
-   board), one door segment per door cell in the door's colour, and four rounded corners.
+   cell, the wall ring (`BoardViewConfig.WallThickness` outside the board) and four rounded corners. The
+   wall and door meshes are straight extrusions, so each stretch of wall between doors or corners is one
+   segment stretched along it and each door is one segment stretched over its cells, in the door's
+   colour, with one `Door_Arrow` centred on top pointing out of the board (a child of the door, so it
+   sinks with it, DA-24): the ring reads as continuous bars on any board size
+   (`GameplayBoardTests.Board_ShouldCloseTheWallRingWithoutSeams_WhenWallsAreStretchedBetweenDoors`).
 3. **`BlockLayerView`** builds every block from the modular pieces chosen by **`BlockTileResolver`**
    (art-pipeline.md §4) in its palette colour. While a block is held it shows an outline band that hugs
    its footprint (`OutlineMeshBuilder`): a closed loop `OutlineGap` outside the block, its corners
@@ -116,33 +122,34 @@ All board views listen to signals only; the model has committed every change bef
    on `BlockExitedSignal` (which carries the cell offset the block left from) it plays
    `BlockExitAnimation`: from wherever the block is drawn it first settles lined up at the mouth of its
    door (`ExitSnapDuration`, `ExitSnapEase`; never backing away from it), then slides through the door at
-   `ExitSpeed` cells per second, its own length plus `ExitClearance`, at full size. Its pieces switch to
-   the view's copy of `BlockExitMaterial` (`ColorBlockJam/Block Exit`: lit like Simple Lit, cut by a
-   world plane at the board's edge), so it disappears into the door; meanwhile an `ExitBurstView` (pooled
-   `BlockExitBurst.prefab`) sprays cubes of its colour out of the door, outside the wall ring, for as
-   long as the slide lasts, starting when it begins (`ExitDebrisRate` per cell of width per second). The
-   view then returns to its pool, and the burst once its last cube is gone (DA-20). A block view's pivot
-   is the block's centre. The follow and the snap are one paused tween each per block, retargeted on
-   every drag and drop (`BlockMoveAnimation`), so following and snapping allocate nothing
+   `ExitSpeed` cells per second, its own length plus `ExitCutOffset` and `ExitClearance`, at full size.
+   Its pieces switch to the view's copy of `BlockExitMaterial` (`ColorBlockJam/Block Exit`: lit like
+   Simple Lit, cut by a world plane `ExitCutOffset` (0.15 cell) past the board's edge, inside the door,
+   so the block covers the floor's edge the sinking door uncovers; its back faces are drawn too, so the
+   cut reads as a solid face where it faces the camera, at the bottom wall), so it disappears into the
+   door; meanwhile an `ExitBurstView` (pooled `BlockExitBurst.prefab`) sprays cubes of its colour out of
+   the door, outside the wall ring, for as long as the slide lasts, starting when it begins
+   (`ExitDebrisBurst` cubes per cell of width at once, then `ExitDebrisRate` per cell of width per
+   second, in a 30° cone pointing out of the door). The view then returns to its pool, and the burst once
+   its last cube is gone (DA-20). A block view's pivot is the block's centre. The follow and the snap are
+   one paused tween each per block, retargeted on every drag and drop (`BlockMoveAnimation`), so
+   following and snapping allocate nothing
    (`GameplayBoardTests.BlockView_ShouldNotAllocate_WhenFollowingAFingerAndSnapping`). A board reload
    also recycles blocks that are still sliding out
    (`GameplayBoardTests.Reload_ShouldRebuildCleanBlocks_WhenABlockIsStillSlidingOut`).
-   On `BlockRejectedSignal` the block view punches its body toward the door and lets it spring back
-   (`BlockRejectAnimation`; `RejectStrength`, `RejectDuration`, `RejectVibrato`). The body is a child of the
-   view that carries the pieces and the outline, so the shake never fights the follow and snap tweens on
-   the root. Blocks leaving the same door within `ExitBurstCoalesceWindow` (0.15 s) share one debris spray:
+   Blocks leaving the same door within `ExitBurstCoalesceWindow` (0.15 s) share one debris spray:
    the later ones add their cubes to it. The exit's geometry (wall, length, door span) comes from one pure
    `ExitPath`, shared by the block view and the board view.
-   On `BlockExitedSignal` the **`BoardView`** opens the door: each door segment the block passes sinks
+   On `BlockExitedSignal` the **`BoardView`** opens the door: the whole door, however narrow the block, sinks
    `DoorGateDepth` into the floor while the block settles, stays down while it slides through, then rises
    back (`DoorGateAnimation`, `DoorGateCloseDuration`) (DA-21).
    **`GameplayHaptics`** (plain class, Gameplay scope, built by the scope's build callback) taps the
-   device on board events: `GameplayConfig.RejectHaptic` (Medium) on `BlockRejectedSignal`,
-   `ExitHaptic` (Light) on `BlockExitedSignal`. The taps go through the root scope's `IHapticService`
-   (`Core/Haptics/MobileHapticService`): Android `VibrationEffect` predefined effects (one-shot pulses
-   before API 29; the VIBRATE permission comes from `Plugins/Android/ColorBlockJamHaptics.androidlib`),
-   iOS `UIImpactFeedbackGenerator` (`Plugins/iOS/ColorBlockJamHaptics.mm`), silent in the editor. No
-   third-party haptics package. The Settings vibration toggle does not gate it yet (T-25).
+   device when a block leaves: `GameplayConfig.ExitHaptic` (Light) on `BlockExitedSignal`. The taps go
+   through the root scope's `IHapticService` (`Core/Haptics/MobileHapticService`): Android
+   `VibrationEffect` predefined effects (one-shot pulses before API 29; the VIBRATE permission comes from
+   `Plugins/Android/ColorBlockJamHaptics.androidlib`), iOS `UIImpactFeedbackGenerator`
+   (`Plugins/iOS/ColorBlockJamHaptics.mm`), silent in the editor. No third-party haptics package. The
+   Settings vibration toggle does not gate it yet (T-25).
 4. Every part, block view and piece comes from a pool (`PartPool`, `ObjectPool`), so a restart or the next
    level reuses objects. Colours are one shared material per colour (`ColorMaterialCache`) to keep the SRP
    batcher batching.
@@ -151,7 +158,38 @@ All board views listen to signals only; the model has committed every change bef
    in that band, for the screen's aspect ratio (`BoardFraming`, `BoardFramingTests`). It frames on every
    board load; the device aspect never changes (portrait only), so there is no re-fit on resize.
 
-## 6. Navigation
+## 6. Level session
+
+**`LevelSession`** (plain class, Gameplay scope) owns the attempt at the current level: its `LevelState`
+and `LevelNumber`. It is the only place the state changes; every transition commits the state first and
+then fires its signal. Anything not in the table is refused (the method returns false, nothing fires),
+so a double tap or a late timer cannot corrupt an attempt (`LevelSessionTests`).
+
+```text
+Loading --Start(n)--> Playing --Pause--> Paused --Resume--> Playing
+Playing --(BoardClearedSignal)--> Won          Playing --Fail--> Failed
+Playing | Paused | Failed --Restart--> Playing
+Won --Next(n)--> Playing
+```
+
+| Transition | Signals |
+| --- | --- |
+| `Start(n)`, `Restart`, `Next(n)` | `BoardLoadedSignal` (a new `BoardState` from the level data), then `LevelStartedSignal` |
+| `Pause` / `Resume` | `LevelPausedSignal` / `LevelResumedSignal` |
+| board cleared while playing | `LevelCompletedSignal` (once) |
+| `Fail` (the timer, T-15) | `LevelFailedSignal` (once) |
+
+- Restart rebuilds everything from the level's data, so nothing of the previous attempt stays (DA-15); a
+  won level is not restarted, it moves on (T-17, T-21). A paused level cannot fail: its timer stands still.
+- **Progression:** `LevelProgression` (plain class, built by the scope's build callback) advances
+  `IPlayerProgressService` on `LevelCompletedSignal`, before anything presents the win (T-17). The
+  catalog loops (DA-8): after the last level the next number plays the first layout again.
+- `GameplayFlow` only starts the session and routes. Until the win popup (T-21), it starts the next level
+  itself `GameplayConfig.NextLevelDelay` (1 s) after a win, through `LevelSession.Next` with the already
+  advanced level number (DA-23). The pause, fail and win popups (T-19 – T-21) will call the session and
+  present its signals.
+
+## 7. Navigation
 
 `GameplayHudView` has a Home button that routes back to Home through `GameplayFlow` and
 `INavigationService`. It is a placeholder until the pause popup (T-19) owns the route.
