@@ -3,20 +3,23 @@ using Cysharp.Threading.Tasks;
 using ColorBlockJam.Core.Boot;
 using ColorBlockJam.Core.Persistence;
 using ColorBlockJam.Game.Boosters;
+using ColorBlockJam.Game.Lives;
 
 namespace ColorBlockJam.Game.Boot
 {
-    /// <summary>Reads the player's saves before anything shows them: progress, wallet, settings and boosters.</summary>
+    /// <summary>Reads the player's saves before anything shows them: progress, wallet, settings, boosters and lives.</summary>
     public sealed class LoadPlayerDataStep : IBootStep
     {
         readonly IPlayerProgressService _playerProgress;
         readonly IWalletService _wallet;
         readonly ISettingsService _settings;
         readonly BoosterInventory _boosters;
+        readonly LivesService _lives;
 
         public LoadPlayerDataStep(IPlayerProgressService playerProgress, IWalletService wallet, ISettingsService settings,
-            BoosterInventory boosters)
+            BoosterInventory boosters, LivesService lives)
         {
+            _lives = lives;
             _playerProgress = playerProgress;
             _wallet = wallet;
             _settings = settings;
@@ -31,6 +34,7 @@ namespace ColorBlockJam.Game.Boot
             _wallet.Load();
             _settings.Load();
             _boosters.Load();
+            _lives.Load();
             return UniTask.CompletedTask;
         }
     }

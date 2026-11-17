@@ -10,6 +10,7 @@ using ColorBlockJam.Game.Gameplay.Popups;
 using ColorBlockJam.Game.Gameplay.Session;
 using ColorBlockJam.Game.Gameplay.Signals;
 using ColorBlockJam.Game.Levels;
+using ColorBlockJam.Game.UI;
 using ColorBlockJam.Tests.EditMode.Helpers;
 using UnityEngine;
 using UnityEngine.UI;
@@ -42,6 +43,12 @@ namespace ColorBlockJam.Tests.EditMode
         Button _giveUp;
         Button _retry;
         Button _goHome;
+        LivesRig _lives;
+        LevelAttemptLives _attempt;
+        GameplayLivesFlow _livesFlow;
+        OutOfLivesPopupView _livesPopup;
+        Button _refill;
+        Button _livesClose;
 
         [SetUp]
         public void SetUp()
@@ -70,8 +77,12 @@ namespace ColorBlockJam.Tests.EditMode
             _levelFailed = _views.CreateLevelFailedPopup(out _retry, out _goHome);
             _winFlow = new WinFlow(_bus, _popups, _winPopup, _session, _progress, levels,
                 new LevelRewardProvider(_rewardConfig), _config, _clock);
+            _lives = new LivesRig(_bus, _wallet);
+            _attempt = new LevelAttemptLives(_lives.Lives, _bus);
+            _livesPopup = _views.CreateOutOfLivesPopup(_bus, out _refill, out _livesClose);
+            _livesFlow = new GameplayLivesFlow(_lives.Lives, _wallet, _livesPopup, _popups, _session, _navigation);
             _failFlow = new FailFlow(_bus, _popups, _outOfTime, _levelFailed, _session,
-                new LevelContinueService(_session, _wallet, _config), _navigation);
+                new LevelContinueService(_session, _wallet, _config), _navigation, _attempt, _livesFlow);
             _session.Start(1);
         }
 
@@ -80,6 +91,9 @@ namespace ColorBlockJam.Tests.EditMode
         {
             _winFlow.Dispose();
             _failFlow.Dispose();
+            _livesFlow.Dispose();
+            _attempt.Dispose();
+            _lives.Dispose();
             _session.Dispose();
             Object.DestroyImmediate(_config);
             Object.DestroyImmediate(_rewardConfig);

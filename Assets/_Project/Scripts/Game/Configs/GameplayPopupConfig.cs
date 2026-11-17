@@ -1,4 +1,5 @@
 using ColorBlockJam.Game.Gameplay.Popups;
+using ColorBlockJam.Game.UI;
 using UnityEngine;
 
 namespace ColorBlockJam.Game.Configs
@@ -25,10 +26,20 @@ namespace ColorBlockJam.Game.Configs
         [SerializeField]
         BoosterPurchasePopupView _boosterPurchasePopup;
 
+        [Tooltip("The lives popup, shared with Home.")]
+        [SerializeField]
+        OutOfLivesPopupView _outOfLivesPopup;
+
+        [Tooltip("Asks before Home ends a started attempt, which costs a life.")]
+        [SerializeField]
+        LeaveLevelPopupView _leaveLevelPopup;
+
         public PausePopupView PausePopup => _pausePopup;
         public WinPopupView WinPopup => _winPopup;
         public OutOfTimePopupView OutOfTimePopup => _outOfTimePopup;
         public LevelFailedPopupView LevelFailedPopup => _levelFailedPopup;
         public BoosterPurchasePopupView BoosterPurchasePopup => _boosterPurchasePopup;
+        public OutOfLivesPopupView OutOfLivesPopup => _outOfLivesPopup;
+        public LeaveLevelPopupView LeaveLevelPopup => _leaveLevelPopup;
     }
 }

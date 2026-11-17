@@ -4,6 +4,7 @@ using ColorBlockJam.Game.Boot;
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Installers;
 using ColorBlockJam.Game.Levels;
+using ColorBlockJam.Game.Lives;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -32,11 +33,14 @@ namespace ColorBlockJam.Game.Scopes
         BoosterConfig _boosterConfig;
 
         [SerializeField]
+        LivesConfig _livesConfig;
+
+        [SerializeField]
         ApplicationPauseReporter _pauseReporter;
 
         protected override void Configure(IContainerBuilder builder)
         {
-            new CoreServicesInstaller(_applicationConfig, _uiConfig, _levelCatalog, _networkConfig, _boosterConfig)
+            new CoreServicesInstaller(_applicationConfig, _uiConfig, _levelCatalog, _networkConfig, _boosterConfig, _livesConfig)
                 .Install(builder);
             builder.RegisterComponent(_pauseReporter);
 
@@ -44,6 +48,8 @@ namespace ColorBlockJam.Game.Scopes
             builder.RegisterBuildCallback(resolver => resolver.Resolve<ConnectivityService>().Start());
 
             builder.RegisterEntryPoint<TweeningInitializer>();
+            // The lives' refill countdown runs for the whole session (lives.md).
+            builder.RegisterEntryPoint<LivesClock>();
         }
     }
 }

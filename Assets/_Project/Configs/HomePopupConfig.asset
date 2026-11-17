@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: HomePopupConfig
   m_EditorClassIdentifier: 
   _settingsPopup: {fileID: 2209667265401070856, guid: a4c5997da1e3c8d4b9265617aa3ea6a3, type: 3}
+  _outOfLivesPopup: {fileID: 2333152101242731821, guid: 7b68b2e254ee8e5428140a975b946769, type: 3}

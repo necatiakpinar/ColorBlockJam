@@ -12,7 +12,7 @@ namespace ColorBlockJam.Game.UI
     /// close button, and placeholder buttons with press feedback only (R-14). Its layout is the
     /// <c>SettingsPopup</c> base prefab; each scene uses a variant of it.
     /// </summary>
-    public class SettingsPopupView : PopupView
+    public class SettingsPopupView : PopupView, IDisposable
     {
         [SerializeField]
         Button _closeButton;
@@ -56,10 +56,16 @@ namespace ColorBlockJam.Game.UI
 
         void OnCloseClicked() => CloseClicked?.Invoke();
 
+        /// <summary>
+        /// The scope disposes the popup with its scene. Unity calls <see cref="OnDestroy"/> only on objects that were
+        /// once active, and a popup never opened never was, so this is what lets go of the app-wide signal bus.
+        /// </summary>
+        public void Dispose() => _signalBus.Unsubscribe<SettingChangedSignal>(OnSettingChanged);
+
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            _signalBus.Unsubscribe<SettingChangedSignal>(OnSettingChanged);
+            Dispose();
             _closeButton.onClick.RemoveListener(OnCloseClicked);
             foreach (SettingToggleView toggle in _toggles)
                 toggle.Button.onClick.RemoveAllListeners();

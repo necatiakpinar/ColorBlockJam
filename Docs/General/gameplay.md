@@ -231,6 +231,9 @@ own every change:
 - **`WinFlow`** opens the win popup `GameplayConfig.WinPopupDelay` (1 s, through `IGameClock`) after
   `LevelCompletedSignal`, so the last block is seen leaving, with the reward the win already paid.
   Continue plays the next level with `LevelSession.Next` (T-21, DA-12).
+- **Lives** ([lives.md](lives.md)): HUD restart, pause → Home and giving up cost a started attempt's life
+  through `LevelAttemptLives`; restart and Retry play again through `GameplayLivesFlow`, which needs a life
+  and otherwise offers a refill (DA-38).
 - **`BoosterFlow`** routes the booster bar and the booster purchase popup ([boosters.md](boosters.md) §5);
   `GameplayFlow` puts a booster that waits for a target back before pausing.
 - **`FailFlow`** opens the out-of-time popup on `LevelFailedSignal`. Continue buys

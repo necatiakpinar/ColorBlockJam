@@ -46,7 +46,7 @@ requirement keeps its id and is marked `Dropped`.
 | R-20 | The fail popup opens when the level fails and offers restart and return to Home | must | T-20 |
 | R-21 | Pause, restart and Home navigation work | must | T-19, T-22 |
 | R-22 | Boosters are shown; they need no function | must | T-18 |
-| R-23 | The life system is a placeholder | must | T-18, T-23 |
+| R-23 | The life system is a placeholder; replaced by working lives (R-50, developer 2026-11-17) | must | T-18, T-23, T-48 |
 | R-24 | The player can complete a level and continue to the next level | must | T-13, T-17, T-21 |
 | R-25 | Restart sets the level back to its start state; no data stays from the previous attempt | must | T-09, T-14, T-22 |
 | R-26 | The level editor controls board width and height, door placement, block placement and timer value | must | T-27–T-29 |
@@ -73,6 +73,7 @@ requirement keeps its id and is marked `Dropped`.
 | R-47 | The editor checks the level live: door sizes and positions, blocks that fit no door, overlaps, and whether every block can get out; it shows a working solution step by step | must | T-30, T-33 |
 | R-48 | Every editor tool has a keyboard shortcut, listed in the editor | must | T-31 |
 | R-49 | The editor sets each level's difficulty, which sets its reward | must | T-27 |
+| R-50 | Lives: a lost life refills on a casual-game timer read from trusted time, and coins refill them at once | must (developer, 2026-11-17) | T-48 |
 
 ## 2. Scope decisions
 
@@ -82,7 +83,7 @@ requirement keeps its id and is marked `Dropped`.
    validation (editor usability) → arrow block → ice blocker → one functional booster. The art set
    includes arrow meshes (`Arrows.fbx`, `Door_Arrow`) and `icetexture.jpg`, so the two blockers need no
    new art.
-3. **No audio, haptics, shop, leaderboard, lives logic or ads** for now. Settings toggles only store and
+3. **No audio, haptics, shop, leaderboard or ads** for now (lives came in with T-48). Settings toggles only store and
    show state (DA-10).
 4. **One scene per screen:** Splash → Home → Gameplay. Settings and every gameplay popup are popups in their
    scene, not scenes.
@@ -177,5 +178,6 @@ task is marked `Dropped`, never deleted. Detail per task: [tasks.md](tasks.md).
 | T-46 | 5 | Boot waits for a connection | Splash does not reach Home offline; the popup's Retry or a returning connection continues the boot | T-44, T-45 | Todo |
 | T-47 | 8 | Level generator | Generate builds a valid, solvable level matching the chosen size, colours, block count and difficulty | T-33, T-28, T-29 | Done |
 | T-43 | 3 | Touch and door feel | Near-miss presses pick a block; wrong doors stop a block like a wall; doors open and close; close exits share one spray | T-12, T-13 | Done |
+| T-48 | 8 | Lives | Abandoned attempts cost a life; lives refill every 30 min of trusted time; no lives offers a coin refill | T-44, T-07 | Done |
 
 Status values: `Todo`, `In progress`, `Blocked`, `Done`, `Dropped`.

@@ -11,8 +11,9 @@ namespace ColorBlockJam.Game.Gameplay
 {
     /// <summary>
     /// Presents a loss (T-20): the out-of-time popup offers more seconds for coins (DA-30); Continue buys them
-    /// through <see cref="LevelContinueService"/> and closes. Closing it gives up and opens the level-failed
-    /// popup (DA-31), whose Retry restarts the level and whose close button goes Home.
+    /// through <see cref="LevelContinueService"/> and closes. Closing it gives up, which costs the attempt's life
+    /// (<see cref="LevelAttemptLives"/>, DA-38), and opens the level-failed popup (DA-31), whose Retry plays again
+    /// through <see cref="GameplayLivesFlow"/> and whose close button goes Home.
     /// </summary>
     public sealed class FailFlow : IDisposable
     {
@@ -23,11 +24,15 @@ namespace ColorBlockJam.Game.Gameplay
         readonly LevelSession _session;
         readonly LevelContinueService _continues;
         readonly INavigationService _navigation;
+        readonly LevelAttemptLives _attempt;
+        readonly GameplayLivesFlow _lives;
 
         public FailFlow(SignalBus signalBus, IPopupService popups, OutOfTimePopupView outOfTime,
             LevelFailedPopupView levelFailed, LevelSession session, LevelContinueService continues,
-            INavigationService navigation)
+            INavigationService navigation, LevelAttemptLives attempt, GameplayLivesFlow lives)
         {
+            _attempt = attempt;
+            _lives = lives;
             _signalBus = signalBus;
             _popups = popups;
             _outOfTime = outOfTime;
@@ -58,6 +63,7 @@ namespace ColorBlockJam.Game.Gameplay
 
         void OnGiveUp()
         {
+            _attempt.Abandon();
             _popups.Close();
             _popups.Open(_levelFailed);
         }
@@ -65,7 +71,7 @@ namespace ColorBlockJam.Game.Gameplay
         void OnRetryClicked()
         {
             _popups.Close();
-            _session.Restart();
+            _lives.PlayAgain();
         }
 
         void OnHomeClicked() => _navigation.GoToHomeAsync().Forget();

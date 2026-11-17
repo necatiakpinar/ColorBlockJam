@@ -20,6 +20,7 @@ using ColorBlockJam.Game.Gameplay.Session;
 using ColorBlockJam.Game.Gameplay.Input;
 using ColorBlockJam.Game.Installers;
 using ColorBlockJam.Game.Levels;
+using ColorBlockJam.Game.Lives;
 using ColorBlockJam.Game.Navigation;
 using ColorBlockJam.Game.UI;
 using UnityEditor;
@@ -52,7 +53,8 @@ namespace ColorBlockJam.Tests.EditMode
         {
             var builder = new ContainerBuilder();
             new CoreServicesInstaller(CreateConfig<ApplicationConfig>(), CreateConfig<UiConfig>(), CreateConfig<LevelCatalog>(),
-                CreateConfig<NetworkConfig>(), CreateConfig<BoosterConfig>()).Install(builder);
+                CreateConfig<NetworkConfig>(), CreateConfig<BoosterConfig>(),
+                CreateConfig<LivesConfig>()).Install(builder);
             new SplashInstaller(CreateConfig<SplashConfig>()).Install(builder);
             return builder.Build();
         }
@@ -62,7 +64,8 @@ namespace ColorBlockJam.Tests.EditMode
         {
             var builder = new ContainerBuilder();
             new CoreServicesInstaller(CreateConfig<ApplicationConfig>(), CreateConfig<UiConfig>(), CreateConfig<LevelCatalog>(),
-                CreateConfig<NetworkConfig>(), CreateConfig<BoosterConfig>()).Install(builder);
+                CreateConfig<NetworkConfig>(), CreateConfig<BoosterConfig>(),
+                CreateConfig<LivesConfig>()).Install(builder);
             using IObjectResolver container = builder.Build();
 
             Assert.That(container.Resolve<SignalBus>(), Is.Not.Null);
@@ -72,6 +75,7 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(container.Resolve<IWalletService>(), Is.Not.Null);
             Assert.That(container.Resolve<ISettingsService>(), Is.Not.Null);
             Assert.That(container.Resolve<BoosterInventory>(), Is.Not.Null);
+            Assert.That(container.Resolve<LivesService>(), Is.Not.Null);
             Assert.That(container.Resolve<ISceneLoader>(), Is.Not.Null);
             Assert.That(container.Resolve<INavigationService>(), Is.Not.Null);
             Assert.That(container.Resolve<UiConfig>(), Is.Not.Null);
@@ -87,7 +91,8 @@ namespace ColorBlockJam.Tests.EditMode
         {
             var builder = new ContainerBuilder();
             new CoreServicesInstaller(CreateConfig<ApplicationConfig>(), CreateConfig<UiConfig>(), CreateConfig<LevelCatalog>(),
-                CreateConfig<NetworkConfig>(), CreateConfig<BoosterConfig>()).Install(builder);
+                CreateConfig<NetworkConfig>(), CreateConfig<BoosterConfig>(),
+                CreateConfig<LivesConfig>()).Install(builder);
             using IObjectResolver container = builder.Build();
 
             Assert.That(container.Resolve<SignalBus>(), Is.SameAs(container.Resolve<SignalBus>()));
@@ -142,7 +147,8 @@ namespace ColorBlockJam.Tests.EditMode
         {
             var builder = new ContainerBuilder();
             new CoreServicesInstaller(CreateConfig<ApplicationConfig>(), CreateConfig<UiConfig>(), CreateConfig<LevelCatalog>(),
-                CreateConfig<NetworkConfig>(), CreateConfig<BoosterConfig>())
+                CreateConfig<NetworkConfig>(), CreateConfig<BoosterConfig>(),
+                CreateConfig<LivesConfig>())
                 .Install(builder);
             new GameplayInstaller(CreateConfig<GameplayConfig>(), CreateConfig<BoardViewConfig>(), CreateConfig<LevelRewardConfig>()).Install(builder);
             using IObjectResolver container = builder.Build();
@@ -157,6 +163,7 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(container.Resolve<LevelRewardService>(), Is.Not.Null);
             Assert.That(container.Resolve<BoosterShop>(), Is.Not.Null);
             Assert.That(container.Resolve<BoosterService>(), Is.Not.Null);
+            Assert.That(container.Resolve<LevelAttemptLives>(), Is.Not.Null);
         }
 
         [Test]

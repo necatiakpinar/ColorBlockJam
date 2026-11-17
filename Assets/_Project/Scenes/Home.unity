@@ -308,6 +308,7 @@ MonoBehaviour:
   autoRun: 1
   autoInjectGameObjects: []
   _homeView: {fileID: 1592494728}
+  _livesBarView: {fileID: 762156316}
   _popupConfig: {fileID: 11400000, guid: 00b95050d16ce234caaf051243af0f75, type: 2}
   _popupLayer: {fileID: 1407836514}
 --- !u!4 &103830668
@@ -2012,6 +2013,7 @@ GameObject:
   - component: {fileID: 762156313}
   - component: {fileID: 762156315}
   - component: {fileID: 762156314}
+  - component: {fileID: 762156316}
   m_Layer: 5
   m_Name: Lives
   m_TagString: Untagged
@@ -2079,6 +2081,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 762156312}
   m_CullTransparentMesh: 1
+--- !u!114 &762156316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 762156312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bd38cff52c81194581d41bcea7917d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _countLabel: {fileID: 1193833454}
+  _statusLabel: {fileID: 181985038}
+  _plusButton: {fileID: 1423862169}
 --- !u!1 &783591121
 GameObject:
   m_ObjectHideFlags: 0

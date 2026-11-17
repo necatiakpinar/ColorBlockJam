@@ -64,6 +64,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - [ ] [T-45 No-internet popup over every scene](#t-45-no-internet-popup-over-every-scene)
 - [ ] [T-46 Boot waits for a connection](#t-46-boot-waits-for-a-connection)
 - [x] [T-47 Level generator](#t-47-level-generator)
+- [x] [T-48 Lives](#t-48-lives)
 
 ---
 
@@ -807,3 +808,15 @@ and (T-33) the solver from `ColorBlockJam.Game`, so the editor never has its own
 - **Subtasks:**
   - [ ] `.gitignore` excludes Library, Temp, Logs, Build, UserSettings, generated `.csproj`/`.sln`
   every LFS file is a pointer; fresh clone into an empty folder opens and plays; all tests green.
+
+### T-48 Lives
+
+- **Req:** R-23, R-44, R-50. Implements DA-38; withdraws DA-9 and DA-15.
+- **Arch:** as built in [lives.md](../General/lives.md): `LivesService` (Root, saved, trusted time),
+  `LivesClock` (Root entry point, one tick a second), `LevelAttemptLives` and `GameplayLivesFlow` (Gameplay),
+  `LivesBarView` and `HomeFlow` (Home), `OutOfLivesPopup.prefab` shared by both scenes, `LivesConfig`.
+- **Accept:** abandoning a started attempt costs one life, a win none; lives come back every 30 minutes of
+  trusted time, also while closed; with none, playing opens the popup, whose Refill fills them for coins.
+- **Tests:** `EM LivesServiceTests`, `LevelAttemptLivesTests`, `HomeFlowTests`, `GameplayFlowTests`,
+  `LevelResultFlowTests`.
+- **Docs:** `lives.md`, `lives-qa.md`, persistence.md, economy.md, ui.md, gameplay.md.
