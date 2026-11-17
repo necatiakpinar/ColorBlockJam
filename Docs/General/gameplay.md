@@ -113,7 +113,7 @@ All board views listen to signals only; the model has committed every change bef
 4. Every part, block view and piece comes from a pool (`PartPool`, `ObjectPool`), so a restart or the next
    level reuses objects. Colours are one shared material per colour (`ColorMaterialCache`) to keep the SRP
    batcher batching.
-5. **`BoardCameraView`** keeps the authored tilt (60°) and field of view (40°) and moves the camera so the
+5. **`BoardCameraView`** keeps the authored tilt (72°) and field of view (30°) and moves the camera so the
    board and its walls fit between `BoardViewConfig.Framing` margins (HUD on top, boosters below), centred
    in that band, for the screen's aspect ratio (`BoardFraming`, `BoardFramingTests`). It frames on every
    board load; the device aspect never changes (portrait only), so there is no re-fit on resize.
