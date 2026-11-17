@@ -51,10 +51,11 @@ The game never mutates `LevelData`. The catalog is registered by the root scope;
 level number to its entry and loops after the last one (DA-8). Each attempt builds a new `BoardState`
 ([gameplay.md](gameplay.md) §3, §4), which is what makes a restart start clean.
 
-The catalog ships five levels, `Level_001` to `Level_005`, made with the level editor (T-32): each was
+The catalog ships six levels, `Level_001` to `Level_006`, made with the level editor (T-32): each was
 generated with the settings and seed below, its timer set by hand, and saved from the editor. They ramp up
 by board size, block count, exit rounds (a block can only leave once the ones in its way have) and, from
-level 3, blocks that must be moved out of the way first. Score is the solver's difficulty measure
+level 3, blocks that must be moved out of the way first. Level 6 adds the ice blocker (T-34): its blue
+block waits for 2 others to leave and its cyan block for 4, which turns the plain layout's score 7 into 9. Score is the solver's difficulty measure
 ([level-editor.md](level-editor.md) §3).
 
 | Level | Board | Colours | Blocks | Seed | Rounds | Moves | Score | Timer | Difficulty |
@@ -64,6 +65,8 @@ level 3, blocks that must be moved out of the way first. Score is the solver's d
 | 3 | 5x6 | 4 | 5 | 24 | 3 | 1 | 4 | 90 s | Hard |
 | 4 | 6x7 | 5 | 7 | 47 | 3 | 1 | 4 | 120 s | Hard |
 | 5 | 6x7 | 6 | 8 | 2 | 6 | 2 | 8 | 160 s | Very Hard |
+| 6 | 6x7 | 6 | 9 | 5, ice 2 and 4 | 7 | 2 | 9 | 190 s | Very Hard |
 
 `ShippedLevelsTests` keeps every catalog level free of validator issues, solvable by `LevelSolver`, as hard
-as its label, and the ramp rising (blocks, score, room-making from level 3).
+as its label, and the ramp rising (blocks, score, room-making from level 3); level 6 keeps its two
+frozen blocks.

@@ -22,9 +22,21 @@ namespace ColorBlockJam.Tests.EditMode
             AssetDatabase.LoadAssetAtPath<LevelCatalog>(CatalogPath).Levels;
 
         [Test]
-        public void Catalog_ShouldShipFiveLevels_WhenBuilt()
+        public void Catalog_ShouldShipSixLevels_WhenBuilt()
         {
-            Assert.That(Levels().Count, Is.EqualTo(5));
+            Assert.That(Levels().Count, Is.EqualTo(6));
+        }
+
+        [Test]
+        public void ShippedLevels_ShouldIncludeFrozenBlocks_WhenTheLastLevelIsPlayed()
+        {
+            // Level 6 shows the ice blocker (T-34): two of its blocks wait for others to leave.
+            int frozen = 0;
+            foreach (BlockData block in Levels()[5].Data.Blocks)
+                if (block.Ice > 0)
+                    frozen++;
+
+            Assert.That(frozen, Is.EqualTo(2));
         }
 
         [Test]
