@@ -35,10 +35,13 @@ namespace ColorBlockJam.Game.Gameplay.View
         BoardSpace _boardSpace;
         SignalBus _signalBus;
         ColorMaterialCache _materials;
+        ColorMaterialCache _iceMaterials;
         System.Action<ExitBurstView> _releaseBurst;
         ObjectPool<BlockView> _blockPool;
         Dictionary<BlockPieceKind, PartPool> _piecePools;
         ObjectPool<ExitBurstView> _burstPool;
+        ObjectPool<ExitBurstView> _shatterPool;
+        System.Action<ExitBurstView> _releaseShatter;
         // The last spray started at each door, to fold exits close together into it.
         readonly Dictionary<(WallSide Side, int CrossMin, int CrossMax), (ExitBurstView Burst, float StartedAt)> _lastBursts = new();
         ActiveBoard _board;
@@ -52,6 +55,7 @@ namespace ColorBlockJam.Game.Gameplay.View
             _board = board;
             _signalBus = signalBus;
             _materials = new ColorMaterialCache(config.BlockMaterial, config);
+            _iceMaterials = new ColorMaterialCache(config.IceMaterial, config, config.IceWhiten);
             _outline = new OutlineSettings(config.OutlineWidth, config.OutlineBaseHeight, config.BlockTopHeight,
                 config.OutlineGap, config.BlockCornerRadius, config.OutlineCornerSegments);
             _blockPool = new ObjectPool<BlockView>(
@@ -73,6 +77,12 @@ namespace ColorBlockJam.Game.Gameplay.View
                 burst => burst.gameObject.SetActive(false),
                 burst => Destroy(burst.gameObject));
             _releaseBurst = _burstPool.Release;
+            _shatterPool = new ObjectPool<ExitBurstView>(
+                () => Instantiate(config.IceShatter, _root),
+                shatter => shatter.gameObject.SetActive(true),
+                shatter => shatter.gameObject.SetActive(false),
+                shatter => Destroy(shatter.gameObject));
+            _releaseShatter = _shatterPool.Release;
 
             _signalBus.Subscribe<BoardLoadedSignal>(OnBoardLoaded);
             _signalBus.Subscribe<BlockGrabbedSignal>(OnBlockGrabbed);
@@ -82,6 +92,8 @@ namespace ColorBlockJam.Game.Gameplay.View
             _signalBus.Subscribe<BlockRemovedSignal>(OnBlockRemoved);
             _signalBus.Subscribe<BlockCellRemovedSignal>(OnBlockCellRemoved);
             _signalBus.Subscribe<BoosterTargetingChangedSignal>(OnBoosterTargetingChanged);
+            _signalBus.Subscribe<IceCountedDownSignal>(OnIceCountedDown);
+            _signalBus.Subscribe<BlockThawedSignal>(OnBlockThawed);
         }
 
         /// <summary>Block views on screen, indexed by block id; null once a block has exited.</summary>
@@ -97,17 +109,21 @@ namespace ColorBlockJam.Game.Gameplay.View
             {
                 BlockView view = _blockPool.Get();
                 view.transform.SetParent(_root, false);
-                Build(view, block.Cells, block.Color);
+                Build(view, block.Cells, block.Color, block.Ice);
                 _views.Add(view);
             }
         }
 
-        /// <summary>Lays the pieces of a block with <paramref name="cells"/> (start cells) into the view.</summary>
-        void Build(BlockView view, IReadOnlyList<Vector2Int> cells, BlockColor color)
+        /// <summary>
+        /// Lays the pieces of a block with <paramref name="cells"/> (start cells) into the view; a frozen block
+        /// (<paramref name="ice"/> above 0) is drawn in ice with its count on top.
+        /// </summary>
+        void Build(BlockView view, IReadOnlyList<Vector2Int> cells, BlockColor color, int ice)
         {
-            view.Show(Centre(cells), _config.SnapDuration, _config.SnapEase, _config.FollowDuration, _config.FollowEase);
+            Vector3 centre = Centre(cells);
+            view.Show(centre, _config.SnapDuration, _config.SnapEase, _config.FollowDuration, _config.FollowEase);
 
-            Material material = _materials.Get(color);
+            Material material = ice > 0 ? _iceMaterials.Get(color) : _materials.Get(color);
             foreach (BlockPiece piece in _tileResolver.Resolve(cells))
             {
                 PartPool pool = _piecePools[piece.Kind];
@@ -118,6 +134,32 @@ namespace ColorBlockJam.Game.Gameplay.View
             }
 
             view.BuildOutline(cells, _outline);
+            view.SetIce(ice, LabelCell(cells, centre));
+        }
+
+        /// <summary>
+        /// Where the ice count sits: the block's centre when that lies on the block (a 2x2 block's middle), else the
+        /// middle of its cell nearest the centre, so it is always on the block.
+        /// </summary>
+        Vector3 LabelCell(IReadOnlyList<Vector2Int> cells, Vector3 centre)
+        {
+            foreach (Vector2Int cell in cells)
+                if (centre.x >= cell.x && centre.x <= cell.x + 1 && centre.z >= cell.y && centre.z <= cell.y + 1)
+                    return centre;
+
+            Vector3 best = default;
+            float bestDistance = float.MaxValue;
+            foreach (Vector2Int cell in cells)
+            {
+                var middle = new Vector3(cell.x + 0.5f, 0f, cell.y + 0.5f);
+                float distance = (middle - centre).sqrMagnitude;
+                if (distance >= bestDistance)
+                    continue;
+                bestDistance = distance;
+                best = middle;
+            }
+
+            return best;
         }
 
         Vector3 Centre(IReadOnlyList<Vector2Int> cells)
@@ -185,7 +227,7 @@ namespace ColorBlockJam.Game.Gameplay.View
 
             view.PlaySmash(_config.SmashSwell, _config.SmashDuration, Recycle);
             Vector3 centre = Centre(block.StartCells) + new Vector3(block.Offset.x, 0f, block.Offset.y);
-            Burst(centre, block.Color, block.CellCount);
+            Burst(centre, _config.TintOf(block.Color), _config.SmashDebrisPerCell * block.CellCount);
         }
 
         /// <summary>The rocket blasted one cell: the block is rebuilt from the cells it has left, where it is.</summary>
@@ -194,9 +236,35 @@ namespace ColorBlockJam.Game.Gameplay.View
             BoardBlock block = _board.Current.Blocks[signal.BlockId];
             BlockView view = _views[signal.BlockId];
             view.ReleaseParts();
-            Build(view, block.StartCells, block.Color);
+            Build(view, block.StartCells, block.Color, block.Ice);
             view.PlaceAt(block.Offset);
-            Burst(new Vector3(signal.Cell.x + 0.5f, 0f, signal.Cell.y + 0.5f), block.Color, 1);
+            Burst(new Vector3(signal.Cell.x + 0.5f, 0f, signal.Cell.y + 0.5f), _config.TintOf(block.Color),
+                _config.SmashDebrisPerCell);
+        }
+
+        /// <summary>A block left: every frozen block shows its new count.</summary>
+        void OnIceCountedDown(IceCountedDownSignal signal)
+        {
+            for (int id = 0; id < _views.Count; id++)
+            {
+                BoardBlock block = _board.Current.Blocks[id];
+                if (_views[id] != null && block.IsFrozen)
+                    _views[id].SetIce(block.Ice);
+            }
+        }
+
+        /// <summary>The ice broke: the block takes its colour back with a swell while shards of ice fly off.</summary>
+        void OnBlockThawed(BlockThawedSignal signal)
+        {
+            BoardBlock block = _board.Current.Blocks[signal.BlockId];
+            BlockView view = _views[signal.BlockId];
+            view.SetIce(0);
+            view.SetMaterial(_materials.Get(block.Color));
+            view.PlayThaw(_config.ThawSwell, _config.ThawDuration);
+            Vector3 centre = Centre(block.StartCells) + new Vector3(block.Offset.x, 0f, block.Offset.y);
+            ExitBurstView shatter = _shatterPool.Get();
+            shatter.Play(centre + Vector3.up * _config.ExitDebrisHeight, Vector2Int.up, 1f, Color.white, 0f,
+                _config.ThawDuration, 0f, _config.ThawDebrisPerCell * block.CellCount, _releaseShatter);
         }
 
         void OnBoosterTargetingChanged(BoosterTargetingChangedSignal signal)
@@ -205,12 +273,12 @@ namespace ColorBlockJam.Game.Gameplay.View
                 view?.SetOutlined(signal.Active);
         }
 
-        /// <summary>Cubes of the block's colour thrown up from where it broke.</summary>
-        void Burst(Vector3 local, BlockColor color, int cells)
+        /// <summary>Cubes of <paramref name="color"/> thrown up from where a block broke or thawed.</summary>
+        void Burst(Vector3 local, Color color, float cubes)
         {
             ExitBurstView burst = _burstPool.Get();
-            burst.Play(local + Vector3.up * _config.ExitDebrisHeight, Vector2Int.up, 1f, _config.TintOf(color), 0f,
-                _config.SmashDuration, 0f, _config.SmashDebrisPerCell * cells, _releaseBurst);
+            burst.Play(local + Vector3.up * _config.ExitDebrisHeight, Vector2Int.up, 1f, color, 0f,
+                _config.SmashDuration, 0f, cubes, _releaseBurst);
         }
 
         /// <summary>
@@ -263,7 +331,10 @@ namespace ColorBlockJam.Game.Gameplay.View
             _signalBus.Unsubscribe<BlockRemovedSignal>(OnBlockRemoved);
             _signalBus.Unsubscribe<BlockCellRemovedSignal>(OnBlockCellRemoved);
             _signalBus.Unsubscribe<BoosterTargetingChangedSignal>(OnBoosterTargetingChanged);
+            _signalBus.Unsubscribe<IceCountedDownSignal>(OnIceCountedDown);
+            _signalBus.Unsubscribe<BlockThawedSignal>(OnBlockThawed);
             _materials.Dispose();
+            _iceMaterials.Dispose();
         }
     }
 }

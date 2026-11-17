@@ -210,6 +210,38 @@ namespace ColorBlockJam.Game.Configs
         [SerializeField, Min(0f)]
         float _exitDebrisHeight = 0.3f;
 
+        [Header("Ice blocker")]
+        [Tooltip("Material of a frozen block (M_Ice: the ice texture), tinted with its colour.")]
+        [SerializeField]
+        Material _iceMaterial;
+
+        [Tooltip("How far a frozen block's colour is pulled toward white; 1 shows the ice texture as it is.")]
+        [SerializeField, Range(0f, 1f)]
+        float _iceWhiten = 1f;
+
+        [Tooltip("A thawing block swells to this scale and back...")]
+        [SerializeField, Min(1f)]
+        float _thawSwell = 1.12f;
+
+        [Tooltip("...in this many seconds.")]
+        [SerializeField, Min(0.01f)]
+        float _thawDuration = 0.3f;
+
+        [Tooltip("Ice shards a thaw throws, per cell.")]
+        [SerializeField, Min(0f)]
+        float _thawDebrisPerCell = 14f;
+
+        [Tooltip("The shards a thaw throws: the ice texture on tumbling cubes (IceShatter prefab).")]
+        [SerializeField]
+        ExitBurstView _iceShatter;
+
+        public Material IceMaterial => _iceMaterial;
+        public float IceWhiten => _iceWhiten;
+        public float ThawSwell => _thawSwell;
+        public float ThawDuration => _thawDuration;
+        public float ThawDebrisPerCell => _thawDebrisPerCell;
+        public ExitBurstView IceShatter => _iceShatter;
+
         [Header("Booster removal")]
         [Tooltip("A smashed block (hammer, or a rocket's last cell) first swells to this scale...")]
         [SerializeField, Min(1f)]

@@ -41,6 +41,9 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 
 ### Rules
 
+- [ ] ⚙ A frozen block cannot move until enough others leave, then thaws — `IceBlockerTests`, `IceBlockerViewTests`
+- [ ] 👁 A frozen block looks icy over its colour with a readable count; the count drops with every exit; the thaw swells it back to its colour.
+
 - [ ] ⚙ Blocks stop at walls and at other blocks — `BoardStateTests.TryStep_ShouldStopAtWall_WhenNoDoorIsThere`, `TryStep_ShouldStopAtAnotherBlock_WhenItIsInTheWay`
 - [ ] ⚙ A block leaves through a matching door that covers it — `BoardStateTests.TryStep_ShouldExit_WhenAMatchingDoorCoversTheBlock`
 - [ ] ⚙ Wrong colour, narrow or offset doors keep it in — `BoardStateTests.TryStep_ShouldBeBlocked_WhenTheDoorColourDiffers` and siblings
