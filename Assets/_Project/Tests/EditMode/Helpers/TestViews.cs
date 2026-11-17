@@ -17,9 +17,10 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
     {
         readonly List<Object> _created = new();
 
-        public HomeView CreateHomeView(out Button levelButton) => CreateHomeView(out levelButton, out _);
+        public HomeView CreateHomeView(SignalBus signalBus, out Button levelButton) =>
+            CreateHomeView(signalBus, out levelButton, out _);
 
-        public HomeView CreateHomeView(out Button levelButton, out Button settingsButton)
+        public HomeView CreateHomeView(SignalBus signalBus, out Button levelButton, out Button settingsButton)
         {
             var root = Track(new GameObject("HomeView"));
             levelButton = Child(root, "LevelButton").AddComponent<Button>();
@@ -36,7 +37,7 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
             for (int i = 0; i < 3; i++)
                 path.GetArrayElementAtIndex(i).objectReferenceValue = Label(root, "PathLabel" + i);
             serialized.ApplyModifiedPropertiesWithoutUndo();
-            view.Construct();
+            view.Construct(signalBus);
             return view;
         }
 

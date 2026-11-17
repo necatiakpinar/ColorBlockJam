@@ -44,7 +44,7 @@ namespace ColorBlockJam.Tests.EditMode
             _wallet.Load();
             _settings = new SettingsService(new InMemoryKeyValueStorage(), new RecordingLogger(), _bus);
             _settings.Load();
-            _view = _views.CreateHomeView(out _levelButton, out _settingsButton);
+            _view = _views.CreateHomeView(_bus, out _levelButton, out _settingsButton);
             _settingsPopup = _views.CreateSettingsPopup(_bus, _settings, out _closeButton, out _toggles);
             _lives = new LivesRig(_bus, _wallet);
             _livesBar = _views.CreateLivesBar(_bus, out _plusButton);
@@ -104,6 +104,20 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(_wallet.Coins, Is.Zero);
             Assert.That(_popups.Current, Is.Null);
             Assert.That(_livesBar.StatusText, Is.EqualTo("Full"));
+        }
+
+        [Test]
+        public void Refill_ShouldShowTheBalanceLeft_WhenLivesAreBought()
+        {
+            _lives.LoseAll();
+            _wallet.Add(_lives.Lives.RefillPrice + 30);
+            using HomeFlow flow = CreateFlow();
+            flow.Start();
+            _plusButton.onClick.Invoke();
+
+            _refillButton.onClick.Invoke();
+
+            Assert.That(_view.CoinText, Is.EqualTo("30"));
         }
 
         [Test]

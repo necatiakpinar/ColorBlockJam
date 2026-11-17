@@ -1,4 +1,6 @@
 using System;
+using ColorBlockJam.Core.Persistence;
+using ColorBlockJam.Core.Signals;
 using ColorBlockJam.Game.UI;
 using TMPro;
 using UnityEngine;
@@ -27,12 +29,16 @@ namespace ColorBlockJam.Game.Home
         [SerializeField]
         Button _settingsButton;
 
+        SignalBus _signalBus;
+
         public event Action LevelButtonClicked;
         public event Action SettingsButtonClicked;
 
         [Inject]
-        public void Construct()
+        public void Construct(SignalBus signalBus)
         {
+            _signalBus = signalBus;
+            _signalBus.Subscribe<CoinsChangedSignal>(OnCoinsChanged);
             _levelButton.onClick.AddListener(OnLevelButtonClicked);
             _settingsButton.onClick.AddListener(OnSettingsButtonClicked);
         }
@@ -51,12 +57,15 @@ namespace ColorBlockJam.Game.Home
 
         public void ShowCoins(int coins) => _coins.Show(coins);
 
+        void OnCoinsChanged(CoinsChangedSignal signal) => _coins.Show(signal.Coins);
+
         void OnLevelButtonClicked() => LevelButtonClicked?.Invoke();
 
         void OnSettingsButtonClicked() => SettingsButtonClicked?.Invoke();
 
         void OnDestroy()
         {
+            _signalBus.Unsubscribe<CoinsChangedSignal>(OnCoinsChanged);
             _levelButton.onClick.RemoveListener(OnLevelButtonClicked);
             _settingsButton.onClick.RemoveListener(OnSettingsButtonClicked);
         }

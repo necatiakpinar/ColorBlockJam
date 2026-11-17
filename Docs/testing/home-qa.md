@@ -6,6 +6,7 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 ## Cases
 
 - [x] ⚙ Home shows the saved level on the path and the "Level N" button, and the balance — `HomeFlowTests.Start_ShouldShowTheLevelPathAndTheBalance_WhenSceneStarts`, `HomeScreenTests`
+- [x] ⚙ The balance follows every spend on Home, such as a lives refill — `HomeFlowTests.Refill_ShouldShowTheBalanceLeft_WhenLivesAreBought`
 - [x] ⚙ The level button opens Gameplay — `HomeFlowTests.LevelButton_ShouldNavigateToGameplay_WhenTapped`
 - [x] ⚙ Every Home button gives press feedback — `SceneSetupTests`
 - [ ] 👁 Compare Home with the reference screen at 1080x1920 and 20:9: top bar, level path, tab bar.
