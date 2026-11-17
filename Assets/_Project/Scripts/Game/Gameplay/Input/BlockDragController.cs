@@ -23,6 +23,9 @@ namespace ColorBlockJam.Game.Gameplay.Input
     /// <item>Whenever its nearest cell changes, the move is committed to the board, so the board always holds
     /// the cell it settles on. Lined up with a fitting door, the wall stops counting and the block exits as
     /// soon as it is pushed <see cref="BoardViewConfig.ExitPush"/> into the door.</item>
+    /// <item>A press next to a block picks it when the finger is within
+    /// <see cref="BoardViewConfig.TouchTolerance"/> of it. Pushed into a door it cannot use, the block stays
+    /// and <see cref="BlockRejectedSignal"/> fires once for that push.</item>
     /// <item>What is drawn may lean toward the finger past an obstacle by
     /// <see cref="BoardViewConfig.HoldGive"/>, so a held block never feels frozen; that lean is never
     /// committed.</item>
@@ -49,6 +52,8 @@ namespace ColorBlockJam.Game.Gameplay.Input
         // Per drag: the direction of the last slip on each axis. A small pull the other way only undoes
         // that slip's offset to the finger; it must not set off a slip of its own.
         Vector2Int _lastSlip;
+        // The push the last rejection was for; cleared when the block moves, so one push rejects once.
+        Vector2Int _rejectedStep;
 
         public BlockDragController(ActiveBoard board, BoardSpace boardSpace, BoardViewConfig config, SignalBus signalBus)
         {
@@ -84,7 +89,8 @@ namespace ColorBlockJam.Game.Gameplay.Input
 
         void Grab(BoardPointerSignal signal)
         {
-            if (!_board.Current.TryGetBlockAt(signal.Cell, out _blockId))
+            if (!_board.Current.TryGetBlockAt(signal.Cell, out _blockId)
+                && !TryGetNearestBlock(signal.WorldPoint, out _blockId))
             {
                 _blockId = NoBlock;
                 return;
@@ -93,7 +99,41 @@ namespace ColorBlockJam.Game.Gameplay.Input
             _position = CellOffset;
             _grab = _position - FingerInCells(signal.WorldPoint);
             _lastSlip = Vector2Int.zero;
+            _rejectedStep = Vector2Int.zero;
             _signalBus.Fire(new BlockGrabbedSignal(_blockId));
+        }
+
+        /// <summary>
+        /// The block whose cell is nearest the finger among the cells around it, if it is at most
+        /// <see cref="BoardViewConfig.TouchTolerance"/> away (the tolerance stays under half a cell, so the
+        /// ring of neighbours is enough).
+        /// </summary>
+        bool TryGetNearestBlock(Vector3 fingerWorld, out int blockId)
+        {
+            blockId = NoBlock;
+            Vector3 local = (fingerWorld - _boardSpace.Origin) / _boardSpace.CellSize;
+            var finger = new Vector2(local.x, local.z);
+            var under = new Vector2Int(Mathf.FloorToInt(finger.x), Mathf.FloorToInt(finger.y));
+            float best = _config.TouchTolerance;
+            for (int dx = -1; dx <= 1; dx++)
+            {
+                for (int dy = -1; dy <= 1; dy++)
+                {
+                    Vector2Int cell = under + new Vector2Int(dx, dy);
+                    if (!_board.Current.TryGetBlockAt(cell, out int candidate))
+                        continue;
+                    float gapX = Mathf.Max(cell.x - finger.x, 0f, finger.x - (cell.x + 1));
+                    float gapY = Mathf.Max(cell.y - finger.y, 0f, finger.y - (cell.y + 1));
+                    float distance = Mathf.Sqrt(gapX * gapX + gapY * gapY);
+                    if (distance <= best)
+                    {
+                        best = distance;
+                        blockId = candidate;
+                    }
+                }
+            }
+
+            return blockId != NoBlock;
         }
 
         Vector2 Target(Vector3 fingerWorld) => FingerInCells(fingerWorld) + _grab;
@@ -139,14 +179,26 @@ namespace ColorBlockJam.Game.Gameplay.Input
             if (free > Epsilon)
             {
                 _position[axis] += direction * free;
+                _rejectedStep = Vector2Int.zero;
                 Commit(axis, direction);
                 moved = true;
             }
 
             float blocked = Mathf.Abs(wanted) - free;
+            if (_blockId != NoBlock && blocked >= _config.ExitPush)
+                RejectIfPushedIntoAWrongDoor(axis, direction);
             if (_blockId != NoBlock && blocked > Epsilon && !UndoesSlip(axis, direction, Mathf.Abs(wanted)))
                 moved |= SlipIntoGap(axis, direction, blocked);
             return moved;
+        }
+
+        void RejectIfPushedIntoAWrongDoor(int axis, int direction)
+        {
+            Vector2Int step = Step(axis, direction);
+            if (step == _rejectedStep || !IsAligned(axis) || !_board.Current.IsRejectedByDoor(_blockId, step))
+                return;
+            _rejectedStep = step;
+            _signalBus.Fire(new BlockRejectedSignal(_blockId, step));
         }
 
         /// <summary>

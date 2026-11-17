@@ -63,7 +63,8 @@ Block height is 0.8 world units (the top face rim sits 0.33 above the floor, stu
 outer and inner, are rounded with radius 0.27, `BoardViewConfig.BlockCornerRadius`); the `_Center` part is the top cap only. Each quarter piece is authored in
 the +x +z quarter of its cell and is mirrored into the other quarters with a negative scale (the Edge
 wall's other orientation adds a 90° turn); `BlockTileResolver` picks the piece and its transform.
-`BlockView.prefab` is the empty pooled root a block's pieces hang under. `BlockExitBurst.prefab` is the
+`BlockView.prefab` is the empty pooled root of a block; its `Body` child carries the pieces and the
+`Outline`, so the reject shake moves the body while the tweens move the root. `BlockExitBurst.prefab` is the
 pooled spray of debris out of a door: a particle system of small cubes (built-in cube mesh,
 `M_ExitDebris`, colour set per exit, world space, unscaled time, stop action Callback) with
 `ExitBurstView`.

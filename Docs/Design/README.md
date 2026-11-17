@@ -65,6 +65,7 @@ requirement keeps its id and is marked `Dropped`.
 | R-39 | A small and complete result before a large and incomplete one | should | §2 below |
 | R-40 | Problems found in the art set are logged in [asset-feedback.md](asset-feedback.md) | should | T-03, T-40 |
 | R-41 | An unclear requirement gets a decision, registered as `DA-n`, and work continues | must | DA registry, T-40 |
+| R-42 | Touch and door feedback feel forgiving and clear: near-miss presses pick a block, wrong doors answer a push, doors open for a leaving block | should | T-43 |
 
 ## 2. Scope decisions
 
@@ -151,5 +152,6 @@ task is marked `Dropped`, never deleted. Detail per task: [tasks.md](tasks.md).
 | T-40 | 12 | Project README | Open and run, level editor how-to, architecture decisions, known problems, asset feedback | T-39 | Todo |
 | T-41 | 12 | Android APK | APK installs and plays the full flow on a device | T-39 | Todo |
 | T-42 | 12 | Repository hygiene | Clean clone opens and runs; no Library, Temp or Build tracked | T-40, T-41 | Todo |
+| T-43 | 3 | Touch and door feel | Near-miss presses pick a block; wrong doors knock the block back; doors open and close; close exits share one spray | T-12, T-13 | Done |
 
 Status values: `Todo`, `In progress`, `Blocked`, `Done`, `Dropped`.

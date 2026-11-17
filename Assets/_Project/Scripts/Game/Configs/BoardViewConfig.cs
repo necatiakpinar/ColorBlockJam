@@ -95,6 +95,11 @@ namespace ColorBlockJam.Game.Configs
         [SerializeField, Range(0f, 0.3f)]
         float _holdGive = 0.12f;
 
+        [Tooltip("A press that misses every block still picks the nearest one when it is at most this many "
+            + "cells away, so a finger need not hit a block exactly.")]
+        [SerializeField, Range(0f, 0.5f)]
+        float _touchTolerance = 0.35f;
+
         [Tooltip("How far a held block lined up with its own door must be pushed into it, in cells, to leave.")]
         [SerializeField, Range(0.01f, 0.5f)]
         float _exitPush = 0.15f;
@@ -166,6 +171,26 @@ namespace ColorBlockJam.Game.Configs
         [SerializeField]
         Material _blockExitMaterial;
 
+        [Header("Rejected push")]
+        [Tooltip("How far a block is knocked toward a door it cannot use, in cells, before it springs back.")]
+        [SerializeField, Min(0f)]
+        float _rejectStrength = 0.12f;
+
+        [SerializeField, Min(0.01f)]
+        float _rejectDuration = 0.3f;
+
+        [Tooltip("How many times the knocked block wobbles while it springs back.")]
+        [SerializeField, Range(1, 20)]
+        int _rejectVibrato = 8;
+
+        [Header("Door gate")]
+        [Tooltip("How far a door sinks into the floor to let a block through, in cells.")]
+        [SerializeField, Min(0f)]
+        float _doorGateDepth = 0.35f;
+
+        [SerializeField, Min(0.01f)]
+        float _doorGateCloseDuration = 0.15f;
+
         [Header("Exit debris")]
         [Tooltip("The spray of small cubes out of a door while a block passes it (BlockExitBurst.prefab).")]
         [SerializeField]
@@ -174,6 +199,11 @@ namespace ColorBlockJam.Game.Configs
         [Tooltip("Cubes sprayed per second for each cell of the block's width across the door.")]
         [SerializeField, Min(0f)]
         float _exitDebrisRate = 70f;
+
+        [Tooltip("Blocks leaving through the same door within this many seconds share one spray: the later "
+            + "ones add their cubes to it instead of starting another particle system.")]
+        [SerializeField, Min(0f)]
+        float _exitBurstCoalesceWindow = 0.15f;
 
         [Tooltip("Height of the spray's source above the floor, in cells (about the block's own height).")]
         [SerializeField, Min(0f)]
@@ -199,6 +229,13 @@ namespace ColorBlockJam.Game.Configs
         public float CornerTolerance => _cornerTolerance;
         public float HoldGive => _holdGive;
         public float ExitPush => _exitPush;
+        public float TouchTolerance => _touchTolerance;
+        public float RejectStrength => _rejectStrength;
+        public float RejectDuration => _rejectDuration;
+        public int RejectVibrato => _rejectVibrato;
+        public float DoorGateDepth => _doorGateDepth;
+        public float DoorGateCloseDuration => _doorGateCloseDuration;
+        public float ExitBurstCoalesceWindow => _exitBurstCoalesceWindow;
         public float OutlineWidth => _outlineWidth;
         public float OutlineBaseHeight => _outlineBaseHeight;
         public float BlockTopHeight => _blockTopHeight;

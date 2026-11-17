@@ -181,6 +181,74 @@ namespace ColorBlockJam.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator Reject_ShouldKnockTheBlockAndLetItSpringBack_WhenPushedIntoAWrongDoor()
+        {
+            yield return BootToBoard();
+            // Blue's door is on the right; push it left into red's door instead.
+            _board.Load(new LevelData(4, 3, 60,
+                new[] { new BlockData(BlockColor.Blue, new[] { new Vector2Int(0, 1) }) },
+                new[]
+                {
+                    new DoorData(WallSide.Left, 1, 1, BlockColor.Red),
+                    new DoorData(WallSide.Right, 1, 1, BlockColor.Blue),
+                }));
+            BlockView blue = _blocks.Views[0];
+            Transform body = blue.transform.GetChild(blue.transform.childCount - 1);
+            float duration = _container.Resolve<BoardViewConfig>().RejectDuration;
+
+            _input.OnPointerDown(PointerAt(0, 1));
+            _input.OnDrag(PointerAt(-1, 1));
+            yield return WaitRealtime(duration * 0.2f);
+            float knocked = body.localPosition.magnitude;
+            yield return WaitRealtime(duration);
+            _input.OnPointerUp(PointerAt(-1, 1));
+
+            Assert.That(body.name, Is.EqualTo("Body"));
+            Assert.That(knocked, Is.GreaterThan(0.01f), "Knocked toward the door.");
+            Assert.That(body.localPosition.magnitude, Is.LessThan(1e-3f), "Back in place.");
+            Assert.That(_board.Current.Blocks[0].HasExited, Is.False);
+        }
+
+        [UnityTest]
+        public IEnumerator Exit_ShouldOpenTheDoorAndCloseItAfter_WhenTheBlockLeaves()
+        {
+            yield return BootToBoard();
+            _board.Load(TwoBlockLevel());
+            Transform door = SceneTestUtility.FindInActiveScene<BoardView>().DoorSegmentAt(WallSide.Left, 1);
+            BoardViewConfig config = _container.Resolve<BoardViewConfig>();
+            float closedY = door.localPosition.y;
+
+            Swipe(new Vector2Int(0, 1), new Vector2Int(-2, 1));
+            yield return WaitRealtime(config.ExitSnapDuration + 0.05f);
+            float whileOpen = door.localPosition.y;
+            yield return WaitRealtime((1f + config.ExitClearance) / config.ExitSpeed + config.DoorGateCloseDuration + 0.2f);
+
+            Assert.That(whileOpen, Is.LessThan(closedY - config.DoorGateDepth * 0.5f), "Sunk into the floor.");
+            Assert.That(door.localPosition.y, Is.EqualTo(closedY).Within(1e-3f), "Closed again.");
+        }
+
+        [UnityTest]
+        public IEnumerator Exit_ShouldShareOneSpray_WhenTwoBlocksLeaveTheSameDoorTogether()
+        {
+            yield return BootToBoard();
+            _board.Load(new LevelData(4, 3, 60,
+                new[]
+                {
+                    new BlockData(BlockColor.Red, new[] { new Vector2Int(0, 1) }),
+                    new BlockData(BlockColor.Red, new[] { new Vector2Int(1, 1) }),
+                },
+                new[] { new DoorData(WallSide.Left, 1, 1, BlockColor.Red) }));
+
+            Swipe(new Vector2Int(0, 1), new Vector2Int(-2, 1));
+            Swipe(new Vector2Int(1, 1), new Vector2Int(-2, 1));
+            yield return null;
+
+            Assert.That(_board.Current.IsCleared, Is.True);
+            ExitBurstView burst = SceneTestUtility.FindInActiveScene<ExitBurstView>();
+            Assert.That(burst.transform.parent.GetComponentsInChildren<ExitBurstView>().Length, Is.EqualTo(1));
+        }
+
+        [UnityTest]
         public IEnumerator Exit_ShouldSettleAtTheDoorBeforeSlidingIn_WhenTheBlockLeaves()
         {
             yield return BootToBoard();

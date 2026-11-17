@@ -61,8 +61,9 @@ and restart, so no state survives an attempt. `BoardStateTests` pins every rule 
    today, a booster later) goes through it.
 3. **`BlockDragController`** (`Input/`, plain class, built by the scope's build callback) lets the finger
    slide the touched block like a solid object (DA-4):
-   - a press fires **`BlockGrabbedSignal`**; the block aims at the finger plus the offset it was grabbed
-     at, which never changes, so it cannot drift away from the finger. It follows freely in fractional
+   - a press fires **`BlockGrabbedSignal`**; a press that misses every block still picks the block whose
+     cell is nearest the finger when it is at most `BoardViewConfig.TouchTolerance` (0.35 cell) away. The
+     block aims at the finger plus the offset it was grabbed at, which never changes, so it cannot drift away from the finger. It follows freely in fractional
      cells, diagonals included, firing **`BlockDraggedSignal`** on every drag event;
    - collisions work like tile physics: each pass moves it along the axis the finger is furthest along,
      then the other, as far as every cell its footprint sweeps through is free (`BoardState.IsCellFree`);
@@ -83,6 +84,9 @@ and restart, so no state survives an attempt. `BoardStateTests` pins every rule 
      holds the cell it settles on;
    - lined up with a fitting door (`BoardState.CanStep` says `Exited`), the wall stops being an obstacle
      and the block exits as soon as it is pushed `BoardViewConfig.ExitPush` (0.15 cell) into the door;
+   - pushed `ExitPush` into a door it cannot use (another colour, or too narrow:
+     `BoardState.IsRejectedByDoor`; a plain wall does not count), the block stays and
+     **`BlockRejectedSignal`** fires once for that push; it fires again only after the block has moved;
    - release fires **`BlockDroppedSignal`** with the cell it settles on; nothing snaps before release.
    A drag allocates nothing (`BlockDragControllerTests`).
 
@@ -123,6 +127,15 @@ All board views listen to signals only; the model has committed every change bef
    (`GameplayBoardTests.BlockView_ShouldNotAllocate_WhenFollowingAFingerAndSnapping`). A board reload
    also recycles blocks that are still sliding out
    (`GameplayBoardTests.Reload_ShouldRebuildCleanBlocks_WhenABlockIsStillSlidingOut`).
+   On `BlockRejectedSignal` the block view punches its body toward the door and lets it spring back
+   (`BlockRejectAnimation`; `RejectStrength`, `RejectDuration`, `RejectVibrato`). The body is a child of the
+   view that carries the pieces and the outline, so the shake never fights the follow and snap tweens on
+   the root. Blocks leaving the same door within `ExitBurstCoalesceWindow` (0.15 s) share one debris spray:
+   the later ones add their cubes to it. The exit's geometry (wall, length, door span) comes from one pure
+   `ExitPath`, shared by the block view and the board view.
+   On `BlockExitedSignal` the **`BoardView`** opens the door: each door segment the block passes sinks
+   `DoorGateDepth` into the floor while the block settles, stays down while it slides through, then rises
+   back (`DoorGateAnimation`, `DoorGateCloseDuration`) (DA-21).
 4. Every part, block view and piece comes from a pool (`PartPool`, `ObjectPool`), so a restart or the next
    level reuses objects. Colours are one shared material per colour (`ColorMaterialCache`) to keep the SRP
    batcher batching.

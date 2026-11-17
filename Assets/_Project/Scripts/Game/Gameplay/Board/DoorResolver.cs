@@ -23,17 +23,7 @@ namespace ColorBlockJam.Game.Gameplay.Board
         public bool FitsDoor(BoardBlock block, Vector2Int direction)
         {
             WallSide side = WallFacing(direction);
-            bool alongX = side is WallSide.Bottom or WallSide.Top;
-
-            int min = int.MaxValue, max = int.MinValue;
-            for (int i = 0; i < block.CellCount; i++)
-            {
-                Vector2Int cell = block.GetCell(i);
-                int value = alongX ? cell.x : cell.y;
-                if (value < min) min = value;
-                if (value > max) max = value;
-            }
-
+            SpanAlongWall(block, side, out int min, out int max);
             for (int i = 0; i < _doors.Length; i++)
             {
                 DoorData door = _doors[i];
@@ -42,6 +32,35 @@ namespace ColorBlockJam.Game.Gameplay.Board
             }
 
             return false;
+        }
+
+        /// <summary>Whether any door, fitting or not, lies on the wall in front of the block's span.</summary>
+        public bool FacesDoor(BoardBlock block, Vector2Int direction)
+        {
+            WallSide side = WallFacing(direction);
+            SpanAlongWall(block, side, out int min, out int max);
+            for (int i = 0; i < _doors.Length; i++)
+            {
+                DoorData door = _doors[i];
+                if (door.Side == side && door.Start <= max && door.End >= min)
+                    return true;
+            }
+
+            return false;
+        }
+
+        static void SpanAlongWall(BoardBlock block, WallSide side, out int min, out int max)
+        {
+            bool alongX = side is WallSide.Bottom or WallSide.Top;
+            min = int.MaxValue;
+            max = int.MinValue;
+            for (int i = 0; i < block.CellCount; i++)
+            {
+                Vector2Int cell = block.GetCell(i);
+                int value = alongX ? cell.x : cell.y;
+                if (value < min) min = value;
+                if (value > max) max = value;
+            }
         }
 
         WallSide WallFacing(Vector2Int direction)

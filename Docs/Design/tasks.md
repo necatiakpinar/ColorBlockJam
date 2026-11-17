@@ -299,6 +299,24 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
   `PM GameplayBoardTests` (swipes on a two-block level in the real scene).
 - **Docs:** `gameplay.md` §3–§5.
 
+### T-43 Touch and door feel
+
+- **Req:** R-42. Implements DA-21.
+- **Arch:** `BlockDragController` picks the nearest block within `TouchTolerance` on a missed press and
+  fires `BlockRejectedSignal` once per push into a door `BoardState.IsRejectedByDoor` refuses.
+  `BlockView` shakes its `Body` child (`BlockRejectAnimation`). `BoardView` opens the door segments a
+  leaving block passes (`DoorGateAnimation`). `BlockLayerView` folds exits through one door within
+  `ExitBurstCoalesceWindow` into one `ExitBurstView`. `ExitPath` is the shared exit geometry.
+- **Subtasks:**
+  - [x] Near-miss press, rejection signal and shake.
+  - [x] Door gate, spray coalescing, `ExitPath`.
+  - [ ] Haptic on rejection (needs a native vibration plugin; decision pending).
+- **Accept:** a press 0.25 cell next to a block picks it; a push into a wrong door shakes the block once;
+  doors sink open and close for a leaving block; two blocks leaving one door together make one spray.
+- **Tests:** `EM BlockDragControllerTests` (near miss, rejection), `EM BoardStateTests.IsRejectedByDoor_*`,
+  `EM ExitPathTests`, `PM GameplayBoardTests` (reject shake, door gate, shared spray).
+- **Docs:** `gameplay.md` §4–§5, `art-pipeline.md` §4, `testing.md`, `gameplay-qa.md`.
+
 ---
 
 ## Chapter 4 — Level session rules

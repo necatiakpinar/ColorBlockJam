@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using ColorBlockJam.Core.Signals;
+using ColorBlockJam.Game.Gameplay.Animations;
+using DG.Tweening;
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Gameplay.Board;
 using ColorBlockJam.Game.Gameplay.Signals;
@@ -27,6 +29,10 @@ namespace ColorBlockJam.Game.Gameplay.View
         SignalBus _signalBus;
         ColorMaterialCache _doorMaterials;
         readonly List<(PartPool Pool, GameObject Part)> _built = new();
+        // Door segments by wall and index along it, and the gate tween each one is playing.
+        readonly Dictionary<(WallSide Side, int Index), Transform> _doorSegments = new();
+        readonly Dictionary<Transform, Sequence> _gates = new();
+        LevelData _level;
         PartPool _base, _tiles, _walls, _corners, _doors;
 
         [Inject]
@@ -42,10 +48,14 @@ namespace ColorBlockJam.Game.Gameplay.View
             _corners = new PartPool(config.WallCorner, _storage);
             _doors = new PartPool(config.DoorSegment, _storage);
             _signalBus.Subscribe<BoardLoadedSignal>(OnBoardLoaded);
+            _signalBus.Subscribe<BlockExitedSignal>(OnBlockExited);
         }
 
         /// <summary>Parts currently making up the board.</summary>
         internal int BuiltPartCount => _built.Count;
+
+        /// <summary>The door segment on <paramref name="side"/> at <paramref name="index"/> cells along it.</summary>
+        internal Transform DoorSegmentAt(WallSide side, int index) => _doorSegments[(side, index)];
 
         void OnBoardLoaded(BoardLoadedSignal signal)
         {
@@ -54,6 +64,7 @@ namespace ColorBlockJam.Game.Gameplay.View
             _root.localScale = Vector3.one * _boardSpace.CellSize;
 
             LevelData level = signal.Level;
+            _level = level;
             BuildFloor(level.Width, level.Height);
             BuildWall(level, WallSide.Bottom);
             BuildWall(level, WallSide.Top);
@@ -80,6 +91,7 @@ namespace ColorBlockJam.Game.Gameplay.View
                 {
                     GameObject part = Place(_doors, WallPoint(level, side, index + 0.5f), DoorYaw(side), Vector3.one);
                     part.GetComponentInChildren<MeshRenderer>().sharedMaterial = _doorMaterials.Get(door.Color);
+                    _doorSegments[(side, index)] = part.transform;
                     continue;
                 }
 
@@ -139,8 +151,32 @@ namespace ColorBlockJam.Game.Gameplay.View
             return part;
         }
 
+        /// <summary>
+        /// Opens the door a block leaves through: each segment it passes sinks into the floor while the block
+        /// settles, stays down while it slides through, then rises back.
+        /// </summary>
+        void OnBlockExited(BlockExitedSignal signal)
+        {
+            var path = new ExitPath(_level.Blocks[signal.BlockId].Cells, signal.Offset, signal.Direction,
+                _boardSpace.Size);
+            float hold = (path.Length + _config.ExitClearance) / _config.ExitSpeed;
+            for (int index = path.CrossMin; index <= path.CrossMax; index++)
+            {
+                if (!_doorSegments.TryGetValue((path.Side, index), out Transform segment))
+                    continue;
+                if (_gates.TryGetValue(segment, out Sequence running))
+                    running.Kill();
+                _gates[segment] = default(DoorGateAnimation).Play(new DoorGateAnimation.Config(segment, 0f,
+                    _config.DoorGateDepth, _config.ExitSnapDuration, hold, _config.DoorGateCloseDuration));
+            }
+        }
+
         void ReleaseAll()
         {
+            foreach (Sequence gate in _gates.Values)
+                gate.Kill();
+            _gates.Clear();
+            _doorSegments.Clear();
             foreach ((PartPool pool, GameObject part) in _built)
                 pool.Release(part);
             _built.Clear();
@@ -149,6 +185,9 @@ namespace ColorBlockJam.Game.Gameplay.View
         void OnDestroy()
         {
             _signalBus.Unsubscribe<BoardLoadedSignal>(OnBoardLoaded);
+            _signalBus.Unsubscribe<BlockExitedSignal>(OnBlockExited);
+            foreach (Sequence gate in _gates.Values)
+                gate.Kill();
             _doorMaterials.Dispose();
         }
     }

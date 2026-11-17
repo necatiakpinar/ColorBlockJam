@@ -107,6 +107,28 @@ namespace ColorBlockJam.Game.Gameplay.Board
                 : StepResult.Blocked;
         }
 
+        /// <summary>
+        /// Whether a push would take the block into a door it cannot use: the step reaches the wall, nothing
+        /// on the board is in the way, a door faces the block there, and still the block may not leave (the
+        /// door is another colour or too narrow). A plain wall is not a rejection.
+        /// </summary>
+        public bool IsRejectedByDoor(int blockId, Vector2Int direction)
+        {
+            BoardBlock block = _blocks[blockId];
+            bool reachesWall = false;
+            for (int i = 0; i < block.CellCount; i++)
+            {
+                Vector2Int next = block.GetCell(i) + direction;
+                if (!IsInside(next))
+                    reachesWall = true;
+                else if (!IsFreeFor(next, blockId))
+                    return false;
+            }
+
+            return reachesWall && _doorResolver.FacesDoor(block, direction)
+                && CanStep(blockId, direction) == StepResult.Blocked;
+        }
+
         /// <summary>A block slides out in a straight line, so every cell between it and the wall must be free.</summary>
         bool HasClearPathToWall(BoardBlock block, Vector2Int direction)
         {

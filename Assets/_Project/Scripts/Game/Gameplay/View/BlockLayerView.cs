@@ -38,6 +38,8 @@ namespace ColorBlockJam.Game.Gameplay.View
         ObjectPool<BlockView> _blockPool;
         Dictionary<BlockPieceKind, PartPool> _piecePools;
         ObjectPool<ExitBurstView> _burstPool;
+        // The last spray started at each door, to fold exits close together into it.
+        readonly Dictionary<(WallSide Side, int CrossMin, int CrossMax), (ExitBurstView Burst, float StartedAt)> _lastBursts = new();
         LevelData _level;
         OutlineSettings _outline;
 
@@ -75,6 +77,7 @@ namespace ColorBlockJam.Game.Gameplay.View
             _signalBus.Subscribe<BlockDraggedSignal>(OnBlockDragged);
             _signalBus.Subscribe<BlockDroppedSignal>(OnBlockDropped);
             _signalBus.Subscribe<BlockExitedSignal>(OnBlockExited);
+            _signalBus.Subscribe<BlockRejectedSignal>(OnBlockRejected);
         }
 
         /// <summary>Block views on screen, indexed by block id; null once a block has exited.</summary>
@@ -140,24 +143,9 @@ namespace ColorBlockJam.Game.Gameplay.View
             _exiting.Add(view);
 
             BlockData block = _level.Blocks[signal.BlockId];
-            int axis = signal.Direction.x != 0 ? 0 : 1;
-            int cross = 1 - axis;
-            int alongMin = int.MaxValue, alongMax = int.MinValue, crossMin = int.MaxValue, crossMax = int.MinValue;
-            for (int i = 0; i < block.Cells.Count; i++)
-            {
-                Vector2Int cell = block.Cells[i] + signal.Offset;
-                alongMin = Mathf.Min(alongMin, cell[axis]);
-                alongMax = Mathf.Max(alongMax, cell[axis]);
-                crossMin = Mathf.Min(crossMin, cell[cross]);
-                crossMax = Mathf.Max(crossMax, cell[cross]);
-            }
-
-            float distance = alongMax - alongMin + 1 + _config.ExitClearance;
-            int direction = signal.Direction[axis];
-            Vector2 door = Vector2.zero;
-            door[axis] = direction > 0 ? _boardSpace.Size[axis] : 0f;
-            door[cross] = (crossMin + crossMax + 1) * 0.5f;
-            var doorLocal = new Vector3(door.x, _config.ExitDebrisHeight, door.y);
+            var path = new ExitPath(block.Cells, signal.Offset, signal.Direction, _boardSpace.Size);
+            float distance = path.Length + _config.ExitClearance;
+            Vector3 doorLocal = path.DoorCentre(_config.ExitDebrisHeight);
 
             // Keep what lies on the board side of the door: -d . p + d . edge >= 0.
             var outward = new Vector3(signal.Direction.x, 0f, signal.Direction.y);
@@ -168,11 +156,33 @@ namespace ColorBlockJam.Game.Gameplay.View
             float slide = view.PlayExit(signal.Offset, signal.Direction, distance, _config.ExitSpeed,
                 _config.ExitSnapDuration, _config.ExitSnapEase, _config.ExitEase, _config.BlockExitMaterial, color,
                 clipPlane, Recycle);
-            // The spray starts outside the wall ring, so the wall does not hide it.
-            Vector3 sprayLocal = doorLocal + outward * _config.WallThickness;
-            _burstPool.Get().Play(sprayLocal, signal.Direction, crossMax - crossMin + 1, _config.ExitDebrisHeight,
-                color, _config.ExitSnapDuration, slide, _config.ExitDebrisRate, _releaseBurst);
+            Spray(path, doorLocal + outward * _config.WallThickness, color, slide);
         }
+
+        /// <summary>
+        /// Starts the debris out of the door, outside the wall ring so the wall does not hide it. A block
+        /// leaving the same door within <see cref="BoardViewConfig.ExitBurstCoalesceWindow"/> of the last
+        /// one adds its cubes to that spray instead of starting another particle system.
+        /// </summary>
+        void Spray(in ExitPath path, Vector3 sprayLocal, Color color, float slide)
+        {
+            var door = (path.Side, path.CrossMin, path.CrossMax);
+            float now = Time.unscaledTime;
+            if (_lastBursts.TryGetValue(door, out (ExitBurstView Burst, float StartedAt) last)
+                && now - last.StartedAt <= _config.ExitBurstCoalesceWindow && last.Burst.gameObject.activeSelf)
+            {
+                last.Burst.Add(Mathf.RoundToInt(_config.ExitDebrisRate * path.Width * slide), color);
+                return;
+            }
+
+            ExitBurstView burst = _burstPool.Get();
+            burst.Play(sprayLocal, path.Direction, path.Width, _config.ExitDebrisHeight, color,
+                _config.ExitSnapDuration, slide, _config.ExitDebrisRate, _releaseBurst);
+            _lastBursts[door] = (burst, now);
+        }
+
+        void OnBlockRejected(BlockRejectedSignal signal) => _views[signal.BlockId].PlayReject(
+            signal.Direction, _config.RejectStrength, _config.RejectDuration, _config.RejectVibrato);
 
         void Recycle(BlockView view)
         {
@@ -199,6 +209,7 @@ namespace ColorBlockJam.Game.Gameplay.View
             _signalBus.Unsubscribe<BlockDraggedSignal>(OnBlockDragged);
             _signalBus.Unsubscribe<BlockDroppedSignal>(OnBlockDropped);
             _signalBus.Unsubscribe<BlockExitedSignal>(OnBlockExited);
+            _signalBus.Unsubscribe<BlockRejectedSignal>(OnBlockRejected);
             _materials.Dispose();
         }
     }

@@ -38,6 +38,13 @@ namespace ColorBlockJam.Game.Gameplay.View
             _particles.Play(true);
         }
 
+        /// <summary>Adds <paramref name="count"/> cubes of <paramref name="color"/> to a spray already running.</summary>
+        internal void Add(int count, Color color)
+        {
+            var emit = new ParticleSystem.EmitParams { startColor = color };
+            _particles.Emit(emit, count);
+        }
+
         // Sent by the particle system (stop action Callback) once every particle has died.
         void OnParticleSystemStopped() => _onFinished?.Invoke(this);
     }
