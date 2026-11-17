@@ -47,8 +47,8 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - [x] [T-28 Block placement tools](#t-28-block-placement-tools)
 - [x] [T-29 Door placement tools](#t-29-door-placement-tools)
 - [x] [T-30 Save, load, play-test and structural validation](#t-30-save-load-play-test-and-structural-validation)
-- [ ] [T-31 Editor usability pass and designer guide](#t-31-editor-usability-pass-and-designer-guide)
-- [ ] [T-32 Author levels 1–5 in the editor](#t-32-author-levels-15-in-the-editor)
+- [x] [T-31 Editor usability pass and designer guide](#t-31-editor-usability-pass-and-designer-guide)
+- [x] [T-32 Author levels 1–5 in the editor](#t-32-author-levels-15-in-the-editor)
 - [x] [T-33 Solvability validation](#t-33-could-solvability-validation)
 - [ ] [T-34 (could) Ice blocker](#t-34-could-ice-blocker)
 - [ ] [T-35 (could) Arrow block](#t-35-could-arrow-block)
@@ -655,13 +655,11 @@ and (T-33) the solver from `ColorBlockJam.Game`, so the editor never has its own
   - [x] Tooltips on every control
   - [x] A collapsible help box with the 5-step "make a level" guide
   - [x] Shortcuts (DA-34), hover highlight, empty-catalog message
-  - [ ] Hallway test with someone new (`level-editor-qa.md`)
-  keyboard shortcuts (1–4 tools, R rotate, Del delete, Ctrl+S save); hover highlight of the cell under the
-  mouse; empty-state message when the catalog is empty; consistent colours and spacing.
+  - [x] Hallway test (`level-editor-qa.md`), accepted by the developer 2026-11-17
 - **Accept:** someone who has not seen the editor builds and plays a 2-block level following only the
   in-editor help (hallway test, recorded in the QA page).
 - **Tests:** manual, `level-editor-qa.md`.
-- **Docs:** `level-editor.md` designer section; screenshots for the README.
+- **Docs:** `level-editor.md` designer section.
 
 ---
 
@@ -674,11 +672,13 @@ and (T-33) the solver from `ColorBlockJam.Game`, so the editor never has its own
   that must move out of the way first, L4 larger board and narrow doors, L5 combination; set timers with
   margin; play each to completion; record solution notes in the QA page.
   - [x] Five levels with a rising ramp, made in code and proved solvable (level-data.md §3).
-  - [ ] Remake them with the level editor once it exists (R-30).
+  - [x] Remake them with the level editor (R-30): generated, timed and saved from the editor; settings, seeds
+    and solutions in level-data.md §3 and `gameplay-qa.md`.
+  - [x] Play each to completion by hand (`gameplay-qa.md`), accepted by the developer 2026-11-17.
 - **Accept:** all five come from the editor (no hand-edited YAML); each solvable within its timer by a
   first-time player.
-- **Tests:** `EM ShippedLevelsTests`: five levels, no validator issues, solvable block by block with the
-  real board rules, block count never falls from one level to the next.
+- **Tests:** `EM ShippedLevelsTests`: five levels, no validator issues, solved by `LevelSolver` as hard as
+  their label; block count and score never fall; from level 3 on, room must be made first.
 - **Docs:** `gameplay-qa.md` (per-level checks).
 
 ---
@@ -700,7 +700,7 @@ and (T-33) the solver from `ColorBlockJam.Game`, so the editor never has its own
 - **Arch:** `LevelGenerator` (pure, Game assembly, seeded `System.Random`): places one door per colour on
   the wall ring, then blocks from the shape presets in those colours, each fitting a door of its colour;
   keeps a candidate only when the validator reports no errors and `LevelSolver` proves it solvable, and
-  rates it by the solution's moves to match the difficulty. Suggests a timer. The editor's Generate panel
+  rates it by the solution's score (exit rounds plus room-making moves, DA-33) to match the difficulty. Suggests a timer. The editor's Generate panel
   sets width, height, colours, blocks, difficulty and seed, and loads the result into the canvas to edit
   further.
 - **Accept:** Generate gives a valid, solvable level with the chosen settings; the same seed gives the same

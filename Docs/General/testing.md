@@ -37,7 +37,7 @@ new fake.
 | `BoardStateTests` | moves, walls, blocks, door fit on every wall, clear path out, win, fresh restart, `CanStep`, zero allocation |
 | `LevelProviderTests` | level number to catalog entry; looping; empty catalog |
 | `LevelProgressionTests` | a win advances the level once; a loss or a disposed listener does not |
-| `ShippedLevelsTests` | the catalog's five levels: no validator issues, solvable block by block, as hard as their label (solver score), block counts that never fall |
+| `ShippedLevelsTests` | the catalog's five levels: no validator issues, solved by `LevelSolver` as hard as their label; blocks and score never fall; room must be made from level 3 on |
 | `ConnectivityServiceTests` | first answer announced even offline, only changes after, online and offline intervals, probe on app resume, Retry probes at once and returns the answer, server time handed to the trusted clock, stops when disposed (`FakeProbeRequest`, `FakeGameClock`) |
 | `TrustedClockTests` | no time before a server time; HTTP date read as UTC; moves on with monotonic time; a bad header keeps the last time |
 | `WalletServiceTests` | starts empty, throws before load, adds and saves at once with one signal, rejects zero or less, corrupt or negative saves start fresh |

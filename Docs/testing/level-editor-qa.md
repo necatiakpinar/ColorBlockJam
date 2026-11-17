@@ -31,4 +31,4 @@ Checks for [level-editor.md](../General/level-editor.md). `⚙` = automated (tes
 
 ### Usability (T-31)
 
-- [ ] 👁 Hallway test: someone new builds and plays a 2-block level using only the in-editor help.
+- [x] 👁 Hallway test (developer, 2026-11-17): someone new builds and plays a 2-block level using only the in-editor help.

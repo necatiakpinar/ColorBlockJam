@@ -18,28 +18,31 @@ MonoBehaviour:
     _timerSeconds: 60
     _difficulty: 1000
     _blocks:
-    - _color: 3000
+    - _color: 5000
+      _cells:
+      - {x: 3, y: 4}
+      - {x: 3, y: 3}
+      - {x: 4, y: 4}
+      - {x: 4, y: 3}
+    - _color: 2000
+      _cells:
+      - {x: 1, y: 0}
+    - _color: 6000
       _cells:
       - {x: 0, y: 3}
       - {x: 1, y: 3}
-    - _color: 4000
-      _cells:
-      - {x: 3, y: 3}
-      - {x: 3, y: 2}
-    - _color: 7000
-      _cells:
-      - {x: 1, y: 1}
-      - {x: 2, y: 1}
+      - {x: 1, y: 4}
+      - {x: 2, y: 4}
     _doors:
-    - _side: 4000
-      _start: 3
-      _length: 1
-      _color: 3000
     - _side: 2000
-      _start: 3
-      _length: 1
-      _color: 4000
+      _start: 2
+      _length: 2
+      _color: 5000
     - _side: 1000
       _start: 1
       _length: 2
-      _color: 7000
+      _color: 2000
+    - _side: 3000
+      _start: 1
+      _length: 3
+      _color: 6000

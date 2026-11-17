@@ -50,17 +50,19 @@ The game never mutates `LevelData`. The catalog is registered by the root scope;
 level number to its entry and loops after the last one (DA-8). Each attempt builds a new `BoardState`
 ([gameplay.md](gameplay.md) §3, §4), which is what makes a restart start clean.
 
-The catalog ships five levels, `Level_001` to `Level_005`, made in code until the level editor
-exists (T-32 remakes them with it). They ramp up by board size, block count and how many rounds of exits
-the blocks need (a block can only leave once the ones in its way have):
+The catalog ships five levels, `Level_001` to `Level_005`, made with the level editor (T-32): each was
+generated with the settings and seed below, its timer set by hand, and saved from the editor. They ramp up
+by board size, block count, exit rounds (a block can only leave once the ones in its way have) and, from
+level 3, blocks that must be moved out of the way first. Score is the solver's difficulty measure
+([level-editor.md](level-editor.md) §3).
 
-| Level | Board | Blocks | Rounds | Timer | Difficulty |
-| --- | --- | --- | --- | --- | --- |
-| 1 | 4x4 | 2 | 1 | 60 s | Normal |
-| 2 | 5x5 | 3 | 2 | 60 s | Normal |
-| 3 | 5x6 | 5 | 4 | 90 s | Hard |
-| 4 | 6x7 | 8 | 4 | 120 s | Hard |
-| 5 | 6x7 | 8 | 6 | 150 s | Very Hard |
+| Level | Board | Colours | Blocks | Seed | Rounds | Moves | Score | Timer | Difficulty |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | 4x4 | 2 | 2 | 1 | 1 | 0 | 1 | 60 s | Normal |
+| 2 | 5x5 | 3 | 3 | 4 | 2 | 0 | 2 | 60 s | Normal |
+| 3 | 5x6 | 4 | 5 | 24 | 3 | 1 | 4 | 90 s | Hard |
+| 4 | 6x7 | 5 | 7 | 47 | 3 | 1 | 4 | 120 s | Hard |
+| 5 | 6x7 | 6 | 8 | 2 | 6 | 2 | 8 | 160 s | Very Hard |
 
-`ShippedLevelsTests` keeps every catalog level free of validator issues and proves it solvable with the
-real `BoardState` rules: it takes blocks out one at a time, each searching every cell it can slide to.
+`ShippedLevelsTests` keeps every catalog level free of validator issues, solvable by `LevelSolver`, as hard
+as its label, and the ramp rising (blocks, score, room-making from level 3).

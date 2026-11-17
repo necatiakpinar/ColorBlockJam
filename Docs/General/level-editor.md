@@ -100,7 +100,7 @@ block that can leave at that moment). The search branches only over room-making 
 stops at `LevelRulesConfig.SolverStateCap` (20 000 states) with *Unknown*.
 
 **Difficulty (DA-33).** A solution's score is its exit waves plus its room-making moves: Normal 1–2, Hard 3–4,
-Very Hard 5 or more. The shipped levels score 1, 2, 4, 4 and 6, matching their labels
+Very Hard 5 or more. The shipped levels score 1, 2, 4, 4 and 8, matching their labels
 (`ShippedLevelsTests`).
 
 **Generator (T-47, DA-33).** With a seeded `System.Random`, each candidate gets one door per colour (1–3 cells,

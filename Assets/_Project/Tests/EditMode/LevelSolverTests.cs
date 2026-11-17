@@ -121,9 +121,9 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void ShippedLevels_ShouldScoreTheirDifficulty_WhenSolved()
         {
-            // Rounds of exits for the five shipped levels: 1, 2, 4, 4, 6 (level-data.md §3).
+            // Scores of the five shipped levels (level-data.md §3).
             IReadOnlyList<LevelDefinition> levels = AssetDatabase.LoadAssetAtPath<LevelCatalog>(CatalogPath).Levels;
-            int[] scores = { 1, 2, 4, 4, 6 };
+            int[] scores = { 1, 2, 4, 4, 8 };
             for (int i = 0; i < scores.Length; i++)
             {
                 SolveResult result = _solver.Solve(levels[i].Data);

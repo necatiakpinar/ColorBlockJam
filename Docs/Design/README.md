@@ -157,8 +157,8 @@ task is marked `Dropped`, never deleted. Detail per task: [tasks.md](tasks.md).
 | T-28 | 8 | Block placement tools | Paint, colour, move, rotate, delete blocks on the canvas | T-27 | Done |
 | T-29 | 8 | Door placement tools | Place, recolour, resize, delete doors on wall edges | T-27 | Done |
 | T-30 | 8 | Save, load, play-test and structural validation | Save writes the game's format; Play opens the level in the game | T-28, T-29, T-14 | Done |
-| T-31 | 8 | Editor usability pass and designer guide | A new user makes and plays a level with only the in-editor help | T-30 | In progress |
-| T-32 | 9 | Author levels 1–5 in the editor | Five levels, rising difficulty, each solvable within its timer | T-31, T-22 | In progress |
+| T-31 | 8 | Editor usability pass and designer guide | A new user makes and plays a level with only the in-editor help | T-30 | Done |
+| T-32 | 9 | Author levels 1–5 in the editor | Five levels, rising difficulty, each solvable within its timer | T-31, T-22 | Done |
 | T-33 | 10 | (could) Solvability validation | Saving an unsolvable level shows a warning | T-30 | Done |
 | T-34 | 10 | (could) Ice blocker | Frozen block thaws after N exits; editor places it | T-32 | Todo |
 | T-35 | 10 | (could) Arrow block | Block moves only along its arrow; editor places it | T-32 | Todo |
