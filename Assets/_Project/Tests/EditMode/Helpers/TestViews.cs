@@ -164,14 +164,17 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
             return view;
         }
 
-        public LevelFailedPopupView CreateLevelFailedPopup(out Button retryButton, out Button closeButton)
+        public LevelFailedPopupView CreateLevelFailedPopup(out Button retryButton, out Button homeButton,
+            out Button closeButton)
         {
             var root = Track(new GameObject("LevelFailedPopup"));
             var view = root.AddComponent<LevelFailedPopupView>();
             retryButton = Child(root, "RetryButton").AddComponent<Button>();
+            homeButton = Child(root, "HomeButton").AddComponent<Button>();
             closeButton = Child(root, "CloseButton").AddComponent<Button>();
             WirePopup(view, root);
             Assign(view, "_retryButton", retryButton);
+            Assign(view, "_homeButton", homeButton);
             Assign(view, "_closeButton", closeButton);
             view.Construct();
             return view;

@@ -26,7 +26,7 @@ namespace ColorBlockJam.Game.Gameplay
             _lives = lives;
             _signalBus.Subscribe<LevelFailedSignal>(OnLevelFailed);
             _levelFailed.RetryClicked += OnRetryClicked;
-            _levelFailed.CloseClicked += OnHomeClicked;
+            _levelFailed.HomeClicked += OnHomeClicked;
         }
 
         void OnLevelFailed(LevelFailedSignal signal) => _popups.Open(_levelFailed);
@@ -43,7 +43,7 @@ namespace ColorBlockJam.Game.Gameplay
         {
             _signalBus.Unsubscribe<LevelFailedSignal>(OnLevelFailed);
             _levelFailed.RetryClicked -= OnRetryClicked;
-            _levelFailed.CloseClicked -= OnHomeClicked;
+            _levelFailed.HomeClicked -= OnHomeClicked;
         }
     }
 }

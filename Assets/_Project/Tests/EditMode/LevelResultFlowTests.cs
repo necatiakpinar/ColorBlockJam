@@ -41,6 +41,7 @@ namespace ColorBlockJam.Tests.EditMode
         Button _continueAfterWin;
         Button _retry;
         Button _goHome;
+        Button _closeFailed;
         LivesRig _lives;
         LevelAttemptLives _attempt;
         GameplayLivesFlow _livesFlow;
@@ -69,7 +70,7 @@ namespace ColorBlockJam.Tests.EditMode
             _rewardConfig = ScriptableObject.CreateInstance<LevelRewardConfig>();
 
             _winPopup = _views.CreateWinPopup(out _continueAfterWin);
-            _levelFailed = _views.CreateLevelFailedPopup(out _retry, out _goHome);
+            _levelFailed = _views.CreateLevelFailedPopup(out _retry, out _goHome, out _closeFailed);
             _rewardService = new LevelRewardService(_bus, levels, new LevelRewardProvider(_rewardConfig), _wallet);
             _coinFlight = new RecordingCoinFlight();
             _winFlow = new WinFlow(_bus, _popups, _winPopup, levels, new LevelRewardProvider(_rewardConfig), _config, _clock,
@@ -230,11 +231,21 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
-        public void LevelFailedClose_ShouldGoHome_WhenTapped()
+        public void ReturnToMenu_ShouldGoHome_WhenTapped()
         {
             _session.Fail();
 
             _goHome.onClick.Invoke();
+
+            Assert.That(_navigation.Requests, Is.EqualTo(new[] { SceneId.Home }));
+        }
+
+        [Test]
+        public void LevelFailedClose_ShouldGoHome_WhenTapped()
+        {
+            _session.Fail();
+
+            _closeFailed.onClick.Invoke();
 
             Assert.That(_navigation.Requests, Is.EqualTo(new[] { SceneId.Home }));
         }

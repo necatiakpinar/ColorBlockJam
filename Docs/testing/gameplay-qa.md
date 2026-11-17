@@ -21,7 +21,7 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 - [x] ⚙ Pause opens the settings popup, the switches remember their state, close resumes — `GameplayFlowTests`, `GameplayPopupTests`
 - [x] ⚙ A win opens the win popup with the reward; Continue flies the coins to the counter and goes Home — `LevelResultFlowTests`, `LevelProgressionFlowTests`
 - [ ] 👁 The coins burst out of the popup's pile and arc to the coin counter one after another; each landing swells the counter, sparkles and counts it up; then Home shows the next level.
-- [x] ⚙ Running out of time shows Level Failed at once; Retry restarts, or offers a refill with no lives left; close goes Home — `LevelResultFlowTests`, `GameplayPopupTests`
+- [x] ⚙ Running out of time shows Level Failed at once; Retry restarts, or offers a refill with no lives left; Return to Menu and close go Home — `LevelResultFlowTests`, `GameplayPopupTests`
 - [ ] 👁 Compare the HUD and the three popups with the reference screens at 1080x1920 and 20:9. Open them
   with the debug window ([debug-tools.md](../General/debug-tools.md)): **Win now**, **Run out of time**,
   the pause button.

@@ -248,4 +248,5 @@ own every change:
 - **`FailFlow`** opens the one level-failed popup on `LevelFailedSignal`; a failed level is final, there is
   no paid continue. `LevelAttemptLives` has already taken the attempt's life on the same signal (DA-38).
   Retry plays again through `GameplayLivesFlow`: it restarts when a life is left and otherwise opens the
-  lives popup, whose Refill restarts and whose close goes Home. The popup's close goes Home (T-20, DA-31).
+  lives popup, whose Refill restarts and whose close goes Home. Return to Menu and the popup's close go
+  Home (T-20, DA-31).

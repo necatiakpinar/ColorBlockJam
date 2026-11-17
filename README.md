@@ -138,7 +138,7 @@ Withdrawn entries (DA-9, DA-15, DA-16, DA-23) are left out below.
 | DA-27 | Trusted time is the last probe's `Date` plus monotonic time since |
 | DA-28 | The gameplay HUD layout follows the reference; no lives in gameplay |
 | DA-29 | Pause opens the settings popup; closing it resumes |
-| DA-31 | Running out of time shows one "Level Failed!" popup: Retry (or a refill with no lives) and Home |
+| DA-31 | Running out of time shows one "Level Failed!" popup: Retry (or a refill with no lives) and Return to Menu |
 | DA-32 | Solvable means some order of moves clears the level; a move follows any free path |
 | DA-33 | Difficulty is exit waves plus room-making moves; the generator's timer formula |
 | DA-34 | The level editor's keyboard shortcuts |
