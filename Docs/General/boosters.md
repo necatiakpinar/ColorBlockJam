@@ -28,17 +28,25 @@ level.
 
 ## 2. Using one
 
-**`BoosterService`** (Gameplay scope, built by the scope's build callback) owns every decision:
+Each booster's effect is a command (`Boosters/Commands/`): an **`IBoosterCommand`** carries its `Type`,
+whether it `NeedsTarget`, whether it `CanExecute` now, and `Execute(in BoosterTarget)`. `GameplayInstaller`
+registers one per booster (`FreezeBoosterCommand`, `RocketBoosterCommand`, `HammerBoosterCommand`,
+`VacuumBoosterCommand`). **Never branch on `BoosterType` in the service: a new booster is a new command
+and one registration.** Two commands for one booster fail the build; a booster without one throws on use.
+
+**`BoosterService`** (Gameplay scope, built by the scope's build callback) owns the rules every booster
+shares, and looks the command up by type:
 
 1. `Activate(type)` answers `NeedsPurchase` when the player has none, `Refused` when the level is not
-   playing (or a freeze is already on, or a target is being chosen), else:
-   - **Freeze**: takes one and calls `LevelTimer.FreezeFor` (§3); fires `BoosterUsedSignal`.
-   - **Rocket, Hammer, Vacuum**: pauses the level through `LevelSession.Pause` (no timer, no dragging) and
-     fires `BoosterTargetingChangedSignal(type, true)`. Nothing is spent yet.
+   playing, a target is being chosen, or the command cannot execute (a freeze is already on), else:
+   - **No target (Freeze)**: takes one, executes the command (`LevelTimer.FreezeFor`, §3) and fires
+     `BoosterUsedSignal`.
+   - **Needs a target (Rocket, Hammer, Vacuum)**: pauses the level through `LevelSession.Pause` (no timer,
+     no dragging) and fires `BoosterTargetingChangedSignal(type, true)`. Nothing is spent yet.
 2. While choosing, a press on a board cell that holds a block (`BoardPointerSignal`) picks the target:
-   targeting ends, the level resumes, one booster is taken, then the board changes through
-   `ActiveBoard.RemoveCell`, `RemoveBlock` or `RemoveColor`, and `BoosterUsedSignal` fires. A press on an
-   empty cell does nothing.
+   targeting ends, the level resumes, one booster is taken, then the command changes the board
+   (`ActiveBoard.RemoveCell`, `RemoveBlock`/`Thaw` or `RemoveColor`), and `BoosterUsedSignal` fires. A press
+   on an empty cell does nothing.
 3. `CancelTargeting` gives up: the booster is kept and the level resumes. A restart drops the choice.
 
 `ActiveBoard` announces the change: `BlockRemovedSignal` (with `BlockRemovalKind` Smashed, Blasted or
@@ -79,6 +87,7 @@ waiting booster back before the pause button pauses.
 
 ## 6. Tests
 
-`BoardRemovalTests`, `BoosterInventoryTests`, `BoosterServiceTests`, `LevelTimerFreezeTests`,
+`BoardRemovalTests`, `BoosterInventoryTests`, `BoosterServiceTests`, `InstallerResolutionTests` (one command per
+booster), `LevelTimerFreezeTests`,
 `GameplayDebugCommandsTests` (Edit Mode); `BoosterFlowTests` (Play Mode, through the real HUD and input).
 Manual checks: [boosters-qa.md](../testing/boosters-qa.md).

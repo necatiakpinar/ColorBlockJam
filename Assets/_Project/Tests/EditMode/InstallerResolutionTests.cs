@@ -15,6 +15,7 @@ using ColorBlockJam.Core.Haptics;
 using ColorBlockJam.Core.Network;
 using ColorBlockJam.Game.Gameplay.Board;
 using ColorBlockJam.Game.Gameplay.Boosters;
+using ColorBlockJam.Game.Gameplay.Boosters.Commands;
 using ColorBlockJam.Game.Gameplay.Feedback;
 using ColorBlockJam.Game.Gameplay.Session;
 using ColorBlockJam.Game.Gameplay.Input;
@@ -167,6 +168,16 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(container.Resolve<BoosterShop>(), Is.Not.Null);
             Assert.That(container.Resolve<BoosterService>(), Is.Not.Null);
             Assert.That(container.Resolve<LevelAttemptLives>(), Is.Not.Null);
+        }
+
+        [Test]
+        public void GameplayInstaller_ShouldRegisterOneCommandPerBooster_WhenBuiltOnTopOfCoreServices()
+        {
+            using IObjectResolver container = BuildCoreAndGameplay();
+
+            IEnumerable<BoosterType> types = container.Resolve<IReadOnlyList<IBoosterCommand>>().Select(command => command.Type);
+
+            Assert.That(types, Is.EquivalentTo(System.Enum.GetValues(typeof(BoosterType))));
         }
 
         [Test]

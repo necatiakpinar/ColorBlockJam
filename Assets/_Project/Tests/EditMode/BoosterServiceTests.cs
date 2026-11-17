@@ -4,6 +4,7 @@ using ColorBlockJam.Core.Signals;
 using ColorBlockJam.Game.Boosters;
 using ColorBlockJam.Game.Gameplay.Board;
 using ColorBlockJam.Game.Gameplay.Boosters;
+using ColorBlockJam.Game.Gameplay.Boosters.Commands;
 using ColorBlockJam.Game.Gameplay.Session;
 using ColorBlockJam.Game.Gameplay.Signals;
 using ColorBlockJam.Game.Levels;
@@ -195,6 +196,14 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(Service.IsTargeting, Is.False);
             Assert.That(_session.State, Is.EqualTo(LevelState.Playing));
             Assert.That(_events[^1], Is.EqualTo("targeting Hammer False"));
+        }
+
+        [Test]
+        public void Constructor_ShouldThrow_WhenTwoCommandsShareABooster()
+        {
+            var commands = new IBoosterCommand[] { new RocketBoosterCommand(_board), new RocketBoosterCommand(_board) };
+
+            Assert.Throws<System.ArgumentException>(() => new BoosterService(_board, _session, _rig.Inventory, commands, _bus));
         }
     }
 }

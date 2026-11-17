@@ -5,6 +5,7 @@ using ColorBlockJam.Game.Boosters;
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Gameplay.Board;
 using ColorBlockJam.Game.Gameplay.Boosters;
+using ColorBlockJam.Game.Gameplay.Boosters.Commands;
 using ColorBlockJam.Game.Gameplay.Session;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -29,7 +30,12 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
             Wallet.Load();
             Timer = new LevelTimer(session, Clock, bus);
             Shop = new BoosterShop(Wallet, Inventory, Config);
-            Service = new BoosterService(board, session, Timer, Inventory, Config, bus);
+            var commands = new IBoosterCommand[]
+            {
+                new FreezeBoosterCommand(Timer, Config), new RocketBoosterCommand(board),
+                new HammerBoosterCommand(board), new VacuumBoosterCommand(board),
+            };
+            Service = new BoosterService(board, session, Inventory, commands, bus);
         }
 
         public BoosterConfig Config { get; }
