@@ -60,7 +60,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - [ ] [T-41 Android APK](#t-41-android-apk)
 - [ ] [T-42 Repository hygiene](#t-42-repository-hygiene)
 - [x] [T-43 Touch and door feel](#t-43-touch-and-door-feel)
-- [ ] [T-44 Connectivity probe and trusted time](#t-44-connectivity-probe-and-trusted-time)
+- [x] [T-44 Connectivity probe and trusted time](#t-44-connectivity-probe-and-trusted-time)
 - [ ] [T-45 No-internet popup over every scene](#t-45-no-internet-popup-over-every-scene)
 - [ ] [T-46 Boot waits for a connection](#t-46-boot-waits-for-a-connection)
 
@@ -339,9 +339,9 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
   successful probe's `Date` header plus the monotonic time since it; false before the first success.
   The HTTP call sits behind a small `IProbeRequest` seam so Edit Mode tests answer it by hand.
 - **Subtasks:**
-  - [ ] `NetworkConfig` (Root) with probe URL, timeout and intervals.
-  - [ ] Probe loop, change-only signal, resume probe, `ProbeNowAsync`.
-  - [ ] Trusted clock from the `Date` header (RFC 1123); missing or unparsable header keeps the last value.
+  - [x] `NetworkConfig` (Root) with probe URL, timeout and intervals.
+  - [x] Probe loop, change-only signal, resume probe, `ProbeNowAsync`.
+  - [x] Trusted clock from the `Date` header (RFC 1123); missing or unparsable header keeps the last value.
 - **Accept:** with the network cut, `IsOnline` turns false within one probe interval plus the timeout;
   reconnecting turns it true within one offline interval; the trusted time stays right after the device
   clock is moved.

@@ -10,6 +10,7 @@ using ColorBlockJam.Game.Boot;
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Core.Clock;
 using ColorBlockJam.Core.Haptics;
+using ColorBlockJam.Core.Network;
 using ColorBlockJam.Game.Gameplay.Board;
 using ColorBlockJam.Game.Gameplay.Feedback;
 using ColorBlockJam.Game.Gameplay.Session;
@@ -47,7 +48,8 @@ namespace ColorBlockJam.Tests.EditMode
         IObjectResolver BuildCoreAndSplash()
         {
             var builder = new ContainerBuilder();
-            new CoreServicesInstaller(CreateConfig<ApplicationConfig>(), CreateConfig<UiConfig>(), CreateConfig<LevelCatalog>()).Install(builder);
+            new CoreServicesInstaller(CreateConfig<ApplicationConfig>(), CreateConfig<UiConfig>(), CreateConfig<LevelCatalog>(),
+                CreateConfig<NetworkConfig>()).Install(builder);
             new SplashInstaller(CreateConfig<SplashConfig>()).Install(builder);
             return builder.Build();
         }
@@ -56,7 +58,8 @@ namespace ColorBlockJam.Tests.EditMode
         public void CoreServicesInstaller_ShouldResolveEveryService_WhenBuilt()
         {
             var builder = new ContainerBuilder();
-            new CoreServicesInstaller(CreateConfig<ApplicationConfig>(), CreateConfig<UiConfig>(), CreateConfig<LevelCatalog>()).Install(builder);
+            new CoreServicesInstaller(CreateConfig<ApplicationConfig>(), CreateConfig<UiConfig>(), CreateConfig<LevelCatalog>(),
+                CreateConfig<NetworkConfig>()).Install(builder);
             using IObjectResolver container = builder.Build();
 
             Assert.That(container.Resolve<SignalBus>(), Is.Not.Null);
@@ -69,13 +72,16 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(container.Resolve<LevelCatalog>(), Is.Not.Null);
             Assert.That(container.Resolve<IHapticService>(), Is.Not.Null);
             Assert.That(container.Resolve<IGameClock>(), Is.Not.Null);
+            Assert.That(container.Resolve<IConnectivityService>(), Is.Not.Null);
+            Assert.That(container.Resolve<ITrustedClock>(), Is.SameAs(container.Resolve<TrustedClock>()));
         }
 
         [Test]
         public void CoreServicesInstaller_ShouldShareOneSignalBus_WhenResolvedTwice()
         {
             var builder = new ContainerBuilder();
-            new CoreServicesInstaller(CreateConfig<ApplicationConfig>(), CreateConfig<UiConfig>(), CreateConfig<LevelCatalog>()).Install(builder);
+            new CoreServicesInstaller(CreateConfig<ApplicationConfig>(), CreateConfig<UiConfig>(), CreateConfig<LevelCatalog>(),
+                CreateConfig<NetworkConfig>()).Install(builder);
             using IObjectResolver container = builder.Build();
 
             Assert.That(container.Resolve<SignalBus>(), Is.SameAs(container.Resolve<SignalBus>()));
@@ -129,7 +135,8 @@ namespace ColorBlockJam.Tests.EditMode
         public void GameplayInstaller_ShouldResolveBoardServices_WhenBuiltOnTopOfCoreServices()
         {
             var builder = new ContainerBuilder();
-            new CoreServicesInstaller(CreateConfig<ApplicationConfig>(), CreateConfig<UiConfig>(), CreateConfig<LevelCatalog>())
+            new CoreServicesInstaller(CreateConfig<ApplicationConfig>(), CreateConfig<UiConfig>(), CreateConfig<LevelCatalog>(),
+                CreateConfig<NetworkConfig>())
                 .Install(builder);
             new GameplayInstaller(CreateConfig<GameplayConfig>(), CreateConfig<BoardViewConfig>()).Install(builder);
             using IObjectResolver container = builder.Build();

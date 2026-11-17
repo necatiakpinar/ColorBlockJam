@@ -117,6 +117,9 @@ Home. **Read [splash-boot.md](Docs/General/splash-boot.md) before touching `Spla
 
 ### Gameplay
 
+**Read [network.md](Docs/General/network.md) before touching `Scripts/Core/Network/`, `NetworkConfig` or anything
+that reads the time of day.**
+
 **Read [gameplay.md](Docs/General/gameplay.md) before touching `Scripts/Game/Gameplay/` or the Gameplay
 scene.** Level data and rules work in cells; `BoardSpace` is the only cell ↔ world conversion.
 **Read [level-data.md](Docs/General/level-data.md) before touching `Scripts/Game/Levels/`, a level asset or

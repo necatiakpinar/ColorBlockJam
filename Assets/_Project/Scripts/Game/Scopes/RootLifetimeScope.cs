@@ -1,4 +1,5 @@
 using ColorBlockJam.Core.Lifecycle;
+using ColorBlockJam.Core.Network;
 using ColorBlockJam.Game.Boot;
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Installers;
@@ -25,12 +26,18 @@ namespace ColorBlockJam.Game.Scopes
         LevelCatalog _levelCatalog;
 
         [SerializeField]
+        NetworkConfig _networkConfig;
+
+        [SerializeField]
         ApplicationPauseReporter _pauseReporter;
 
         protected override void Configure(IContainerBuilder builder)
         {
-            new CoreServicesInstaller(_applicationConfig, _uiConfig, _levelCatalog).Install(builder);
+            new CoreServicesInstaller(_applicationConfig, _uiConfig, _levelCatalog, _networkConfig).Install(builder);
             builder.RegisterComponent(_pauseReporter);
+
+            // Probing starts as soon as the app-wide container exists (online requirement, network.md).
+            builder.RegisterBuildCallback(resolver => resolver.Resolve<ConnectivityService>().Start());
 
             builder.RegisterEntryPoint<TweeningInitializer>();
         }

@@ -15,6 +15,7 @@ Assets/_Project/
 │   ├── Logging/         IGameLogger, UnityGameLogger
 │   ├── Clock/           IGameClock, RealtimeGameClock
 │   ├── Lifecycle/       ApplicationPausedSignal, ApplicationPauseReporter (Root prefab component)
+│   ├── Network/         IConnectivityService, ConnectivityService, ITrustedClock, TrustedClock, probe
 │   └── Animation/       IAnimation<TConfig>
 ├── Scripts/Game/      ColorBlockJam.Game     this game
 │   ├── Scopes/          Root / Splash / Home / Gameplay LifetimeScopes
