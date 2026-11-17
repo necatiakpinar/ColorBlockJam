@@ -2,7 +2,6 @@ using NUnit.Framework;
 using ColorBlockJam.Core.Persistence;
 using ColorBlockJam.Core.Scenes;
 using ColorBlockJam.Core.Signals;
-using ColorBlockJam.Game.Lives;
 using ColorBlockJam.Game.Home;
 using ColorBlockJam.Game.UI;
 using ColorBlockJam.Tests.EditMode.Helpers;

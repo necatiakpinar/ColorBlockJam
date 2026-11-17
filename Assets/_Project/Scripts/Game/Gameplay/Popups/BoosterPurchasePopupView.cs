@@ -39,7 +39,6 @@ namespace ColorBlockJam.Game.Gameplay.Popups
         /// <summary>The booster on offer.</summary>
         public BoosterType Offer { get; private set; }
 
-        public bool CanBuy => _buyButton.interactable;
         public string TitleText => _titleLabel.text;
 
         [Inject]

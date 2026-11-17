@@ -108,8 +108,5 @@ namespace ColorBlockJam.Game.Gameplay.Board
             for (int i = 0; i < _blockers.Count; i++)
                 _blockers[i].ResetAfter(blocksGone);
         }
-
-        /// <summary>Moves the block at once, its blockers untouched (solver only).</summary>
-        internal void MoveTo(Vector2Int offset) => Offset = offset;
     }
 }

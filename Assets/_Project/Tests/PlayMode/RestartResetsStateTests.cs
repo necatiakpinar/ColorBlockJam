@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using ColorBlockJam.Core.Persistence;
@@ -19,7 +18,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.TestTools;
 using VContainer;
-using VContainer.Unity;
 
 namespace ColorBlockJam.Tests.PlayMode
 {

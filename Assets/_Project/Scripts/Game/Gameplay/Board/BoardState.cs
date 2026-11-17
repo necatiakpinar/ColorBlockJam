@@ -245,15 +245,6 @@ namespace ColorBlockJam.Game.Gameplay.Board
             }
         }
 
-        /// <summary>Moves a block straight to <paramref name="offset"/>, which must be free (solver only).</summary>
-        internal void MoveBlockTo(int blockId, Vector2Int offset)
-        {
-            BoardBlock block = _blocks[blockId];
-            Clear(block);
-            block.MoveTo(offset);
-            Place(block);
-        }
-
         /// <summary>True when the cell is on the board and empty or taken by the block itself.</summary>
         public bool IsCellFree(Vector2Int cell, int blockId) => IsInside(cell) && IsFreeFor(cell, blockId);
 
