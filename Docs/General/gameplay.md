@@ -218,6 +218,10 @@ Won --Next(n)--> Playing
 - `GameplayHudView` shows it as `mm:ss` in `TimerLabel`, written into a char buffer
   (`TMP_Text.SetCharArray`) so a tick allocates nothing on device. The label sits in the placeholder top
   bar until the HUD layout (T-18) puts it in the timer holder art.
+- **Low time** (T-54, DA-42): from `GameplayConfig` low time (10 s) down to 1 s, every shown second flashes
+  the label in `LowTimeColor` and swells it (`TimerWarningAnimation`), then fades it back, and
+  `GameplaySounds` plays the tick ([audio.md](audio.md)). Both follow `TimerChangedSignal`, so a pause or the
+  freeze stops them; a new level start puts the label back.
 
 ## 7. Popups and navigation
 

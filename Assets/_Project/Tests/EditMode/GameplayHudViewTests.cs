@@ -1,9 +1,11 @@
 using NUnit.Framework;
 using ColorBlockJam.Core.Persistence;
 using ColorBlockJam.Core.Signals;
+using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Gameplay.Hud;
 using ColorBlockJam.Game.Gameplay.Signals;
 using ColorBlockJam.Tests.EditMode.Helpers;
+using UnityEngine;
 
 namespace ColorBlockJam.Tests.EditMode
 {
@@ -84,6 +86,33 @@ namespace ColorBlockJam.Tests.EditMode
             _wallet.Add(40);
 
             Assert.That(_hud.CoinLabelText, Is.EqualTo("40"));
+        }
+
+        [Test]
+        public void Timer_ShouldFlashRed_WhenTenSecondsOrLessAreLeft()
+        {
+            Color rest = _hud.TimerColor;
+            var config = ScriptableObject.CreateInstance<GameplayConfig>();
+            Color warning = config.LowTimeColor;
+            Object.DestroyImmediate(config);
+
+            _bus.Fire(new TimerChangedSignal(11));
+            Color before = _hud.TimerColor;
+            _bus.Fire(new TimerChangedSignal(10));
+
+            Assert.That(before, Is.EqualTo(rest));
+            Assert.That(_hud.TimerColor, Is.EqualTo(warning));
+        }
+
+        [Test]
+        public void Timer_ShouldLoseTheWarning_WhenTheLevelRestarts()
+        {
+            Color rest = _hud.TimerColor;
+            _bus.Fire(new TimerChangedSignal(5));
+
+            _bus.Fire(new LevelStartedSignal(1));
+
+            Assert.That(_hud.TimerColor, Is.EqualTo(rest));
         }
     }
 }

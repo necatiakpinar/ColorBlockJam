@@ -191,7 +191,7 @@ task is marked `Dropped`, never deleted. Detail per task: [tasks.md](tasks.md).
 | T-51 | 5 | Coin flight on a win | Continue flies the pile's coins to the HUD counter with sparkles, counting the reward in, then goes Home | T-21 | Done |
 | T-52 | 5 | Whole lives bar opens the lives popup | A tap anywhere on the Home lives bar opens the popup | T-48 | Done |
 | T-53 | 6 | Sound effects | Taps, win, fail, booster use, grab and exit each play their clip; the sound toggle mutes them | T-25 | Todo |
-| T-54 | 6 | Low-time warning | From 10 s left the timer ticks every second and flashes red; it stops on pause, win, fail or restart | T-53, T-15 | Todo |
+| T-54 | 6 | Low-time warning | From 10 s left the timer ticks every second and flashes red; it stops on pause, win, fail or restart | T-53, T-15 | Done |
 | T-55 | 9 | Level editor look | Styled toolbar, buttons and panels; every tool and shortcut works as before | T-31 | Todo |
 
 Status values: `Todo`, `In progress`, `Blocked`, `Done`, `Dropped`.

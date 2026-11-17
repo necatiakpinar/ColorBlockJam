@@ -4,6 +4,7 @@ using ColorBlockJam.Core.Persistence;
 using ColorBlockJam.Core.Signals;
 using ColorBlockJam.Game.Common.Animations;
 using ColorBlockJam.Game.Configs;
+using ColorBlockJam.Game.Gameplay.Animations;
 using ColorBlockJam.Game.Gameplay.Signals;
 using ColorBlockJam.Game.UI;
 using TMPro;
@@ -41,6 +42,8 @@ namespace ColorBlockJam.Game.Gameplay.Hud
         GameplayConfig _config;
         IWalletService _wallet;
         Sequence _revealSequence;
+        Sequence _timerWarning;
+        Color _timerRestColor;
         bool _holdingCoins;
         int _shownCoins;
         readonly char[] _timerChars = new char[5];
@@ -54,6 +57,7 @@ namespace ColorBlockJam.Game.Gameplay.Hud
             _signalBus = signalBus;
             _config = config;
             _wallet = wallet;
+            _timerRestColor = _timerLabel.color;
             _signalBus.Subscribe<LevelStartedSignal>(OnLevelStarted);
             _signalBus.Subscribe<TimerChangedSignal>(OnTimerChanged);
             _signalBus.Subscribe<CoinsChangedSignal>(OnCoinsChanged);
@@ -63,6 +67,7 @@ namespace ColorBlockJam.Game.Gameplay.Hud
 
         public string LevelLabelText => _levelLabel.text;
         public string TimerLabelText => _timerLabel.text;
+        public Color TimerColor => _timerLabel.color;
         public string CoinLabelText => _coins.Text;
 
         public void HoldCoins(int coins)
@@ -81,6 +86,7 @@ namespace ColorBlockJam.Game.Gameplay.Hud
         void OnLevelStarted(LevelStartedSignal signal)
         {
             _levelLabel.SetText("{0}", signal.LevelNumber);
+            ClearTimerWarning();
             _holdingCoins = false;
             _coins.Show(_wallet.Coins);
 
@@ -99,6 +105,22 @@ namespace ColorBlockJam.Game.Gameplay.Hud
             _timerChars[3] = (char)('0' + seconds / 10);
             _timerChars[4] = (char)('0' + seconds % 10);
             _timerLabel.SetCharArray(_timerChars, 0, _timerChars.Length);
+            if (_config.IsLowTime(signal.SecondsLeft))
+                FlashTimer();
+        }
+
+        void FlashTimer()
+        {
+            _timerWarning?.Kill();
+            _timerWarning = default(TimerWarningAnimation).Play(new TimerWarningAnimation.Config(_timerLabel,
+                _config.LowTimeColor, _timerRestColor, _config.LowTimePulseScale, _config.LowTimePulseDuration));
+        }
+
+        void ClearTimerWarning()
+        {
+            _timerWarning?.Kill();
+            _timerLabel.color = _timerRestColor;
+            _timerLabel.transform.localScale = Vector3.one;
         }
 
         void OnCoinsChanged(CoinsChangedSignal signal)
@@ -118,6 +140,7 @@ namespace ColorBlockJam.Game.Gameplay.Hud
             _signalBus.Unsubscribe<CoinsChangedSignal>(OnCoinsChanged);
             _restartButton.onClick.RemoveListener(OnRestartClicked);
             _pauseButton.onClick.RemoveListener(OnPauseClicked);
+            _timerWarning?.Kill();
             _revealSequence?.Kill();
         }
     }

@@ -19,6 +19,23 @@ namespace ColorBlockJam.Game.Configs
         [SerializeField]
         CoinFlightSettings _coinFlight = new();
 
+        [Header("Low time")]
+        [Tooltip("From this many seconds left the timer ticks and flashes red every second (DA-42).")]
+        [SerializeField, Min(1)]
+        int _lowTimeSeconds = 10;
+
+        [Tooltip("Colour the timer flashes on each low-time second before fading back.")]
+        [SerializeField]
+        Color _lowTimeColor = new(1f, 0.25f, 0.25f, 1f);
+
+        [Tooltip("Scale the timer swells to on each low-time second.")]
+        [SerializeField, Min(1f)]
+        float _lowTimePulseScale = 1.2f;
+
+        [Tooltip("Seconds one low-time flash takes; keep it under a second so flashes stay apart.")]
+        [SerializeField, Range(0.1f, 1f)]
+        float _lowTimePulseDuration = 0.6f;
+
         [Header("Haptics")]
         [Tooltip("Tap when a block leaves through its door.")]
         [SerializeField]
@@ -49,5 +66,10 @@ namespace ColorBlockJam.Game.Configs
         public float WinPopupDelay => _winPopupDelay;
         public CoinFlightSettings CoinFlight => _coinFlight;
         public HapticImpact ExitHaptic => _exitHaptic;
+        public Color LowTimeColor => _lowTimeColor;
+        public float LowTimePulseScale => _lowTimePulseScale;
+        public float LowTimePulseDuration => _lowTimePulseDuration;
+
+        public bool IsLowTime(int secondsLeft) => secondsLeft > 0 && secondsLeft <= _lowTimeSeconds;
     }
 }
