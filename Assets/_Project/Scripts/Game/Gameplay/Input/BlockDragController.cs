@@ -126,9 +126,9 @@ namespace ColorBlockJam.Game.Gameplay.Input
         {
             if ((!_board.Current.TryGetBlockAt(signal.Cell, out _blockId)
                     && !TryGetNearestBlock(signal.WorldPoint, out _blockId))
-                || _board.Current.Blocks[_blockId].IsFrozen)
+                || !_board.Current.Blocks[_blockId].CanBeGrabbed)
             {
-                // A frozen block cannot be picked up until its ice is gone (T-34).
+                // A blocker (ice, T-34) can keep a block from being picked up.
                 _blockId = NoBlock;
                 return;
             }

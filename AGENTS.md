@@ -123,7 +123,8 @@ level's difficulty.**
 
 **Read [debug-tools.md](Docs/General/debug-tools.md) before touching `Scripts/*/Debugging/` or adding a debug
 shortcut. Read [boosters.md](Docs/General/boosters.md) before touching a booster, its stock or its popup. Read
-[lives.md](Docs/General/lives.md) before touching the lives, their refill or the lives popup.**
+[lives.md](Docs/General/lives.md) before touching the lives, their refill or the lives popup. Read
+[blockers.md](Docs/General/blockers.md) before touching a blocker (ice, arrow, ...) or adding a kind.**
 
 **Read [network.md](Docs/General/network.md) before touching `Scripts/Core/Network/`, `NetworkConfig` or anything
 that reads the time of day.**

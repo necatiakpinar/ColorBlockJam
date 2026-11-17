@@ -1,6 +1,7 @@
 using System;
 using DG.Tweening;
 using ColorBlockJam.Game.Gameplay.View;
+using ColorBlockJam.Game.Gameplay.View.Blockers;
 using ColorBlockJam.Game.Levels;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -231,7 +232,11 @@ namespace ColorBlockJam.Game.Configs
         [SerializeField, Min(0f)]
         float _thawDebrisPerCell = 14f;
 
-        [Tooltip("The shards a thaw throws: the ice texture on tumbling cubes (IceShatter prefab).")]
+        [Tooltip("The count a frozen block shows on top (Blockers/IceBlocker prefab).")]
+        [SerializeField]
+        IceBlockerView _iceBlocker;
+
+        [Tooltip("The shards a thaw throws: the ice texture on tumbling cubes (Blockers/IceShatter prefab).")]
         [SerializeField]
         ExitBurstView _iceShatter;
 
@@ -241,6 +246,7 @@ namespace ColorBlockJam.Game.Configs
         public float ThawDuration => _thawDuration;
         public float ThawDebrisPerCell => _thawDebrisPerCell;
         public ExitBurstView IceShatter => _iceShatter;
+        public IceBlockerView IceBlocker => _iceBlocker;
 
         [Header("Booster removal")]
         [Tooltip("A smashed block (hammer, or a rocket's last cell) first swells to this scale...")]

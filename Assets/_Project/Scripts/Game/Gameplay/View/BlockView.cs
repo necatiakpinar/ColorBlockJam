@@ -4,7 +4,6 @@ using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using ColorBlockJam.Game.Gameplay.Animations;
-using TMPro;
 using UnityEngine;
 
 namespace ColorBlockJam.Game.Gameplay.View
@@ -22,9 +21,6 @@ namespace ColorBlockJam.Game.Gameplay.View
         [SerializeField]
         MeshRenderer _outlineRenderer;
 
-        [Tooltip("Lies on top of a frozen block and shows how many exits its ice still needs (T-34).")]
-        [SerializeField]
-        TMP_Text _iceLabel;
 
         static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
         static readonly int ClipPlaneId = Shader.PropertyToID("_ClipPlane");
@@ -87,22 +83,16 @@ namespace ColorBlockJam.Game.Gameplay.View
 
         internal void SetOutlined(bool outlined) => _outlineRenderer.enabled = outlined;
 
-        internal bool ShowsIce => _iceLabel.gameObject.activeSelf;
-        internal string IceText => _iceLabel.text;
-
-        /// <summary>Shows the ice count over <paramref name="cellPosition"/> (in cells), or hides it at 0.</summary>
-        internal void SetIce(int ice, Vector3 cellPosition)
+        /// <summary>
+        /// Hangs a blocker's view (blockers.md) on the block over <paramref name="cellPosition"/> (in cells), so it
+        /// moves, swells and leaves with it. The caller takes it back before the block is released.
+        /// </summary>
+        internal void AttachBlockerView(Transform blockerView, Vector3 cellPosition)
         {
-            Vector3 local = _iceLabel.transform.localPosition;
-            _iceLabel.transform.localPosition = new Vector3(cellPosition.x - _pivot.x, local.y, cellPosition.z - _pivot.z);
-            SetIce(ice);
-        }
-
-        /// <summary>Updates the ice count where it is; 0 hides it.</summary>
-        internal void SetIce(int ice)
-        {
-            _iceLabel.gameObject.SetActive(ice > 0);
-            _iceLabel.SetText("{0}", ice);
+            blockerView.SetParent(transform, false);
+            blockerView.localPosition = new Vector3(cellPosition.x - _pivot.x, 0f, cellPosition.z - _pivot.z);
+            blockerView.localRotation = Quaternion.identity;
+            blockerView.localScale = Vector3.one;
         }
 
         /// <summary>Paints every piece with <paramref name="material"/> (its colour, or ice over it).</summary>
@@ -222,7 +212,6 @@ namespace ColorBlockJam.Game.Gameplay.View
         {
             _exit?.Kill();
             _thaw?.Kill();
-            _iceLabel.gameObject.SetActive(false);
             _move?.Pause();
             _follow?.Pause();
             foreach ((PartPool pool, GameObject part, _) in _parts)

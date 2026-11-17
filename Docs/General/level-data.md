@@ -11,7 +11,7 @@ One format, written by the level editor and read by the game (R-29, DA-13).
 | --- | --- |
 | `LevelDefinition` (asset, `Assets/_Project/Levels/`) | one `LevelData`; `SetData` replaces it (the editor records undo first) |
 | `LevelData` | `Width`, `Height` (cells), `TimerSeconds`, `Difficulty` (`Normal`, `Hard`, `VeryHard`; sets the win reward, [economy.md](economy.md)), `Blocks`, `Doors` |
-| `BlockData` | `Color`, the absolute start `Cells` it covers (DA-18), and `Ice`: how many other blocks must leave before it thaws (0 = not frozen, T-34, DA-37) |
+| `BlockData` | `Color`, the absolute start `Cells` it covers (DA-18), and `Blockers`: a `BlockerSet` with one entry per blocker kind, e.g. `Ice.Exits`, the other blocks that must leave before it thaws (0 = no ice, T-34, DA-37; [blockers.md](blockers.md)) |
 | `DoorData` | `Side` (`Bottom`, `Top`, `Left`, `Right`), `Start` cell along that wall, `Length`, `Color` (DA-17) |
 | `LevelCatalog` (asset, `Assets/_Project/Levels/LevelCatalog.asset`) | the ordered level list; level N is entry N − 1 |
 | `LevelRulesConfig` (asset, `Assets/_Project/Configs/`) | board size and timer limits |

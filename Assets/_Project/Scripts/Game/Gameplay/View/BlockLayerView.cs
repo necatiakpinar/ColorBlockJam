@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using ColorBlockJam.Core.Signals;
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Gameplay.Board;
+using ColorBlockJam.Game.Gameplay.Board.Blockers;
+using ColorBlockJam.Game.Gameplay.View.Blockers;
 using ColorBlockJam.Game.Gameplay.Signals;
 using ColorBlockJam.Game.Levels;
 using UnityEngine;
@@ -36,6 +38,9 @@ namespace ColorBlockJam.Game.Gameplay.View
         SignalBus _signalBus;
         ColorMaterialCache _materials;
         ColorMaterialCache _iceMaterials;
+        ObjectPool<IceBlockerView> _icePool;
+        // The ice view each frozen block wears (blockers.md); taken back when the block thaws or is released.
+        readonly Dictionary<BlockView, IceBlockerView> _iceViews = new();
         System.Action<ExitBurstView> _releaseBurst;
         ObjectPool<BlockView> _blockPool;
         Dictionary<BlockPieceKind, PartPool> _piecePools;
@@ -56,6 +61,11 @@ namespace ColorBlockJam.Game.Gameplay.View
             _signalBus = signalBus;
             _materials = new ColorMaterialCache(config.BlockMaterial, config);
             _iceMaterials = new ColorMaterialCache(config.IceMaterial, config, config.IceWhiten);
+            _icePool = new ObjectPool<IceBlockerView>(
+                () => Instantiate(config.IceBlocker, _storage),
+                ice => ice.gameObject.SetActive(true),
+                ice => ice.gameObject.SetActive(false),
+                ice => Destroy(ice.gameObject));
             _outline = new OutlineSettings(config.OutlineWidth, config.OutlineBaseHeight, config.BlockTopHeight,
                 config.OutlineGap, config.BlockCornerRadius, config.OutlineCornerSegments);
             _blockPool = new ObjectPool<BlockView>(
@@ -106,25 +116,32 @@ namespace ColorBlockJam.Game.Gameplay.View
             _root.localPosition = _boardSpace.Origin;
             _root.localScale = Vector3.one * _boardSpace.CellSize;
 
-            foreach (BlockData block in signal.Level.Blocks)
+            // The board is built before it is announced, so every block (and its blockers) is already there.
+            foreach (BoardBlock block in _board.Current.Blocks)
             {
                 BlockView view = _blockPool.Get();
                 view.transform.SetParent(_root, false);
-                Build(view, block.Cells, block.Color, block.Ice);
+                Build(view, block);
                 _views.Add(view);
             }
         }
 
+        /// <summary>The ice view on block <paramref name="blockId"/>, or null when it is not frozen.</summary>
+        internal IceBlockerView IceViewOf(int blockId) =>
+            _views[blockId] != null && _iceViews.TryGetValue(_views[blockId], out IceBlockerView ice) ? ice : null;
+
         /// <summary>
-        /// Lays the pieces of a block with <paramref name="cells"/> (start cells) into the view; a frozen block
-        /// (<paramref name="ice"/> above 0) is drawn in ice with its count on top.
+        /// Lays the pieces of the block's cells (start cells) into the view and dresses it in its blockers: a frozen
+        /// block is drawn in ice with the IceBlocker view showing its count.
         /// </summary>
-        void Build(BlockView view, IReadOnlyList<Vector2Int> cells, BlockColor color, int ice)
+        void Build(BlockView view, BoardBlock block)
         {
+            IReadOnlyList<Vector2Int> cells = block.StartCells;
             Vector3 centre = Centre(cells);
             view.Show(centre, _config.SnapDuration, _config.SnapEase, _config.FollowDuration, _config.FollowEase);
 
-            Material material = ice > 0 ? _iceMaterials.Get(color) : _materials.Get(color);
+            bool frozen = block.TryGetBlocker(out IceBlocker ice) && ice.IsFrozen;
+            Material material = frozen ? _iceMaterials.Get(block.Color) : _materials.Get(block.Color);
             foreach (BlockPiece piece in _tileResolver.Resolve(cells))
             {
                 PartPool pool = _piecePools[piece.Kind];
@@ -135,7 +152,21 @@ namespace ColorBlockJam.Game.Gameplay.View
             }
 
             view.BuildOutline(cells, _outline);
-            view.SetIce(ice, LabelCell(cells, centre));
+            if (!frozen)
+                return;
+            IceBlockerView iceView = _icePool.Get();
+            view.AttachBlockerView(iceView.transform, LabelCell(cells, centre));
+            iceView.Show(ice.ExitsLeft);
+            _iceViews[view] = iceView;
+        }
+
+        /// <summary>Takes the block's blocker views back to their pools.</summary>
+        void Undress(BlockView view)
+        {
+            if (!_iceViews.Remove(view, out IceBlockerView iceView))
+                return;
+            iceView.transform.SetParent(_storage, false);
+            _icePool.Release(iceView);
         }
 
         /// <summary>
@@ -239,8 +270,9 @@ namespace ColorBlockJam.Game.Gameplay.View
         {
             BoardBlock block = _board.Current.Blocks[signal.BlockId];
             BlockView view = _views[signal.BlockId];
+            Undress(view);
             view.ReleaseParts();
-            Build(view, block.StartCells, block.Color, block.Ice);
+            Build(view, block);
             view.PlaceAt(block.Offset);
             Burst(new Vector3(signal.Cell.x + 0.5f, 0f, signal.Cell.y + 0.5f), _config.TintOf(block.Color),
                 _config.SmashDebrisPerCell);
@@ -251,9 +283,9 @@ namespace ColorBlockJam.Game.Gameplay.View
         {
             for (int id = 0; id < _views.Count; id++)
             {
-                BoardBlock block = _board.Current.Blocks[id];
-                if (_views[id] != null && block.IsFrozen)
-                    _views[id].SetIce(block.Ice);
+                IceBlockerView iceView = IceViewOf(id);
+                if (iceView != null && _board.Current.Blocks[id].TryGetBlocker(out IceBlocker ice))
+                    iceView.Show(ice.ExitsLeft);
             }
         }
 
@@ -262,7 +294,7 @@ namespace ColorBlockJam.Game.Gameplay.View
         {
             BoardBlock block = _board.Current.Blocks[signal.BlockId];
             BlockView view = _views[signal.BlockId];
-            view.SetIce(0);
+            Undress(view);
             view.SetMaterial(_materials.Get(block.Color));
             view.PlayThaw(_config.ThawSwell, _config.ThawDuration);
             Vector3 centre = Centre(block.StartCells) + new Vector3(block.Offset.x, 0f, block.Offset.y);
@@ -277,7 +309,7 @@ namespace ColorBlockJam.Game.Gameplay.View
             BoardBlock block = _board.Current.Blocks[signal.BlockId];
             BlockView view = _blockPool.Get();
             view.transform.SetParent(_root, false);
-            Build(view, block.StartCells, block.Color, block.Ice);
+            Build(view, block);
             view.PlaceAt(block.Offset);
             // Board ids are the views' indices; a split-off block always takes the next one.
             _views.Add(view);
@@ -322,6 +354,7 @@ namespace ColorBlockJam.Game.Gameplay.View
         void Recycle(BlockView view)
         {
             _exiting.Remove(view);
+            Undress(view);
             view.ReleaseParts();
             _blockPool.Release(view);
         }

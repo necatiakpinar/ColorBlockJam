@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using ColorBlockJam.Core.Signals;
+using ColorBlockJam.Game.Gameplay.Board.Blockers;
 using ColorBlockJam.Game.Gameplay.Signals;
 using ColorBlockJam.Game.Levels;
 using UnityEngine;
@@ -110,7 +111,7 @@ namespace ColorBlockJam.Game.Gameplay.Board
             if (Current.JustThawed.Count > 0)
                 return true;
             foreach (BoardBlock block in Current.Blocks)
-                if (!block.HasExited && block.IsFrozen)
+                if (!block.HasExited && block.TryGetBlocker(out IceBlocker ice) && ice.IsFrozen)
                     return true;
             return false;
         }

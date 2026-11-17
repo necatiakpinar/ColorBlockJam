@@ -3,6 +3,7 @@ using NUnit.Framework;
 using ColorBlockJam.Core.Signals;
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Gameplay.Board;
+using ColorBlockJam.Game.Gameplay.Board.Blockers;
 using ColorBlockJam.Game.Gameplay.Input;
 using ColorBlockJam.Game.Gameplay.Signals;
 using ColorBlockJam.Game.Levels;
@@ -40,6 +41,10 @@ namespace ColorBlockJam.Tests.EditMode
             _bus.Subscribe<BoardClearedSignal>(_ => _events.Add("cleared"));
         }
 
+        static IceBlocker Ice(BoardBlock block) => block.TryGetBlocker(out IceBlocker ice) ? ice : null;
+
+        static bool Frozen(BoardBlock block) => Ice(block) is { IsFrozen: true };
+
         [Test]
         public void FrozenBlock_ShouldNotMove_WhileItHasIce()
         {
@@ -47,8 +52,8 @@ namespace ColorBlockJam.Tests.EditMode
 
             StepResult result = _board.TryStep(2, Vector2Int.down);
 
-            Assert.That(yellow.IsFrozen, Is.True);
-            Assert.That(yellow.Ice, Is.EqualTo(2));
+            Assert.That(Frozen(yellow), Is.True);
+            Assert.That(Ice(yellow).ExitsLeft, Is.EqualTo(2));
             Assert.That(result, Is.EqualTo(StepResult.Blocked));
         }
 
@@ -56,12 +61,12 @@ namespace ColorBlockJam.Tests.EditMode
         public void Exits_ShouldCountTheIceDownAndThawIt_WhenEnoughBlocksLeave()
         {
             _board.TryStep(0, Vector2Int.left);
-            int afterOne = _board.Current.Blocks[2].Ice;
+            int afterOne = Ice(_board.Current.Blocks[2]).ExitsLeft;
 
             _board.TryStep(1, Vector2Int.right);
 
             Assert.That(afterOne, Is.EqualTo(1));
-            Assert.That(_board.Current.Blocks[2].IsFrozen, Is.False);
+            Assert.That(Frozen(_board.Current.Blocks[2]), Is.False);
             Assert.That(_events, Is.EqualTo(new[] { "exit 0", "ice", "exit 1", "ice", "thawed 2" }));
             Assert.That(_board.TryStep(2, Vector2Int.down), Is.EqualTo(StepResult.Exited));
         }
@@ -72,7 +77,7 @@ namespace ColorBlockJam.Tests.EditMode
             _board.RemoveBlock(0);
             _board.RemoveColor(Blue);
 
-            Assert.That(_board.Current.Blocks[2].IsFrozen, Is.False);
+            Assert.That(Frozen(_board.Current.Blocks[2]), Is.False);
             Assert.That(_events, Is.EqualTo(new[] { "removed 0", "ice", "removed 1", "ice", "thawed 2" }));
         }
 
@@ -81,7 +86,7 @@ namespace ColorBlockJam.Tests.EditMode
         {
             _board.Thaw(2);
 
-            Assert.That(_board.Current.Blocks[2].IsFrozen, Is.False);
+            Assert.That(Frozen(_board.Current.Blocks[2]), Is.False);
             Assert.That(_events, Is.EqualTo(new[] { "thawed 2" }));
         }
 
@@ -124,7 +129,7 @@ namespace ColorBlockJam.Tests.EditMode
 
             BoardBlock yellow = _board.Current.Blocks[2];
             Assert.That(yellow.HasExited, Is.False);
-            Assert.That(yellow.IsFrozen, Is.False);
+            Assert.That(Frozen(yellow), Is.False);
             Assert.That(rig.Inventory.Count(Game.Boosters.BoosterType.Hammer), Is.Zero);
             rig.Dispose();
             session.Dispose();
@@ -136,8 +141,8 @@ namespace ColorBlockJam.Tests.EditMode
         {
             LevelData copy = Editor.LevelEditing.LevelDraft.From(Level).ToLevel();
 
-            Assert.That(copy.Blocks[2].Ice, Is.EqualTo(2));
-            Assert.That(copy.Blocks[0].Ice, Is.Zero);
+            Assert.That(copy.Blocks[2].Blockers.Ice.Exits, Is.EqualTo(2));
+            Assert.That(copy.Blocks[0].Blockers.IsEmpty, Is.True);
         }
 
         [Test]

@@ -90,10 +90,11 @@ namespace ColorBlockJam.Game.Levels
                 if (!IsConnected(block))
                     Error(issues, $"{name} is split into separate pieces; every cell must touch another by an edge.");
 
-                if (block.Ice < 0)
-                    Error(issues, $"{name} has ice {block.Ice}; ice counts exits and cannot be negative.");
-                else if (block.Ice > level.Blocks.Count - 1)
-                    Error(issues, $"{name} thaws after {block.Ice} other blocks leave, but the level has only " +
+                int ice = block.Blockers.Ice.Exits;
+                if (ice < 0)
+                    Error(issues, $"{name} has ice {ice}; ice counts exits and cannot be negative.");
+                else if (ice > level.Blocks.Count - 1)
+                    Error(issues, $"{name} thaws after {ice} other blocks leave, but the level has only " +
                         $"{level.Blocks.Count - 1} other blocks; it would stay frozen.");
             }
         }

@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using ColorBlockJam.Game.Levels.Blockers;
 using UnityEngine;
 
 namespace ColorBlockJam.Game.Levels
 {
     /// <summary>
-    /// A block as authored: one colour, the board cells it covers at the start (DA-18), and its ice: how many
-    /// other blocks must leave before it thaws and can move (T-34, DA-37; 0 = not frozen).
+    /// A block as authored: one colour, the board cells it covers at the start (DA-18), and its blockers (ice, ...;
+    /// blockers.md).
     /// </summary>
     [Serializable]
     public sealed class BlockData
@@ -17,9 +18,9 @@ namespace ColorBlockJam.Game.Levels
         [SerializeField]
         List<Vector2Int> _cells;
 
-        [Tooltip("Other blocks that must leave the board before this one thaws; 0 = not frozen.")]
-        [SerializeField, Min(0)]
-        int _ice;
+        [Tooltip("Ice, and the other blocker kinds, on this block (blockers.md).")]
+        [SerializeField]
+        BlockerSet _blockers = new();
 
         // Unity calls this when it creates a block added in the inspector.
         BlockData()
@@ -27,15 +28,15 @@ namespace ColorBlockJam.Game.Levels
             _cells = new List<Vector2Int>();
         }
 
-        public BlockData(BlockColor color, IEnumerable<Vector2Int> cells, int ice = 0)
+        public BlockData(BlockColor color, IEnumerable<Vector2Int> cells, BlockerSet blockers = null)
         {
             _color = color;
             _cells = new List<Vector2Int>(cells);
-            _ice = ice;
+            _blockers = blockers ?? new BlockerSet();
         }
 
         public BlockColor Color => _color;
         public IReadOnlyList<Vector2Int> Cells => _cells;
-        public int Ice => _ice;
+        public BlockerSet Blockers => _blockers;
     }
 }

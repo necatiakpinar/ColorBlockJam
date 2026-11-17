@@ -46,12 +46,13 @@ and restart, so no state survives an attempt. `BoardStateTests` pins every rule 
    - the door spans every cell the block covers along that wall (a wider door is fine), and
    - nothing stands between any of the block's cells and that wall (it slides out in a straight line).
    Otherwise the step is `Blocked` and nothing changes. `DoorResolver` answers the first two checks.
-3. **Ice** (T-34, DA-37): a block with ice is frozen: every step it tries is `Blocked` and the drag does not
-   pick it up. Each block that leaves (through a door or taken by a booster) counts every frozen block
+3. **Blockers** ([blockers.md](blockers.md)): every step asks the block's `IBlocker`s, and the drag picks a
+   block up only when they all allow it. **Ice** (T-34, DA-37): a block with ice is frozen: every step it tries
+   is `Blocked` and the drag does not pick it up. Each block that leaves (through a door or taken by a booster) counts every frozen block
    down by one; at 0 it thaws and moves like any other. `ActiveBoard` fires `IceCountedDownSignal`, then
    `BlockThawedSignal` per thawed block. The hammer breaks the ice at once instead of the block. The view
    draws a frozen block in `BoardViewConfig.IceMaterial` (`M_Ice`, the `icetexture` as it is:
-   `IceWhiten` 1) with its count on top (`BlockView` `IceLabel`); a thaw swells it back to its colour
+   `IceWhiten` 1) with its count on top (`IceBlockerView`, `Blockers/IceBlocker.prefab`); a thaw swells it back to its colour
    while `IceShatter` (cubes wearing the ice texture, `M_IceShard`) bursts out in every direction.
 4. **Win**: `IsCleared` turns true when the last block exits. Losing is the timer's job (T-15).
 5. A step allocates nothing; invalid input (a diagonal step, moving an exited block, overlapping start

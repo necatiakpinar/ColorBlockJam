@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ColorBlockJam.Game.Gameplay.Board.Blockers;
 using ColorBlockJam.Game.Levels;
 using UnityEngine;
 
@@ -20,6 +21,7 @@ namespace ColorBlockJam.Game.Gameplay.Board
         readonly DoorResolver _doorResolver;
         readonly List<int> _thawed = new();
         readonly List<int> _splitOff = new();
+        readonly BlockerFactory _blockerFactory = new();
 
         public BoardState(LevelData level)
         {
@@ -33,7 +35,7 @@ namespace ColorBlockJam.Game.Gameplay.Board
             for (int id = 0; id < level.Blocks.Count; id++)
             {
                 BlockData data = level.Blocks[id];
-                _blocks.Add(new BoardBlock(id, data.Color, data.Cells, data.Ice));
+                _blocks.Add(new BoardBlock(id, data.Color, data.Cells, _blockerFactory.Create(data.Blockers)));
                 Place(_blocks[id]);
             }
 
@@ -49,7 +51,10 @@ namespace ColorBlockJam.Game.Gameplay.Board
         /// <summary>Blocks the last <see cref="RemoveCell"/> split off as blocks of their own (DA-36); empty when none.</summary>
         public IReadOnlyList<int> JustSplitOff => _splitOff;
 
-        /// <summary>Blocks the last exit or removal thawed (T-34), in id order; empty when none did.</summary>
+        /// <summary>
+        /// Blocks the last exit or removal released from a blocker's hold (ice thawed, T-34), in id order; empty when
+        /// none were.
+        /// </summary>
         public IReadOnlyList<int> JustThawed => _thawed;
 
         public bool TryGetBlockAt(Vector2Int cell, out int blockId)
@@ -90,18 +95,30 @@ namespace ColorBlockJam.Game.Gameplay.Board
         }
 
         /// <summary>Breaks a block's ice at once (the hammer on a frozen block, DA-37).</summary>
-        public void Thaw(int blockId) => RequireOnBoard(blockId).Thaw();
+        public void Thaw(int blockId)
+        {
+            if (RequireOnBoard(blockId).TryGetBlocker(out IceBlocker ice))
+                ice.Thaw();
+        }
 
-        /// <summary>A block left: its cells free up and every frozen block counts one exit down (DA-37).</summary>
+        /// <summary>A block left: its cells free up and every blocker of the others hears of it (ice counts down, DA-37).</summary>
         void MarkGone(BoardBlock block)
         {
             Clear(block);
             block.MarkExited();
             RemainingBlocks--;
             _thawed.Clear();
-            foreach (BoardBlock other in _blocks)
-                if (!other.HasExited && other.IsFrozen && other.CountDownIce())
+            for (int id = 0; id < _blocks.Count; id++)
+            {
+                BoardBlock other = _blocks[id];
+                if (other.HasExited)
+                    continue;
+                bool released = false;
+                for (int b = 0; b < other.Blockers.Count; b++)
+                    released |= other.Blockers[b].OnOtherBlockGone();
+                if (released)
                     _thawed.Add(other.Id);
+            }
         }
 
         /// <summary>
@@ -150,7 +167,7 @@ namespace ColorBlockJam.Game.Gameplay.Board
                 if (i == keep)
                     continue;
                 // The new block starts where the piece lies now, so its offset starts at zero.
-                var piece = new BoardBlock(_blocks.Count, block.Color, pieces[i], block.Ice);
+                var piece = new BoardBlock(_blocks.Count, block.Color, pieces[i], block.CloneBlockersForPiece());
                 block.RemoveBoardCells(pieces[i]);
                 _blocks.Add(piece);
                 foreach (Vector2Int cell in pieces[i])
@@ -220,7 +237,7 @@ namespace ColorBlockJam.Game.Gameplay.Board
                     gone++;
             for (int id = 0; id < _blocks.Count; id++)
             {
-                _blocks[id].Reset(offsets[id], exited[id], Math.Max(0, _blocks[id].StartIce - gone));
+                _blocks[id].Reset(offsets[id], exited[id], gone);
                 if (exited[id])
                     continue;
                 Place(_blocks[id]);
@@ -233,7 +250,7 @@ namespace ColorBlockJam.Game.Gameplay.Board
         {
             BoardBlock block = _blocks[blockId];
             Clear(block);
-            block.Reset(offset, false, block.Ice);
+            block.MoveTo(offset);
             Place(block);
         }
 
@@ -249,7 +266,7 @@ namespace ColorBlockJam.Game.Gameplay.Board
             BoardBlock block = _blocks[blockId];
             if (block.HasExited)
                 throw new InvalidOperationException($"Block {blockId} has already left the board.");
-            if (block.IsFrozen)
+            if (!block.AllowsStep(direction))
                 return StepResult.Blocked;
 
             bool reachesWall = false;

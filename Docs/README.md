@@ -33,6 +33,7 @@ Pages marked **binding** carry rules agents must follow before touching the path
 | [General/art-pipeline.md](General/art-pipeline.md) | art folders, import rules, cell scale, part prefabs, materials | yes |
 | [General/development-assumptions.md](General/development-assumptions.md) | `DA-n` registry of unconfirmed product decisions | yes |
 | [General/lives.md](General/lives.md) | lives: the rules, trusted-time refill, the coin refill, the Home bar and popup | yes |
+| [General/blockers.md](General/blockers.md) | blockers (ice, ...): data, rule interface, views, editor row; how to add a kind | yes |
 | [General/boosters.md](General/boosters.md) | the four boosters: stock, shop, use, freeze, looks, routing | yes |
 | [General/level-editor.md](General/level-editor.md) | the level editor: designer guide, shortcuts, solver, generator | yes |
 | [General/debug-tools.md](General/debug-tools.md) | the debug window: win, fail, timer, coins, levels, saves | yes |

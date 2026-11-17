@@ -395,11 +395,11 @@ namespace ColorBlockJam.Editor.LevelEditing
 
         /// <summary>A frozen block is drawn paler, like ice over its colour.</summary>
         Color BlockTint(DraftBlock block) =>
-            block.Ice > 0 ? Color.Lerp(_canvas.ColorOf(block.Color), IceTint, 0.6f) : _canvas.ColorOf(block.Color);
+            block.Blockers.Ice.IsActive ? Color.Lerp(_canvas.ColorOf(block.Color), IceTint, 0.6f) : _canvas.ColorOf(block.Color);
 
         string BlockLabel(int index)
         {
-            int ice = Draft.Blocks[index].Ice;
+            int ice = Draft.Blocks[index].Blockers.Ice.Exits;
             return ice > 0 ? $"{index + 1} · ice {ice}" : (index + 1).ToString();
         }
 
@@ -498,11 +498,7 @@ namespace ColorBlockJam.Editor.LevelEditing
                 if (color != block.Color)
                     Change("Recolour block", () => block.Color = color);
                 EditorGUILayout.LabelField("Cells", block.Cells.Count.ToString());
-                int ice = EditorGUILayout.IntSlider(new GUIContent("Ice",
-                        "Other blocks that must leave before it thaws and can move; 0 = not frozen (I / Shift+I)."),
-                    block.Ice, 0, Mathf.Max(0, Draft.Blocks.Count - 1));
-                if (ice != block.Ice)
-                    Change("Set ice", () => block.Ice = ice);
+                DrawBlockers(block);
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button(new GUIContent("Rotate", "Turn a quarter clockwise (R).")))
                     RotateSelected();
@@ -653,15 +649,31 @@ namespace ColorBlockJam.Editor.LevelEditing
                 _stampTurns = (_stampTurns + 1) % 4;
         }
 
+        /// <summary>
+        /// The selected block's blockers (blockers.md), one row per kind; a new blocker kind adds its row here.
+        /// </summary>
+        void DrawBlockers(DraftBlock block)
+        {
+            EditorGUILayout.Space(4f);
+            EditorGUILayout.LabelField("Blockers", EditorStyles.miniBoldLabel);
+            EditorGUI.indentLevel++;
+            int ice = EditorGUILayout.IntSlider(new GUIContent("Ice",
+                    "Frozen until this many other blocks have left; 0 = no ice (I / Shift+I)."),
+                block.Blockers.Ice.Exits, 0, Mathf.Max(0, Draft.Blocks.Count - 1));
+            if (ice != block.Blockers.Ice.Exits)
+                Change("Set ice", () => block.Blockers.Ice.Exits = ice);
+            EditorGUI.indentLevel--;
+        }
+
         /// <summary>More or less ice on the selected block, never below 0 or above the other blocks' count.</summary>
         void AddIce(int delta)
         {
             if (_selectedBlock < 0)
                 return;
             DraftBlock block = Draft.Blocks[_selectedBlock];
-            int ice = Mathf.Clamp(block.Ice + delta, 0, Mathf.Max(0, Draft.Blocks.Count - 1));
-            if (ice != block.Ice)
-                Change("Set ice", () => block.Ice = ice);
+            int ice = Mathf.Clamp(block.Blockers.Ice.Exits + delta, 0, Mathf.Max(0, Draft.Blocks.Count - 1));
+            if (ice != block.Blockers.Ice.Exits)
+                Change("Set ice", () => block.Blockers.Ice.Exits = ice);
         }
 
         void Nudge(Vector2Int delta)

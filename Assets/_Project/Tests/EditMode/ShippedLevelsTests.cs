@@ -33,7 +33,7 @@ namespace ColorBlockJam.Tests.EditMode
             // Level 6 shows the ice blocker (T-34): two of its blocks wait for others to leave.
             int frozen = 0;
             foreach (BlockData block in Levels()[5].Data.Blocks)
-                if (block.Ice > 0)
+                if (block.Blockers.Ice.IsActive)
                     frozen++;
 
             Assert.That(frozen, Is.EqualTo(2));

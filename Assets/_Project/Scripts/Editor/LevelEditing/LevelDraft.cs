@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ColorBlockJam.Game.Levels;
+using ColorBlockJam.Game.Levels.Blockers;
 using UnityEngine;
 
 namespace ColorBlockJam.Editor.LevelEditing
@@ -12,8 +13,8 @@ namespace ColorBlockJam.Editor.LevelEditing
         public BlockColor Color;
         public List<Vector2Int> Cells = new();
 
-        /// <summary>Other blocks that must leave before it thaws; 0 = not frozen (T-34).</summary>
-        public int Ice;
+        /// <summary>Its blockers (ice, ...; blockers.md), set in the editor's Blockers panel.</summary>
+        public BlockerSet Blockers = new();
     }
 
     /// <summary>A door being edited, on one wall, from <see cref="Start"/> for <see cref="Length"/> cells.</summary>
@@ -55,7 +56,7 @@ namespace ColorBlockJam.Editor.LevelEditing
                 Difficulty = level.Difficulty,
             };
             foreach (BlockData block in level.Blocks)
-                draft.Blocks.Add(new DraftBlock { Color = block.Color, Cells = new List<Vector2Int>(block.Cells), Ice = block.Ice });
+                draft.Blocks.Add(new DraftBlock { Color = block.Color, Cells = new List<Vector2Int>(block.Cells), Blockers = block.Blockers.Clone() });
             foreach (DoorData door in level.Doors)
                 draft.Doors.Add(new DraftDoor { Side = door.Side, Start = door.Start, Length = door.Length, Color = door.Color });
             return draft;
@@ -65,7 +66,7 @@ namespace ColorBlockJam.Editor.LevelEditing
         {
             var blocks = new List<BlockData>();
             foreach (DraftBlock block in Blocks)
-                blocks.Add(new BlockData(block.Color, block.Cells, block.Ice));
+                blocks.Add(new BlockData(block.Color, block.Cells, block.Blockers.Clone()));
             var doors = new List<DoorData>();
             foreach (DraftDoor door in Doors)
                 doors.Add(new DoorData(door.Side, door.Start, door.Length, door.Color));

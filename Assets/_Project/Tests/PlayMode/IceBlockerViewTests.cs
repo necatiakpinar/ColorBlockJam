@@ -4,6 +4,8 @@ using ColorBlockJam.Core.Persistence;
 using ColorBlockJam.Game.Gameplay.Board;
 using ColorBlockJam.Game.Gameplay.View;
 using ColorBlockJam.Game.Levels;
+using ColorBlockJam.Game.Levels.Blockers;
+using ColorBlockJam.Game.Gameplay.View.Blockers;
 using ColorBlockJam.Game.Scopes;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -36,7 +38,8 @@ namespace ColorBlockJam.Tests.PlayMode
             {
                 new BlockData(BlockColor.Red, new[] { new Vector2Int(0, 2) }),
                 new BlockData(BlockColor.Blue, new[] { new Vector2Int(3, 2) }),
-                new BlockData(BlockColor.Yellow, new[] { new Vector2Int(1, 0), new Vector2Int(2, 0) }, 2),
+                new BlockData(BlockColor.Yellow, new[] { new Vector2Int(1, 0), new Vector2Int(2, 0) },
+                    new BlockerSet(new IceBlockerData(2))),
             },
             new[]
             {
@@ -52,20 +55,21 @@ namespace ColorBlockJam.Tests.PlayMode
             IObjectResolver container = SceneTestUtility.FindInActiveScene<GameplayLifetimeScope>().Container;
             var board = container.Resolve<ActiveBoard>();
             board.Load(FrozenLevel());
-            BlockView yellow = SceneTestUtility.FindInActiveScene<BlockLayerView>().Views[2];
-            bool shownAtStart = yellow.ShowsIce;
-            bool redShowsIce = SceneTestUtility.FindInActiveScene<BlockLayerView>().Views[0].ShowsIce;
-            string countAtStart = yellow.IceText;
+            var layer = SceneTestUtility.FindInActiveScene<BlockLayerView>();
+            IceBlockerView yellowIce = layer.IceViewOf(2);
+            bool shownAtStart = yellowIce != null;
+            bool redShowsIce = layer.IceViewOf(0) != null;
+            string countAtStart = yellowIce.CountText;
 
             board.TryStep(0, Vector2Int.left);
-            string countAfterOne = yellow.IceText;
+            string countAfterOne = yellowIce.CountText;
             board.TryStep(1, Vector2Int.right);
             yield return null;
 
             Assert.That(shownAtStart, Is.True);
             Assert.That(countAtStart, Is.EqualTo("2"));
             Assert.That(countAfterOne, Is.EqualTo("1"));
-            Assert.That(yellow.ShowsIce, Is.False);
+            Assert.That(layer.IceViewOf(2), Is.Null, "The ice view goes back to its pool on thaw.");
             Assert.That(redShowsIce, Is.False, "A block without ice shows no count.");
             LogAssert.NoUnexpectedReceived();
         }

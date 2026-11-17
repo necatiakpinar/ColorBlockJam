@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using ColorBlockJam.Game.Levels;
+using ColorBlockJam.Game.Levels.Blockers;
 using UnityEngine;
 
 namespace ColorBlockJam.Tests.EditMode.Helpers
@@ -48,7 +49,7 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
             var points = new List<Vector2Int>();
             for (int i = 0; i < cells.Length; i += 2)
                 points.Add(new Vector2Int(cells[i], cells[i + 1]));
-            _blocks.Add(new BlockData(color, points, ice));
+            _blocks.Add(new BlockData(color, points, new BlockerSet(new IceBlockerData(ice))));
             return this;
         }
 

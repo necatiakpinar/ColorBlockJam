@@ -3,6 +3,7 @@ using ColorBlockJam.Core.Signals;
 using ColorBlockJam.Game.Boosters;
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Gameplay.Board;
+using ColorBlockJam.Game.Gameplay.Board.Blockers;
 using ColorBlockJam.Game.Gameplay.Session;
 using ColorBlockJam.Game.Gameplay.Signals;
 
@@ -97,7 +98,7 @@ namespace ColorBlockJam.Game.Gameplay.Boosters
                     break;
                 case BoosterType.Hammer:
                     // On a frozen block the hammer breaks the ice instead (DA-37).
-                    if (_board.Current.Blocks[blockId].IsFrozen)
+                    if (_board.Current.Blocks[blockId].TryGetBlocker(out IceBlocker ice) && ice.IsFrozen)
                         _board.Thaw(blockId);
                     else
                         _board.RemoveBlock(blockId);
