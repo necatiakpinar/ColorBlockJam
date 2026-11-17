@@ -32,7 +32,13 @@ reward to `IWalletService` on `LevelCompletedSignal`, before anything presents t
 The wallet saves at once ([persistence.md](persistence.md)), so the balance survives leaving and restarting.
 The HUD and Home coin counters bind `CoinsChangedSignal` with T-18 and T-23.
 
-## 3. Tests
+## 3. Spending coins
+
+The only thing to buy is more time after the timer runs out: `GameplayConfig.ContinueSeconds` (20) for
+`ContinueCost` (50) coins (DA-30). `LevelContinueService` takes the coins with `IWalletService.TrySpend`
+before `LevelSession.Continue` lets the level play on ([gameplay.md](gameplay.md) §7).
+
+## 4. Tests
 
 `LevelRewardTests` cover the table, a missing entry, the shipped config rising with difficulty, paying
 by difficulty and on a looped level, and nothing on a loss or after disposal. `CoinPersistenceTests`

@@ -14,6 +14,7 @@ namespace ColorBlockJam.Game.Gameplay.Session
     /// Playing --(board cleared)--> Won        Playing --Fail--> Failed
     /// Playing | Paused | Failed --Restart--> Playing (a fresh board from the level data)
     /// Won --Next(n)--> Playing (the next level, on a fresh board)
+    /// Failed --Continue(s)--> Playing (the same board, s more seconds on the timer)
     /// </code>
     /// Anything else is refused: the method returns false and nothing changes or fires, so a double tap or
     /// a late timer cannot corrupt the attempt. The state is committed before its signal fires.
@@ -79,6 +80,19 @@ namespace ColorBlockJam.Game.Gameplay.Session
             if (State != LevelState.Won)
                 return false;
             Begin(levelNumber);
+            return true;
+        }
+
+        /// <summary>
+        /// After a loss, plays on with the board as it is and <paramref name="extraSeconds"/> more on the timer
+        /// (DA-30). <see cref="LevelContinueService"/> takes the price before it calls this.
+        /// </summary>
+        public bool Continue(int extraSeconds)
+        {
+            if (State != LevelState.Failed)
+                return false;
+            State = LevelState.Playing;
+            _signalBus.Fire(new LevelContinuedSignal(extraSeconds));
             return true;
         }
 

@@ -16,6 +16,15 @@ namespace ColorBlockJam.Game.Configs
         [SerializeField, Min(0f)]
         float _nextLevelDelay = 1f;
 
+        [Header("Out of time")]
+        [Tooltip("Seconds a continue adds to a lost level's timer (DA-30).")]
+        [SerializeField, Min(1)]
+        int _continueSeconds = 20;
+
+        [Tooltip("Coins a continue costs (DA-30).")]
+        [SerializeField, Min(1)]
+        int _continueCost = 50;
+
         [Header("Haptics")]
         [Tooltip("Tap when a block leaves through its door.")]
         [SerializeField]
@@ -23,6 +32,8 @@ namespace ColorBlockJam.Game.Configs
 
         public FadeScaleInSettings HudReveal => _hudReveal;
         public float NextLevelDelay => _nextLevelDelay;
+        public int ContinueSeconds => _continueSeconds;
+        public int ContinueCost => _continueCost;
         public HapticImpact ExitHaptic => _exitHaptic;
     }
 }

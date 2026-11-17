@@ -11,5 +11,8 @@ namespace ColorBlockJam.Core.Persistence
 
         /// <summary>Adds a positive number of coins; zero or less is a bug and throws.</summary>
         void Add(int amount);
+
+        /// <summary>Takes a positive number of coins if the player has them; false (and no change) if not.</summary>
+        bool TrySpend(int amount);
     }
 }

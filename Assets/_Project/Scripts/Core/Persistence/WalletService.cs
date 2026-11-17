@@ -26,12 +26,30 @@ namespace ColorBlockJam.Core.Persistence
 
         public void Add(int amount)
         {
-            if (amount <= 0)
-                throw new ArgumentOutOfRangeException(nameof(amount), amount, "Only a positive number of coins can be added.");
+            RequirePositive(amount);
+            Change(amount);
+        }
 
-            Data.Coins += amount;
+        public bool TrySpend(int amount)
+        {
+            RequirePositive(amount);
+            if (Data.Coins < amount)
+                return false;
+            Change(-amount);
+            return true;
+        }
+
+        void RequirePositive(int amount)
+        {
+            if (amount <= 0)
+                throw new ArgumentOutOfRangeException(nameof(amount), amount, "Only a positive number of coins can change hands.");
+        }
+
+        void Change(int delta)
+        {
+            Data.Coins += delta;
             _record.Save(_data);
-            _signalBus.Fire(new CoinsChangedSignal(_data.Coins, amount));
+            _signalBus.Fire(new CoinsChangedSignal(_data.Coins, delta));
         }
     }
 }

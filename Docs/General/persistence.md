@@ -25,8 +25,8 @@ a `JsonRecord<T>`.
    fire after the record is written. Setting a toggle to the value it has does nothing.
 4. **Never trust stored data.** A missing record starts fresh. Corrupt JSON starts fresh and logs an error.
    Values that fail the service's check (a level below 1, a negative balance) start fresh and log a warning.
-5. **Reject bad changes.** `IWalletService.Add` throws on zero or fewer coins; spending lands with the
-   first thing to spend on.
+5. **Reject bad changes.** `IWalletService.Add` and `TrySpend` throw on zero or fewer coins. `TrySpend`
+   returns false and changes nothing when the player has too few; a spend announces a negative delta.
 6. **Versioned keys.** A change to a record's shape that old saves cannot read gets a new key (`_v2`) and
    a migration from the old one in that service's `Load`.
 
