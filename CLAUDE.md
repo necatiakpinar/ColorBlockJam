@@ -133,7 +133,8 @@ that reads the time of day.**
 scene.** Level data and rules work in cells; `BoardSpace` is the only cell ↔ world conversion.
 **Read [level-data.md](Docs/General/level-data.md) before touching `Scripts/Game/Levels/`, a level asset or
 the level editor. Read [level-editor.md](Docs/General/level-editor.md) before touching the editor, the solver
-or the generator.**
+or the generator. Read [level-packs.md](Docs/General/level-packs.md) before touching `levels.json`, the level
+pack or where the game's levels come from.**
 
 ## Coding Standards
 

@@ -9,6 +9,7 @@ using ColorBlockJam.Game.Boosters;
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Lives;
 using ColorBlockJam.Game.Levels;
+using ColorBlockJam.Game.Levels.Packs;
 using ColorBlockJam.Game.Navigation;
 using VContainer;
 using VContainer.Unity;
@@ -23,18 +24,18 @@ namespace ColorBlockJam.Game.Installers
     {
         readonly ApplicationConfig _applicationConfig;
         readonly UiConfig _uiConfig;
-        readonly LevelCatalog _levelCatalog;
+        readonly LevelPackConfig _levelPackConfig;
         readonly NetworkConfig _networkConfig;
         readonly BoosterConfig _boosterConfig;
         readonly LivesConfig _livesConfig;
 
-        public CoreServicesInstaller(ApplicationConfig applicationConfig, UiConfig uiConfig, LevelCatalog levelCatalog,
+        public CoreServicesInstaller(ApplicationConfig applicationConfig, UiConfig uiConfig, LevelPackConfig levelPackConfig,
             NetworkConfig networkConfig, BoosterConfig boosterConfig, LivesConfig livesConfig)
         {
             _livesConfig = livesConfig;
             _applicationConfig = applicationConfig;
             _uiConfig = uiConfig;
-            _levelCatalog = levelCatalog;
+            _levelPackConfig = levelPackConfig;
             _networkConfig = networkConfig;
             _boosterConfig = boosterConfig;
         }
@@ -43,7 +44,7 @@ namespace ColorBlockJam.Game.Installers
         {
             builder.RegisterInstance(_applicationConfig);
             builder.RegisterInstance(_uiConfig);
-            builder.RegisterInstance(_levelCatalog);
+            builder.RegisterInstance(_levelPackConfig);
             builder.RegisterInstance(_networkConfig);
             builder.RegisterInstance(_boosterConfig);
             builder.RegisterInstance(_livesConfig);
@@ -56,6 +57,7 @@ namespace ColorBlockJam.Game.Installers
             builder.Register<ISettingsService, SettingsService>(Lifetime.Singleton);
             builder.Register<BoosterInventory>(Lifetime.Singleton);
             builder.Register<LivesService>(Lifetime.Singleton);
+            builder.Register<LevelPackService>(Lifetime.Singleton).As<ILevelSource>().AsSelf();
             builder.Register<ISceneLoader, SceneLoader>(Lifetime.Singleton);
             builder.Register<INavigationService, NavigationService>(Lifetime.Singleton);
             builder.Register<IHapticService, MobileHapticService>(Lifetime.Singleton);

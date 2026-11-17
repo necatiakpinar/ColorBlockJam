@@ -15,6 +15,7 @@ a `JsonRecord<T>`.
 | `IWalletService` | `wallet_v1` | `WalletData`: coins | 0 coins (DA-7) |
 | `ISettingsService` | `settings_v1` | `SettingsData`: music, sound, vibration toggles (`GameSetting`) | all on (DA-10) |
 | `LivesService` | `lives_v1` | `LivesData`: lives missing, next life in trusted UTC ticks | full lives (DA-38) |
+| `LevelPackService` | `level_pack_remote_v1` | a remote level pack's JSON, played from the next launch ([level-packs.md](level-packs.md)) | none: the bundled pack plays |
 | `BoosterInventory` | `boosters_v1` | `BoosterInventoryData`: one stock per booster | each booster's starting stock (DA-36) |
 
 ## 2. Rules

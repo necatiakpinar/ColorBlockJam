@@ -13,7 +13,7 @@ One format, written by the level editor and read by the game (R-29, DA-13).
 | `LevelData` | `Width`, `Height` (cells), `TimerSeconds`, `Difficulty` (`Normal`, `Hard`, `VeryHard`; sets the win reward, [economy.md](economy.md)), `Blocks`, `Doors` |
 | `BlockData` | `Color`, the absolute start `Cells` it covers (DA-18), and `Blockers`: a `BlockerSet` with one entry per blocker kind, e.g. `Ice.Exits`, the other blocks that must leave before it thaws (0 = no ice, T-34, DA-37; [blockers.md](blockers.md)) |
 | `DoorData` | `Side` (`Bottom`, `Top`, `Left`, `Right`), `Start` cell along that wall, `Length`, `Color` (DA-17) |
-| `LevelCatalog` (asset, `Assets/_Project/Levels/LevelCatalog.asset`) | the ordered level list; level N is entry N − 1 |
+| `LevelCatalog` (asset, `Assets/_Project/Levels/LevelCatalog.asset`) | the ordered level list as authored; level N is entry N − 1; the editor publishes it as `levels.json`, the pack the game plays ([level-packs.md](level-packs.md)) |
 | `LevelRulesConfig` (asset, `Assets/_Project/Configs/`) | board size and timer limits |
 
 Coordinates are cells ([gameplay.md](gameplay.md) §1.1). A door's `Start` counts columns on the
@@ -47,7 +47,8 @@ Rule 9 is a necessary condition only; whether the level can actually be finished
 
 ## 3. Runtime use
 
-The game never mutates `LevelData`. The catalog is registered by the root scope; `LevelProvider` maps a
+The game never mutates `LevelData`. It plays the level pack loaded at boot (`LevelPackService`, an `ILevelSource`,
+[level-packs.md](level-packs.md)), not the catalog; `LevelProvider` maps a
 level number to its entry and loops after the last one (DA-8). Each attempt builds a new `BoardState`
 ([gameplay.md](gameplay.md) §3, §4), which is what makes a restart start clean.
 

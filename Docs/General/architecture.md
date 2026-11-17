@@ -25,7 +25,7 @@ Assets/_Project/
 │   ├── Boot/            boot steps, TweeningInitializer
 │   ├── Splash/          SplashFlow, SplashView
 │   ├── Home/            HomeFlow, HomeView
-│   ├── Levels/          LevelData, LevelDefinition, LevelCatalog, LevelProvider, validator, BlockShape
+│   ├── Levels/          LevelData, LevelDefinition, LevelCatalog, LevelProvider, validator, BlockShape; Packs/ (level-packs.md)
 │   │   ├── Solving/     LevelSolver (can a level be finished)
 │   │   └── Generation/  LevelGenerator (build a level from settings)
 │   ├── Economy/         LevelRewardProvider, LevelRewardService
@@ -40,7 +40,7 @@ Assets/_Project/
 ├── Tests/PlayMode/    ColorBlockJam.Tests.PlayMode
 ├── Scenes/            Splash (build index 0), Home, Gameplay
 ├── Prefabs/           RootLifetimeScope, Board/ part prefabs
-├── Levels/            LevelCatalog and level assets
+├── Levels/            LevelCatalog, level assets and levels.json, the bundled level pack
 └── Configs/           config assets
 ```
 

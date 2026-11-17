@@ -22,6 +22,7 @@ SplashFlow.StartAsync
   ├─ start minimum-display timer                       SplashConfig.MinimumDisplaySeconds, realtime
   ├─ BootSequence.RunAsync(progress → SplashView)      steps in SplashInstaller order
   │    ApplyApplicationSettingsStep  (weight 1)        Application.targetFrameRate
+  │    LoadLevelsStep                (weight 1)        level pack: stored remote or bundled (level-packs.md)
   │    LoadPlayerDataStep            (weight 2)        progress, wallet, settings .Load()
   ├─ await minimum-display timer
   ├─ await SplashView.WaitForPresentationAsync         intro + last bar fill finished

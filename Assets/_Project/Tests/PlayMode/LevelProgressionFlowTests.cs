@@ -62,7 +62,7 @@ namespace ColorBlockJam.Tests.PlayMode
             var board = container.Resolve<ActiveBoard>();
             var levels = container.Resolve<LevelProvider>();
             float delay = container.Resolve<GameplayConfig>().WinPopupDelay;
-            int catalogSize = container.Resolve<LevelCatalog>().Levels.Count;
+            int catalogSize = container.Resolve<ILevelSource>().LevelCount;
             int first = session.LevelNumber;
             var started = new List<int>();
             bus.Subscribe<LevelStartedSignal>(signal => started.Add(signal.LevelNumber));

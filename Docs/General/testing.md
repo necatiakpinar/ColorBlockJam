@@ -36,6 +36,8 @@ new fake.
 | `LevelDefinitionTests` | level data survives asset serialization; wall lengths |
 | `BoardStateTests` | moves, walls, blocks, door fit on every wall, clear path out, win, fresh restart, `CanStep`, zero allocation |
 | `LevelProviderTests` | level number to catalog entry; looping; empty catalog |
+| `LevelPackJsonTests` | the level pack JSON: round trip, names not numbers, compact output, unknown fields ignored, refusals worded with level and item |
+| `LevelPackServiceTests` | bundled or stored remote pack per launch; stale and broken packs dropped; remote packs stored only when good, for the next launch |
 | `LevelProgressionTests` | a win advances the level once; a loss or a disposed listener does not |
 | `ShippedLevelsTests` | the catalog's twenty levels: no validator issues, solved by `LevelSolver` as hard as their label; levels 1–8 ramp up; from level 9 each group of six has a breather and a higher peak, the last needing 8+ room-making moves |
 | `LevelHardenerTests` | Make harder never needs fewer moves, finds more, keeps the level valid and solvable, repeats per seed, adds no blockers when they are off, stops at its target, refuses an unfinishable level |

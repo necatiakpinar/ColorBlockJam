@@ -75,6 +75,7 @@ requirement keeps its id and is marked `Dropped`.
 | R-49 | The editor sets each level's difficulty, which sets its reward | must | T-27 |
 | R-50 | Lives: a lost life refills on a casual-game timer read from trusted time, and coins refill them at once | must (developer, 2026-11-17) | T-48 |
 | R-51 | 20 shipped levels on a mixed difficulty curve; the hard ones are real puzzles that make the player move blocks around in the right order | must (developer, 2026-11-17; first asked for 50, then 20) | T-49 |
+| R-52 | Levels can be changed later from remote config without an app update: they ship as JSON, and a remote pack is checked before it plays | must (developer, 2026-11-17) | T-50 |
 
 ## 2. Scope decisions
 
@@ -181,5 +182,6 @@ task is marked `Dropped`, never deleted. Detail per task: [tasks.md](tasks.md).
 | T-43 | 3 | Touch and door feel | Near-miss presses pick a block; wrong doors stop a block like a wall; doors open and close; close exits share one spray | T-12, T-13 | Done |
 | T-48 | 8 | Lives | Abandoned attempts cost a life; lives refill every 30 min of trusted time; no lives offers a coin refill | T-44, T-07 | Done |
 | T-49 | 8 | Twenty levels and the level hardener | 20 catalog levels, valid and solvable, on a saw-tooth curve whose peaks need many room-making moves; the editor can harden a level | T-47, T-34, T-35 | Done |
+| T-50 | 8 | Level packs (JSON, remote-ready) | The game plays levels.json; the editor writes it on every change; a remote pack is validated, stored and played from the next launch; bad or older packs fall back to the bundled one | T-49, T-07 | Done |
 
 Status values: `Todo`, `In progress`, `Blocked`, `Done`, `Dropped`.

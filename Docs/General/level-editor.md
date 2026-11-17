@@ -111,7 +111,7 @@ changes the saved progress to that level; the debug window's *Clear player saves
 | `LevelChecker` | Editor | validates a draft at once and solves it on a worker thread, cancelling a stale search |
 | `LevelDraft` | Editor | the level being edited; every change keeps the board buildable and answers false otherwise |
 | `LevelEditorState` | Editor | holds the draft for Unity's undo (`Undo.RecordObject`) |
-| `LevelCatalogEditing` | Editor | create, copy, delete, reorder and save level assets in the catalog, straight to disk without undo (git is the history; an undo record on an asset lets the test runner's rollback revert a save) |
+| `LevelCatalogEditing` | Editor | create, copy, delete, reorder and save level assets in the catalog, straight to disk without undo (git is the history; an undo record on an asset lets the test runner's rollback revert a save); every change rewrites `levels.json` ([level-packs.md](level-packs.md)) |
 | `LevelPlayTest` | Editor | play-test from the editor |
 | `LevelSolver` | Game | finishes a level with the game's rules (below) |
 | `LevelGenerator` | Game | builds levels from a `LevelGenerationRequest` (below) |

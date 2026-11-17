@@ -66,6 +66,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - [x] [T-47 Level generator](#t-47-level-generator)
 - [x] [T-48 Lives](#t-48-lives)
 - [x] [T-49 Twenty levels and the level hardener](#t-49-twenty-levels-and-the-level-hardener)
+- [x] [T-50 Level packs (JSON, remote-ready)](#t-50-level-packs-json-remote-ready)
 
 ---
 
@@ -837,3 +838,20 @@ and (T-33) the solver from `ColorBlockJam.Game`, so the editor never has its own
   harder never makes a level easier, and the same seed gives the same level.
 - **Tests:** `EM LevelHardenerTests`, `ShippedLevelsTests`.
 - **Docs:** level-data.md, level-editor.md.
+
+### T-50 Level packs (JSON, remote-ready)
+
+- **Req:** R-52. Implements DA-41.
+- **Arch:** as built ([level-packs.md](../General/level-packs.md)):
+  - `LevelPackJson` reads and writes a versioned, human-readable pack.
+  - `LevelPackService` (Root, an `ILevelSource`) loads the stored remote pack or the bundled `levels.json`
+    in `LoadLevelsStep`, and checks and stores remote packs (`TryStoreRemote`).
+  - `LevelProvider` reads `ILevelSource`.
+  - `LevelCatalogEditing` rewrites `levels.json` on every change; editor menus write it and copy it compact.
+- **Accept:**
+  - The game plays `levels.json`, which always matches the catalog.
+  - A valid remote pack plays from the next launch.
+  - A broken or older one is dropped with a warning and the bundled levels play.
+- **Tests:** `EM LevelPackJsonTests`, `LevelPackServiceTests`, `LevelCatalogEditingTests`,
+  `ShippedLevelsTests`, `InstallerResolutionTests`.
+- **Docs:** level-packs.md, level-data.md, persistence.md, splash-boot.md, architecture.md.

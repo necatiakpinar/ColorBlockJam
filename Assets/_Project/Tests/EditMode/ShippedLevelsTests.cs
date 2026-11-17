@@ -3,8 +3,10 @@ using NUnit.Framework;
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Levels;
 using ColorBlockJam.Game.Levels.Generation;
+using ColorBlockJam.Game.Levels.Packs;
 using ColorBlockJam.Game.Levels.Solving;
 using UnityEditor;
+using UnityEngine;
 
 namespace ColorBlockJam.Tests.EditMode
 {
@@ -18,6 +20,7 @@ namespace ColorBlockJam.Tests.EditMode
     {
         const string CatalogPath = "Assets/_Project/Levels/LevelCatalog.asset";
         const string RulesPath = "Assets/_Project/Configs/LevelRulesConfig.asset";
+        const string PackConfigPath = "Assets/_Project/Configs/LevelPackConfig.asset";
 
         const int RampLevels = 8;
         const int GroupSize = 6;
@@ -37,6 +40,18 @@ namespace ColorBlockJam.Tests.EditMode
 
         /// <summary>A Hard level after the ramp gives the player a rest between peaks.</summary>
         static bool IsBreather(int index) => index >= RampLevels && Levels()[index].Data.Difficulty == LevelDifficulty.Hard;
+
+        [Test]
+        public void BundledPack_ShouldHoldTheCatalogsLevels_WhenTheGameShips()
+        {
+            // The game plays levels.json; the editor rewrites it on every catalog change (level-packs.md).
+            TextAsset bundled = AssetDatabase.LoadAssetAtPath<LevelPackConfig>(PackConfigPath).BundledPack;
+
+            Assert.That(new LevelPackJson().TryRead(bundled.text, out LevelPack pack, out string error), Is.True, error);
+            Assert.That(pack.Levels, Has.Count.EqualTo(Levels().Count));
+            for (int i = 0; i < pack.Levels.Count; i++)
+                Assert.That(JsonUtility.ToJson(pack.Levels[i]), Is.EqualTo(JsonUtility.ToJson(Levels()[i].Data)), $"Level {i + 1}");
+        }
 
         [Test]
         public void Catalog_ShouldShipTwentyLevels_WhenBuilt()

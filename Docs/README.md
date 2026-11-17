@@ -27,6 +27,7 @@ Pages marked **binding** carry rules agents must follow before touching the path
 | [General/ui.md](General/ui.md) | canvases, safe area, button feedback, popups | yes |
 | [General/gameplay.md](General/gameplay.md) | board space, input, movement and exit rules | yes |
 | [General/level-data.md](General/level-data.md) | level format, catalog, validation rules | yes |
+| [General/level-packs.md](General/level-packs.md) | the level pack JSON the game plays, bundled or from remote config | yes |
 | [General/persistence.md](General/persistence.md) | saved player data: progress, wallet, settings | yes |
 | [General/economy.md](General/economy.md) | coins: win rewards by level difficulty | yes |
 | [General/network.md](General/network.md) | online requirement: connectivity probe, trusted time | yes |

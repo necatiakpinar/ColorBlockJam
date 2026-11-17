@@ -5,6 +5,7 @@ using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Levels;
 using ColorBlockJam.Game.Levels.Blockers;
 using ColorBlockJam.Game.Levels.Generation;
+using ColorBlockJam.Game.Levels.Packs;
 using ColorBlockJam.Game.Levels.Solving;
 using Cysharp.Threading.Tasks;
 using UnityEditor;
@@ -102,6 +103,24 @@ namespace ColorBlockJam.Editor.LevelEditing
 
         [MenuItem("ColorBlockJam/Level Editor %#l")]
         static void Open() => GetWindow<LevelEditorWindow>("Level Editor").Show();
+
+        /// <summary>Rewrites levels.json from the catalog; every catalog change does this already (level-packs.md).</summary>
+        [MenuItem("ColorBlockJam/Write Level Pack (levels.json)")]
+        static void WritePack() =>
+            new LevelCatalogEditing(AssetDatabase.LoadAssetAtPath<LevelCatalog>(CatalogPath), LevelsFolder).WritePack();
+
+        /// <summary>Puts levels.json, compact, on the clipboard, ready to paste as the remote config value (level-packs.md §4).</summary>
+        [MenuItem("ColorBlockJam/Copy Level Pack for Remote Config")]
+        static void CopyPackForRemote()
+        {
+            var json = new LevelPackJson();
+            string path = $"{LevelsFolder}/{LevelCatalogEditing.PackFile}";
+            if (!json.TryRead(System.IO.File.ReadAllText(path), out LevelPack pack, out string error))
+                throw new InvalidOperationException($"{path} does not read: {error}");
+            EditorGUIUtility.systemCopyBuffer = json.Write(pack, readable: false);
+            EditorUtility.DisplayDialog("Level pack copied",
+                $"Revision {pack.Revision}, {pack.Levels.Count} levels, on the clipboard as compact JSON.", "OK");
+        }
 
         LevelDraft Draft => _state.Draft;
 

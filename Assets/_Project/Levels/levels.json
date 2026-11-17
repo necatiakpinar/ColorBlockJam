@@ -1,0 +1,3869 @@
+{
+    "format": 1,
+    "revision": 1,
+    "levels": [
+        {
+            "width": 4,
+            "height": 4,
+            "timer": 60,
+            "difficulty": "Normal",
+            "doors": [
+                {
+                    "side": "Right",
+                    "start": 2,
+                    "length": 1,
+                    "color": "Cyan"
+                },
+                {
+                    "side": "Bottom",
+                    "start": 1,
+                    "length": 1,
+                    "color": "Purple"
+                }
+            ],
+            "blocks": [
+                {
+                    "color": "Cyan",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Purple",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                }
+            ]
+        },
+        {
+            "width": 5,
+            "height": 5,
+            "timer": 60,
+            "difficulty": "Normal",
+            "doors": [
+                {
+                    "side": "Top",
+                    "start": 2,
+                    "length": 2,
+                    "color": "Cyan"
+                },
+                {
+                    "side": "Bottom",
+                    "start": 1,
+                    "length": 2,
+                    "color": "Orange"
+                },
+                {
+                    "side": "Left",
+                    "start": 1,
+                    "length": 3,
+                    "color": "Blue"
+                }
+            ],
+            "blocks": [
+                {
+                    "color": "Cyan",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 4
+                        },
+                        {
+                            "x": 3,
+                            "y": 3
+                        },
+                        {
+                            "x": 4,
+                            "y": 4
+                        },
+                        {
+                            "x": 4,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Orange",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 0
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Blue",
+                    "cells": [
+                        {
+                            "x": 0,
+                            "y": 3
+                        },
+                        {
+                            "x": 1,
+                            "y": 3
+                        },
+                        {
+                            "x": 1,
+                            "y": 4
+                        },
+                        {
+                            "x": 2,
+                            "y": 4
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                }
+            ]
+        },
+        {
+            "width": 5,
+            "height": 6,
+            "timer": 90,
+            "difficulty": "Hard",
+            "doors": [
+                {
+                    "side": "Right",
+                    "start": 3,
+                    "length": 1,
+                    "color": "Yellow"
+                },
+                {
+                    "side": "Right",
+                    "start": 0,
+                    "length": 1,
+                    "color": "Orange"
+                },
+                {
+                    "side": "Top",
+                    "start": 0,
+                    "length": 2,
+                    "color": "Purple"
+                },
+                {
+                    "side": "Bottom",
+                    "start": 0,
+                    "length": 1,
+                    "color": "Red"
+                }
+            ],
+            "blocks": [
+                {
+                    "color": "Yellow",
+                    "cells": [
+                        {
+                            "x": 2,
+                            "y": 5
+                        },
+                        {
+                            "x": 1,
+                            "y": 5
+                        },
+                        {
+                            "x": 0,
+                            "y": 5
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Orange",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 1
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Purple",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 4
+                        },
+                        {
+                            "x": 2,
+                            "y": 4
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Red",
+                    "cells": [
+                        {
+                            "x": 0,
+                            "y": 1
+                        },
+                        {
+                            "x": 0,
+                            "y": 2
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Yellow",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 0
+                        },
+                        {
+                            "x": 2,
+                            "y": 0
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                }
+            ]
+        },
+        {
+            "width": 6,
+            "height": 7,
+            "timer": 120,
+            "difficulty": "Hard",
+            "doors": [
+                {
+                    "side": "Right",
+                    "start": 2,
+                    "length": 2,
+                    "color": "Pink"
+                },
+                {
+                    "side": "Top",
+                    "start": 1,
+                    "length": 2,
+                    "color": "Orange"
+                },
+                {
+                    "side": "Top",
+                    "start": 0,
+                    "length": 1,
+                    "color": "Blue"
+                },
+                {
+                    "side": "Left",
+                    "start": 5,
+                    "length": 2,
+                    "color": "Yellow"
+                },
+                {
+                    "side": "Right",
+                    "start": 4,
+                    "length": 1,
+                    "color": "Red"
+                }
+            ],
+            "blocks": [
+                {
+                    "color": "Pink",
+                    "cells": [
+                        {
+                            "x": 0,
+                            "y": 5
+                        },
+                        {
+                            "x": 0,
+                            "y": 4
+                        },
+                        {
+                            "x": 1,
+                            "y": 5
+                        },
+                        {
+                            "x": 2,
+                            "y": 5
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Orange",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 2
+                        },
+                        {
+                            "x": 3,
+                            "y": 1
+                        },
+                        {
+                            "x": 3,
+                            "y": 0
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Blue",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Yellow",
+                    "cells": [
+                        {
+                            "x": 5,
+                            "y": 5
+                        },
+                        {
+                            "x": 4,
+                            "y": 5
+                        },
+                        {
+                            "x": 5,
+                            "y": 4
+                        },
+                        {
+                            "x": 4,
+                            "y": 4
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Red",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 1
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Pink",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 3
+                        },
+                        {
+                            "x": 4,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Orange",
+                    "cells": [
+                        {
+                            "x": 0,
+                            "y": 1
+                        },
+                        {
+                            "x": 1,
+                            "y": 1
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                }
+            ]
+        },
+        {
+            "width": 6,
+            "height": 7,
+            "timer": 160,
+            "difficulty": "VeryHard",
+            "doors": [
+                {
+                    "side": "Top",
+                    "start": 4,
+                    "length": 1,
+                    "color": "Red"
+                },
+                {
+                    "side": "Bottom",
+                    "start": 2,
+                    "length": 2,
+                    "color": "Green"
+                },
+                {
+                    "side": "Left",
+                    "start": 4,
+                    "length": 2,
+                    "color": "Purple"
+                },
+                {
+                    "side": "Left",
+                    "start": 2,
+                    "length": 2,
+                    "color": "Blue"
+                },
+                {
+                    "side": "Right",
+                    "start": 2,
+                    "length": 3,
+                    "color": "Orange"
+                },
+                {
+                    "side": "Bottom",
+                    "start": 4,
+                    "length": 1,
+                    "color": "Yellow"
+                }
+            ],
+            "blocks": [
+                {
+                    "color": "Red",
+                    "cells": [
+                        {
+                            "x": 5,
+                            "y": 2
+                        },
+                        {
+                            "x": 5,
+                            "y": 3
+                        },
+                        {
+                            "x": 5,
+                            "y": 4
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Green",
+                    "cells": [
+                        {
+                            "x": 0,
+                            "y": 4
+                        },
+                        {
+                            "x": 0,
+                            "y": 3
+                        },
+                        {
+                            "x": 1,
+                            "y": 3
+                        },
+                        {
+                            "x": 1,
+                            "y": 2
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Purple",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 4
+                        },
+                        {
+                            "x": 3,
+                            "y": 4
+                        },
+                        {
+                            "x": 3,
+                            "y": 3
+                        },
+                        {
+                            "x": 2,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Blue",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 1
+                        },
+                        {
+                            "x": 2,
+                            "y": 1
+                        },
+                        {
+                            "x": 2,
+                            "y": 0
+                        },
+                        {
+                            "x": 1,
+                            "y": 0
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Orange",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 2
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Yellow",
+                    "cells": [
+                        {
+                            "x": 0,
+                            "y": 5
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Red",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 6
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Green",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 1
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                }
+            ]
+        },
+        {
+            "width": 6,
+            "height": 7,
+            "timer": 190,
+            "difficulty": "VeryHard",
+            "doors": [
+                {
+                    "side": "Right",
+                    "start": 0,
+                    "length": 2,
+                    "color": "Cyan"
+                },
+                {
+                    "side": "Bottom",
+                    "start": 0,
+                    "length": 2,
+                    "color": "Red"
+                },
+                {
+                    "side": "Right",
+                    "start": 5,
+                    "length": 1,
+                    "color": "Pink"
+                },
+                {
+                    "side": "Top",
+                    "start": 0,
+                    "length": 2,
+                    "color": "Blue"
+                },
+                {
+                    "side": "Left",
+                    "start": 5,
+                    "length": 1,
+                    "color": "Green"
+                },
+                {
+                    "side": "Top",
+                    "start": 5,
+                    "length": 1,
+                    "color": "Purple"
+                }
+            ],
+            "blocks": [
+                {
+                    "color": "Cyan",
+                    "cells": [
+                        {
+                            "x": 2,
+                            "y": 1
+                        },
+                        {
+                            "x": 1,
+                            "y": 1
+                        },
+                        {
+                            "x": 0,
+                            "y": 1
+                        },
+                        {
+                            "x": 1,
+                            "y": 0
+                        }
+                    ],
+                    "ice": 4,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Red",
+                    "cells": [
+                        {
+                            "x": 5,
+                            "y": 6
+                        },
+                        {
+                            "x": 4,
+                            "y": 6
+                        },
+                        {
+                            "x": 5,
+                            "y": 5
+                        },
+                        {
+                            "x": 4,
+                            "y": 5
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Pink",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 4
+                        },
+                        {
+                            "x": 5,
+                            "y": 4
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Blue",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 5
+                        },
+                        {
+                            "x": 1,
+                            "y": 6
+                        },
+                        {
+                            "x": 0,
+                            "y": 5
+                        },
+                        {
+                            "x": 0,
+                            "y": 6
+                        }
+                    ],
+                    "ice": 2,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Green",
+                    "cells": [
+                        {
+                            "x": 2,
+                            "y": 0
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Purple",
+                    "cells": [
+                        {
+                            "x": 0,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Cyan",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 2
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Red",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 0
+                        },
+                        {
+                            "x": 5,
+                            "y": 0
+                        },
+                        {
+                            "x": 4,
+                            "y": 1
+                        },
+                        {
+                            "x": 5,
+                            "y": 1
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Pink",
+                    "cells": [
+                        {
+                            "x": 5,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                }
+            ]
+        },
+        {
+            "width": 6,
+            "height": 7,
+            "timer": 200,
+            "difficulty": "VeryHard",
+            "doors": [
+                {
+                    "side": "Top",
+                    "start": 3,
+                    "length": 2,
+                    "color": "Orange"
+                },
+                {
+                    "side": "Bottom",
+                    "start": 3,
+                    "length": 3,
+                    "color": "Green"
+                },
+                {
+                    "side": "Left",
+                    "start": 3,
+                    "length": 2,
+                    "color": "Cyan"
+                },
+                {
+                    "side": "Right",
+                    "start": 0,
+                    "length": 2,
+                    "color": "Purple"
+                },
+                {
+                    "side": "Right",
+                    "start": 4,
+                    "length": 2,
+                    "color": "Blue"
+                },
+                {
+                    "side": "Bottom",
+                    "start": 0,
+                    "length": 1,
+                    "color": "Red"
+                }
+            ],
+            "blocks": [
+                {
+                    "color": "Orange",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 3
+                        },
+                        {
+                            "x": 0,
+                            "y": 3
+                        },
+                        {
+                            "x": 1,
+                            "y": 2
+                        },
+                        {
+                            "x": 1,
+                            "y": 1
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Green",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 4
+                        },
+                        {
+                            "x": 4,
+                            "y": 3
+                        },
+                        {
+                            "x": 4,
+                            "y": 2
+                        },
+                        {
+                            "x": 5,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Cyan",
+                    "cells": [
+                        {
+                            "x": 2,
+                            "y": 4
+                        },
+                        {
+                            "x": 2,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "Horizontal"
+                },
+                {
+                    "color": "Purple",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 5
+                        },
+                        {
+                            "x": 2,
+                            "y": 5
+                        },
+                        {
+                            "x": 3,
+                            "y": 5
+                        },
+                        {
+                            "x": 2,
+                            "y": 6
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Blue",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 1
+                        },
+                        {
+                            "x": 4,
+                            "y": 0
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Red",
+                    "cells": [
+                        {
+                            "x": 0,
+                            "y": 1
+                        },
+                        {
+                            "x": 0,
+                            "y": 0
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "Vertical"
+                },
+                {
+                    "color": "Orange",
+                    "cells": [
+                        {
+                            "x": 2,
+                            "y": 2
+                        },
+                        {
+                            "x": 2,
+                            "y": 1
+                        },
+                        {
+                            "x": 2,
+                            "y": 0
+                        },
+                        {
+                            "x": 3,
+                            "y": 1
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Green",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 5
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Cyan",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 4
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                }
+            ]
+        },
+        {
+            "width": 6,
+            "height": 8,
+            "timer": 220,
+            "difficulty": "VeryHard",
+            "doors": [
+                {
+                    "side": "Left",
+                    "start": 3,
+                    "length": 3,
+                    "color": "Cyan"
+                },
+                {
+                    "side": "Left",
+                    "start": 7,
+                    "length": 1,
+                    "color": "Pink"
+                },
+                {
+                    "side": "Bottom",
+                    "start": 4,
+                    "length": 1,
+                    "color": "Orange"
+                },
+                {
+                    "side": "Top",
+                    "start": 3,
+                    "length": 3,
+                    "color": "Purple"
+                },
+                {
+                    "side": "Left",
+                    "start": 1,
+                    "length": 1,
+                    "color": "Yellow"
+                },
+                {
+                    "side": "Right",
+                    "start": 2,
+                    "length": 2,
+                    "color": "Red"
+                }
+            ],
+            "blocks": [
+                {
+                    "color": "Cyan",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 7
+                        },
+                        {
+                            "x": 2,
+                            "y": 7
+                        },
+                        {
+                            "x": 3,
+                            "y": 7
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Pink",
+                    "cells": [
+                        {
+                            "x": 5,
+                            "y": 2
+                        },
+                        {
+                            "x": 4,
+                            "y": 2
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Orange",
+                    "cells": [
+                        {
+                            "x": 0,
+                            "y": 3
+                        },
+                        {
+                            "x": 0,
+                            "y": 4
+                        },
+                        {
+                            "x": 0,
+                            "y": 5
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Purple",
+                    "cells": [
+                        {
+                            "x": 5,
+                            "y": 4
+                        },
+                        {
+                            "x": 5,
+                            "y": 5
+                        },
+                        {
+                            "x": 5,
+                            "y": 6
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "Vertical"
+                },
+                {
+                    "color": "Yellow",
+                    "cells": [
+                        {
+                            "x": 0,
+                            "y": 6
+                        },
+                        {
+                            "x": 1,
+                            "y": 6
+                        },
+                        {
+                            "x": 2,
+                            "y": 6
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Red",
+                    "cells": [
+                        {
+                            "x": 2,
+                            "y": 1
+                        },
+                        {
+                            "x": 1,
+                            "y": 1
+                        },
+                        {
+                            "x": 1,
+                            "y": 0
+                        },
+                        {
+                            "x": 0,
+                            "y": 0
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Cyan",
+                    "cells": [
+                        {
+                            "x": 2,
+                            "y": 4
+                        },
+                        {
+                            "x": 2,
+                            "y": 5
+                        },
+                        {
+                            "x": 1,
+                            "y": 4
+                        },
+                        {
+                            "x": 1,
+                            "y": 5
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "Horizontal"
+                },
+                {
+                    "color": "Pink",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 4
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Orange",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 6
+                        },
+                        {
+                            "x": 4,
+                            "y": 7
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "Vertical"
+                },
+                {
+                    "color": "Purple",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 0
+                        },
+                        {
+                            "x": 3,
+                            "y": 1
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                }
+            ]
+        },
+        {
+            "width": 6,
+            "height": 7,
+            "timer": 220,
+            "difficulty": "VeryHard",
+            "doors": [
+                {
+                    "side": "Bottom",
+                    "start": 0,
+                    "length": 2,
+                    "color": "Red"
+                },
+                {
+                    "side": "Top",
+                    "start": 3,
+                    "length": 3,
+                    "color": "Green"
+                },
+                {
+                    "side": "Right",
+                    "start": 2,
+                    "length": 1,
+                    "color": "Pink"
+                },
+                {
+                    "side": "Left",
+                    "start": 3,
+                    "length": 3,
+                    "color": "Cyan"
+                },
+                {
+                    "side": "Right",
+                    "start": 4,
+                    "length": 2,
+                    "color": "Orange"
+                }
+            ],
+            "blocks": [
+                {
+                    "color": "Red",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 2
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Green",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 1
+                        },
+                        {
+                            "x": 2,
+                            "y": 1
+                        },
+                        {
+                            "x": 2,
+                            "y": 2
+                        },
+                        {
+                            "x": 3,
+                            "y": 2
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Pink",
+                    "cells": [
+                        {
+                            "x": 0,
+                            "y": 3
+                        },
+                        {
+                            "x": 1,
+                            "y": 3
+                        },
+                        {
+                            "x": 2,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Cyan",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 5
+                        },
+                        {
+                            "x": 3,
+                            "y": 4
+                        },
+                        {
+                            "x": 3,
+                            "y": 3
+                        },
+                        {
+                            "x": 4,
+                            "y": 4
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Orange",
+                    "cells": [
+                        {
+                            "x": 2,
+                            "y": 0
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Red",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 5
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Green",
+                    "cells": [
+                        {
+                            "x": 0,
+                            "y": 5
+                        },
+                        {
+                            "x": 1,
+                            "y": 5
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Pink",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 6
+                        },
+                        {
+                            "x": 2,
+                            "y": 6
+                        },
+                        {
+                            "x": 1,
+                            "y": 6
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Cyan",
+                    "cells": [
+                        {
+                            "x": 0,
+                            "y": 2
+                        },
+                        {
+                            "x": 0,
+                            "y": 1
+                        },
+                        {
+                            "x": 0,
+                            "y": 0
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                }
+            ]
+        },
+        {
+            "width": 6,
+            "height": 7,
+            "timer": 235,
+            "difficulty": "VeryHard",
+            "doors": [
+                {
+                    "side": "Top",
+                    "start": 3,
+                    "length": 3,
+                    "color": "Yellow"
+                },
+                {
+                    "side": "Bottom",
+                    "start": 4,
+                    "length": 2,
+                    "color": "Cyan"
+                },
+                {
+                    "side": "Bottom",
+                    "start": 0,
+                    "length": 1,
+                    "color": "Red"
+                },
+                {
+                    "side": "Left",
+                    "start": 3,
+                    "length": 2,
+                    "color": "Purple"
+                },
+                {
+                    "side": "Right",
+                    "start": 0,
+                    "length": 2,
+                    "color": "Green"
+                },
+                {
+                    "side": "Left",
+                    "start": 0,
+                    "length": 3,
+                    "color": "Orange"
+                }
+            ],
+            "blocks": [
+                {
+                    "color": "Yellow",
+                    "cells": [
+                        {
+                            "x": 2,
+                            "y": 2
+                        },
+                        {
+                            "x": 2,
+                            "y": 1
+                        },
+                        {
+                            "x": 2,
+                            "y": 0
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Cyan",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 4
+                        },
+                        {
+                            "x": 0,
+                            "y": 4
+                        },
+                        {
+                            "x": 1,
+                            "y": 3
+                        },
+                        {
+                            "x": 1,
+                            "y": 2
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Red",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 5
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Purple",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 4
+                        },
+                        {
+                            "x": 3,
+                            "y": 3
+                        },
+                        {
+                            "x": 4,
+                            "y": 4
+                        },
+                        {
+                            "x": 4,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Green",
+                    "cells": [
+                        {
+                            "x": 5,
+                            "y": 2
+                        },
+                        {
+                            "x": 4,
+                            "y": 2
+                        },
+                        {
+                            "x": 3,
+                            "y": 2
+                        },
+                        {
+                            "x": 4,
+                            "y": 1
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Orange",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 6
+                        },
+                        {
+                            "x": 4,
+                            "y": 5
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Yellow",
+                    "cells": [
+                        {
+                            "x": 5,
+                            "y": 1
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Cyan",
+                    "cells": [
+                        {
+                            "x": 5,
+                            "y": 0
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Red",
+                    "cells": [
+                        {
+                            "x": 2,
+                            "y": 4
+                        },
+                        {
+                            "x": 2,
+                            "y": 5
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Purple",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 1
+                        },
+                        {
+                            "x": 3,
+                            "y": 0
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                }
+            ]
+        },
+        {
+            "width": 6,
+            "height": 7,
+            "timer": 145,
+            "difficulty": "Hard",
+            "doors": [
+                {
+                    "side": "Left",
+                    "start": 1,
+                    "length": 3,
+                    "color": "Pink"
+                },
+                {
+                    "side": "Right",
+                    "start": 4,
+                    "length": 1,
+                    "color": "Green"
+                },
+                {
+                    "side": "Right",
+                    "start": 2,
+                    "length": 1,
+                    "color": "Red"
+                },
+                {
+                    "side": "Bottom",
+                    "start": 2,
+                    "length": 1,
+                    "color": "Yellow"
+                },
+                {
+                    "side": "Left",
+                    "start": 0,
+                    "length": 1,
+                    "color": "Purple"
+                }
+            ],
+            "blocks": [
+                {
+                    "color": "Pink",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 6
+                        },
+                        {
+                            "x": 3,
+                            "y": 5
+                        },
+                        {
+                            "x": 3,
+                            "y": 4
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Green",
+                    "cells": [
+                        {
+                            "x": 0,
+                            "y": 5
+                        },
+                        {
+                            "x": 1,
+                            "y": 5
+                        },
+                        {
+                            "x": 2,
+                            "y": 5
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Red",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Yellow",
+                    "cells": [
+                        {
+                            "x": 0,
+                            "y": 2
+                        },
+                        {
+                            "x": 0,
+                            "y": 1
+                        },
+                        {
+                            "x": 0,
+                            "y": 0
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Purple",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 0
+                        },
+                        {
+                            "x": 4,
+                            "y": 0
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Pink",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 2
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Green",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 1
+                        },
+                        {
+                            "x": 4,
+                            "y": 1
+                        },
+                        {
+                            "x": 5,
+                            "y": 1
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Red",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 2
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Yellow",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 2
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                }
+            ]
+        },
+        {
+            "width": 6,
+            "height": 7,
+            "timer": 250,
+            "difficulty": "VeryHard",
+            "doors": [
+                {
+                    "side": "Bottom",
+                    "start": 3,
+                    "length": 3,
+                    "color": "Yellow"
+                },
+                {
+                    "side": "Right",
+                    "start": 5,
+                    "length": 2,
+                    "color": "Cyan"
+                },
+                {
+                    "side": "Left",
+                    "start": 1,
+                    "length": 3,
+                    "color": "Red"
+                },
+                {
+                    "side": "Right",
+                    "start": 1,
+                    "length": 2,
+                    "color": "Pink"
+                },
+                {
+                    "side": "Top",
+                    "start": 3,
+                    "length": 2,
+                    "color": "Blue"
+                },
+                {
+                    "side": "Left",
+                    "start": 0,
+                    "length": 1,
+                    "color": "Purple"
+                }
+            ],
+            "blocks": [
+                {
+                    "color": "Yellow",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 2
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Cyan",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 3
+                        },
+                        {
+                            "x": 3,
+                            "y": 3
+                        },
+                        {
+                            "x": 3,
+                            "y": 2
+                        },
+                        {
+                            "x": 2,
+                            "y": 2
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Red",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 5
+                        },
+                        {
+                            "x": 3,
+                            "y": 5
+                        },
+                        {
+                            "x": 2,
+                            "y": 5
+                        },
+                        {
+                            "x": 3,
+                            "y": 4
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Pink",
+                    "cells": [
+                        {
+                            "x": 2,
+                            "y": 1
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Blue",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 0
+                        },
+                        {
+                            "x": 2,
+                            "y": 0
+                        },
+                        {
+                            "x": 1,
+                            "y": 1
+                        },
+                        {
+                            "x": 1,
+                            "y": 2
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Purple",
+                    "cells": [
+                        {
+                            "x": 5,
+                            "y": 1
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Yellow",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 6
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "Vertical"
+                },
+                {
+                    "color": "Cyan",
+                    "cells": [
+                        {
+                            "x": 0,
+                            "y": 6
+                        },
+                        {
+                            "x": 1,
+                            "y": 6
+                        },
+                        {
+                            "x": 2,
+                            "y": 6
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Red",
+                    "cells": [
+                        {
+                            "x": 2,
+                            "y": 4
+                        },
+                        {
+                            "x": 1,
+                            "y": 4
+                        },
+                        {
+                            "x": 0,
+                            "y": 4
+                        },
+                        {
+                            "x": 1,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Pink",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 1
+                        },
+                        {
+                            "x": 4,
+                            "y": 0
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                }
+            ]
+        },
+        {
+            "width": 6,
+            "height": 8,
+            "timer": 270,
+            "difficulty": "VeryHard",
+            "doors": [
+                {
+                    "side": "Bottom",
+                    "start": 3,
+                    "length": 3,
+                    "color": "Green"
+                },
+                {
+                    "side": "Top",
+                    "start": 1,
+                    "length": 3,
+                    "color": "Pink"
+                },
+                {
+                    "side": "Right",
+                    "start": 1,
+                    "length": 2,
+                    "color": "Purple"
+                },
+                {
+                    "side": "Top",
+                    "start": 5,
+                    "length": 1,
+                    "color": "Cyan"
+                },
+                {
+                    "side": "Right",
+                    "start": 3,
+                    "length": 2,
+                    "color": "Yellow"
+                }
+            ],
+            "blocks": [
+                {
+                    "color": "Green",
+                    "cells": [
+                        {
+                            "x": 0,
+                            "y": 3
+                        },
+                        {
+                            "x": 1,
+                            "y": 3
+                        },
+                        {
+                            "x": 2,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Pink",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 0
+                        },
+                        {
+                            "x": 5,
+                            "y": 0
+                        }
+                    ],
+                    "ice": 1,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Purple",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Cyan",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 2
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Yellow",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 4
+                        },
+                        {
+                            "x": 3,
+                            "y": 4
+                        },
+                        {
+                            "x": 2,
+                            "y": 4
+                        },
+                        {
+                            "x": 3,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "Horizontal"
+                },
+                {
+                    "color": "Green",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 7
+                        },
+                        {
+                            "x": 4,
+                            "y": 6
+                        },
+                        {
+                            "x": 4,
+                            "y": 5
+                        },
+                        {
+                            "x": 5,
+                            "y": 6
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Pink",
+                    "cells": [
+                        {
+                            "x": 5,
+                            "y": 1
+                        },
+                        {
+                            "x": 5,
+                            "y": 2
+                        },
+                        {
+                            "x": 5,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Purple",
+                    "cells": [
+                        {
+                            "x": 2,
+                            "y": 6
+                        },
+                        {
+                            "x": 1,
+                            "y": 6
+                        },
+                        {
+                            "x": 2,
+                            "y": 5
+                        },
+                        {
+                            "x": 1,
+                            "y": 5
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Cyan",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 7
+                        }
+                    ],
+                    "ice": 2,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Yellow",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 1
+                        },
+                        {
+                            "x": 1,
+                            "y": 2
+                        },
+                        {
+                            "x": 0,
+                            "y": 1
+                        },
+                        {
+                            "x": 0,
+                            "y": 2
+                        }
+                    ],
+                    "ice": 2,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Green",
+                    "cells": [
+                        {
+                            "x": 0,
+                            "y": 6
+                        },
+                        {
+                            "x": 0,
+                            "y": 5
+                        },
+                        {
+                            "x": 0,
+                            "y": 4
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                }
+            ]
+        },
+        {
+            "width": 6,
+            "height": 8,
+            "timer": 300,
+            "difficulty": "VeryHard",
+            "doors": [
+                {
+                    "side": "Left",
+                    "start": 1,
+                    "length": 2,
+                    "color": "Purple"
+                },
+                {
+                    "side": "Top",
+                    "start": 1,
+                    "length": 2,
+                    "color": "Pink"
+                },
+                {
+                    "side": "Right",
+                    "start": 4,
+                    "length": 1,
+                    "color": "Yellow"
+                },
+                {
+                    "side": "Top",
+                    "start": 3,
+                    "length": 1,
+                    "color": "Green"
+                },
+                {
+                    "side": "Bottom",
+                    "start": 4,
+                    "length": 1,
+                    "color": "Blue"
+                }
+            ],
+            "blocks": [
+                {
+                    "color": "Purple",
+                    "cells": [
+                        {
+                            "x": 2,
+                            "y": 5
+                        },
+                        {
+                            "x": 2,
+                            "y": 4
+                        },
+                        {
+                            "x": 3,
+                            "y": 5
+                        },
+                        {
+                            "x": 3,
+                            "y": 4
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Pink",
+                    "cells": [
+                        {
+                            "x": 5,
+                            "y": 6
+                        },
+                        {
+                            "x": 5,
+                            "y": 5
+                        },
+                        {
+                            "x": 5,
+                            "y": 4
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Yellow",
+                    "cells": [
+                        {
+                            "x": 2,
+                            "y": 7
+                        },
+                        {
+                            "x": 3,
+                            "y": 7
+                        }
+                    ],
+                    "ice": 1,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Green",
+                    "cells": [
+                        {
+                            "x": 0,
+                            "y": 2
+                        },
+                        {
+                            "x": 0,
+                            "y": 3
+                        },
+                        {
+                            "x": 0,
+                            "y": 4
+                        }
+                    ],
+                    "ice": 1,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Blue",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 4
+                        },
+                        {
+                            "x": 1,
+                            "y": 5
+                        },
+                        {
+                            "x": 1,
+                            "y": 6
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Purple",
+                    "cells": [
+                        {
+                            "x": 5,
+                            "y": 1
+                        },
+                        {
+                            "x": 4,
+                            "y": 1
+                        }
+                    ],
+                    "ice": 3,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Pink",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 2
+                        }
+                    ],
+                    "ice": 1,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Yellow",
+                    "cells": [
+                        {
+                            "x": 2,
+                            "y": 6
+                        }
+                    ],
+                    "ice": 2,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Green",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 3,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Blue",
+                    "cells": [
+                        {
+                            "x": 5,
+                            "y": 2
+                        }
+                    ],
+                    "ice": 1,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Purple",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 6
+                        },
+                        {
+                            "x": 3,
+                            "y": 6
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                }
+            ]
+        },
+        {
+            "width": 7,
+            "height": 8,
+            "timer": 285,
+            "difficulty": "VeryHard",
+            "doors": [
+                {
+                    "side": "Left",
+                    "start": 1,
+                    "length": 3,
+                    "color": "Yellow"
+                },
+                {
+                    "side": "Left",
+                    "start": 5,
+                    "length": 2,
+                    "color": "Cyan"
+                },
+                {
+                    "side": "Top",
+                    "start": 3,
+                    "length": 2,
+                    "color": "Pink"
+                },
+                {
+                    "side": "Bottom",
+                    "start": 1,
+                    "length": 3,
+                    "color": "Purple"
+                },
+                {
+                    "side": "Right",
+                    "start": 0,
+                    "length": 1,
+                    "color": "Blue"
+                },
+                {
+                    "side": "Top",
+                    "start": 6,
+                    "length": 1,
+                    "color": "Green"
+                }
+            ],
+            "blocks": [
+                {
+                    "color": "Yellow",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 5
+                        },
+                        {
+                            "x": 3,
+                            "y": 4
+                        },
+                        {
+                            "x": 3,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Cyan",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 2
+                        },
+                        {
+                            "x": 2,
+                            "y": 2
+                        },
+                        {
+                            "x": 3,
+                            "y": 1
+                        },
+                        {
+                            "x": 2,
+                            "y": 1
+                        }
+                    ],
+                    "ice": 2,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Pink",
+                    "cells": [
+                        {
+                            "x": 2,
+                            "y": 5
+                        },
+                        {
+                            "x": 2,
+                            "y": 4
+                        },
+                        {
+                            "x": 2,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Purple",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 6
+                        },
+                        {
+                            "x": 0,
+                            "y": 6
+                        },
+                        {
+                            "x": 1,
+                            "y": 5
+                        },
+                        {
+                            "x": 1,
+                            "y": 4
+                        }
+                    ],
+                    "ice": 2,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Blue",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 5
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Green",
+                    "cells": [
+                        {
+                            "x": 0,
+                            "y": 1
+                        }
+                    ],
+                    "ice": 3,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Yellow",
+                    "cells": [
+                        {
+                            "x": 6,
+                            "y": 1
+                        },
+                        {
+                            "x": 5,
+                            "y": 1
+                        },
+                        {
+                            "x": 4,
+                            "y": 1
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "Horizontal"
+                },
+                {
+                    "color": "Cyan",
+                    "cells": [
+                        {
+                            "x": 6,
+                            "y": 2
+                        }
+                    ],
+                    "ice": 2,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Pink",
+                    "cells": [
+                        {
+                            "x": 5,
+                            "y": 5
+                        },
+                        {
+                            "x": 6,
+                            "y": 5
+                        },
+                        {
+                            "x": 5,
+                            "y": 6
+                        },
+                        {
+                            "x": 5,
+                            "y": 7
+                        }
+                    ],
+                    "ice": 1,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Purple",
+                    "cells": [
+                        {
+                            "x": 0,
+                            "y": 4
+                        },
+                        {
+                            "x": 0,
+                            "y": 3
+                        },
+                        {
+                            "x": 0,
+                            "y": 2
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Blue",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 7
+                        },
+                        {
+                            "x": 3,
+                            "y": 7
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Green",
+                    "cells": [
+                        {
+                            "x": 0,
+                            "y": 5
+                        }
+                    ],
+                    "ice": 1,
+                    "arrow": "None"
+                }
+            ]
+        },
+        {
+            "width": 7,
+            "height": 8,
+            "timer": 300,
+            "difficulty": "VeryHard",
+            "doors": [
+                {
+                    "side": "Bottom",
+                    "start": 3,
+                    "length": 2,
+                    "color": "Blue"
+                },
+                {
+                    "side": "Left",
+                    "start": 3,
+                    "length": 2,
+                    "color": "Pink"
+                },
+                {
+                    "side": "Left",
+                    "start": 1,
+                    "length": 1,
+                    "color": "Cyan"
+                },
+                {
+                    "side": "Right",
+                    "start": 4,
+                    "length": 3,
+                    "color": "Orange"
+                },
+                {
+                    "side": "Top",
+                    "start": 4,
+                    "length": 2,
+                    "color": "Green"
+                },
+                {
+                    "side": "Top",
+                    "start": 1,
+                    "length": 3,
+                    "color": "Purple"
+                }
+            ],
+            "blocks": [
+                {
+                    "color": "Blue",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 3
+                        },
+                        {
+                            "x": 4,
+                            "y": 4
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Pink",
+                    "cells": [
+                        {
+                            "x": 5,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 3,
+                    "arrow": "Horizontal"
+                },
+                {
+                    "color": "Cyan",
+                    "cells": [
+                        {
+                            "x": 6,
+                            "y": 2
+                        },
+                        {
+                            "x": 5,
+                            "y": 2
+                        },
+                        {
+                            "x": 4,
+                            "y": 2
+                        }
+                    ],
+                    "ice": 3,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Orange",
+                    "cells": [
+                        {
+                            "x": 2,
+                            "y": 0
+                        },
+                        {
+                            "x": 3,
+                            "y": 0
+                        },
+                        {
+                            "x": 2,
+                            "y": 1
+                        },
+                        {
+                            "x": 2,
+                            "y": 2
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Green",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 6
+                        },
+                        {
+                            "x": 1,
+                            "y": 5
+                        },
+                        {
+                            "x": 2,
+                            "y": 6
+                        },
+                        {
+                            "x": 2,
+                            "y": 5
+                        }
+                    ],
+                    "ice": 1,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Purple",
+                    "cells": [
+                        {
+                            "x": 6,
+                            "y": 0
+                        }
+                    ],
+                    "ice": 2,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Blue",
+                    "cells": [
+                        {
+                            "x": 5,
+                            "y": 5
+                        },
+                        {
+                            "x": 5,
+                            "y": 6
+                        },
+                        {
+                            "x": 4,
+                            "y": 6
+                        },
+                        {
+                            "x": 4,
+                            "y": 7
+                        }
+                    ],
+                    "ice": 2,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Pink",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 1
+                        },
+                        {
+                            "x": 4,
+                            "y": 1
+                        },
+                        {
+                            "x": 5,
+                            "y": 1
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Cyan",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 3,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Orange",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 4
+                        },
+                        {
+                            "x": 0,
+                            "y": 4
+                        }
+                    ],
+                    "ice": 2,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Green",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 3,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Purple",
+                    "cells": [
+                        {
+                            "x": 0,
+                            "y": 1
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                }
+            ]
+        },
+        {
+            "width": 7,
+            "height": 8,
+            "timer": 170,
+            "difficulty": "Hard",
+            "doors": [
+                {
+                    "side": "Top",
+                    "start": 0,
+                    "length": 3,
+                    "color": "Red"
+                },
+                {
+                    "side": "Bottom",
+                    "start": 5,
+                    "length": 2,
+                    "color": "Orange"
+                },
+                {
+                    "side": "Right",
+                    "start": 0,
+                    "length": 3,
+                    "color": "Purple"
+                },
+                {
+                    "side": "Left",
+                    "start": 1,
+                    "length": 2,
+                    "color": "Pink"
+                },
+                {
+                    "side": "Top",
+                    "start": 3,
+                    "length": 2,
+                    "color": "Yellow"
+                },
+                {
+                    "side": "Right",
+                    "start": 5,
+                    "length": 1,
+                    "color": "Cyan"
+                }
+            ],
+            "blocks": [
+                {
+                    "color": "Red",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 3
+                        },
+                        {
+                            "x": 3,
+                            "y": 3
+                        },
+                        {
+                            "x": 2,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Orange",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 7
+                        },
+                        {
+                            "x": 2,
+                            "y": 7
+                        },
+                        {
+                            "x": 3,
+                            "y": 6
+                        },
+                        {
+                            "x": 3,
+                            "y": 5
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Purple",
+                    "cells": [
+                        {
+                            "x": 6,
+                            "y": 2
+                        },
+                        {
+                            "x": 5,
+                            "y": 2
+                        },
+                        {
+                            "x": 6,
+                            "y": 1
+                        },
+                        {
+                            "x": 6,
+                            "y": 0
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Pink",
+                    "cells": [
+                        {
+                            "x": 2,
+                            "y": 4
+                        },
+                        {
+                            "x": 2,
+                            "y": 5
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Yellow",
+                    "cells": [
+                        {
+                            "x": 6,
+                            "y": 3
+                        },
+                        {
+                            "x": 6,
+                            "y": 4
+                        },
+                        {
+                            "x": 6,
+                            "y": 5
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Cyan",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 5
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Red",
+                    "cells": [
+                        {
+                            "x": 2,
+                            "y": 0
+                        },
+                        {
+                            "x": 3,
+                            "y": 0
+                        },
+                        {
+                            "x": 4,
+                            "y": 0
+                        },
+                        {
+                            "x": 3,
+                            "y": 1
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Orange",
+                    "cells": [
+                        {
+                            "x": 0,
+                            "y": 2
+                        },
+                        {
+                            "x": 0,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Purple",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 6
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Pink",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 4
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Yellow",
+                    "cells": [
+                        {
+                            "x": 5,
+                            "y": 4
+                        },
+                        {
+                            "x": 5,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                }
+            ]
+        },
+        {
+            "width": 7,
+            "height": 8,
+            "timer": 300,
+            "difficulty": "VeryHard",
+            "doors": [
+                {
+                    "side": "Right",
+                    "start": 6,
+                    "length": 2,
+                    "color": "Purple"
+                },
+                {
+                    "side": "Right",
+                    "start": 2,
+                    "length": 2,
+                    "color": "Cyan"
+                },
+                {
+                    "side": "Left",
+                    "start": 2,
+                    "length": 3,
+                    "color": "Blue"
+                },
+                {
+                    "side": "Left",
+                    "start": 6,
+                    "length": 1,
+                    "color": "Orange"
+                },
+                {
+                    "side": "Right",
+                    "start": 4,
+                    "length": 1,
+                    "color": "Green"
+                },
+                {
+                    "side": "Top",
+                    "start": 3,
+                    "length": 3,
+                    "color": "Pink"
+                }
+            ],
+            "blocks": [
+                {
+                    "color": "Purple",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 7
+                        },
+                        {
+                            "x": 1,
+                            "y": 6
+                        },
+                        {
+                            "x": 2,
+                            "y": 7
+                        },
+                        {
+                            "x": 3,
+                            "y": 7
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Cyan",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 5
+                        },
+                        {
+                            "x": 5,
+                            "y": 5
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Blue",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 1
+                        },
+                        {
+                            "x": 4,
+                            "y": 2
+                        },
+                        {
+                            "x": 4,
+                            "y": 3
+                        },
+                        {
+                            "x": 3,
+                            "y": 2
+                        }
+                    ],
+                    "ice": 3,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Orange",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 6
+                        },
+                        {
+                            "x": 4,
+                            "y": 6
+                        }
+                    ],
+                    "ice": 3,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Green",
+                    "cells": [
+                        {
+                            "x": 6,
+                            "y": 7
+                        }
+                    ],
+                    "ice": 3,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Pink",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 3
+                        },
+                        {
+                            "x": 1,
+                            "y": 2
+                        },
+                        {
+                            "x": 1,
+                            "y": 1
+                        },
+                        {
+                            "x": 2,
+                            "y": 2
+                        }
+                    ],
+                    "ice": 2,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Purple",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 4
+                        },
+                        {
+                            "x": 2,
+                            "y": 4
+                        },
+                        {
+                            "x": 3,
+                            "y": 4
+                        }
+                    ],
+                    "ice": 2,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Cyan",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 5
+                        },
+                        {
+                            "x": 0,
+                            "y": 5
+                        }
+                    ],
+                    "ice": 1,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Blue",
+                    "cells": [
+                        {
+                            "x": 0,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 2,
+                    "arrow": "Horizontal"
+                },
+                {
+                    "color": "Orange",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 4
+                        },
+                        {
+                            "x": 5,
+                            "y": 4
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Green",
+                    "cells": [
+                        {
+                            "x": 5,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Pink",
+                    "cells": [
+                        {
+                            "x": 6,
+                            "y": 1
+                        },
+                        {
+                            "x": 6,
+                            "y": 2
+                        },
+                        {
+                            "x": 6,
+                            "y": 3
+                        },
+                        {
+                            "x": 5,
+                            "y": 2
+                        }
+                    ],
+                    "ice": 2,
+                    "arrow": "None"
+                }
+            ]
+        },
+        {
+            "width": 6,
+            "height": 8,
+            "timer": 300,
+            "difficulty": "VeryHard",
+            "doors": [
+                {
+                    "side": "Bottom",
+                    "start": 1,
+                    "length": 1,
+                    "color": "Red"
+                },
+                {
+                    "side": "Top",
+                    "start": 4,
+                    "length": 2,
+                    "color": "Cyan"
+                },
+                {
+                    "side": "Left",
+                    "start": 0,
+                    "length": 3,
+                    "color": "Blue"
+                },
+                {
+                    "side": "Left",
+                    "start": 6,
+                    "length": 1,
+                    "color": "Yellow"
+                },
+                {
+                    "side": "Bottom",
+                    "start": 3,
+                    "length": 2,
+                    "color": "Purple"
+                }
+            ],
+            "blocks": [
+                {
+                    "color": "Red",
+                    "cells": [
+                        {
+                            "x": 2,
+                            "y": 1
+                        }
+                    ],
+                    "ice": 2,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Cyan",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 4
+                        },
+                        {
+                            "x": 1,
+                            "y": 5
+                        },
+                        {
+                            "x": 1,
+                            "y": 6
+                        },
+                        {
+                            "x": 0,
+                            "y": 5
+                        }
+                    ],
+                    "ice": 2,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Blue",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 2
+                        },
+                        {
+                            "x": 3,
+                            "y": 3
+                        },
+                        {
+                            "x": 2,
+                            "y": 3
+                        },
+                        {
+                            "x": 2,
+                            "y": 4
+                        }
+                    ],
+                    "ice": 3,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Yellow",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 1
+                        },
+                        {
+                            "x": 4,
+                            "y": 1
+                        },
+                        {
+                            "x": 5,
+                            "y": 1
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Purple",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 0
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Red",
+                    "cells": [
+                        {
+                            "x": 0,
+                            "y": 1
+                        },
+                        {
+                            "x": 0,
+                            "y": 2
+                        }
+                    ],
+                    "ice": 3,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Cyan",
+                    "cells": [
+                        {
+                            "x": 0,
+                            "y": 7
+                        },
+                        {
+                            "x": 0,
+                            "y": 6
+                        }
+                    ],
+                    "ice": 3,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Blue",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 3
+                        },
+                        {
+                            "x": 0,
+                            "y": 3
+                        },
+                        {
+                            "x": 1,
+                            "y": 2
+                        },
+                        {
+                            "x": 1,
+                            "y": 1
+                        }
+                    ],
+                    "ice": 3,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Yellow",
+                    "cells": [
+                        {
+                            "x": 5,
+                            "y": 4
+                        },
+                        {
+                            "x": 4,
+                            "y": 4
+                        },
+                        {
+                            "x": 3,
+                            "y": 4
+                        }
+                    ],
+                    "ice": 1,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Purple",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 6
+                        }
+                    ],
+                    "ice": 1,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Red",
+                    "cells": [
+                        {
+                            "x": 5,
+                            "y": 7
+                        }
+                    ],
+                    "ice": 3,
+                    "arrow": "None"
+                }
+            ]
+        },
+        {
+            "width": 7,
+            "height": 8,
+            "timer": 375,
+            "difficulty": "VeryHard",
+            "doors": [
+                {
+                    "side": "Bottom",
+                    "start": 3,
+                    "length": 2,
+                    "color": "Blue"
+                },
+                {
+                    "side": "Left",
+                    "start": 1,
+                    "length": 1,
+                    "color": "Red"
+                },
+                {
+                    "side": "Left",
+                    "start": 3,
+                    "length": 3,
+                    "color": "Cyan"
+                },
+                {
+                    "side": "Bottom",
+                    "start": 5,
+                    "length": 2,
+                    "color": "Pink"
+                },
+                {
+                    "side": "Right",
+                    "start": 5,
+                    "length": 1,
+                    "color": "Yellow"
+                },
+                {
+                    "side": "Top",
+                    "start": 1,
+                    "length": 3,
+                    "color": "Green"
+                }
+            ],
+            "blocks": [
+                {
+                    "color": "Blue",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 5
+                        },
+                        {
+                            "x": 1,
+                            "y": 6
+                        },
+                        {
+                            "x": 1,
+                            "y": 7
+                        },
+                        {
+                            "x": 0,
+                            "y": 6
+                        }
+                    ],
+                    "ice": 3,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Red",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 1
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "Horizontal"
+                },
+                {
+                    "color": "Cyan",
+                    "cells": [
+                        {
+                            "x": 5,
+                            "y": 2
+                        },
+                        {
+                            "x": 5,
+                            "y": 1
+                        }
+                    ],
+                    "ice": 3,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Pink",
+                    "cells": [
+                        {
+                            "x": 0,
+                            "y": 2
+                        },
+                        {
+                            "x": 0,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 1,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Yellow",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 4
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Green",
+                    "cells": [
+                        {
+                            "x": 1,
+                            "y": 1
+                        },
+                        {
+                            "x": 2,
+                            "y": 1
+                        },
+                        {
+                            "x": 1,
+                            "y": 2
+                        },
+                        {
+                            "x": 1,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "Vertical"
+                },
+                {
+                    "color": "Blue",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 6
+                        },
+                        {
+                            "x": 4,
+                            "y": 5
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "Vertical"
+                },
+                {
+                    "color": "Red",
+                    "cells": [
+                        {
+                            "x": 2,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Cyan",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 4
+                        },
+                        {
+                            "x": 2,
+                            "y": 4
+                        },
+                        {
+                            "x": 3,
+                            "y": 3
+                        },
+                        {
+                            "x": 3,
+                            "y": 2
+                        }
+                    ],
+                    "ice": 3,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Pink",
+                    "cells": [
+                        {
+                            "x": 4,
+                            "y": 4
+                        },
+                        {
+                            "x": 4,
+                            "y": 3
+                        }
+                    ],
+                    "ice": 3,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Yellow",
+                    "cells": [
+                        {
+                            "x": 3,
+                            "y": 0
+                        },
+                        {
+                            "x": 4,
+                            "y": 0
+                        }
+                    ],
+                    "ice": 2,
+                    "arrow": "None"
+                },
+                {
+                    "color": "Green",
+                    "cells": [
+                        {
+                            "x": 2,
+                            "y": 2
+                        }
+                    ],
+                    "ice": 0,
+                    "arrow": "Vertical"
+                }
+            ]
+        }
+    ]
+}

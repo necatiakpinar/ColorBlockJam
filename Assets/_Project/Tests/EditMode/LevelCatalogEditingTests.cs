@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using ColorBlockJam.Editor.LevelEditing;
 using ColorBlockJam.Game.Levels;
+using ColorBlockJam.Game.Levels.Packs;
 using ColorBlockJam.Tests.EditMode.Helpers;
 using UnityEditor;
 using UnityEngine;
@@ -38,6 +39,35 @@ namespace ColorBlockJam.Tests.EditMode
             foreach (LevelDefinition level in _catalog.Levels)
                 widths.Add(level.Data.Width);
             return widths;
+        }
+
+        LevelPack WrittenPack()
+        {
+            Assert.That(new LevelPackJson().TryRead(System.IO.File.ReadAllText(_editing.PackPath), out LevelPack pack, out string error), Is.True, error);
+            return pack;
+        }
+
+        [Test]
+        public void Change_ShouldRewriteTheLevelPack_WhenTheCatalogChanges()
+        {
+            _editing.Append(Level(3));
+            Assert.That(WrittenPack().Revision, Is.EqualTo(1));
+
+            _editing.Append(Level(5));
+            LevelPack pack = WrittenPack();
+
+            Assert.That(pack.Revision, Is.EqualTo(2), "A content change raises the revision.");
+            Assert.That(pack.Levels[1].Width, Is.EqualTo(5));
+        }
+
+        [Test]
+        public void WritePack_ShouldKeepTheRevision_WhenNothingChanged()
+        {
+            _editing.Append(Level(3));
+
+            _editing.WritePack();
+
+            Assert.That(WrittenPack().Revision, Is.EqualTo(1));
         }
 
         [Test]

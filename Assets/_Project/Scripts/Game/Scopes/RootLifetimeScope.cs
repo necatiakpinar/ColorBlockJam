@@ -3,7 +3,6 @@ using ColorBlockJam.Core.Network;
 using ColorBlockJam.Game.Boot;
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Installers;
-using ColorBlockJam.Game.Levels;
 using ColorBlockJam.Game.Lives;
 using UnityEngine;
 using VContainer;
@@ -24,7 +23,7 @@ namespace ColorBlockJam.Game.Scopes
         UiConfig _uiConfig;
 
         [SerializeField]
-        LevelCatalog _levelCatalog;
+        LevelPackConfig _levelPackConfig;
 
         [SerializeField]
         NetworkConfig _networkConfig;
@@ -40,7 +39,7 @@ namespace ColorBlockJam.Game.Scopes
 
         protected override void Configure(IContainerBuilder builder)
         {
-            new CoreServicesInstaller(_applicationConfig, _uiConfig, _levelCatalog, _networkConfig, _boosterConfig, _livesConfig)
+            new CoreServicesInstaller(_applicationConfig, _uiConfig, _levelPackConfig, _networkConfig, _boosterConfig, _livesConfig)
                 .Install(builder);
             builder.RegisterComponent(_pauseReporter);
 
