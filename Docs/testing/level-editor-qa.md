@@ -34,6 +34,7 @@ Checks for [level-editor.md](../General/level-editor.md). `⚙` = automated (tes
 
 - [ ] 👁 ▶ Play opens Gameplay straight on the edited level (through Splash), with the saved content.
 
-### Usability (T-31)
+### Usability (T-31, T-55)
 
 - [x] 👁 Hallway test (developer, 2026-11-17): someone new builds and plays a 2-block level using only the in-editor help.
+- [ ] 👁 The styled window reads at a glance in the dark and the light editor theme: header, cards, rounded buttons, difficulty strips, check chips; every button and shortcut still works.

@@ -20,8 +20,10 @@ namespace ColorBlockJam.Editor.LevelEditing
         const string RulesPath = "Assets/_Project/Configs/LevelRulesConfig.asset";
         const string ViewConfigPath = "Assets/_Project/Configs/BoardViewConfig.asset";
         const string RewardsPath = "Assets/_Project/Configs/LevelRewardConfig.asset";
-        const float ListWidth = 210f;
-        const float InspectorWidth = 320f;
+        const float ListWidth = 230f;
+        const float InspectorWidth = 340f;
+        const float HeaderHeight = 54f;
+        const float Gutter = 6f;
         const int GeneratorStateCap = 2000;
         const int HardenerStateCap = 5000;
         const int HardenerRounds = 25;
@@ -74,8 +76,8 @@ namespace ColorBlockJam.Editor.LevelEditing
         string[] _levelLabels = Array.Empty<string>();
         GUIContent[] _toolLabels;
         string[] _shapeNames;
-        GUIStyle _levelStyle;
-        GUIStyle _currentLevelStyle;
+        LevelDifficulty[] _levelDifficulties = Array.Empty<LevelDifficulty>();
+        LevelEditorSkin _skin;
         int _hoverKey = int.MinValue;
         bool _generating;
         CancellationTokenSource _generation;
@@ -120,10 +122,13 @@ namespace ColorBlockJam.Editor.LevelEditing
             _shapes = new BlockShapeLibrary();
             _generator = new LevelGenerator(_validator, GeneratorStateCap, _shapes);
             _hardener = new LevelHardener(_validator, HardenerStateCap);
+            _skin = new LevelEditorSkin();
             _toolLabels = new[]
             {
-                new GUIContent("Select", "Pick and drag blocks, pick doors (1)."), new GUIContent("Block", "Stamp or paint blocks (2)."),
-                new GUIContent("Door", "Drag along a wall to add a door (3)."), new GUIContent("Erase", "Click a block or door to remove it (4)."),
+                ToolContent("Select", "ViewToolMove", "Pick and drag blocks, pick doors (1)."),
+                ToolContent("Block", "Grid.PaintTool", "Stamp or paint blocks (2)."),
+                ToolContent("Door", "RectTool", "Drag along a wall to add a door (3)."),
+                ToolContent("Erase", "Grid.EraserTool", "Click a block or door to remove it (4)."),
             };
             var shapeNames = new List<string> { "Free" };
             foreach (BlockShape shape in _shapes.Shapes)
@@ -178,10 +183,12 @@ namespace ColorBlockJam.Editor.LevelEditing
         void RefreshLevelList()
         {
             IReadOnlyList<LevelDefinition> levels = _catalog.Catalog.Levels;
+            _levelDifficulties = new LevelDifficulty[levels.Count];
             _levelLabels = new string[levels.Count];
             for (int i = 0; i < levels.Count; i++)
             {
                 LevelData data = levels[i].Data;
+                _levelDifficulties[i] = data.Difficulty;
                 _levelLabels[i] = $"{i + 1}. {data.Width}x{data.Height} · {data.Blocks.Count} blocks · {data.Difficulty}";
             }
         }
@@ -190,87 +197,110 @@ namespace ColorBlockJam.Editor.LevelEditing
 
         void OnGUI()
         {
+            if (Event.current.type == EventType.MouseMove)
+                Repaint();
             HandleShortcuts(Event.current);
-            DrawToolbar();
-            float top = EditorGUIUtility.singleLineHeight + 6f;
-            var list = new Rect(0, top, ListWidth, position.height - top);
-            var inspector = new Rect(position.width - InspectorWidth, top, InspectorWidth, position.height - top);
-            var canvas = new Rect(ListWidth, top, position.width - ListWidth - InspectorWidth, position.height - top);
+            EditorGUI.DrawRect(new Rect(0, 0, position.width, position.height), _skin.WindowBack);
+            DrawToolbar(new Rect(0, 0, position.width, HeaderHeight));
+            float top = HeaderHeight + Gutter;
+            float height = position.height - top - Gutter;
+            var list = new Rect(Gutter, top, ListWidth, height);
+            var inspector = new Rect(position.width - InspectorWidth - Gutter, top, InspectorWidth, height);
+            var canvas = new Rect(list.xMax + Gutter, top, inspector.xMin - list.xMax - Gutter * 2f, height);
             DrawLevelList(list);
             DrawCanvas(canvas);
             DrawInspector(inspector);
         }
 
-        void DrawToolbar()
+        void DrawToolbar(Rect area)
         {
-            GUILayout.BeginHorizontal(EditorStyles.toolbar);
-            GUILayout.Label(_level >= 0 ? (_isDirty ? $"Level {_level + 1} *" : $"Level {_level + 1}") : "No level", EditorStyles.boldLabel,
-                GUILayout.Width(110));
+            EditorGUI.DrawRect(area, _skin.HeaderBack);
+            GUILayout.BeginArea(new Rect(area.x + 14, area.y, area.width - 28, area.height));
+            GUILayout.BeginHorizontal(GUILayout.Height(area.height));
+            GUILayout.BeginVertical(GUILayout.Width(280));
+            GUILayout.FlexibleSpace();
+            GUILayout.Label(_level >= 0 ? (_isDirty ? $"Level {_level + 1}  •  unsaved" : $"Level {_level + 1}") : "Level Editor",
+                _skin.HeaderTitle);
+            GUILayout.Label(_level >= 0
+                    ? $"{Draft.Width} × {Draft.Height}  ·  {Draft.Blocks.Count} blocks  ·  {Draft.Doors.Count} doors  ·  {Draft.Difficulty}"
+                    : "Pick a level on the left, or press New.", _skin.HeaderSubtitle);
+            GUILayout.FlexibleSpace();
+            GUILayout.EndVertical();
+            GUILayout.FlexibleSpace();
+            GUILayout.BeginVertical();
+            GUILayout.FlexibleSpace();
+            GUILayout.BeginHorizontal();
             using (new EditorGUI.DisabledScope(_level < 0))
             {
-                if (GUILayout.Button(new GUIContent("Save", "Write the level to its asset (Ctrl+S)."), EditorStyles.toolbarButton))
+                if (_skin.Button(new GUIContent("Save", "Write the level to its asset (Ctrl+S)."),
+                        _isDirty ? SkinButton.Success : SkinButton.Neutral, GUILayout.Width(76)))
                     Save();
-                if (GUILayout.Button(new GUIContent("Revert", "Drop the unsaved changes."), EditorStyles.toolbarButton))
+                if (_skin.Button(new GUIContent("Revert", "Drop the unsaved changes."), SkinButton.Neutral, GUILayout.Width(76)))
                     Load(_level);
-                if (GUILayout.Button(new GUIContent("Check", "Validate and solve now (C)."), EditorStyles.toolbarButton))
+                if (_skin.Button(new GUIContent("Check", "Validate and solve now (C)."), SkinButton.Primary, GUILayout.Width(76)))
                     CheckNow();
-                if (GUILayout.Button(new GUIContent("▶ Play", "Save and play this level in the game (P)."), EditorStyles.toolbarButton))
+                if (_skin.Button(new GUIContent("▶  Play", "Save and play this level in the game (P)."), SkinButton.Accent,
+                        GUILayout.Width(90)))
                     PlayTest();
             }
 
-            GUILayout.FlexibleSpace();
-            _showHelp = GUILayout.Toggle(_showHelp, new GUIContent("Help", "Show the guide and the shortcuts (F1)."),
-                EditorStyles.toolbarButton);
+            GUILayout.Space(10);
+            _showHelp = _skin.Toggle(_showHelp, new GUIContent("Help", "Show the guide and the shortcuts (F1)."), GUILayout.Width(64));
             GUILayout.EndHorizontal();
+            GUILayout.FlexibleSpace();
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+            GUILayout.EndArea();
         }
 
         void DrawLevelList(Rect area)
         {
-            GUILayout.BeginArea(area, EditorStyles.helpBox);
-            GUILayout.Label("Levels", EditorStyles.boldLabel);
+            GUILayout.BeginArea(area);
+            _skin.BeginCard($"Levels  ({_levelLabels.Length})", GUILayout.ExpandHeight(true));
             _listScroll = GUILayout.BeginScrollView(_listScroll);
             IReadOnlyList<LevelDefinition> levels = _catalog.Catalog.Levels;
             if (levels.Count == 0)
-                EditorGUILayout.HelpBox("The catalog is empty. Press New to make the first level.", MessageType.Info);
-            _levelStyle ??= new GUIStyle(EditorStyles.miniButton) { alignment = TextAnchor.MiddleLeft };
-            _currentLevelStyle ??= new GUIStyle(_levelStyle) { fontStyle = FontStyle.Bold };
+                GUILayout.Label("The catalog is empty. Press New to make the first level.", _skin.Muted);
             for (int i = 0; i < _levelLabels.Length; i++)
-                if (GUILayout.Toggle(i == _level, _levelLabels[i], i == _level ? _currentLevelStyle : _levelStyle) && i != _level)
+                if (_skin.ListRow(i == _level, _levelLabels[i], DifficultyColor(_levelDifficulties[i])) && i != _level)
                     TrySwitchTo(i);
 
             GUILayout.EndScrollView();
+            GUILayout.Space(4);
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button(new GUIContent("New", "Add an empty level at the end (N).")))
+            if (_skin.SmallButton(new GUIContent("+ New", "Add an empty level at the end (N)."), SkinButton.Primary))
                 NewLevel();
             using (new EditorGUI.DisabledScope(_level < 0))
             {
-                if (GUILayout.Button(new GUIContent("Copy", "Duplicate this level after itself (Shift+D).")))
+                if (_skin.SmallButton(new GUIContent("Copy", "Duplicate this level after itself (Shift+D)."), SkinButton.Neutral))
                     DuplicateLevel();
-                if (GUILayout.Button(new GUIContent("Delete", "Delete this level and its asset.")))
+                if (_skin.SmallButton(new GUIContent("Delete", "Delete this level and its asset."), SkinButton.Danger))
                     DeleteLevel();
             }
 
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
             using (new EditorGUI.DisabledScope(_level <= 0))
-                if (GUILayout.Button(new GUIContent("▲ Up", "Play this level earlier.")))
+                if (_skin.SmallButton(new GUIContent("▲  Earlier", "Play this level earlier."), SkinButton.Neutral))
                     MoveLevel(-1);
             using (new EditorGUI.DisabledScope(_level < 0 || _level >= levels.Count - 1))
-                if (GUILayout.Button(new GUIContent("▼ Down", "Play this level later.")))
+                if (_skin.SmallButton(new GUIContent("▼  Later", "Play this level later."), SkinButton.Neutral))
                     MoveLevel(1);
             GUILayout.EndHorizontal();
+            _skin.EndCard();
             GUILayout.EndArea();
         }
 
         void DrawCanvas(Rect area)
         {
+            _skin.RoundedRect(area, _skin.CardBack, 12f);
             if (_level < 0)
             {
                 GUI.Label(area, "Select or create a level.", EditorStyles.centeredGreyMiniLabel);
                 return;
             }
 
-            _canvas.Layout(new Rect(area.x + 8, area.y + 8, area.width - 16, area.height - 16), Draft.Width, Draft.Height);
+            _canvas.Layout(new Rect(area.x + 12, area.y + 12, area.width - 24, area.height - 24), Draft.Width, Draft.Height);
             _canvas.DrawBoard(Draft, _selectedDoor);
             if (_previewStep > 0 && Solution != null && Solution.Status == SolveStatus.Solvable)
                 DrawSolutionPreview();
@@ -478,7 +508,7 @@ namespace ColorBlockJam.Editor.LevelEditing
 
         void DrawInspector(Rect area)
         {
-            GUILayout.BeginArea(area, EditorStyles.helpBox);
+            GUILayout.BeginArea(area);
             _inspectorScroll = GUILayout.BeginScrollView(_inspectorScroll);
             if (_showHelp)
                 DrawHelp();
@@ -497,48 +527,74 @@ namespace ColorBlockJam.Editor.LevelEditing
 
         void DrawHelp()
         {
-            EditorGUILayout.HelpBox(
-                "Make a level in 5 steps:\n" +
-                "1. Set the board size, timer and difficulty below.\n" +
-                "2. Door tool (3): drag along a wall to add a door in the chosen colour.\n" +
-                "3. Block tool (2): click to stamp a shape, or pick Free and drag over cells.\n" +
-                "4. Fix every red line under Checks; it must say Solvable.\n" +
-                "5. Save (Ctrl+S) and press ▶ Play (P) to try it.\n\n" +
-                "Or let Generate build one and edit it.\n\n" +
-                "A frozen block (Ice above 0 on a selected block) cannot move until that many other blocks have left.\n\n" +
-                "Shortcuts: 1 Select · 2 Block · 3 Door · 4 Erase · Q/E colour · Tab shape · R rotate · I / Shift+I ice · A arrow · arrows move · " +
-                "Del remove · Esc deselect · Ctrl+Z / Ctrl+Y undo / redo · Ctrl+S save · N new · Shift+D copy · " +
-                "C check · Space step the solution · G generate · H make harder · P play · [ ] previous / next level · F1 help",
-                MessageType.None);
+            _skin.BeginCard("Make a level in 5 steps");
+            GUILayout.Label(
+                "<b>1.</b> Set the board size, timer and difficulty under Level.\n" +
+                "<b>2.</b> <b>Door</b> tool (3): drag along a wall to add a door in the chosen colour.\n" +
+                "<b>3.</b> <b>Block</b> tool (2): click to stamp a shape, or pick Free and drag over cells.\n" +
+                "<b>4.</b> Fix every red line under Checks; it must say <b>Solvable</b>.\n" +
+                "<b>5.</b> Save (Ctrl+S) and press <b>▶ Play</b> (P) to try it.\n\n" +
+                "Or let <b>Generate</b> build one and edit it. A frozen block (Ice above 0) cannot move until that " +
+                "many other blocks have left.", _skin.HelpText);
+            GUILayout.Space(4);
+            GUILayout.Label(
+                "1 Select · 2 Block · 3 Door · 4 Erase · Q/E colour · Tab shape · R rotate · I / Shift+I ice · A arrow · " +
+                "arrows move · Del remove · Esc deselect · Ctrl+Z / Ctrl+Y undo / redo · Ctrl+S save · N new · " +
+                "Shift+D copy · C check · Space step the solution · G generate · H make harder · P play · " +
+                "[ ] previous / next level · F1 help", _skin.Muted);
+            _skin.EndCard();
         }
 
         void DrawTools()
         {
-            Header("Tool");
-            int tool = GUILayout.Toolbar(ToolIndex(_tool), _toolLabels);
-            _tool = ToolAt(tool);
+            _skin.BeginCard("Tools");
+            GUILayout.BeginHorizontal();
+            int current = ToolIndex(_tool);
+            for (int i = 0; i < _toolLabels.Length; i++)
+                if (_skin.Toggle(i == current, _toolLabels[i], GUILayout.MinWidth(0)) && i != current)
+                    _tool = ToolAt(i);
+            GUILayout.EndHorizontal();
 
-            Header("Colour (Q / E)");
+            GUILayout.Space(6);
+            GUILayout.Label("Colour  (Q / E)", _skin.Muted);
             GUILayout.BeginHorizontal();
             for (int i = 0; i < Colors.Length; i++)
             {
-                Rect swatch = GUILayoutUtility.GetRect(26, 26, GUILayout.Width(26));
-                EditorGUI.DrawRect(swatch, _canvas.ColorOf(Colors[i]));
-                if (i == _color)
-                    EditorGUI.DrawRect(new Rect(swatch.x, swatch.yMax - 4, swatch.width, 4), Color.white);
+                Rect swatch = GUILayoutUtility.GetRect(30, 30, GUILayout.Width(30));
+                bool selected = i == _color;
+                if (selected)
+                    _skin.Frame(swatch, _skin.Text, 2.5f, 9f);
+                float inset = selected ? 4f : 1f;
+                _skin.RoundedRect(new Rect(swatch.x + inset, swatch.y + inset, swatch.width - inset * 2f, swatch.height - inset * 2f),
+                    _canvas.ColorOf(Colors[i]), 7f);
                 if (GUI.Button(swatch, new GUIContent("", Colors[i].ToString()), GUIStyle.none))
                     SetColor(i);
             }
 
             GUILayout.EndHorizontal();
 
-            Header("Shape (Tab, R turns)");
-            _shape = GUILayout.SelectionGrid(_shape + 1, _shapeNames, 4) - 1;
+            GUILayout.Space(6);
+            GUILayout.Label("Shape  (Tab, R turns)", _skin.Muted);
+            const int columns = 4;
+            for (int row = 0; row < _shapeNames.Length; row += columns)
+            {
+                GUILayout.BeginHorizontal();
+                for (int i = row; i < Mathf.Min(row + columns, _shapeNames.Length); i++)
+                {
+                    bool selected = _shape + 1 == i;
+                    if (_skin.Toggle(selected, new GUIContent(_shapeNames[i]), GUILayout.MinWidth(0)) && !selected)
+                        _shape = i - 1;
+                }
+
+                GUILayout.EndHorizontal();
+            }
+
+            _skin.EndCard();
         }
 
         void DrawLevelProperties()
         {
-            Header("Level");
+            _skin.BeginCard("Level");
             int width = EditorGUILayout.IntSlider(new GUIContent("Width", "Board columns."), Draft.Width, _rules.MinBoardSize, _rules.MaxBoardSize);
             int height = EditorGUILayout.IntSlider(new GUIContent("Height", "Board rows."), Draft.Height, _rules.MinBoardSize, _rules.MaxBoardSize);
             if (width != Draft.Width || height != Draft.Height)
@@ -552,29 +608,32 @@ namespace ColorBlockJam.Editor.LevelEditing
             if (difficulty != Draft.Difficulty)
                 Change("Difficulty", () => Draft.Difficulty = difficulty);
             EditorGUILayout.LabelField("Win reward", $"{RewardFor(Draft.Difficulty)} coins");
+            _skin.EndCard();
         }
 
         void DrawSelection()
         {
             if (_selectedBlock >= 0)
             {
-                Header($"Block {_selectedBlock + 1}");
+                _skin.BeginCard($"Block {_selectedBlock + 1}");
                 DraftBlock block = Draft.Blocks[_selectedBlock];
                 var color = (BlockColor)EditorGUILayout.EnumPopup("Colour", block.Color);
                 if (color != block.Color)
                     Change("Recolour block", () => block.Color = color);
                 EditorGUILayout.LabelField("Cells", block.Cells.Count.ToString());
                 DrawBlockers(block);
+                GUILayout.Space(4);
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button(new GUIContent("Rotate", "Turn a quarter clockwise (R).")))
+                if (_skin.SmallButton(new GUIContent("Rotate", "Turn a quarter clockwise (R)."), SkinButton.Primary))
                     RotateSelected();
-                if (GUILayout.Button(new GUIContent("Delete", "Remove the block (Del).")))
+                if (_skin.SmallButton(new GUIContent("Delete", "Remove the block (Del)."), SkinButton.Danger))
                     DeleteSelected();
                 GUILayout.EndHorizontal();
+                _skin.EndCard();
             }
             else if (_selectedDoor >= 0)
             {
-                Header($"Door on the {Draft.Doors[_selectedDoor].Side} wall");
+                _skin.BeginCard($"Door on the {Draft.Doors[_selectedDoor].Side} wall");
                 DraftDoor door = Draft.Doors[_selectedDoor];
                 var color = (BlockColor)EditorGUILayout.EnumPopup("Colour", door.Color);
                 if (color != door.Color)
@@ -584,47 +643,56 @@ namespace ColorBlockJam.Editor.LevelEditing
                 int length = EditorGUILayout.IntSlider(new GUIContent("Length", "Cells it spans."), door.Length, 1, wall);
                 if ((start != door.Start || length != door.Length) && !TryChange("Door span", () => Draft.TrySetDoorSpan(_selectedDoor, start, length)))
                     ShowNotification(new GUIContent("That span leaves the wall or covers another door."));
-                if (GUILayout.Button(new GUIContent("Delete", "Remove the door (Del).")))
+                GUILayout.Space(4);
+                if (_skin.SmallButton(new GUIContent("Delete", "Remove the door (Del)."), SkinButton.Danger))
                     DeleteSelected();
+                _skin.EndCard();
             }
         }
 
         void DrawChecks()
         {
-            Header("Checks");
+            _skin.BeginCard("Checks");
+            DrawCheckResults();
+            _skin.EndCard();
+        }
+
+        void DrawCheckResults()
+        {
             if (_checker.Issues.Count == 0)
-                EditorGUILayout.HelpBox("Structure: no problems.", MessageType.Info);
+                _skin.Chip("Structure: no problems.", _skin.Good);
             foreach (LevelIssue issue in _checker.Issues)
-                EditorGUILayout.HelpBox(issue.Message, issue.Severity == LevelIssueSeverity.Error ? MessageType.Error : MessageType.Warning);
+                _skin.Chip(issue.Message, issue.Severity == LevelIssueSeverity.Error ? _skin.Bad : _skin.Warn);
 
             if (_checker.IsSolving)
             {
-                EditorGUILayout.HelpBox("Solving…", MessageType.None);
+                _skin.Chip("Solving…", _skin.Accent);
                 return;
             }
 
             SolveResult solution = Solution;
             if (solution == null)
             {
-                EditorGUILayout.HelpBox("Fix the errors above to see whether the level can be finished.", MessageType.None);
+                GUILayout.Label("Fix the errors above to see whether the level can be finished.", _skin.Muted);
                 return;
             }
 
             switch (solution.Status)
             {
                 case SolveStatus.Solvable:
-                    EditorGUILayout.HelpBox($"Solvable: {solution.Rounds} exit rounds, {solution.Moves} room-making moves " +
-                                            $"(score {solution.Score}, plays like {DifficultyFor(solution.Score)}).", MessageType.Info);
+                    _skin.Chip($"Solvable: {solution.Rounds} exit rounds, {solution.Moves} room-making moves " +
+                               $"(score {solution.Score}, plays like {DifficultyFor(solution.Score)}).", _skin.Good);
                     break;
                 case SolveStatus.Unsolvable:
-                    EditorGUILayout.HelpBox("Unsolvable: some block can never reach a door of its colour.", MessageType.Error);
+                    _skin.Chip("Unsolvable: some block can never reach a door of its colour.", _skin.Bad);
                     return;
                 default:
-                    EditorGUILayout.HelpBox($"Unknown: gave up after {solution.StatesSearched} board states.", MessageType.Warning);
+                    _skin.Chip($"Unknown: gave up after {solution.StatesSearched} board states.", _skin.Warn);
                     return;
             }
 
-            GUILayout.Label("Solution (Space steps through it)", EditorStyles.miniBoldLabel);
+            GUILayout.Space(4);
+            GUILayout.Label("Solution  (Space steps through it)", _skin.Muted);
             _previewStep = EditorGUILayout.IntSlider("Show step", _previewStep, 0, solution.Steps.Count);
             for (int i = 0; i < solution.Steps.Count; i++)
             {
@@ -638,7 +706,7 @@ namespace ColorBlockJam.Editor.LevelEditing
 
         void DrawGenerator()
         {
-            Header("Generate (G)");
+            _skin.BeginCard("Generate  (G)");
             _genWidth = EditorGUILayout.IntSlider("Width", _genWidth, _rules.MinBoardSize, _rules.MaxBoardSize);
             _genHeight = EditorGUILayout.IntSlider("Height", _genHeight, _rules.MinBoardSize, _rules.MaxBoardSize);
             _genColors = EditorGUILayout.IntSlider(new GUIContent("Colours", "Block colours, one door each."), _genColors, 1, Colors.Length);
@@ -646,22 +714,25 @@ namespace ColorBlockJam.Editor.LevelEditing
             _genDifficulty = (LevelDifficulty)EditorGUILayout.EnumPopup("Difficulty", _genDifficulty);
             GUILayout.BeginHorizontal();
             _genSeed = EditorGUILayout.IntField(new GUIContent("Seed", "The same seed gives the same level."), _genSeed);
-            if (GUILayout.Button("Random", GUILayout.Width(60)))
+            if (_skin.SmallButton(new GUIContent("Random", "Pick a new seed."), SkinButton.Neutral, GUILayout.Width(70)))
                 _genSeed = UnityEngine.Random.Range(1, 1_000_000);
             GUILayout.EndHorizontal();
             using (new EditorGUI.DisabledScope(_generating))
             {
-                if (GUILayout.Button(new GUIContent(_generating ? "Working…" : _level >= 0 ? "Generate into this level" : "Generate a new level",
-                        "Replaces the canvas with a generated level; undo brings the old one back.")))
+                GUILayout.Space(4);
+                if (_skin.Button(new GUIContent(_generating ? "Working…" : _level >= 0 ? "Generate into this level" : "Generate a new level",
+                        "Replaces the canvas with a generated level; undo brings the old one back."), SkinButton.Primary))
                     Generate();
                 using (new EditorGUI.DisabledScope(_level < 0))
-                    if (GUILayout.Button(new GUIContent("Make harder (H)",
-                            "Moves blocks and doors and sets arrows and ice so the level needs more room-making moves; undo brings the old one back.")))
+                    if (_skin.Button(new GUIContent("Make harder  (H)",
+                            "Moves blocks and doors and sets arrows and ice so the level needs more room-making moves; undo brings the old one back."),
+                            SkinButton.Accent))
                         Harden();
             }
 
             if (!string.IsNullOrEmpty(_genMessage))
-                EditorGUILayout.HelpBox(_genMessage, MessageType.None);
+                GUILayout.Label(_genMessage, _skin.Muted);
+            _skin.EndCard();
         }
 
         void HandleShortcuts(Event e)
@@ -733,7 +804,7 @@ namespace ColorBlockJam.Editor.LevelEditing
         void DrawBlockers(DraftBlock block)
         {
             EditorGUILayout.Space(4f);
-            EditorGUILayout.LabelField("Blockers", EditorStyles.miniBoldLabel);
+            GUILayout.Label("Blockers", _skin.Muted);
             EditorGUI.indentLevel++;
             int ice = EditorGUILayout.IntSlider(new GUIContent("Ice",
                     "Frozen until this many other blocks have left; 0 = no ice (I / Shift+I)."),
@@ -1068,10 +1139,14 @@ namespace ColorBlockJam.Editor.LevelEditing
 
         static Tool ToolAt(int index) => index switch { 0 => Tool.Select, 1 => Tool.Block, 2 => Tool.Door, _ => Tool.Erase };
 
-        static void Header(string title)
+        Color DifficultyColor(LevelDifficulty difficulty) => difficulty switch
         {
-            EditorGUILayout.Space(6);
-            EditorGUILayout.LabelField(title, EditorStyles.boldLabel);
-        }
+            LevelDifficulty.Normal => _skin.Good,
+            LevelDifficulty.Hard => _skin.Warn,
+            _ => _skin.Bad,
+        };
+
+        static GUIContent ToolContent(string text, string icon, string tooltip) =>
+            new($" {text}", EditorGUIUtility.FindTexture((EditorGUIUtility.isProSkin ? "d_" : "") + icon), tooltip);
     }
 }

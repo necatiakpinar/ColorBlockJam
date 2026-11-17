@@ -12,10 +12,14 @@ game's own format ([level-data.md](level-data.md)), and checks them with the gam
 
 | Area | What it holds |
 | --- | --- |
-| Left | the catalog in play order: level number, size, blocks, difficulty; New, Copy, Delete, ▲ Up, ▼ Down |
-| Middle | the level seen from above: floor cells inside the dark wall ring, doors as coloured strips with an arrow out, blocks as joined coloured cells numbered 1, 2, 3… |
-| Right | help, tools, colours, shapes, level settings, the selection, checks with the solution, the generator |
-| Top | level name (`*` when unsaved), Save, Revert, Check, ▶ Play, Help |
+| Left | the catalog in play order: level number, size, blocks, difficulty, with a colour strip per difficulty (green Normal, amber Hard, red Very Hard); + New, Copy, Delete, ▲ Earlier, ▼ Later |
+| Middle | the level seen from above: rounded floor cells inside the dark wall ring, doors as rounded coloured tiles with an arrow out, blocks as joined coloured cells numbered 1, 2, 3… |
+| Right | one card each: help, tools (with icons), colours, shapes, level settings, the selection, checks as coloured chips (green, amber, red) with the solution, the generator |
+| Top | a coloured header: level name ("unsaved" when changed) and its size, blocks, doors and difficulty; Save (green when there is something to save), Revert, Check, ▶ Play, Help |
+
+The look comes from `LevelEditorSkin` (editor assembly): rounded buttons in five kinds (neutral, primary,
+success, danger, accent), cards, list rows and chips, with colours for the dark and the light editor theme.
+It only draws; every tool, shortcut (DA-34) and check works as before (T-55).
 
 ### Make a level in five steps
 

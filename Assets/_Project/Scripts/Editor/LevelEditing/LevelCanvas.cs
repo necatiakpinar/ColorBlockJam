@@ -8,15 +8,13 @@ namespace ColorBlockJam.Editor.LevelEditing
 {
     public sealed class LevelCanvas
     {
-        static readonly Color Background = new(0.16f, 0.17f, 0.22f);
-        static readonly Color Wall = new(0.24f, 0.26f, 0.36f);
-        static readonly Color Floor = new(0.78f, 0.82f, 0.92f);
+        static readonly Color Wall = new(0.27f, 0.30f, 0.42f);
+        static readonly Color Floor = new(0.80f, 0.84f, 0.93f);
         static readonly Color Selection = Color.white;
 
         readonly BoardViewConfig _colors;
         readonly HashSet<Vector2Int> _blockCells = new();
         GUIStyle _label;
-        Rect _area;
         float _cell;
         Vector2 _origin;
         int _height;
@@ -33,7 +31,6 @@ namespace ColorBlockJam.Editor.LevelEditing
 
         public void Layout(Rect area, int width, int height)
         {
-            _area = area;
             _width = width;
             _height = height;
             _cell = Mathf.Floor(Mathf.Min(area.width / (width + 2), area.height / (height + 2)));
@@ -77,13 +74,12 @@ namespace ColorBlockJam.Editor.LevelEditing
 
         public void DrawBoard(LevelDraft draft, int selectedDoor)
         {
-            EditorGUI.DrawRect(_area, Background);
-            for (int x = -1; x <= draft.Width; x++)
-                for (int y = -1; y <= draft.Height; y++)
-                {
-                    bool inside = x >= 0 && y >= 0 && x < draft.Width && y < draft.Height;
-                    EditorGUI.DrawRect(Inset(CellRect(x, y), inside ? 1f : 0f), inside ? Floor : Wall);
-                }
+            Rect topLeft = CellRect(-1, draft.Height);
+            Rect bottomRight = CellRect(draft.Width, -1);
+            Fill(Rect.MinMaxRect(topLeft.xMin, topLeft.yMin, bottomRight.xMax, bottomRight.yMax), Wall, _cell * 0.35f);
+            for (int x = 0; x < draft.Width; x++)
+                for (int y = 0; y < draft.Height; y++)
+                    Fill(Inset(CellRect(x, y), Mathf.Max(1.5f, _cell * 0.04f)), Floor, _cell * 0.16f);
 
             for (int i = 0; i < draft.Doors.Count; i++)
                 DrawDoor(draft.Doors[i], i == selectedDoor);
@@ -94,7 +90,7 @@ namespace ColorBlockJam.Editor.LevelEditing
             for (int index = door.Start; index <= door.End; index++)
             {
                 Rect rect = WallRect(door.Side, index);
-                EditorGUI.DrawRect(Inset(rect, _cell * 0.12f), ColorOf(door.Color));
+                Fill(Inset(rect, _cell * 0.12f), ColorOf(door.Color), _cell * 0.18f);
             }
 
             Rect first = WallRect(door.Side, door.Start);
@@ -110,7 +106,7 @@ namespace ColorBlockJam.Editor.LevelEditing
             };
             GUI.Label(span, arrow, CenteredLabel(Mathf.RoundToInt(_cell * 0.35f), Color.white));
             if (selected)
-                Outline(span, Selection, 3f);
+                Frame(span, Selection, 3f, _cell * 0.2f);
         }
 
         public void DrawBlock(IReadOnlyList<Vector2Int> cells, Vector2Int offset, Color color, bool selected, string label)
@@ -123,13 +119,13 @@ namespace ColorBlockJam.Editor.LevelEditing
             foreach (Vector2Int cell in set)
             {
                 Rect rect = CellRect(cell.x, cell.y);
-                EditorGUI.DrawRect(Inset(rect, gap), color);
+                Fill(Inset(rect, gap), color, _cell * 0.18f);
                 if (set.Contains(cell + Vector2Int.right))
                     EditorGUI.DrawRect(new Rect(rect.xMax - gap, rect.y + gap, gap * 2f, rect.height - gap * 2f), color);
                 if (set.Contains(cell + Vector2Int.up))
                     EditorGUI.DrawRect(new Rect(rect.x + gap, rect.y - gap, rect.width - gap * 2f, gap * 2f), color);
                 if (selected)
-                    Outline(Inset(rect, gap), Selection, 2f);
+                    Frame(Inset(rect, gap), Selection, 2.5f, _cell * 0.18f);
             }
 
             if (label != null && set.Count > 0)
@@ -146,27 +142,31 @@ namespace ColorBlockJam.Editor.LevelEditing
         {
             Color tint = allowed ? new Color(color.r, color.g, color.b, 0.55f) : new Color(1f, 0.15f, 0.15f, 0.55f);
             foreach (Vector2Int cell in cells)
-                EditorGUI.DrawRect(Inset(CellRect(cell.x, cell.y), _cell * 0.1f), tint);
+                Fill(Inset(CellRect(cell.x, cell.y), _cell * 0.1f), tint, _cell * 0.18f);
         }
 
         public void DrawWallGhost(WallSide side, int from, int to, Color color, bool allowed)
         {
             Color tint = allowed ? new Color(color.r, color.g, color.b, 0.7f) : new Color(1f, 0.15f, 0.15f, 0.7f);
             for (int i = Mathf.Min(from, to); i <= Mathf.Max(from, to); i++)
-                EditorGUI.DrawRect(Inset(WallRect(side, i), _cell * 0.12f), tint);
+                Fill(Inset(WallRect(side, i), _cell * 0.12f), tint, _cell * 0.18f);
         }
 
-        public void HighlightCell(Rect rect) => Outline(rect, new Color(1f, 1f, 1f, 0.5f), 1f);
+        public void HighlightCell(Rect rect) => Frame(Inset(rect, 1f), new Color(1f, 1f, 1f, 0.7f), 2f, _cell * 0.18f);
+
+        static void Fill(Rect rect, Color color, float radius)
+        {
+            if (Event.current.type == EventType.Repaint)
+                GUI.DrawTexture(rect, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0f, color, 0f, radius);
+        }
+
+        static void Frame(Rect rect, Color color, float width, float radius)
+        {
+            if (Event.current.type == EventType.Repaint)
+                GUI.DrawTexture(rect, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0f, color, width, radius);
+        }
 
         static Rect Inset(Rect rect, float by) => new(rect.x + by, rect.y + by, rect.width - by * 2f, rect.height - by * 2f);
-
-        static void Outline(Rect rect, Color color, float width)
-        {
-            EditorGUI.DrawRect(new Rect(rect.x, rect.y, rect.width, width), color);
-            EditorGUI.DrawRect(new Rect(rect.x, rect.yMax - width, rect.width, width), color);
-            EditorGUI.DrawRect(new Rect(rect.x, rect.y, width, rect.height), color);
-            EditorGUI.DrawRect(new Rect(rect.xMax - width, rect.y, width, rect.height), color);
-        }
 
         GUIStyle CenteredLabel(int size, Color color)
         {

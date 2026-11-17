@@ -193,6 +193,6 @@ task is marked `Dropped`, never deleted. Detail per task: [tasks.md](tasks.md).
 | T-52 | 5 | Whole lives bar opens the lives popup | A tap anywhere on the Home lives bar opens the popup | T-48 | Done |
 | T-53 | 6 | Sound effects | Taps, win, fail, booster use, grab and exit each play their clip; the sound toggle mutes them | T-25 | Done |
 | T-54 | 6 | Low-time warning | From 10 s left the timer ticks every second and flashes red; it stops on pause, win, fail or restart | T-53, T-15 | Done |
-| T-55 | 9 | Level editor look | Styled toolbar, buttons and panels; every tool and shortcut works as before | T-31 | Todo |
+| T-55 | 9 | Level editor look | Styled toolbar, buttons and panels; every tool and shortcut works as before | T-31 | Done |
 
 Status values: `Todo`, `In progress`, `Blocked`, `Done`, `Dropped`.
