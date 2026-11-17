@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using RollicCase.Game.Configs;
+using ColorBlockJam.Game.Configs;
 using UnityEngine;
 
-namespace RollicCase.Game.Levels
+namespace ColorBlockJam.Game.Levels
 {
     /// <summary>
     /// Checks a level against the structural rules in level-data.md §2 and reports every broken one.

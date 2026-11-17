@@ -1,4 +1,4 @@
-# Case Tasks — Detail
+# Design Tasks — Detail
 
 Subtasks, acceptance criteria, tests and docs for every task in [README.md §4](README.md#4-tasks). The
 README table owns status; this page owns scope. Each task block lists:
@@ -11,7 +11,7 @@ README table owns status; this page owns scope. Each task block lists:
 - **Tests** — Edit Mode (`EM`) and Play Mode (`PM`) tests it adds. Manual checks go in the named QA page.
 - **Docs** — pages it creates or edits.
 
-Supplied assets referenced below live in `Assets/_Project/Art/` (`UI/`, `Models/`, `Textures/`).
+Art assets referenced below live in `Assets/_Project/Art/` (`UI/`, `Models/`, `Textures/`).
 
 ## Progress
 
@@ -19,7 +19,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 
 - [x] [T-01 Pin the project to Unity 2022.3.62f2](#t-01-pin-the-project-to-unity-2022362f2)
 - [x] [T-02 Player, Android and quality settings](#t-02-player-android-and-quality-settings)
-- [x] [T-03 Import and configure the supplied assets](#t-03-import-and-configure-the-supplied-assets)
+- [x] [T-03 Import and configure the art assets](#t-03-import-and-configure-the-art-assets)
 - [x] [T-04 Home scene and scene routing](#t-04-home-scene-and-scene-routing)
 - [x] [T-05 UI kit: safe area, button feedback, popup service](#t-05-ui-kit-safe-area-button-feedback-popup-service)
 - [x] [T-06 Board input and board space](#t-06-board-input-and-board-space)
@@ -56,9 +56,9 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - [ ] [T-37 Architecture tests](#t-37-architecture-tests)
 - [ ] [T-38 Performance pass](#t-38-performance-pass)
 - [ ] [T-39 Full QA pass on device and aspect ratios](#t-39-full-qa-pass-on-device-and-aspect-ratios)
-- [ ] [T-40 Submission README](#t-40-submission-readme)
-- [ ] [T-41 Android APK and flow recording](#t-41-android-apk-and-flow-recording)
-- [ ] [T-42 Repository hygiene and hand-off](#t-42-repository-hygiene-and-hand-off)
+- [ ] [T-40 Project README](#t-40-project-readme)
+- [ ] [T-41 Android APK](#t-41-android-apk)
+- [ ] [T-42 Repository hygiene](#t-42-repository-hygiene)
 
 ---
 
@@ -80,7 +80,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 
 - **Req:** R-2, R-7, R-38. Implements DA-1.
 - **Subtasks:**
-  - [x] Company, product name, bundle id `com.necatiakpinar.rolliccase`, version `0.1.0`, bundle code 1.
+  - [x] Company, product name, bundle id `com.necatiakpinar.colorblockjam`, version `0.1.0`, bundle code 1.
   - [x] Default orientation Portrait; disable auto-rotation to landscape.
   - [x] Android: IL2CPP, ARM64 only, min API 24, target API = highest installed, `Optimized Frame Pacing`.
   - [x] Quality: one Mobile level pointing at the mobile URP asset; delete `PC_RPAsset` / `PC_Renderer`.
@@ -94,7 +94,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
   `EM BuildSettingsTests.PlayerSettings_ShouldBuildIl2CppArm64_WhenTargetingAndroid`.
 - **Docs:** `getting-started.md` (build steps).
 
-### T-03 Import and configure the supplied assets
+### T-03 Import and configure the art assets
 
 - **Req:** R-3, R-17, R-40.
 - **Subtasks:**
@@ -168,7 +168,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
   `IPointerDownHandler`, `IDragHandler`, `IPointerUpHandler` through a `PhysicsRaycaster`, projects the
   pointer onto the board plane and fires `BoardPointerSignal`s. Pointers over UI never reach the board.
   Single touch only (DA-4). `BoardSpace` is the only cell ↔ world conversion; it reads
-  `BoardViewConfig.CellSize` (1 with the current import scale) (README §2.8).
+  `BoardViewConfig.CellSize` (1 with the current import scale) ([Design README §2.8](README.md#2-scope-decisions)).
 - **Subtasks:**
   - [x] `BoardViewConfig`, `BoardSpace` registered by `GameplayInstaller`.
   - [x] `BoardInputView` + `BoardPointerSignal`; camera `PhysicsRaycaster`; Gameplay scope wiring.
@@ -216,7 +216,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 ### T-09 Board model (pure rules)
 
 - **Req:** R-17, R-24, R-25, R-35. Implements DA-4, DA-5.
-- **Arch:** plain C# in `RollicCase.Game.Gameplay.Board`: `BoardState` built fresh from `LevelData` per
+- **Arch:** plain C# in `ColorBlockJam.Game.Gameplay.Board`: `BoardState` built fresh from `LevelData` per
   attempt (occupancy grid `int[]`, `BoardBlock` list); `TryStep(blockId, direction)` moves one cell and
   returns `Moved` / `Blocked` / `Exited` (the drag controller asks `CanStep` and commits one cell at a time, so no separate
   `MaxSteps`); `DoorResolver` answers colour and span fit; the exit also needs a clear straight path to the
@@ -447,7 +447,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - **Req:** R-14, R-15, R-16. Implements DA-10.
 - **Arch:** `SettingsPopupView` in the Home scene: `bg_popup`, header, three rows with
   `Blockjam_Settings_Music/Sound/Vibration` icons and a `ToggleView` each. On: `btn_toggle_on`. Off: the
-  same sprite greyed and knob position flipped (no off sprite supplied — asset feedback). Placeholder
+  same sprite greyed and knob position flipped (the art set has no off sprite — asset feedback). Placeholder
   buttons (e.g. Support with `Support_icon`) give feedback only. Close (`Popup_Close_Button`) returns Home.
   State read from and written to `ISettingsService`.
 - **Accept:** each toggle visibly differs on vs off; state survives closing, reopening and app restart;
@@ -460,13 +460,13 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 
 ## Chapter 8 — Level editor
 
-All editor code lives in `RollicCase.Editor`; it reuses `LevelDefinition`, `LevelDefinitionValidator`
-and (T-33) the solver from `RollicCase.Game`, so the editor never has its own copy of the rules.
+All editor code lives in `ColorBlockJam.Editor`; it reuses `LevelDefinition`, `LevelDefinitionValidator`
+and (T-33) the solver from `ColorBlockJam.Game`, so the editor never has its own copy of the rules.
 
 ### T-26 Level editor window and level list
 
 - **Req:** R-27, R-36.
-- **Arch:** `LevelEditorWindow : EditorWindow` (menu **RollicCase > Level Editor**), left panel: catalog
+- **Arch:** `LevelEditorWindow : EditorWindow` (menu **ColorBlockJam > Level Editor**), left panel: catalog
   list with New, Duplicate, Delete (confirm dialog), drag to reorder, "Level N" labels. New levels are
   created as assets in `Assets/_Project/Levels/` and appended to the catalog automatically. All edits go
   through `Undo.RecordObject`.
@@ -587,8 +587,8 @@ and (T-33) the solver from `RollicCase.Game`, so the editor never has its own co
 ### T-37 Architecture tests
 
 - **Req:** R-35, R-37, R-38.
-- **Arch:** reflection tests: no `Update`/`LateUpdate`/`FixedUpdate`/`ITickable` in `RollicCase.*` types
-  (allow-list with reason); `RollicCase.Core` references no `RollicCase.Game`; no `UnityEngine.Debug.Log`
+- **Arch:** reflection tests: no `Update`/`LateUpdate`/`FixedUpdate`/`ITickable` in `ColorBlockJam.*` types
+  (allow-list with reason); `ColorBlockJam.Core` references no `ColorBlockJam.Game`; no `UnityEngine.Debug.Log`
   calls outside `UnityGameLogger` (scan IL or source); every scene's serialized references are set.
 - **Docs:** `testing.md`.
 
@@ -612,33 +612,30 @@ and (T-33) the solver from `RollicCase.Game`, so the editor never has its own co
 
 ---
 
-## Chapter 12 — Delivery
+## Chapter 12 — Release
 
-### T-40 Submission README
+### T-40 Project README
 
-- **Req:** R-4, R-6, R-40, R-41.
+- **Req:** R-6, R-40, R-41.
 - **Sections:** how to open and run (Unity 2022.3.62f2, LFS, Play); how to open the editor and make a level
   (with screenshots); architecture decisions and the reason for each (DI scopes, signal bus, pure board
   model, ScriptableObject level format, animation separation, no per-frame code, cells-only data with the
-  2-unit art cell normalized at import — Case README §2.8); decisions made for unclear
-  requirements (DA list summary); known problems and incomplete parts; asset feedback; LLM tools used and
-  for which parts; approximate work time.
+  2-unit art cell normalized at import — Design README §2.8); decisions made for unclear
+  requirements (DA list summary); known problems and incomplete parts; asset feedback.
 - **Docs:** root `README.md`.
 
-### T-41 Android APK and flow recording
+### T-41 Android APK
 
 - **Req:** R-7.
 - **Subtasks:**
   - [ ] Release-config APK (IL2CPP, ARM64)
-  - [ ] Install and smoke test
-  - [ ] Record ≤ 3 min: Splash → Home →
-  Settings toggles → Level 1 win → Level 2 → pause/restart → timeout fail → Home → editor creating and
-  playing a level.
-- **Docs:** README links the APK and video.
+  - [ ] Install and smoke test the full flow: Splash → Home → Settings toggles → Level 1 win → Level 2 →
+    pause/restart → timeout fail → Home.
+- **Docs:** `getting-started.md` (build steps).
 
-### T-42 Repository hygiene and hand-off
+### T-42 Repository hygiene
 
 - **Req:** R-5.
 - **Subtasks:**
   - [ ] `.gitignore` excludes Library, Temp, Logs, Build, UserSettings, generated `.csproj`/`.sln`
-  every LFS file is a pointer; fresh clone into an empty folder opens and plays; all tests green; send link.
+  every LFS file is a pointer; fresh clone into an empty folder opens and plays; all tests green.

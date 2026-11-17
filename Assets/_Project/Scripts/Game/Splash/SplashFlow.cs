@@ -1,12 +1,12 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using RollicCase.Core.Boot;
-using RollicCase.Game.Configs;
-using RollicCase.Game.Navigation;
+using ColorBlockJam.Core.Boot;
+using ColorBlockJam.Game.Configs;
+using ColorBlockJam.Game.Navigation;
 using VContainer.Unity;
 
-namespace RollicCase.Game.Splash
+namespace ColorBlockJam.Game.Splash
 {
     /// <summary>
     /// Orchestrates the splash: presentation and routing only. All real work lives in the boot steps.

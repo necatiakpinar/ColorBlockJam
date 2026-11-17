@@ -1,6 +1,6 @@
 {
-    "name": "RollicCase.Core",
-    "rootNamespace": "RollicCase.Core",
+    "name": "ColorBlockJam.Core",
+    "rootNamespace": "ColorBlockJam.Core",
     "references": [
         "UniTask",
         "VContainer"

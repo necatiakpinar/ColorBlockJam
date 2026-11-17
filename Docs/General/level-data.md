@@ -5,7 +5,7 @@
 
 ## 1. Format
 
-One format, written by the level editor and read by the game (brief §4.4, DA-13).
+One format, written by the level editor and read by the game (R-29, DA-13).
 
 | Type | Holds |
 | --- | --- |

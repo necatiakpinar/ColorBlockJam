@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
 
-namespace RollicCase.Game.Home
+namespace ColorBlockJam.Game.Home
 {
     /// <summary>Binds the authored Home canvas and reports button taps; decides nothing itself.</summary>
     public sealed class HomeView : MonoBehaviour

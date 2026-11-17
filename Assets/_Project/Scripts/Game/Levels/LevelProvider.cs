@@ -1,6 +1,6 @@
 using System;
 
-namespace RollicCase.Game.Levels
+namespace ColorBlockJam.Game.Levels
 {
     /// <summary>Maps a level number to its data. After the last catalog level the catalog loops (DA-8).</summary>
     public sealed class LevelProvider

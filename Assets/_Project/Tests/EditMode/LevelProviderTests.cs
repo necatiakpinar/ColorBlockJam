@@ -1,11 +1,11 @@
 using System;
 using NUnit.Framework;
-using RollicCase.Game.Levels;
-using RollicCase.Tests.EditMode.Helpers;
-using static RollicCase.Game.Levels.BlockColor;
-using static RollicCase.Game.Levels.WallSide;
+using ColorBlockJam.Game.Levels;
+using ColorBlockJam.Tests.EditMode.Helpers;
+using static ColorBlockJam.Game.Levels.BlockColor;
+using static ColorBlockJam.Game.Levels.WallSide;
 
-namespace RollicCase.Tests.EditMode
+namespace ColorBlockJam.Tests.EditMode
 {
     public sealed class LevelProviderTests
     {

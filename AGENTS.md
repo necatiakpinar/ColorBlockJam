@@ -10,13 +10,13 @@ The index of every page is [Docs/README.md](Docs/README.md).
 
 ## Project Overview
 
-A Unity 2022.3 LTS mobile game built as a hiring case study. Its foundation is a production-shaped
+Color Block Jam, a Unity 2022.3 LTS mobile puzzle game. Its foundation is a production-shaped
 skeleton: dependency-injected boot from **Splash** to **Home** and **Gameplay**,
 a typed signal bus, data-driven configs, separated animations, and Edit Mode + Play Mode tests.
 
 - **Target:** mobile, portrait, URP (Mobile renderer). 60 FPS target via `ApplicationConfig`.
-- **Design authority:** the case brief and the task list derived from it, under
-  [Docs/Case/](Docs/Case/README.md). Every gameplay behavior must trace to a task there or to a
+- **Design authority:** the requirements and the task list derived from them, under
+  [Docs/Design/](Docs/Design/README.md). Every gameplay behavior must trace to a task there or to a
   registered assumption in [development-assumptions.md](Docs/General/development-assumptions.md).
 
 ## Repository-Local Skills
@@ -25,7 +25,7 @@ Skills live in `.claude/skills/<name>/SKILL.md` and are binding workflows for ev
 
 | Skill | Run it |
 | --- | --- |
-| `case-task-breakdown` | when the case brief (or any feature request) arrives: turn it into tasks in `Docs/Case/` |
+| `task-breakdown` | when a feature request or design change arrives: turn it into tasks in `Docs/Design/` |
 | `simplify` | at the end of every implementation or refactor |
 | `staged-local-review` | after `simplify`, before proposing commits |
 | `commit-plan` | at the end of every task: group the diff into atomic commits and propose messages |
@@ -45,7 +45,7 @@ Validate skill frontmatter with `python tools/validate_skills.py`.
 
 ## Environment Setup
 
-- Unity **2022.3.62f2** (required by the brief). Open the repository root as the Unity project.
+- Unity **2022.3.62f2** (R-1). Open the repository root as the Unity project.
 - Packages resolve from Unity's registry and OpenUPM (scoped registry in `Packages/manifest.json`):
   VContainer, UniTask. DOTween (free) is vendored under `Assets/Plugins/Demigiant/DOTween` with a
   hand-authored `DOTween.Modules` assembly definition.
@@ -62,7 +62,7 @@ Validate skill frontmatter with `python tools/validate_skills.py`.
 ```
 
 In the editor: **Window > General > Test Runner**. Pressing Play always boots through Splash
-(**RollicCase > Play From Splash** toggles it). Detail: [testing.md](Docs/General/testing.md).
+(**ColorBlockJam > Play From Splash** toggles it). Detail: [testing.md](Docs/General/testing.md).
 
 ## Architecture
 
@@ -73,10 +73,10 @@ an installer, the signal bus or scene loading.**
 
 | Assembly | Holds | May reference |
 | --- | --- | --- |
-| `RollicCase.Core` | game-agnostic infrastructure: signals, boot sequence, scene loading, persistence, logging, `IAnimation<T>` | UniTask, VContainer, DOTween |
-| `RollicCase.Game` | scopes, installers, configs, boot steps, splash, gameplay, views, animations | Core + packages |
-| `RollicCase.Editor` | editor tooling | Core, Game |
-| `RollicCase.Tests.EditMode` / `.PlayMode` | tests | everything above |
+| `ColorBlockJam.Core` | game-agnostic infrastructure: signals, boot sequence, scene loading, persistence, logging, `IAnimation<T>` | UniTask, VContainer, DOTween |
+| `ColorBlockJam.Game` | scopes, installers, configs, boot steps, splash, gameplay, views, animations | Core + packages |
+| `ColorBlockJam.Editor` | editor tooling | Core, Game |
+| `ColorBlockJam.Tests.EditMode` / `.PlayMode` | tests | everything above |
 
 Core never references Game. A new feature goes in Game unless it is reusable infrastructure.
 
@@ -134,7 +134,7 @@ the level editor.**
 
 ### Naming
 
-- Namespace `RollicCase.<Assembly>.<Area>`; folders mirror namespaces.
+- Namespace `ColorBlockJam.<Assembly>.<Area>`; folders mirror namespaces.
 - PascalCase types, members and constants; camelCase locals; `_camelCase` private and serialized fields.
 - Enum members carry explicit, spaced values (`1000`, `2000`, …) so entries can be inserted without
   renumbering serialized data; `[Flags]` enums use powers of two.
@@ -203,7 +203,7 @@ from the name.
 - This file is an index: add only rules that bind every change, or a one-line "Read X before touching
   Y" trigger. Subsystem detail goes in its own page under `Docs/General/`, listed in `Docs/README.md`.
 - **Read [doc-authoring-rules.md](Docs/General/doc-authoring-rules.md) before writing any `.md`.**
-- A player-visible decision the case brief does not answer is never a silent default: register it in
+- A player-visible decision the design does not answer is never a silent default: register it in
   [development-assumptions.md](Docs/General/development-assumptions.md) as `DA-n` and cite the id in
   code and commit message.
 

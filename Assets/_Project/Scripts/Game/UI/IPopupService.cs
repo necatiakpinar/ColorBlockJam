@@ -1,4 +1,4 @@
-namespace RollicCase.Game.UI
+namespace ColorBlockJam.Game.UI
 {
     /// <summary>Shows one popup at a time in the current scene.</summary>
     public interface IPopupService

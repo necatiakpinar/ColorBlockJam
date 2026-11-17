@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RollicCase.Game.Levels;
+using ColorBlockJam.Game.Levels;
 using UnityEngine;
 
-namespace RollicCase.Game.Gameplay.Board
+namespace ColorBlockJam.Game.Gameplay.Board
 {
     /// <summary>
     /// The rules of one attempt, in cells. Built fresh from <see cref="LevelData"/> every time a level
-    /// starts or restarts, so nothing carries over between attempts (brief §4.3). Blocks move one cell per
+    /// starts or restarts, so nothing carries over between attempts (R-25). Blocks move one cell per
     /// <see cref="TryStep"/>; a step allocates nothing.
     /// </summary>
     public sealed class BoardState

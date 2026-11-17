@@ -1,9 +1,9 @@
 using System;
 using NUnit.Framework;
-using RollicCase.Core.Persistence;
-using RollicCase.Tests.EditMode.Helpers;
+using ColorBlockJam.Core.Persistence;
+using ColorBlockJam.Tests.EditMode.Helpers;
 
-namespace RollicCase.Tests.EditMode
+namespace ColorBlockJam.Tests.EditMode
 {
     public sealed class PlayerProgressServiceTests
     {

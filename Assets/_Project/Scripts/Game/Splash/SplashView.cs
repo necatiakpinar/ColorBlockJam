@@ -1,13 +1,13 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using RollicCase.Game.Common.Animations;
-using RollicCase.Game.Configs;
+using ColorBlockJam.Game.Common.Animations;
+using ColorBlockJam.Game.Configs;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
 
-namespace RollicCase.Game.Splash
+namespace ColorBlockJam.Game.Splash
 {
     /// <summary>Binds the authored splash canvas. Owns the sequences it starts; builds no motion itself.</summary>
     public sealed class SplashView : MonoBehaviour

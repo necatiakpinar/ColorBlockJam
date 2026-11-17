@@ -1,15 +1,15 @@
 using System;
 using Cysharp.Threading.Tasks;
-using RollicCase.Core.Persistence;
-using RollicCase.Core.Signals;
-using RollicCase.Game.Gameplay.Board;
-using RollicCase.Game.Gameplay.Hud;
-using RollicCase.Game.Gameplay.Signals;
-using RollicCase.Game.Levels;
-using RollicCase.Game.Navigation;
+using ColorBlockJam.Core.Persistence;
+using ColorBlockJam.Core.Signals;
+using ColorBlockJam.Game.Gameplay.Board;
+using ColorBlockJam.Game.Gameplay.Hud;
+using ColorBlockJam.Game.Gameplay.Signals;
+using ColorBlockJam.Game.Levels;
+using ColorBlockJam.Game.Navigation;
 using VContainer.Unity;
 
-namespace RollicCase.Game.Gameplay
+namespace ColorBlockJam.Game.Gameplay
 {
     /// <summary>Entry point of the gameplay scene: loads the current level, announces it, routes back to Home.</summary>
     public sealed class GameplayFlow : IStartable, IDisposable

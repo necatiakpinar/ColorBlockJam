@@ -2,7 +2,7 @@ using System;
 using DG.Tweening;
 using UnityEngine;
 
-namespace RollicCase.Game.Common.Animations
+namespace ColorBlockJam.Game.Common.Animations
 {
     [Serializable]
     public struct PressFeedbackSettings

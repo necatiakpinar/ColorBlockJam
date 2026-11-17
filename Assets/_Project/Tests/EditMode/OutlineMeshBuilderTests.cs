@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using NUnit.Framework;
-using RollicCase.Game.Gameplay.View;
+using ColorBlockJam.Game.Gameplay.View;
 using UnityEngine;
 
-namespace RollicCase.Tests.EditMode
+namespace ColorBlockJam.Tests.EditMode
 {
     public sealed class OutlineMeshBuilderTests
     {

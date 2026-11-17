@@ -9,7 +9,7 @@
 | --- | --- | --- |
 | `CLAUDE.md` / `AGENTS.md` | rules that bind every change; "Read X before touching Y" triggers | subsystem detail |
 | `Docs/General/*.md` | how an area works and its binding rules | task status |
-| `Docs/Case/*.md` | the brief, tasks, scope decisions, progress | implementation detail |
+| `Docs/Design/*.md` | requirements, tasks, scope decisions, progress | implementation detail |
 | `Docs/testing/*-qa.md` | observable test cases for an area | code paths |
 | `.claude/skills/*/SKILL.md` | a repeatable workflow | project facts (link to the page instead) |
 

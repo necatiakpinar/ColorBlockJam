@@ -1,12 +1,12 @@
-using RollicCase.Core.Signals;
-using RollicCase.Game.Configs;
-using RollicCase.Game.Gameplay.Board;
-using RollicCase.Game.Gameplay.Signals;
+using ColorBlockJam.Core.Signals;
+using ColorBlockJam.Game.Configs;
+using ColorBlockJam.Game.Gameplay.Board;
+using ColorBlockJam.Game.Gameplay.Signals;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using VContainer;
 
-namespace RollicCase.Game.Gameplay.Input
+namespace ColorBlockJam.Game.Gameplay.Input
 {
     /// <summary>
     /// Turns EventSystem pointer events on the board collider into <see cref="BoardPointerSignal"/>s.

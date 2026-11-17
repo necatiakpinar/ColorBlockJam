@@ -1,4 +1,4 @@
-namespace RollicCase.Game.Levels
+namespace ColorBlockJam.Game.Levels
 {
     /// <summary>Colour shared by blocks and doors; a block leaves only through a door of its colour.</summary>
     public enum BlockColor

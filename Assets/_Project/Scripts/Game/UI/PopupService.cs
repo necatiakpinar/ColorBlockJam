@@ -1,6 +1,6 @@
 using System;
 
-namespace RollicCase.Game.UI
+namespace ColorBlockJam.Game.UI
 {
     public sealed class PopupService : IPopupService
     {

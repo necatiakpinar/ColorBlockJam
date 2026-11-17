@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using RollicCase.Core.Signals;
+using ColorBlockJam.Core.Signals;
 
-namespace RollicCase.Tests.EditMode
+namespace ColorBlockJam.Tests.EditMode
 {
     public sealed class SignalBusTests
     {

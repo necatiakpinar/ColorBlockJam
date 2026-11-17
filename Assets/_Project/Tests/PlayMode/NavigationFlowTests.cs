@@ -1,10 +1,10 @@
 using System.Collections;
 using NUnit.Framework;
-using RollicCase.Game.Gameplay.Hud;
-using RollicCase.Game.Home;
+using ColorBlockJam.Game.Gameplay.Hud;
+using ColorBlockJam.Game.Home;
 using UnityEngine.TestTools;
 
-namespace RollicCase.Tests.PlayMode
+namespace ColorBlockJam.Tests.PlayMode
 {
     /// <summary>End to end: the real boot reaches Home, and Home and Gameplay route to each other.</summary>
     public sealed class NavigationFlowTests

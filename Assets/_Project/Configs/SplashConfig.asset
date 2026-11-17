@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bd71de2128ffa19439ce40bdb3976735, type: 3}
   m_Name: SplashConfig
-  m_EditorClassIdentifier: RollicCase.Game::RollicCase.Game.Configs.SplashConfig
+  m_EditorClassIdentifier: ColorBlockJam.Game::ColorBlockJam.Game.Configs.SplashConfig
   _minimumDisplaySeconds: 1.5
   _logoIntro:
     _duration: 0.6

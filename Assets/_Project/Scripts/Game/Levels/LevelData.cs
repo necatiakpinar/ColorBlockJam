@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace RollicCase.Game.Levels
+namespace ColorBlockJam.Game.Levels
 {
     /// <summary>
     /// One level in the single format the editor writes and the game reads (DA-13). Plain data in cell

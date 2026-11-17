@@ -1,12 +1,12 @@
 using NUnit.Framework;
-using RollicCase.Game.Levels;
-using RollicCase.Tests.EditMode.Helpers;
+using ColorBlockJam.Game.Levels;
+using ColorBlockJam.Tests.EditMode.Helpers;
 using UnityEditor;
 using UnityEngine;
-using static RollicCase.Game.Levels.BlockColor;
-using static RollicCase.Game.Levels.WallSide;
+using static ColorBlockJam.Game.Levels.BlockColor;
+using static ColorBlockJam.Game.Levels.WallSide;
 
-namespace RollicCase.Tests.EditMode
+namespace ColorBlockJam.Tests.EditMode
 {
     /// <summary>The level asset keeps every field through Unity serialization, the path the editor and game share.</summary>
     public sealed class LevelDefinitionTests

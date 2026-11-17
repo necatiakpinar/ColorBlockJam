@@ -1,4 +1,4 @@
-namespace RollicCase.Game.Gameplay.Signals
+namespace ColorBlockJam.Game.Gameplay.Signals
 {
     public enum BoardPointerPhase
     {

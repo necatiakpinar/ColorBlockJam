@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using RollicCase.Core.Persistence;
+using ColorBlockJam.Core.Persistence;
 
-namespace RollicCase.Tests.EditMode.Helpers
+namespace ColorBlockJam.Tests.EditMode.Helpers
 {
     public sealed class InMemoryKeyValueStorage : IKeyValueStorage
     {

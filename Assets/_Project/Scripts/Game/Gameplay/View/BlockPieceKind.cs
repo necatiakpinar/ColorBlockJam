@@ -1,6 +1,6 @@
-namespace RollicCase.Game.Gameplay.View
+namespace ColorBlockJam.Game.Gameplay.View
 {
-    /// <summary>The supplied modular block meshes (art-pipeline.md §4).</summary>
+    /// <summary>The modular block meshes of the art set (art-pipeline.md §4).</summary>
     public enum BlockPieceKind
     {
         /// <summary>Quarter cell, top cap only: both neighbours toward its corner belong to the block.</summary>

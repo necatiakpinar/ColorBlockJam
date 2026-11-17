@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace RollicCase.Game.Configs
+namespace ColorBlockJam.Game.Configs
 {
     /// <summary>Screen space the board must leave free, as viewport fractions (HUD on top, boosters below).</summary>
     [Serializable]

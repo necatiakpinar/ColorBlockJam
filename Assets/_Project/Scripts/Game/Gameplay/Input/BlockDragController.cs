@@ -1,11 +1,11 @@
 using System;
-using RollicCase.Core.Signals;
-using RollicCase.Game.Configs;
-using RollicCase.Game.Gameplay.Board;
-using RollicCase.Game.Gameplay.Signals;
+using ColorBlockJam.Core.Signals;
+using ColorBlockJam.Game.Configs;
+using ColorBlockJam.Game.Gameplay.Board;
+using ColorBlockJam.Game.Gameplay.Signals;
 using UnityEngine;
 
-namespace RollicCase.Game.Gameplay.Input
+namespace ColorBlockJam.Game.Gameplay.Input
 {
     /// <summary>
     /// Lets a finger slide a block like a solid object (DA-4).

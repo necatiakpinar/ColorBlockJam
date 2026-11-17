@@ -1,19 +1,19 @@
 using System.Collections.Generic;
 using NUnit.Framework;
-using RollicCase.Core.Signals;
-using RollicCase.Game.Configs;
-using RollicCase.Game.Gameplay.Board;
-using RollicCase.Game.Gameplay.Input;
-using RollicCase.Game.Gameplay.Signals;
-using RollicCase.Tests.EditMode.Helpers;
+using ColorBlockJam.Core.Signals;
+using ColorBlockJam.Game.Configs;
+using ColorBlockJam.Game.Gameplay.Board;
+using ColorBlockJam.Game.Gameplay.Input;
+using ColorBlockJam.Game.Gameplay.Signals;
+using ColorBlockJam.Tests.EditMode.Helpers;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools.Constraints;
-using static RollicCase.Game.Levels.BlockColor;
-using static RollicCase.Game.Levels.WallSide;
+using static ColorBlockJam.Game.Levels.BlockColor;
+using static ColorBlockJam.Game.Levels.WallSide;
 using Is = UnityEngine.TestTools.Constraints.Is;
 
-namespace RollicCase.Tests.EditMode
+namespace ColorBlockJam.Tests.EditMode
 {
     /// <summary>The finger slides blocks like solid objects: freely through space, never through blocks (DA-4).</summary>
     public sealed class BlockDragControllerTests

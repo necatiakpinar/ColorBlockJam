@@ -1,8 +1,8 @@
 using System;
-using RollicCase.Core.Logging;
+using ColorBlockJam.Core.Logging;
 using UnityEngine;
 
-namespace RollicCase.Core.Persistence
+namespace ColorBlockJam.Core.Persistence
 {
     public sealed class PlayerProgressService : IPlayerProgressService
     {

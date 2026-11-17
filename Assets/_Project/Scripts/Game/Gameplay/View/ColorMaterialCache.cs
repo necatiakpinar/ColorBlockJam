@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using RollicCase.Game.Configs;
-using RollicCase.Game.Levels;
+using ColorBlockJam.Game.Configs;
+using ColorBlockJam.Game.Levels;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace RollicCase.Game.Gameplay.View
+namespace ColorBlockJam.Game.Gameplay.View
 {
     /// <summary>
     /// One material per block colour, made from a base material and the palette on first use. Shared

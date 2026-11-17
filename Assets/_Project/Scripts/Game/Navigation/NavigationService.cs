@@ -1,8 +1,8 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using RollicCase.Core.Scenes;
+using ColorBlockJam.Core.Scenes;
 
-namespace RollicCase.Game.Navigation
+namespace ColorBlockJam.Game.Navigation
 {
     public sealed class NavigationService : INavigationService
     {

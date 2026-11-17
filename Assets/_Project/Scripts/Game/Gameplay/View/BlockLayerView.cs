@@ -1,14 +1,14 @@
 using System.Collections.Generic;
-using RollicCase.Core.Signals;
-using RollicCase.Game.Configs;
-using RollicCase.Game.Gameplay.Board;
-using RollicCase.Game.Gameplay.Signals;
-using RollicCase.Game.Levels;
+using ColorBlockJam.Core.Signals;
+using ColorBlockJam.Game.Configs;
+using ColorBlockJam.Game.Gameplay.Board;
+using ColorBlockJam.Game.Gameplay.Signals;
+using ColorBlockJam.Game.Levels;
 using UnityEngine;
 using UnityEngine.Pool;
 using VContainer;
 
-namespace RollicCase.Game.Gameplay.View
+namespace ColorBlockJam.Game.Gameplay.View
 {
     /// <summary>
     /// Draws the blocks: builds each one from modular pieces when a board loads, follows the finger while a

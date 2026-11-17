@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RollicCase.Core.Logging
+namespace ColorBlockJam.Core.Logging
 {
     public sealed class UnityGameLogger : IGameLogger
     {

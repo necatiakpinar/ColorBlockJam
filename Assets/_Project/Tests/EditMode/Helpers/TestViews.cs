@@ -1,14 +1,14 @@
 using System.Collections.Generic;
-using RollicCase.Core.Signals;
-using RollicCase.Game.Configs;
-using RollicCase.Game.Gameplay.Hud;
-using RollicCase.Game.Home;
+using ColorBlockJam.Core.Signals;
+using ColorBlockJam.Game.Configs;
+using ColorBlockJam.Game.Gameplay.Hud;
+using ColorBlockJam.Game.Home;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace RollicCase.Tests.EditMode.Helpers
+namespace ColorBlockJam.Tests.EditMode.Helpers
 {
     /// <summary>
     /// Builds views with their serialized references wired, as the authored scenes would, so flows can

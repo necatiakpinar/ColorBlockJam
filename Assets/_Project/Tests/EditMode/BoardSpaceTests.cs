@@ -1,9 +1,9 @@
 using System;
 using NUnit.Framework;
-using RollicCase.Game.Gameplay.Board;
+using ColorBlockJam.Game.Gameplay.Board;
 using UnityEngine;
 
-namespace RollicCase.Tests.EditMode
+namespace ColorBlockJam.Tests.EditMode
 {
     public sealed class BoardSpaceTests
     {

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RollicCase.Game.Gameplay.Signals
+namespace ColorBlockJam.Game.Gameplay.Signals
 {
     /// <summary>
     /// A touch on the board. <see cref="Cell"/> can lie outside the board while dragging; consumers

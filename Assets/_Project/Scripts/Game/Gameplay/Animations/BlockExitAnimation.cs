@@ -1,8 +1,8 @@
 using DG.Tweening;
-using RollicCase.Core.Animation;
+using ColorBlockJam.Core.Animation;
 using UnityEngine;
 
-namespace RollicCase.Game.Gameplay.Animations
+namespace ColorBlockJam.Game.Gameplay.Animations
 {
     /// <summary>Slides a block out through its door while it shrinks to nothing. Runs on unscaled time.</summary>
     public readonly struct BlockExitAnimation : IAnimation<BlockExitAnimation.Config>

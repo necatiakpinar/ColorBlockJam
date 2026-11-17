@@ -1,6 +1,6 @@
 using DG.Tweening;
 
-namespace RollicCase.Core.Animation
+namespace ColorBlockJam.Core.Animation
 {
     /// <summary>
     /// A stateless motion recipe. <see cref="Play"/> builds a DOTween sequence purely from the config

@@ -1,6 +1,6 @@
-using RollicCase.Game.Levels;
+using ColorBlockJam.Game.Levels;
 
-namespace RollicCase.Game.Gameplay.Signals
+namespace ColorBlockJam.Game.Gameplay.Signals
 {
     /// <summary>
     /// A fresh board for a new attempt; views rebuild from the level as authored (block index = block id).

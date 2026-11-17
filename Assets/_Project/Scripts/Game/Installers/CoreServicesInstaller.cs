@@ -1,14 +1,14 @@
-using RollicCase.Core.Logging;
-using RollicCase.Core.Persistence;
-using RollicCase.Core.Scenes;
-using RollicCase.Core.Signals;
-using RollicCase.Game.Configs;
-using RollicCase.Game.Levels;
-using RollicCase.Game.Navigation;
+using ColorBlockJam.Core.Logging;
+using ColorBlockJam.Core.Persistence;
+using ColorBlockJam.Core.Scenes;
+using ColorBlockJam.Core.Signals;
+using ColorBlockJam.Game.Configs;
+using ColorBlockJam.Game.Levels;
+using ColorBlockJam.Game.Navigation;
 using VContainer;
 using VContainer.Unity;
 
-namespace RollicCase.Game.Installers
+namespace ColorBlockJam.Game.Installers
 {
     /// <summary>
     /// App-wide services that live for the whole session. Installers hold plain services only, so tests

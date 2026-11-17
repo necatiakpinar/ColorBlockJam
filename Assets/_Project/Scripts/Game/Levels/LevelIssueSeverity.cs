@@ -1,4 +1,4 @@
-namespace RollicCase.Game.Levels
+namespace ColorBlockJam.Game.Levels
 {
     public enum LevelIssueSeverity
     {

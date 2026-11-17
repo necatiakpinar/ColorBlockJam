@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RollicCase.Game.Gameplay.Signals
+namespace ColorBlockJam.Game.Gameplay.Signals
 {
     /// <summary>A block left the board through a door, moving in <see cref="Direction"/>.</summary>
     public readonly struct BlockExitedSignal

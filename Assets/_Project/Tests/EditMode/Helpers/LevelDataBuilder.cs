@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using RollicCase.Game.Levels;
+using ColorBlockJam.Game.Levels;
 using UnityEngine;
 
-namespace RollicCase.Tests.EditMode.Helpers
+namespace ColorBlockJam.Tests.EditMode.Helpers
 {
     /// <summary>Builds <see cref="LevelData"/> in a test: <c>new LevelDataBuilder(4, 4).Block(...).Door(...).Build()</c>.</summary>
     public sealed class LevelDataBuilder

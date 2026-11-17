@@ -1,9 +1,9 @@
-using RollicCase.Core.Signals;
-using RollicCase.Game.Gameplay.Signals;
-using RollicCase.Game.Levels;
+using ColorBlockJam.Core.Signals;
+using ColorBlockJam.Game.Gameplay.Signals;
+using ColorBlockJam.Game.Levels;
 using UnityEngine;
 
-namespace RollicCase.Game.Gameplay.Board
+namespace ColorBlockJam.Game.Gameplay.Board
 {
     /// <summary>
     /// Owns the board of the current attempt and announces what happens to it. Every load builds a new

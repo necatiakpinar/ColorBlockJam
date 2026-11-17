@@ -1,4 +1,4 @@
-namespace RollicCase.Game.Levels
+namespace ColorBlockJam.Game.Levels
 {
     /// <summary>One problem found by <see cref="LevelDefinitionValidator"/>, worded for a designer.</summary>
     public readonly struct LevelIssue

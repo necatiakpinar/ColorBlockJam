@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using RollicCase.Game.Levels;
+using ColorBlockJam.Game.Levels;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace RollicCase.Tests.EditMode.Helpers
+namespace ColorBlockJam.Tests.EditMode.Helpers
 {
     /// <summary>Builds in-memory level catalogs for tests; <see cref="Dispose"/> destroys every asset it made.</summary>
     public sealed class TestCatalog : IDisposable

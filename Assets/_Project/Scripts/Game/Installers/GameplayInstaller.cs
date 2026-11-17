@@ -1,12 +1,12 @@
-using RollicCase.Game.Configs;
-using RollicCase.Game.Gameplay.Board;
-using RollicCase.Game.Gameplay.Input;
-using RollicCase.Game.Levels;
-using RollicCase.Game.UI;
+using ColorBlockJam.Game.Configs;
+using ColorBlockJam.Game.Gameplay.Board;
+using ColorBlockJam.Game.Gameplay.Input;
+using ColorBlockJam.Game.Levels;
+using ColorBlockJam.Game.UI;
 using VContainer;
 using VContainer.Unity;
 
-namespace RollicCase.Game.Installers
+namespace ColorBlockJam.Game.Installers
 {
     /// <summary>Gameplay-scene services.</summary>
     public sealed class GameplayInstaller : IInstaller

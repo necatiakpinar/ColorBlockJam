@@ -1,8 +1,8 @@
 using UnityEngine;
 
-namespace RollicCase.Game.Configs
+namespace ColorBlockJam.Game.Configs
 {
-    [CreateAssetMenu(menuName = "RollicCase/Configs/Application Config", fileName = "ApplicationConfig")]
+    [CreateAssetMenu(menuName = "ColorBlockJam/Configs/Application Config", fileName = "ApplicationConfig")]
     public sealed class ApplicationConfig : ScriptableObject
     {
         [SerializeField, Min(30)]

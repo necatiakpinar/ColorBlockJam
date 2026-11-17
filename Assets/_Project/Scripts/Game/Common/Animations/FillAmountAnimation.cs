@@ -1,8 +1,8 @@
 using DG.Tweening;
-using RollicCase.Core.Animation;
+using ColorBlockJam.Core.Animation;
 using UnityEngine.UI;
 
-namespace RollicCase.Game.Common.Animations
+namespace ColorBlockJam.Game.Common.Animations
 {
     /// <summary>Moves a filled image toward a fill amount. Runs on unscaled time.</summary>
     public readonly struct FillAmountAnimation : IAnimation<FillAmountAnimation.Config>

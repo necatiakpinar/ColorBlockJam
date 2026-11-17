@@ -3,22 +3,13 @@
 `CLAUDE.md` / `AGENTS.md` at the repository root hold the always-on rules and point here. Each page below
 owns one area; when a fact changes, it changes in the page that owns it.
 
-## Case
+## Design
 
 | Page | Owns |
 | --- | --- |
-| [Case/README.md](Case/README.md) | the case brief, requirements, scope, open questions, task status — the design authority |
-| [Case/tasks.md](Case/tasks.md) | per-task subtasks, acceptance criteria, tests and docs |
-| [Case/asset-feedback.md](Case/asset-feedback.md) | problems found in the supplied assets |
-| [Case/brief/brief.md](Case/brief/brief.md) | verbatim text of the brief PDF |
-
-## Plans
-
-Dated planning artifacts. They schedule work; they never specify behavior.
-
-| Page | Owns |
-| --- | --- |
-| [Plans/pre-case-readiness.md](Plans/pre-case-readiness.md) | gaps and foundations to build before the brief arrives |
+| [Design/README.md](Design/README.md) | the game, requirements, scope, open questions, task status — the design authority |
+| [Design/tasks.md](Design/tasks.md) | per-task subtasks, acceptance criteria, tests and docs |
+| [Design/asset-feedback.md](Design/asset-feedback.md) | problems found in the art assets |
 
 ## General (binding pages)
 
@@ -35,7 +26,7 @@ Pages marked **binding** carry rules agents must follow before touching the path
 | [General/ui.md](General/ui.md) | canvases, safe area, button feedback, popups | yes |
 | [General/gameplay.md](General/gameplay.md) | board space, input, movement and exit rules | yes |
 | [General/level-data.md](General/level-data.md) | level format, catalog, validation rules | yes |
-| [General/art-pipeline.md](General/art-pipeline.md) | supplied art folders, import rules, cell scale, part prefabs, materials | yes |
+| [General/art-pipeline.md](General/art-pipeline.md) | art folders, import rules, cell scale, part prefabs, materials | yes |
 | [General/development-assumptions.md](General/development-assumptions.md) | `DA-n` registry of unconfirmed product decisions | yes |
 | [General/agent-capabilities.md](General/agent-capabilities.md) | what agents verified tools can and cannot do | no |
 

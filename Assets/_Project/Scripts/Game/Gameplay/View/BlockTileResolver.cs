@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace RollicCase.Game.Gameplay.View
+namespace ColorBlockJam.Game.Gameplay.View
 {
     /// <summary>
     /// Picks the modular pieces that draw a block of any shape. Every cell is split into four quarters, one

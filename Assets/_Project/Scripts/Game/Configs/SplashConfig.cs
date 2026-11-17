@@ -1,10 +1,10 @@
 using DG.Tweening;
-using RollicCase.Game.Common.Animations;
+using ColorBlockJam.Game.Common.Animations;
 using UnityEngine;
 
-namespace RollicCase.Game.Configs
+namespace ColorBlockJam.Game.Configs
 {
-    [CreateAssetMenu(menuName = "RollicCase/Configs/Splash Config", fileName = "SplashConfig")]
+    [CreateAssetMenu(menuName = "ColorBlockJam/Configs/Splash Config", fileName = "SplashConfig")]
     public sealed class SplashConfig : ScriptableObject
     {
         [Tooltip("The splash stays up at least this long, even when booting is faster.")]

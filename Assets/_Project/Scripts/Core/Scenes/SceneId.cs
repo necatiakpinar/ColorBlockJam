@@ -1,4 +1,4 @@
-namespace RollicCase.Core.Scenes
+namespace ColorBlockJam.Core.Scenes
 {
     public enum SceneId
     {

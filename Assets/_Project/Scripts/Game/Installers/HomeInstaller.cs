@@ -1,8 +1,8 @@
-using RollicCase.Game.UI;
+using ColorBlockJam.Game.UI;
 using VContainer;
 using VContainer.Unity;
 
-namespace RollicCase.Game.Installers
+namespace ColorBlockJam.Game.Installers
 {
     /// <summary>Home-scene services.</summary>
     public sealed class HomeInstaller : IInstaller

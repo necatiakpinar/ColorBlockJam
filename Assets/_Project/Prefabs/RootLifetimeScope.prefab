@@ -43,7 +43,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dda8851fa14c7f04c92e253eeb7154e1, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: RollicCase.Game::RollicCase.Game.Scopes.RootLifetimeScope
+  m_EditorClassIdentifier: ColorBlockJam.Game::ColorBlockJam.Game.Scopes.RootLifetimeScope
   parentReference:
     TypeName: 
   autoRun: 1

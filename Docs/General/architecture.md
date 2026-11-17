@@ -7,14 +7,14 @@
 
 ```
 Assets/_Project/
-├── Scripts/Core/      RollicCase.Core     game-agnostic infrastructure
+├── Scripts/Core/      ColorBlockJam.Core     game-agnostic infrastructure
 │   ├── Signals/         SignalBus
 │   ├── Boot/            IBootStep, BootSequence
 │   ├── Scenes/          SceneId, ISceneLoader, SceneLoader
 │   ├── Persistence/     IKeyValueStorage, PlayerPrefsStorage, IPlayerProgressService
 │   ├── Logging/         IGameLogger, UnityGameLogger
 │   └── Animation/       IAnimation<TConfig>
-├── Scripts/Game/      RollicCase.Game     this game
+├── Scripts/Game/      ColorBlockJam.Game     this game
 │   ├── Scopes/          Root / Splash / Home / Gameplay LifetimeScopes
 │   ├── Installers/      CoreServicesInstaller, SplashInstaller, HomeInstaller, GameplayInstaller
 │   ├── Configs/         Application, Splash, Ui, Gameplay, BoardView configs (ScriptableObjects)
@@ -27,9 +27,9 @@ Assets/_Project/
 │   ├── Gameplay/        GameplayFlow, signals, HUD, Board/ (rules, ActiveBoard), Input/ (touch, drag),
 │   │                    View/ (board, blocks, tiling, camera), Animations/
 │   └── Common/Animations/  reusable IAnimation structs
-├── Scripts/Editor/    RollicCase.Editor   editor tooling
-├── Tests/EditMode/    RollicCase.Tests.EditMode
-├── Tests/PlayMode/    RollicCase.Tests.PlayMode
+├── Scripts/Editor/    ColorBlockJam.Editor   editor tooling
+├── Tests/EditMode/    ColorBlockJam.Tests.EditMode
+├── Tests/PlayMode/    ColorBlockJam.Tests.PlayMode
 ├── Scenes/            Splash (build index 0), Home, Gameplay
 ├── Prefabs/           RootLifetimeScope, Board/ part prefabs
 ├── Levels/            LevelCatalog and level assets
@@ -103,7 +103,7 @@ every animation were skipped.
 ## 5. Configs
 
 Tunables are `ScriptableObject`s named `<Area>Config` with `[CreateAssetMenu(menuName =
-"RollicCase/Configs/...")]`, stored in `Assets/_Project/Configs/`, referenced by the owning scope's
+"ColorBlockJam/Configs/...")]`, stored in `Assets/_Project/Configs/`, referenced by the owning scope's
 serialized field and registered with `RegisterInstance`. Consumers inject the config type. The one exception,
 `ButtonPressFeedback` reading `UiConfig` directly, is explained in [ui.md](ui.md) §2.2.
 

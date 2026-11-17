@@ -1,15 +1,15 @@
 using System;
 using NUnit.Framework;
-using RollicCase.Game.Gameplay.Board;
-using RollicCase.Game.Levels;
-using RollicCase.Tests.EditMode.Helpers;
+using ColorBlockJam.Game.Gameplay.Board;
+using ColorBlockJam.Game.Levels;
+using ColorBlockJam.Tests.EditMode.Helpers;
 using UnityEngine;
 using UnityEngine.TestTools.Constraints;
 using Is = UnityEngine.TestTools.Constraints.Is;
-using static RollicCase.Game.Levels.BlockColor;
-using static RollicCase.Game.Levels.WallSide;
+using static ColorBlockJam.Game.Levels.BlockColor;
+using static ColorBlockJam.Game.Levels.WallSide;
 
-namespace RollicCase.Tests.EditMode
+namespace ColorBlockJam.Tests.EditMode
 {
     /// <summary>The movement and exit rules (gameplay.md §3, DA-4, DA-5).</summary>
     public sealed class BoardStateTests

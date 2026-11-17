@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RollicCase.Game.Gameplay.Signals
+namespace ColorBlockJam.Game.Gameplay.Signals
 {
     /// <summary>
     /// Where a held block is drawn this frame: its offset from its start cells in fractional cells. Fired

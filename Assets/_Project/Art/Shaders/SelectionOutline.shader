@@ -1,6 +1,6 @@
 // Flat, unlit colour drawn over everything (ZTest Always), so a held block's outline stays visible even
 // where another object covers the block.
-Shader "RollicCase/Selection Outline"
+Shader "ColorBlockJam/Selection Outline"
 {
     Properties
     {

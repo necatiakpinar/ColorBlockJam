@@ -1,7 +1,7 @@
-using RollicCase.Game.Configs;
+using ColorBlockJam.Game.Configs;
 using UnityEngine;
 
-namespace RollicCase.Game.Gameplay.View
+namespace ColorBlockJam.Game.Gameplay.View
 {
     /// <summary>
     /// Where a perspective camera with a fixed rotation and field of view must stand so a box fits on screen

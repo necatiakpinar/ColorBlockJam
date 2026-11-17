@@ -30,7 +30,7 @@
 3. A view exposes taps as C# events (`HomeView.LevelButtonClicked`) wired to `Button.onClick` in its
    `[Inject] Construct`; the flow that owns routing subscribes in its constructor and unsubscribes in
    `Dispose`. Views never navigate or change data.
-4. Placeholder buttons (brief: "visual feedback, no function") get `ButtonPressFeedback` and no listener.
+4. Placeholder buttons (R-12, R-14: visual feedback, no function) get `ButtonPressFeedback` and no listener.
 
 ## 3. Popups
 

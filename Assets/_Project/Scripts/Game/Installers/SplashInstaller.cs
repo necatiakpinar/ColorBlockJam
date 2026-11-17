@@ -1,10 +1,10 @@
-using RollicCase.Core.Boot;
-using RollicCase.Game.Boot;
-using RollicCase.Game.Configs;
+using ColorBlockJam.Core.Boot;
+using ColorBlockJam.Game.Boot;
+using ColorBlockJam.Game.Configs;
 using VContainer;
 using VContainer.Unity;
 
-namespace RollicCase.Game.Installers
+namespace ColorBlockJam.Game.Installers
 {
     /// <summary>
     /// Splash-scene services. Boot steps run in the order they are registered here.

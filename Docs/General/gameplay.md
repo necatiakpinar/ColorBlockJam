@@ -1,7 +1,7 @@
 # Gameplay
 
 > **Binding agent rules.** Read this page before touching `Scripts/Game/Gameplay/` or the Gameplay
-> scene. Sections are added as the case tasks land (rules, view, flow, timer, economy).
+> scene. Sections are added as the design tasks land (rules, view, flow, timer, economy).
 
 ## 1. Board space
 
@@ -92,7 +92,7 @@ All board views listen to signals only; the model has committed every change bef
    board), one door segment per door cell in the door's colour, and four rounded corners.
 3. **`BlockLayerView`** builds every block from the modular pieces chosen by **`BlockTileResolver`**
    (art-pipeline.md §4) in its palette colour. While a block is held it shows a flat outline around its
-   footprint (`OutlineMeshBuilder`, shader `RollicCase/Selection Outline`, drawn over everything so it
+   footprint (`OutlineMeshBuilder`, shader `ColorBlockJam/Selection Outline`, drawn over everything so it
    stays visible under other objects) and draws the block exactly where the finger has it
    (`BlockDraggedSignal`, no tween); on `BlockDroppedSignal` it settles it onto its cell with the
    snap tween (`SnapDuration`, `SnapEase`); on `BlockExitedSignal` it plays `BlockExitAnimation` from

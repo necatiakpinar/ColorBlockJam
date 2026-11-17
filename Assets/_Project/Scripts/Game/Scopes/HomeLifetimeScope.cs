@@ -1,10 +1,10 @@
-using RollicCase.Game.Home;
-using RollicCase.Game.Installers;
+using ColorBlockJam.Game.Home;
+using ColorBlockJam.Game.Installers;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-namespace RollicCase.Game.Scopes
+namespace ColorBlockJam.Game.Scopes
 {
     public sealed class HomeLifetimeScope : LifetimeScope
     {

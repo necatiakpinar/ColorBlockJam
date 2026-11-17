@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d1e3b7190988f35488f2e661149d9c94, type: 3}
   m_Name: ApplicationConfig
-  m_EditorClassIdentifier: RollicCase.Game::RollicCase.Game.Configs.ApplicationConfig
+  m_EditorClassIdentifier: ColorBlockJam.Game::ColorBlockJam.Game.Configs.ApplicationConfig
   _targetFrameRate: 60
   _tweenCapacity: 200
   _sequenceCapacity: 50

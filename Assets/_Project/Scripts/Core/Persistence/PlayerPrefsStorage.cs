@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RollicCase.Core.Persistence
+namespace ColorBlockJam.Core.Persistence
 {
     public sealed class PlayerPrefsStorage : IKeyValueStorage
     {

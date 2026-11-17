@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace RollicCase.Core.Signals
+namespace ColorBlockJam.Core.Signals
 {
     /// <summary>
     /// Typed, synchronous publish/subscribe channel. Handlers run in subscription order.

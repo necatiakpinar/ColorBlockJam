@@ -1,6 +1,6 @@
 using Cysharp.Threading.Tasks;
 
-namespace RollicCase.Game.Navigation
+namespace ColorBlockJam.Game.Navigation
 {
     /// <summary>Routes between screens so flows never name scenes.</summary>
     public interface INavigationService

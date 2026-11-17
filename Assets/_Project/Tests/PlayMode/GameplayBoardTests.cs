@@ -1,14 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
-using RollicCase.Core.Signals;
-using RollicCase.Game.Configs;
-using RollicCase.Game.Gameplay.Board;
-using RollicCase.Game.Gameplay.Input;
-using RollicCase.Game.Gameplay.Signals;
-using RollicCase.Game.Gameplay.View;
-using RollicCase.Game.Levels;
-using RollicCase.Game.Scopes;
+using ColorBlockJam.Core.Signals;
+using ColorBlockJam.Game.Configs;
+using ColorBlockJam.Game.Gameplay.Board;
+using ColorBlockJam.Game.Gameplay.Input;
+using ColorBlockJam.Game.Gameplay.Signals;
+using ColorBlockJam.Game.Gameplay.View;
+using ColorBlockJam.Game.Levels;
+using ColorBlockJam.Game.Scopes;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.TestTools;
@@ -16,7 +16,7 @@ using UnityEngine.TestTools.Constraints;
 using Is = UnityEngine.TestTools.Constraints.Is;
 using VContainer;
 
-namespace RollicCase.Tests.PlayMode
+namespace ColorBlockJam.Tests.PlayMode
 {
     /// <summary>The real Gameplay scene draws the board and lets a finger take blocks out through their doors.</summary>
     public sealed class GameplayBoardTests

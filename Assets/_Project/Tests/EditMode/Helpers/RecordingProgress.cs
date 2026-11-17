@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace RollicCase.Tests.EditMode.Helpers
+namespace ColorBlockJam.Tests.EditMode.Helpers
 {
     /// <summary>Synchronous IProgress (System.Progress posts to a SynchronizationContext).</summary>
     public sealed class RecordingProgress : IProgress<float>

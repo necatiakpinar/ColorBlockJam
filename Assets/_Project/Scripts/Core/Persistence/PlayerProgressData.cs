@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace RollicCase.Core.Persistence
+namespace ColorBlockJam.Core.Persistence
 {
     [Serializable]
     public sealed class PlayerProgressData

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
-using RollicCase.Game.Gameplay.Animations;
+using ColorBlockJam.Game.Gameplay.Animations;
 using UnityEngine;
 
-namespace RollicCase.Game.Gameplay.View
+namespace ColorBlockJam.Game.Gameplay.View
 {
     /// <summary>
     /// One block on screen. Its transform sits at the block's centre (so the exit shrink stays in place) and
@@ -14,7 +14,7 @@ namespace RollicCase.Game.Gameplay.View
     /// </summary>
     public sealed class BlockView : MonoBehaviour
     {
-        [Tooltip("Flat outline drawn over everything while the block is held (RollicCase/Selection Outline).")]
+        [Tooltip("Flat outline drawn over everything while the block is held (ColorBlockJam/Selection Outline).")]
         [SerializeField]
         MeshFilter _outlineFilter;
 

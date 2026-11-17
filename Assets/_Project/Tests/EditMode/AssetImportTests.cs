@@ -2,7 +2,7 @@ using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 
-namespace RollicCase.Tests.EditMode
+namespace ColorBlockJam.Tests.EditMode
 {
     /// <summary>Guards the import rules in art-pipeline.md so a reimport or a new file cannot drift.</summary>
     public sealed class AssetImportTests

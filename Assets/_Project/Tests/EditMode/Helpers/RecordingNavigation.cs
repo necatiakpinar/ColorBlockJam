@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using RollicCase.Core.Scenes;
-using RollicCase.Game.Navigation;
+using ColorBlockJam.Core.Scenes;
+using ColorBlockJam.Game.Navigation;
 
-namespace RollicCase.Tests.EditMode.Helpers
+namespace ColorBlockJam.Tests.EditMode.Helpers
 {
     public sealed class RecordingNavigation : INavigationService
     {

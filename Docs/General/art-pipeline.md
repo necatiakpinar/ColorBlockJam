@@ -3,15 +3,15 @@
 > **Binding agent rules.** Read this page before adding, reimporting or wiring an asset under
 > `Assets/_Project/Art/` or a part prefab under `Assets/_Project/Prefabs/Board/`.
 
-The supplied art is used as delivered (case brief §2). `AssetImportTests` enforces §2 and §3.
+The art set is used as imported (R-3). `AssetImportTests` enforces §2 and §3.
 
 ## 1. Folders
 
 | Folder | Holds |
 | --- | --- |
-| `Art/UI/` | supplied UI sprites and `UiAtlas.spriteatlas` |
-| `Art/Models/` | supplied FBX files: `Arrows`, `BlockParts`, `GroundGrid`, `WallAndDoor` |
-| `Art/Textures/` | supplied textures (`icetexture.jpg`) |
+| `Art/UI/` | UI sprites and `UiAtlas.spriteatlas` |
+| `Art/Models/` | FBX files: `Arrows`, `BlockParts`, `GroundGrid`, `WallAndDoor` |
+| `Art/Textures/` | textures (`icetexture.jpg`) |
 | `Art/Materials/` | project materials (URP Simple Lit, GPU instancing on) |
 | `Prefabs/Board/` | one prefab per mesh part, used by the board and block views |
 
@@ -39,7 +39,7 @@ The supplied art is used as delivered (case brief §2). `AssetImportTests` enfor
 3. Board plane: X right, Z up the screen, Y towards the camera. The floor top is at Y = 0.
 4. **Code never assumes the cell size.** Grid ↔ world conversion goes through `BoardSpace`, which reads
    `BoardViewConfig.CellSize`; level data and rules stay in cell coordinates
-   ([Case README §2.8](../Case/README.md#2-scope-decisions)).
+   ([Design README §2.8](../Design/README.md#2-scope-decisions)).
 
 ## 4. Part prefabs
 

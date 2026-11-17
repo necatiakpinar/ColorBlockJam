@@ -1,14 +1,14 @@
-using RollicCase.Game.Configs;
-using RollicCase.Game.Gameplay;
-using RollicCase.Game.Gameplay.Hud;
-using RollicCase.Game.Gameplay.Input;
-using RollicCase.Game.Gameplay.View;
-using RollicCase.Game.Installers;
+using ColorBlockJam.Game.Configs;
+using ColorBlockJam.Game.Gameplay;
+using ColorBlockJam.Game.Gameplay.Hud;
+using ColorBlockJam.Game.Gameplay.Input;
+using ColorBlockJam.Game.Gameplay.View;
+using ColorBlockJam.Game.Installers;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-namespace RollicCase.Game.Scopes
+namespace ColorBlockJam.Game.Scopes
 {
     public sealed class GameplayLifetimeScope : LifetimeScope
     {

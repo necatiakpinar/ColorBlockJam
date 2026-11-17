@@ -1,4 +1,4 @@
-namespace RollicCase.Core.Persistence
+namespace ColorBlockJam.Core.Persistence
 {
     /// <summary>Device-local string storage; the seam that lets persistence be tested without PlayerPrefs.</summary>
     public interface IKeyValueStorage

@@ -1,10 +1,10 @@
 using System;
 using Cysharp.Threading.Tasks;
-using RollicCase.Core.Persistence;
-using RollicCase.Game.Navigation;
+using ColorBlockJam.Core.Persistence;
+using ColorBlockJam.Game.Navigation;
 using VContainer.Unity;
 
-namespace RollicCase.Game.Home
+namespace ColorBlockJam.Game.Home
 {
     /// <summary>Entry point of the Home scene: shows the current level and routes the level button.</summary>
     public sealed class HomeFlow : IStartable, IDisposable

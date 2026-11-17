@@ -229,7 +229,11 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: ROLLIC
+  m_text: 'COLOR
+
+    BLOCK
+
+    JAM'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -540,7 +544,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 638f94d2d6e641d4c9cb4390b9542600, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: RollicCase.Game::RollicCase.Game.Splash.SplashView
+  m_EditorClassIdentifier: ColorBlockJam.Game::ColorBlockJam.Game.Splash.SplashView
   _logoGroup: {fileID: 1752687195}
   _logo: {fileID: 1752687194}
   _progressFill: {fileID: 2115746017}
@@ -668,7 +672,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Case Study
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -973,7 +977,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 034bef5a55a19024a90414cde8af6efb, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: RollicCase.Game::RollicCase.Game.Scopes.SplashLifetimeScope
+  m_EditorClassIdentifier: ColorBlockJam.Game::ColorBlockJam.Game.Scopes.SplashLifetimeScope
   parentReference:
     TypeName: 
   autoRun: 1

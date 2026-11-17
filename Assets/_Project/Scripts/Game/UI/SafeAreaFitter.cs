@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RollicCase.Game.UI
+namespace ColorBlockJam.Game.UI
 {
     /// <summary>
     /// Keeps a canvas content root inside <see cref="Screen.safeArea"/>. Re-fits when the canvas

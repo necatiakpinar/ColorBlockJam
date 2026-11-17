@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using RollicCase.Game.UI;
+using ColorBlockJam.Game.UI;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace RollicCase.Tests.EditMode
+namespace ColorBlockJam.Tests.EditMode
 {
     /// <summary>Opens every build scene and checks the UI rules authored scenes must follow (ui.md).</summary>
     public sealed class SceneSetupTests

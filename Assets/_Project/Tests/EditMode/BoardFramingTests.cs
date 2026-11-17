@@ -1,9 +1,9 @@
 using NUnit.Framework;
-using RollicCase.Game.Configs;
-using RollicCase.Game.Gameplay.View;
+using ColorBlockJam.Game.Configs;
+using ColorBlockJam.Game.Gameplay.View;
 using UnityEngine;
 
-namespace RollicCase.Tests.EditMode
+namespace ColorBlockJam.Tests.EditMode
 {
     public sealed class BoardFramingTests
     {

@@ -1,10 +1,10 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using RollicCase.Core.Boot;
-using RollicCase.Game.Configs;
+using ColorBlockJam.Core.Boot;
+using ColorBlockJam.Game.Configs;
 using UnityEngine;
 
-namespace RollicCase.Game.Boot
+namespace ColorBlockJam.Game.Boot
 {
     public sealed class ApplyApplicationSettingsStep : IBootStep
     {

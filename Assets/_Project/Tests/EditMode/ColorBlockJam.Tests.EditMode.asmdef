@@ -1,9 +1,9 @@
 {
-    "name": "RollicCase.Tests.EditMode",
-    "rootNamespace": "RollicCase.Tests.EditMode",
+    "name": "ColorBlockJam.Tests.EditMode",
+    "rootNamespace": "ColorBlockJam.Tests.EditMode",
     "references": [
-        "RollicCase.Core",
-        "RollicCase.Game",
+        "ColorBlockJam.Core",
+        "ColorBlockJam.Game",
         "UniTask",
         "VContainer",
         "UnityEngine.TestRunner",

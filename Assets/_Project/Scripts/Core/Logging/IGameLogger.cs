@@ -1,4 +1,4 @@
-namespace RollicCase.Core.Logging
+namespace ColorBlockJam.Core.Logging
 {
     public interface IGameLogger
     {

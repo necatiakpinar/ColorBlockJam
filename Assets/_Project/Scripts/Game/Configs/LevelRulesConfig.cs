@@ -1,9 +1,9 @@
 using UnityEngine;
 
-namespace RollicCase.Game.Configs
+namespace ColorBlockJam.Game.Configs
 {
     /// <summary>Limits every level must respect; the validator and the level editor read them.</summary>
-    [CreateAssetMenu(menuName = "RollicCase/Configs/Level Rules Config", fileName = "LevelRulesConfig")]
+    [CreateAssetMenu(menuName = "ColorBlockJam/Configs/Level Rules Config", fileName = "LevelRulesConfig")]
     public sealed class LevelRulesConfig : ScriptableObject
     {
         [SerializeField, Min(1)]

@@ -1,4 +1,4 @@
-namespace RollicCase.Game.Gameplay.Board
+namespace ColorBlockJam.Game.Gameplay.Board
 {
     /// <summary>What happened when a block was pushed one cell.</summary>
     public enum StepResult

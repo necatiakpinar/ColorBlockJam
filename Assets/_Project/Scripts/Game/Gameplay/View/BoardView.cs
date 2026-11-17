@@ -1,13 +1,13 @@
 using System.Collections.Generic;
-using RollicCase.Core.Signals;
-using RollicCase.Game.Configs;
-using RollicCase.Game.Gameplay.Board;
-using RollicCase.Game.Gameplay.Signals;
-using RollicCase.Game.Levels;
+using ColorBlockJam.Core.Signals;
+using ColorBlockJam.Game.Configs;
+using ColorBlockJam.Game.Gameplay.Board;
+using ColorBlockJam.Game.Gameplay.Signals;
+using ColorBlockJam.Game.Levels;
 using UnityEngine;
 using VContainer;
 
-namespace RollicCase.Game.Gameplay.View
+namespace ColorBlockJam.Game.Gameplay.View
 {
     /// <summary>
     /// Builds the static board for each attempt: floor tiles over a base (the gaps read as grid lines), the

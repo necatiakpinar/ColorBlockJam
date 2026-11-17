@@ -1,9 +1,9 @@
 using System;
 using NUnit.Framework;
-using RollicCase.Game.UI;
-using RollicCase.Tests.EditMode.Helpers;
+using ColorBlockJam.Game.UI;
+using ColorBlockJam.Tests.EditMode.Helpers;
 
-namespace RollicCase.Tests.EditMode
+namespace ColorBlockJam.Tests.EditMode
 {
     public sealed class PopupServiceTests
     {

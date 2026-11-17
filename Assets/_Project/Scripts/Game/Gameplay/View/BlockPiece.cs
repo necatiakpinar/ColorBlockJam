@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RollicCase.Game.Gameplay.View
+namespace ColorBlockJam.Game.Gameplay.View
 {
     /// <summary>
     /// One mesh piece of a block, in cell units relative to the block layer's origin. A negative scale axis

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using RollicCase.Game.Levels;
+using ColorBlockJam.Game.Levels;
 using UnityEngine;
 
-namespace RollicCase.Game.Gameplay.Board
+namespace ColorBlockJam.Game.Gameplay.Board
 {
     /// <summary>
     /// Decides whether a block pushed against a wall fits a door there (DA-5): same colour, and the door

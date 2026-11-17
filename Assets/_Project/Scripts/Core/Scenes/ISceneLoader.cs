@@ -1,7 +1,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 
-namespace RollicCase.Core.Scenes
+namespace ColorBlockJam.Core.Scenes
 {
     public interface ISceneLoader
     {

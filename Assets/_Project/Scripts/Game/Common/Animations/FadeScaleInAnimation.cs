@@ -1,8 +1,8 @@
 using DG.Tweening;
-using RollicCase.Core.Animation;
+using ColorBlockJam.Core.Animation;
 using UnityEngine;
 
-namespace RollicCase.Game.Common.Animations
+namespace ColorBlockJam.Game.Common.Animations
 {
     /// <summary>Fades a canvas group in while its target scales up to 1. Runs on unscaled time.</summary>
     public readonly struct FadeScaleInAnimation : IAnimation<FadeScaleInAnimation.Config>

@@ -1,9 +1,9 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using RollicCase.Core.Boot;
-using RollicCase.Core.Persistence;
+using ColorBlockJam.Core.Boot;
+using ColorBlockJam.Core.Persistence;
 
-namespace RollicCase.Game.Boot
+namespace ColorBlockJam.Game.Boot
 {
     public sealed class LoadPlayerProgressStep : IBootStep
     {

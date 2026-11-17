@@ -1,8 +1,8 @@
 {
-    "name": "RollicCase.Game",
-    "rootNamespace": "RollicCase.Game",
+    "name": "ColorBlockJam.Game",
+    "rootNamespace": "ColorBlockJam.Game",
     "references": [
-        "RollicCase.Core",
+        "ColorBlockJam.Core",
         "UniTask",
         "UniTask.DOTween",
         "VContainer",

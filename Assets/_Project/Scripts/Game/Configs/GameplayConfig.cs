@@ -1,10 +1,10 @@
 using DG.Tweening;
-using RollicCase.Game.Common.Animations;
+using ColorBlockJam.Game.Common.Animations;
 using UnityEngine;
 
-namespace RollicCase.Game.Configs
+namespace ColorBlockJam.Game.Configs
 {
-    [CreateAssetMenu(menuName = "RollicCase/Configs/Gameplay Config", fileName = "GameplayConfig")]
+    [CreateAssetMenu(menuName = "ColorBlockJam/Configs/Gameplay Config", fileName = "GameplayConfig")]
     public sealed class GameplayConfig : ScriptableObject
     {
         [SerializeField]

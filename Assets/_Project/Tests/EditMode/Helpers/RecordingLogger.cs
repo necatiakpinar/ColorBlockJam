@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using RollicCase.Core.Logging;
+using ColorBlockJam.Core.Logging;
 
-namespace RollicCase.Tests.EditMode.Helpers
+namespace ColorBlockJam.Tests.EditMode.Helpers
 {
     public sealed class RecordingLogger : IGameLogger
     {

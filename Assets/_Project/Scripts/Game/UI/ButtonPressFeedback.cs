@@ -1,15 +1,15 @@
 using DG.Tweening;
-using RollicCase.Game.Common.Animations;
-using RollicCase.Game.Configs;
+using ColorBlockJam.Game.Common.Animations;
+using ColorBlockJam.Game.Configs;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace RollicCase.Game.UI
+namespace ColorBlockJam.Game.UI
 {
     /// <summary>
     /// Scales a button down while pressed and springs it back on release. Every button in the game
-    /// carries one (brief §4.1, §4.2), so it reads its config asset directly instead of through the
+    /// carries one (R-12, R-14), so it reads its config asset directly instead of through the
     /// container: it has no service dependency and would otherwise need registering per button.
     /// </summary>
     [RequireComponent(typeof(Button))]

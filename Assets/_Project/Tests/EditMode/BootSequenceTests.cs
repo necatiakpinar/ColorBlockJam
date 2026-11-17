@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using NUnit.Framework;
-using RollicCase.Core.Boot;
-using RollicCase.Tests.EditMode.Helpers;
+using ColorBlockJam.Core.Boot;
+using ColorBlockJam.Tests.EditMode.Helpers;
 using UnityEngine.TestTools;
 
-namespace RollicCase.Tests.EditMode
+namespace ColorBlockJam.Tests.EditMode
 {
     public sealed class BootSequenceTests
     {

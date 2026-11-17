@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace RollicCase.Game.Gameplay.Board
+namespace ColorBlockJam.Game.Gameplay.Board
 {
     /// <summary>
     /// The only conversion between board cells and world space. The board lies on the XZ plane at

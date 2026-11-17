@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using RollicCase.Game.Gameplay.View;
+using ColorBlockJam.Game.Gameplay.View;
 using UnityEngine;
 
-namespace RollicCase.Tests.EditMode
+namespace ColorBlockJam.Tests.EditMode
 {
     /// <summary>Which modular pieces draw a block shape (art-pipeline.md §4).</summary>
     public sealed class BlockTileResolverTests

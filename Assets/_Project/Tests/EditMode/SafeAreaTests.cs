@@ -1,8 +1,8 @@
 using NUnit.Framework;
-using RollicCase.Game.UI;
+using ColorBlockJam.Game.UI;
 using UnityEngine;
 
-namespace RollicCase.Tests.EditMode
+namespace ColorBlockJam.Tests.EditMode
 {
     public sealed class SafeAreaTests
     {

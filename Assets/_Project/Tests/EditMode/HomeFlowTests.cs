@@ -1,10 +1,10 @@
 using NUnit.Framework;
-using RollicCase.Core.Persistence;
-using RollicCase.Core.Scenes;
-using RollicCase.Game.Home;
-using RollicCase.Tests.EditMode.Helpers;
+using ColorBlockJam.Core.Persistence;
+using ColorBlockJam.Core.Scenes;
+using ColorBlockJam.Game.Home;
+using ColorBlockJam.Tests.EditMode.Helpers;
 
-namespace RollicCase.Tests.EditMode
+namespace ColorBlockJam.Tests.EditMode
 {
     public sealed class HomeFlowTests
     {

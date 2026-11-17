@@ -3,7 +3,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace RollicCase.Editor
+namespace ColorBlockJam.Editor
 {
     /// <summary>
     /// Pressing Play always boots through the first build scene (Splash), whichever scene is open,
@@ -14,8 +14,8 @@ namespace RollicCase.Editor
     [InitializeOnLoad]
     public static class PlayModeStartScene
     {
-        const string MenuPath = "RollicCase/Play From Splash";
-        const string PrefKey = "RollicCase.PlayFromSplash";
+        const string MenuPath = "ColorBlockJam/Play From Splash";
+        const string PrefKey = "ColorBlockJam.PlayFromSplash";
         const string TestRunnerScenePrefix = "InitTestScene";
 
         static PlayModeStartScene()

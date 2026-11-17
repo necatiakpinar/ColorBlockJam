@@ -1,11 +1,11 @@
 using System;
 using Cysharp.Threading.Tasks;
 using NUnit.Framework;
-using RollicCase.Core.Scenes;
-using RollicCase.Game.Navigation;
-using RollicCase.Tests.EditMode.Helpers;
+using ColorBlockJam.Core.Scenes;
+using ColorBlockJam.Game.Navigation;
+using ColorBlockJam.Tests.EditMode.Helpers;
 
-namespace RollicCase.Tests.EditMode
+namespace ColorBlockJam.Tests.EditMode
 {
     public sealed class NavigationServiceTests
     {

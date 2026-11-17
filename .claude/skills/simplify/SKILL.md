@@ -44,7 +44,7 @@ serialized values (a config number, a reference). Never line-review YAML.
 - Entry points registered inside an `IInstaller` (they belong in the scope).
 - Raw `Debug.Log`; magic numbers; strings used as state; enums without explicit spaced values.
 - UI built in code instead of authored.
-- Naming: `RollicCase.*` namespaces matching folders, `_camelCase` fields, test names
+- Naming: `ColorBlockJam.*` namespaces matching folders, `_camelCase` fields, test names
   `Subject_ShouldOutcome_WhenContext`.
 
 ### Pass 3 — Efficiency

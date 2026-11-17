@@ -1,11 +1,11 @@
-using RollicCase.Game.Configs;
-using RollicCase.Game.Installers;
-using RollicCase.Game.Splash;
+using ColorBlockJam.Game.Configs;
+using ColorBlockJam.Game.Installers;
+using ColorBlockJam.Game.Splash;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-namespace RollicCase.Game.Scopes
+namespace ColorBlockJam.Game.Scopes
 {
     public sealed class SplashLifetimeScope : LifetimeScope
     {

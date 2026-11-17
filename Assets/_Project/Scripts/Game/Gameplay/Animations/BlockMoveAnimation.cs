@@ -3,7 +3,7 @@ using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using UnityEngine;
 
-namespace RollicCase.Game.Gameplay.Animations
+namespace ColorBlockJam.Game.Gameplay.Animations
 {
     /// <summary>
     /// The settle a block makes onto its cell when the finger lets go. Blocks are dropped again and again,

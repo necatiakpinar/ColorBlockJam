@@ -1,7 +1,8 @@
-# Rollic Case Study — Necati Akpınar
+# Color Block Jam
 
-A Unity 2022.3 LTS mobile game built for the Rollic case study. The project starts from a production-shaped
-skeleton so the case itself can be built on a clean, tested foundation.
+A Unity 2022.3 LTS mobile puzzle game: drag coloured blocks across a walled board and out through doors of
+their colour before the timer runs out. It is built on a production-shaped skeleton with a clean, tested
+foundation and a level editor for designers.
 
 ## Highlights
 
@@ -28,18 +29,18 @@ Unity Test Framework
 
 More: [Docs/General/getting-started.md](Docs/General/getting-started.md) ·
 [architecture](Docs/General/architecture.md) · [boot flow](Docs/General/splash-boot.md) ·
-[testing](Docs/General/testing.md) · [case tasks](Docs/Case/README.md)
+[testing](Docs/General/testing.md) · [design and tasks](Docs/Design/README.md)
 
 ## Project layout
 
 ```
 Assets/_Project/
-  Scripts/Core      game-agnostic infrastructure (RollicCase.Core)
-  Scripts/Game      scopes, boot, splash, gameplay (RollicCase.Game)
+  Scripts/Core      game-agnostic infrastructure (ColorBlockJam.Core)
+  Scripts/Game      scopes, boot, splash, gameplay (ColorBlockJam.Game)
   Scripts/Editor    editor tooling
   Tests/EditMode    unit and wiring tests
   Tests/PlayMode    scene flow tests
   Scenes, Prefabs, Configs
-Docs/               architecture, rules, case tasks, QA checklists
+Docs/               design, architecture, rules, tasks, QA checklists
 .claude/skills/     agent workflows (task breakdown, simplify, review, commit plan)
 ```

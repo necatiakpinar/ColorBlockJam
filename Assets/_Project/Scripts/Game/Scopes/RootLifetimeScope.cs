@@ -1,12 +1,12 @@
-using RollicCase.Game.Boot;
-using RollicCase.Game.Configs;
-using RollicCase.Game.Installers;
-using RollicCase.Game.Levels;
+using ColorBlockJam.Game.Boot;
+using ColorBlockJam.Game.Configs;
+using ColorBlockJam.Game.Installers;
+using ColorBlockJam.Game.Levels;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-namespace RollicCase.Game.Scopes
+namespace ColorBlockJam.Game.Scopes
 {
     /// <summary>
     /// The app-wide scope. Spawned once from the prefab set in VContainerSettings and kept across scenes;

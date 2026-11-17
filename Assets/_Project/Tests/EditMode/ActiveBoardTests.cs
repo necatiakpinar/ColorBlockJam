@@ -1,15 +1,15 @@
 using System.Collections.Generic;
 using NUnit.Framework;
-using RollicCase.Core.Signals;
-using RollicCase.Game.Gameplay.Board;
-using RollicCase.Game.Gameplay.Signals;
-using RollicCase.Game.Levels;
-using RollicCase.Tests.EditMode.Helpers;
+using ColorBlockJam.Core.Signals;
+using ColorBlockJam.Game.Gameplay.Board;
+using ColorBlockJam.Game.Gameplay.Signals;
+using ColorBlockJam.Game.Levels;
+using ColorBlockJam.Tests.EditMode.Helpers;
 using UnityEngine;
-using static RollicCase.Game.Levels.BlockColor;
-using static RollicCase.Game.Levels.WallSide;
+using static ColorBlockJam.Game.Levels.BlockColor;
+using static ColorBlockJam.Game.Levels.WallSide;
 
-namespace RollicCase.Tests.EditMode
+namespace ColorBlockJam.Tests.EditMode
 {
     public sealed class ActiveBoardTests
     {

@@ -1,24 +1,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using RollicCase.Core.Boot;
-using RollicCase.Core.Logging;
-using RollicCase.Core.Persistence;
-using RollicCase.Core.Scenes;
-using RollicCase.Core.Signals;
-using RollicCase.Game.Boot;
-using RollicCase.Game.Configs;
-using RollicCase.Game.Gameplay.Board;
-using RollicCase.Game.Gameplay.Input;
-using RollicCase.Game.Installers;
-using RollicCase.Game.Levels;
-using RollicCase.Game.Navigation;
-using RollicCase.Game.UI;
+using ColorBlockJam.Core.Boot;
+using ColorBlockJam.Core.Logging;
+using ColorBlockJam.Core.Persistence;
+using ColorBlockJam.Core.Scenes;
+using ColorBlockJam.Core.Signals;
+using ColorBlockJam.Game.Boot;
+using ColorBlockJam.Game.Configs;
+using ColorBlockJam.Game.Gameplay.Board;
+using ColorBlockJam.Game.Gameplay.Input;
+using ColorBlockJam.Game.Installers;
+using ColorBlockJam.Game.Levels;
+using ColorBlockJam.Game.Navigation;
+using ColorBlockJam.Game.UI;
 using UnityEditor;
 using UnityEngine;
 using VContainer;
 
-namespace RollicCase.Tests.EditMode
+namespace ColorBlockJam.Tests.EditMode
 {
     /// <summary>Builds the real installers into a plain container: catches missing or broken registrations.</summary>
     public sealed class InstallerResolutionTests

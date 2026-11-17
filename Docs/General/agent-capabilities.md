@@ -18,7 +18,7 @@ Updated: 2026-11-16
 - OpenUPM metadata (versions and publish dates) is readable without auth at
   `https://package.openupm.com/<package-name>` (2026-11-16).
 - With two editors open, every `unity-mcp` call fails with "Multiple Unity instances are connected and
-  none is selected" until `set_active_instance` gets `RollicCaseStudy_NecatiAkpinar@<hash>` (the hash is
+  none is selected" until `set_active_instance` gets `<project folder name>@<hash>` (the hash is
   in the error). `refresh_unity` (force, assets) then imports new files and writes their `.meta` (2026-11-16).
 
 - `execute_code` compiles with CodeDom (C# 6): no tuples, `out var` or pattern matching; write

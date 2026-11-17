@@ -1,15 +1,15 @@
 using System.Collections;
 using NUnit.Framework;
-using RollicCase.Game.Configs;
-using RollicCase.Game.Home;
-using RollicCase.Game.UI;
+using ColorBlockJam.Game.Configs;
+using ColorBlockJam.Game.Home;
+using ColorBlockJam.Game.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
 using VContainer;
 
-namespace RollicCase.Tests.PlayMode
+namespace ColorBlockJam.Tests.PlayMode
 {
     /// <summary>A real Home button shrinks while pressed and returns to its size on release.</summary>
     public sealed class ButtonPressFeedbackTests
@@ -28,7 +28,7 @@ namespace RollicCase.Tests.PlayMode
             _feedback = _button.GetComponent<ButtonPressFeedback>();
             _pointer = new PointerEventData(EventSystem.current);
 
-            var uiConfig = SceneTestUtility.FindInActiveScene<RollicCase.Game.Scopes.HomeLifetimeScope>()
+            var uiConfig = SceneTestUtility.FindInActiveScene<ColorBlockJam.Game.Scopes.HomeLifetimeScope>()
                 .Container.Resolve<UiConfig>();
             _settleSeconds = Mathf.Max(uiConfig.PressFeedback.PressDuration, uiConfig.PressFeedback.ReleaseDuration)
                 + SettleMarginSeconds;

@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: Necati Akpinar
-  productName: Rollic Case
+  productName: Color Block Jam
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -164,9 +164,9 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.4
   applicationIdentifier:
-    Android: com.necatiakpinar.rolliccase
+    Android: com.necatiakpinar.colorblockjam
     Standalone: com.Unity-Technologies.com.unity.template.urp-blank
-    iPhone: com.necatiakpinar.rolliccase
+    iPhone: com.necatiakpinar.colorblockjam
   buildNumber:
     Standalone: 0
     VisionOS: 0
@@ -846,14 +846,14 @@ PlayerSettings:
   apiCompatibilityLevelPerPlatform: {}
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: RollicCaseStudy_NecatiAkpinar
+  metroPackageName: ColorBlockJam
   metroPackageVersion: 
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
   metroCertificateIssuer: 
   metroCertificateNotAfter: 0000000000000000
-  metroApplicationDescription: RollicCaseStudy_NecatiAkpinar
+  metroApplicationDescription: ColorBlockJam
   wsaImages: {}
   metroTileShortName: 
   metroTileShowName: 0
@@ -925,7 +925,7 @@ PlayerSettings:
   cloudProjectId: 24856f38-6627-4a08-acae-ec0c4c80f6d1
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: RollicCaseStudy_NecatiAkpinar
+  projectName: ColorBlockJam
   organizationId: bytewave
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0

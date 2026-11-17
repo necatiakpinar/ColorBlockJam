@@ -1,11 +1,11 @@
 using System.Collections;
 using NUnit.Framework;
-using RollicCase.Game.Home;
+using ColorBlockJam.Game.Home;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace RollicCase.Tests.PlayMode
+namespace ColorBlockJam.Tests.PlayMode
 {
     /// <summary>Drives the real app through its scenes the way a player would.</summary>
     public static class SceneTestUtility

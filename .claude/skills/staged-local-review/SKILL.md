@@ -8,7 +8,7 @@ description: Run a bounded local review of the current diff with independent rea
 ## Inputs
 
 - **Target diff:** the working tree against `HEAD` by default; a branch against its base when asked.
-- **Rules:** `CLAUDE.md`, the binding pages for the touched paths, the task in `Docs/Case/README.md`.
+- **Rules:** `CLAUDE.md`, the binding pages for the touched paths, the task in `Docs/Design/README.md`.
 
 ## Workflow
 

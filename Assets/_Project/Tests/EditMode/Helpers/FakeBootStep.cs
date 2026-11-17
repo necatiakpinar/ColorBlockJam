@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using RollicCase.Core.Boot;
+using ColorBlockJam.Core.Boot;
 
-namespace RollicCase.Tests.EditMode.Helpers
+namespace ColorBlockJam.Tests.EditMode.Helpers
 {
     public sealed class FakeBootStep : IBootStep
     {

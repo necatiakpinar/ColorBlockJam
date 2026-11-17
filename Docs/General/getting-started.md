@@ -27,12 +27,12 @@
 
 | Menu | Does |
 | --- | --- |
-| **RollicCase > Play From Splash** | (default on) Play always starts from build scene 0, whatever scene is open; test runs and batch mode are exempt |
+| **ColorBlockJam > Play From Splash** | (default on) Play always starts from build scene 0, whatever scene is open; test runs and batch mode are exempt |
 | **Window > General > Test Runner** | Edit Mode / Play Mode tests |
 
 ## 4. Android build
 
-Player Settings are already set: bundle id `com.necatiakpinar.rolliccase`, portrait only, IL2CPP,
+Player Settings are already set: bundle id `com.necatiakpinar.colorblockjam`, portrait only, IL2CPP,
 ARM64, min API 24, target API = highest installed, one Mobile quality level on `Mobile_RPAsset`.
 `BuildSettingsTests` guards orientation and backend.
 

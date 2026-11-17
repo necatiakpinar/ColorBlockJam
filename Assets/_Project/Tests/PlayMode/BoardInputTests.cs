@@ -1,18 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
-using RollicCase.Core.Signals;
-using RollicCase.Game.Gameplay.Board;
-using RollicCase.Game.Gameplay.Hud;
-using RollicCase.Game.Gameplay.Input;
-using RollicCase.Game.Gameplay.Signals;
-using RollicCase.Game.Scopes;
+using ColorBlockJam.Core.Signals;
+using ColorBlockJam.Game.Gameplay.Board;
+using ColorBlockJam.Game.Gameplay.Hud;
+using ColorBlockJam.Game.Gameplay.Input;
+using ColorBlockJam.Game.Gameplay.Signals;
+using ColorBlockJam.Game.Scopes;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.TestTools;
 using VContainer;
 
-namespace RollicCase.Tests.PlayMode
+namespace ColorBlockJam.Tests.PlayMode
 {
     /// <summary>Pointer events on the real Gameplay board arrive as board cells through the signal bus.</summary>
     public sealed class BoardInputTests

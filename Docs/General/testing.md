@@ -6,8 +6,8 @@
 
 | Assembly | Folder | Covers |
 | --- | --- | --- |
-| `RollicCase.Tests.EditMode` | `Assets/_Project/Tests/EditMode/` | pure logic, DI wiring, build settings |
-| `RollicCase.Tests.PlayMode` | `Assets/_Project/Tests/PlayMode/` | real scenes end to end |
+| `ColorBlockJam.Tests.EditMode` | `Assets/_Project/Tests/EditMode/` | pure logic, DI wiring, build settings |
+| `ColorBlockJam.Tests.PlayMode` | `Assets/_Project/Tests/PlayMode/` | real scenes end to end |
 
 Shared fakes and builders live in `Tests/EditMode/Helpers/`: `InMemoryKeyValueStorage`,
 `RecordingLogger`, `FakeBootStep`, `RecordingProgress`, `RecordingNavigation`, `ControllableSceneLoader`,

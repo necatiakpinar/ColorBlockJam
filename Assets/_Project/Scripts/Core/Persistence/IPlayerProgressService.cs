@@ -1,4 +1,4 @@
-namespace RollicCase.Core.Persistence
+namespace ColorBlockJam.Core.Persistence
 {
     public interface IPlayerProgressService
     {

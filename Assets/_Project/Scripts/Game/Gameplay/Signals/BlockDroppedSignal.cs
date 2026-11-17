@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RollicCase.Game.Gameplay.Signals
+namespace ColorBlockJam.Game.Gameplay.Signals
 {
     /// <summary>The finger let go of a block; <see cref="Offset"/> is the cell it settles on.</summary>
     public readonly struct BlockDroppedSignal

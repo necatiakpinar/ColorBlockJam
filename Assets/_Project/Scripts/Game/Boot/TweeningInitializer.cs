@@ -1,9 +1,9 @@
 using DG.Tweening;
-using RollicCase.Game.Configs;
+using ColorBlockJam.Game.Configs;
 using UnityEngine;
 using VContainer.Unity;
 
-namespace RollicCase.Game.Boot
+namespace ColorBlockJam.Game.Boot
 {
     /// <summary>
     /// Configures DOTween once, when the root scope is built — before any scene scope can start a tween,

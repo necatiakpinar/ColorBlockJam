@@ -1,6 +1,6 @@
-using RollicCase.Game.UI;
+using ColorBlockJam.Game.UI;
 
-namespace RollicCase.Tests.EditMode.Helpers
+namespace ColorBlockJam.Tests.EditMode.Helpers
 {
     public sealed class RecordingPopup : IPopup
     {

@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0b8ce78bb21fdac49bc74750b74e7c32, type: 3}
   m_Name: GameplayConfig
-  m_EditorClassIdentifier: RollicCase.Game::RollicCase.Game.Configs.GameplayConfig
+  m_EditorClassIdentifier: ColorBlockJam.Game::ColorBlockJam.Game.Configs.GameplayConfig
   _hudReveal:
     _duration: 0.35
     _fromScale: 0.9

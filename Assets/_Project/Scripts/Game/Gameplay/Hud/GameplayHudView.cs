@@ -1,15 +1,15 @@
 using System;
 using DG.Tweening;
-using RollicCase.Core.Signals;
-using RollicCase.Game.Common.Animations;
-using RollicCase.Game.Configs;
-using RollicCase.Game.Gameplay.Signals;
+using ColorBlockJam.Core.Signals;
+using ColorBlockJam.Game.Common.Animations;
+using ColorBlockJam.Game.Configs;
+using ColorBlockJam.Game.Gameplay.Signals;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
 
-namespace RollicCase.Game.Gameplay.Hud
+namespace ColorBlockJam.Game.Gameplay.Hud
 {
     public sealed class GameplayHudView : MonoBehaviour
     {

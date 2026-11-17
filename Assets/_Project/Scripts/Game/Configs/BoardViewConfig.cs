@@ -1,12 +1,12 @@
 using System;
 using DG.Tweening;
-using RollicCase.Game.Levels;
+using ColorBlockJam.Game.Levels;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace RollicCase.Game.Configs
+namespace ColorBlockJam.Game.Configs
 {
-    [CreateAssetMenu(menuName = "RollicCase/Configs/Board View Config", fileName = "BoardViewConfig")]
+    [CreateAssetMenu(menuName = "ColorBlockJam/Configs/Board View Config", fileName = "BoardViewConfig")]
     public sealed class BoardViewConfig : ScriptableObject
     {
         [Serializable]

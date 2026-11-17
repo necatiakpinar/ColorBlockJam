@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace RollicCase.Game.Levels
+namespace ColorBlockJam.Game.Levels
 {
     /// <summary>
     /// A coloured opening in the wall ring (DA-17). <see cref="Start"/> is the first board cell it spans

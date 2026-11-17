@@ -1,9 +1,9 @@
 {
-    "name": "RollicCase.Tests.PlayMode",
-    "rootNamespace": "RollicCase.Tests.PlayMode",
+    "name": "ColorBlockJam.Tests.PlayMode",
+    "rootNamespace": "ColorBlockJam.Tests.PlayMode",
     "references": [
-        "RollicCase.Core",
-        "RollicCase.Game",
+        "ColorBlockJam.Core",
+        "ColorBlockJam.Game",
         "UniTask",
         "VContainer",
         "Unity.TextMeshPro",

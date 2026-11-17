@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using RollicCase.Game.Configs;
-using RollicCase.Game.Levels;
-using RollicCase.Tests.EditMode.Helpers;
+using ColorBlockJam.Game.Configs;
+using ColorBlockJam.Game.Levels;
+using ColorBlockJam.Tests.EditMode.Helpers;
 using UnityEngine;
-using static RollicCase.Game.Levels.BlockColor;
-using static RollicCase.Game.Levels.WallSide;
+using static ColorBlockJam.Game.Levels.BlockColor;
+using static ColorBlockJam.Game.Levels.WallSide;
 
-namespace RollicCase.Tests.EditMode
+namespace ColorBlockJam.Tests.EditMode
 {
     public sealed class LevelDefinitionValidatorTests
     {

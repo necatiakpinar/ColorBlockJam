@@ -1,7 +1,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 
-namespace RollicCase.Core.Boot
+namespace ColorBlockJam.Core.Boot
 {
     /// <summary>One unit of work the app must finish before it leaves the splash.</summary>
     public interface IBootStep

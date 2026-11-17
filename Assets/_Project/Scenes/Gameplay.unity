@@ -828,7 +828,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 568374befcc2713418a3e07e22b53a2b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: RollicCase.Game::RollicCase.Game.Scopes.GameplayLifetimeScope
+  m_EditorClassIdentifier: ColorBlockJam.Game::ColorBlockJam.Game.Scopes.GameplayLifetimeScope
   parentReference:
     TypeName: 
   autoRun: 1
@@ -1045,7 +1045,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bb00fa7ac8153c34c87cd748b03056f5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: RollicCase.Game::RollicCase.Game.Gameplay.Hud.GameplayHudView
+  m_EditorClassIdentifier: ColorBlockJam.Game::ColorBlockJam.Game.Gameplay.Hud.GameplayHudView
   _group: {fileID: 1276011624}
   _panel: {fileID: 1276011621}
   _levelLabel: {fileID: 997845559}

@@ -1,9 +1,9 @@
 {
-    "name": "RollicCase.Editor",
-    "rootNamespace": "RollicCase.Editor",
+    "name": "ColorBlockJam.Editor",
+    "rootNamespace": "ColorBlockJam.Editor",
     "references": [
-        "RollicCase.Core",
-        "RollicCase.Game"
+        "ColorBlockJam.Core",
+        "ColorBlockJam.Game"
     ],
     "includePlatforms": [
         "Editor"

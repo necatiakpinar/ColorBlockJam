@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using RollicCase.Game.Levels;
+using ColorBlockJam.Game.Levels;
 using UnityEngine;
 
-namespace RollicCase.Game.Gameplay.Board
+namespace ColorBlockJam.Game.Gameplay.Board
 {
     /// <summary>A block during one attempt. Only <see cref="BoardState"/> moves or removes it.</summary>
     public sealed class BoardBlock

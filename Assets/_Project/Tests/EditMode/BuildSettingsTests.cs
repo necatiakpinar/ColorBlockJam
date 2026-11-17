@@ -1,10 +1,10 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using RollicCase.Core.Scenes;
+using ColorBlockJam.Core.Scenes;
 using UnityEditor;
 
-namespace RollicCase.Tests.EditMode
+namespace ColorBlockJam.Tests.EditMode
 {
     public sealed class BuildSettingsTests
     {

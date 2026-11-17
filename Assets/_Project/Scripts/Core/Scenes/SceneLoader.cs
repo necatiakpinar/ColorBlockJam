@@ -3,7 +3,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine.SceneManagement;
 
-namespace RollicCase.Core.Scenes
+namespace ColorBlockJam.Core.Scenes
 {
     public sealed class SceneLoader : ISceneLoader
     {

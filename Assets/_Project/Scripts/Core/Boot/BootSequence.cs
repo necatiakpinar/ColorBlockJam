@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 
-namespace RollicCase.Core.Boot
+namespace ColorBlockJam.Core.Boot
 {
     /// <summary>
     /// Runs the registered boot steps in registration order and reports weighted progress in [0, 1].
