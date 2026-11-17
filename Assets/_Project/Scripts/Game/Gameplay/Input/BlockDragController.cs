@@ -124,9 +124,11 @@ namespace ColorBlockJam.Game.Gameplay.Input
 
         void Grab(BoardPointerSignal signal)
         {
-            if (!_board.Current.TryGetBlockAt(signal.Cell, out _blockId)
-                && !TryGetNearestBlock(signal.WorldPoint, out _blockId))
+            if ((!_board.Current.TryGetBlockAt(signal.Cell, out _blockId)
+                    && !TryGetNearestBlock(signal.WorldPoint, out _blockId))
+                || _board.Current.Blocks[_blockId].IsFrozen)
             {
+                // A frozen block cannot be picked up until its ice is gone (T-34).
                 _blockId = NoBlock;
                 return;
             }

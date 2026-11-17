@@ -9,7 +9,7 @@ Four boosters sit at the bottom of the gameplay HUD, left to right (T-36, DA-36)
 | --- | --- | --- |
 | Freeze | at once | the level timer stands still for `BoosterConfig.FreezeSeconds` (10 s) of play |
 | Rocket | tap a block | blasts the tapped cell out of the block; the rest stays one block |
-| Hammer | tap a block | smashes the whole block |
+| Hammer | tap a block | smashes the whole block; on a frozen block it breaks the ice instead (DA-37) |
 | Vacuum | tap a block | clears every block of the tapped block's colour |
 
 A block a booster takes counts as gone, like one that left through its door: taking the last one wins the

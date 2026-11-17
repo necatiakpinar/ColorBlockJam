@@ -57,6 +57,7 @@ new fake.
 | `LevelSessionTests` | the attempt's transition table, refused transitions, signal order, restart equal to a fresh start |
 | `GameplayHapticsTests` | an exit taps light, nothing after dispose (`RecordingHaptics`) |
 | `ExitPathTests` | a leaving block's wall, length, door span, edge and door centre |
+| `IceBlockerTests` | a frozen block cannot move or be picked up; exits and booster removals count it down and thaw it; the hammer thaws it; the solver waits for it and spots a frozen deadlock; the validator caps ice; the editor keeps it |
 | `BoardRemovalTests` | boosters taking a whole block, one cell (the rest stays one block and still exits) or a whole colour; the clear fires once |
 | `BoosterInventoryTests` | starting stock saved, use, none left, bad saves, the shop paying or refusing |
 | `BoosterServiceTests` | freeze at once and no stacking; rocket, hammer and vacuum wait for a tapped block, spend one, change the board, resume, can win; cancel, purchase needed, refused when not playing, restart |

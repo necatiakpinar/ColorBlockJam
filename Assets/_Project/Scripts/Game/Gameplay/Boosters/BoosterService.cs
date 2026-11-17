@@ -96,7 +96,11 @@ namespace ColorBlockJam.Game.Gameplay.Boosters
                     _board.RemoveCell(blockId, signal.Cell);
                     break;
                 case BoosterType.Hammer:
-                    _board.RemoveBlock(blockId);
+                    // On a frozen block the hammer breaks the ice instead (DA-37).
+                    if (_board.Current.Blocks[blockId].IsFrozen)
+                        _board.Thaw(blockId);
+                    else
+                        _board.RemoveBlock(blockId);
                     break;
                 case BoosterType.Vacuum:
                     _board.RemoveColor(_board.Current.Blocks[blockId].Color);
