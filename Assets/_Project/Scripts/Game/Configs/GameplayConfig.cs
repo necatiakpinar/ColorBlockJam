@@ -29,7 +29,28 @@ namespace ColorBlockJam.Game.Configs
         [SerializeField]
         HapticImpact _exitHaptic = HapticImpact.Light;
 
+        [Header("Boosters")]
+        [Tooltip("Scale of a booster button while its booster waits for a target.")]
+        [SerializeField, Min(1f)]
+        float _boosterSelectedScale = 1.15f;
+
+        [Tooltip("Alpha of the booster buttons that cannot be used right now.")]
+        [SerializeField, Range(0f, 1f)]
+        float _boosterFadedAlpha = 0.4f;
+
+        [Tooltip("Alpha of the dark backdrop around the board, and of the top bar's fade, while a booster waits for a target.")]
+        [SerializeField, Range(0f, 1f)]
+        float _boosterDimAlpha = 0.65f;
+
+        [Tooltip("Seconds the booster banner, the dimming and the ice frame take to fade in or out.")]
+        [SerializeField, Min(0f)]
+        float _boosterFadeDuration = 0.2f;
+
         public FadeScaleInSettings HudReveal => _hudReveal;
+        public float BoosterSelectedScale => _boosterSelectedScale;
+        public float BoosterFadedAlpha => _boosterFadedAlpha;
+        public float BoosterDimAlpha => _boosterDimAlpha;
+        public float BoosterFadeDuration => _boosterFadeDuration;
         public float WinPopupDelay => _winPopupDelay;
         public int ContinueSeconds => _continueSeconds;
         public int ContinueCost => _continueCost;

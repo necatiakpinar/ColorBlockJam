@@ -28,6 +28,7 @@ namespace ColorBlockJam.Game.Gameplay.View
 
         BoardViewConfig _config;
         BoardSpace _boardSpace;
+        ActiveBoard _board;
         SignalBus _signalBus;
         ColorMaterialCache _doorMaterials;
         // Length of the wall mesh along its run, in cells (art-pipeline.md §4).
@@ -42,10 +43,11 @@ namespace ColorBlockJam.Game.Gameplay.View
         PartPool _base, _tiles, _walls, _corners, _doors, _arrows;
 
         [Inject]
-        public void Construct(BoardViewConfig config, BoardSpace boardSpace, SignalBus signalBus)
+        public void Construct(BoardViewConfig config, BoardSpace boardSpace, ActiveBoard board, SignalBus signalBus)
         {
             _config = config;
             _boardSpace = boardSpace;
+            _board = board;
             _signalBus = signalBus;
             _doorMaterials = new ColorMaterialCache(config.DoorMaterial, config);
             _base = new PartPool(config.BoardBase, _storage);
@@ -203,7 +205,8 @@ namespace ColorBlockJam.Game.Gameplay.View
         /// </summary>
         void OnBlockExited(BlockExitedSignal signal)
         {
-            var path = new ExitPath(_level.Blocks[signal.BlockId].Cells, signal.Offset, signal.Direction,
+            // The board's cells, not the level's: a rocket may have blasted some away (DA-36).
+            var path = new ExitPath(_board.Current.Blocks[signal.BlockId].StartCells, signal.Offset, signal.Direction,
                 _boardSpace.Size);
             float hold = (path.Length + _config.ExitCutOffset + _config.ExitClearance) / _config.ExitSpeed;
             // A block leaves only through a door that spans it, so its first cell names that door.

@@ -16,3 +16,4 @@ MonoBehaviour:
   _winPopup: {fileID: 2224889531776926983, guid: 96a64054b85862d48abfe957e53ebe31, type: 3}
   _outOfTimePopup: {fileID: 8590823045028497426, guid: 4c9ce249656e4924698922b42ae052ba, type: 3}
   _levelFailedPopup: {fileID: 5650790499462278772, guid: 0cc23b587d0cb174d8e22b2056686d0c, type: 3}
+  _boosterPurchasePopup: {fileID: 2946924015867068379, guid: b1e05ecc003c08242bb96839a7fcf8a8, type: 3}

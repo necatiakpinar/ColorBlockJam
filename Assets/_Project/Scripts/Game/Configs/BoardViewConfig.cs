@@ -210,6 +210,38 @@ namespace ColorBlockJam.Game.Configs
         [SerializeField, Min(0f)]
         float _exitDebrisHeight = 0.3f;
 
+        [Header("Booster removal")]
+        [Tooltip("A smashed block (hammer, or a rocket's last cell) first swells to this scale...")]
+        [SerializeField, Min(1f)]
+        float _smashSwell = 1.2f;
+
+        [Tooltip("...then shrinks away; seconds for both.")]
+        [SerializeField, Min(0.01f)]
+        float _smashDuration = 0.3f;
+
+        [Tooltip("Cubes a smash or a blasted cell throws, per cell.")]
+        [SerializeField, Min(0f)]
+        float _smashDebrisPerCell = 10f;
+
+        [Tooltip("Seconds a vacuumed block takes to lift, spin and shrink away.")]
+        [SerializeField, Min(0.01f)]
+        float _vacuumDuration = 0.45f;
+
+        [Tooltip("Seconds between the vacuumed blocks, in board order.")]
+        [SerializeField, Min(0f)]
+        float _vacuumStagger = 0.08f;
+
+        [Tooltip("Cells a vacuumed block rises while it goes.")]
+        [SerializeField, Min(0f)]
+        float _vacuumLift = 2f;
+
+        public float SmashSwell => _smashSwell;
+        public float SmashDuration => _smashDuration;
+        public float SmashDebrisPerCell => _smashDebrisPerCell;
+        public float VacuumDuration => _vacuumDuration;
+        public float VacuumStagger => _vacuumStagger;
+        public float VacuumLift => _vacuumLift;
+
         public float CellSize => _cellSize;
         public float InputHitAreaHeight => _inputHitAreaHeight;
         public float WallThickness => _wallThickness;

@@ -15,6 +15,9 @@ namespace ColorBlockJam.Game.Gameplay.Session
     /// and while the app is in the background, and fails the level through
     /// <see cref="LevelSession.Fail"/> when it reaches zero. It ticks with <see cref="IGameClock"/> delays,
     /// one per shown second, and announces each shown second with <see cref="TimerChangedSignal"/>.
+    /// <see cref="FreezeFor"/> (the freeze booster, DA-36) stops the count for a while: those seconds pass only
+    /// while the level plays and the app is in front, touched or not, and are announced with
+    /// <see cref="TimerFreezeChangedSignal"/>.
     /// </summary>
     public sealed class LevelTimer : IDisposable
     {
@@ -22,7 +25,7 @@ namespace ColorBlockJam.Game.Gameplay.Session
         readonly IGameClock _clock;
         readonly SignalBus _signalBus;
         int _fullSeconds;
-        // Seconds left when the current run began (or when it froze), and when that run began.
+        // Seconds left when the current run began (or when it stopped), and when that run began.
         float _remaining;
         float _runStart;
         bool _levelPlaying;
@@ -31,6 +34,11 @@ namespace ColorBlockJam.Game.Gameplay.Session
         bool _touched;
         int _shown = -1;
         CancellationTokenSource _run;
+        // The booster freeze: its length, what was left of it when its current run began, and when that was.
+        float _freezeTotal;
+        float _freezeLeft;
+        float _freezeStart;
+        CancellationTokenSource _freezeRun;
 
         public LevelTimer(LevelSession session, IGameClock clock, SignalBus signalBus)
         {
@@ -53,13 +61,35 @@ namespace ColorBlockJam.Game.Gameplay.Session
         /// <summary>Seconds left, never below zero.</summary>
         public float SecondsLeft => Mathf.Max(0f, IsRunning ? _remaining - (_clock.Now - _runStart) : _remaining);
 
+        /// <summary>A freeze booster is holding the count still.</summary>
+        public bool IsFrozen => _freezeLeft > 0f;
+
+        /// <summary>Seconds of freeze left, never below zero.</summary>
+        public float FreezeSecondsLeft =>
+            Mathf.Max(0f, _freezeRun != null ? _freezeLeft - (_clock.Now - _freezeStart) : _freezeLeft);
+
+        /// <summary>
+        /// Holds the count still for <paramref name="seconds"/> of play (DA-36). Refused while a freeze is on: a
+        /// second one does not stack.
+        /// </summary>
+        public bool FreezeFor(float seconds)
+        {
+            if (IsFrozen || seconds <= 0f)
+                return false;
+            _freezeTotal = seconds;
+            _freezeLeft = seconds;
+            AnnounceFreeze(false);
+            Refresh();
+            return true;
+        }
+
         /// <summary>
         /// Puts the timer at <paramref name="seconds"/> (debug tools, gameplay.md §6). It keeps counting if it was
         /// counting, so zero runs the level out of time at once.
         /// </summary>
         public void SetSecondsLeft(float seconds)
         {
-            Freeze();
+            StopCounting();
             _remaining = Mathf.Max(0f, seconds);
             Announce();
             Refresh();
@@ -69,7 +99,8 @@ namespace ColorBlockJam.Game.Gameplay.Session
 
         void OnLevelStarted(LevelStartedSignal signal)
         {
-            Freeze();
+            StopCounting();
+            ClearFreeze();
             _remaining = _fullSeconds;
             _shown = -1;
             _touched = false;
@@ -94,7 +125,7 @@ namespace ColorBlockJam.Game.Gameplay.Session
         /// <summary>The bought seconds count down at once: the player was already playing.</summary>
         void OnLevelContinued(LevelContinuedSignal signal)
         {
-            Freeze();
+            StopCounting();
             _remaining = SecondsLeft + signal.ExtraSeconds;
             Announce();
             SetLevelPlaying(true);
@@ -112,10 +143,19 @@ namespace ColorBlockJam.Game.Gameplay.Session
             Refresh();
         }
 
-        /// <summary>Runs exactly while the level plays, has been touched and the app is in front.</summary>
+        /// <summary>
+        /// Counts exactly while the level plays, has been touched, the app is in front and no freeze is on; a
+        /// freeze counts down while the level plays and the app is in front.
+        /// </summary>
         void Refresh()
         {
-            bool shouldRun = _levelPlaying && _touched && !_appPaused;
+            bool playing = _levelPlaying && !_appPaused;
+            if (IsFrozen && playing && _freezeRun == null)
+                StartFreezeRun();
+            else if (_freezeRun != null && !playing)
+                StopFreezeRun();
+
+            bool shouldRun = playing && _touched && !IsFrozen;
             if (shouldRun && !IsRunning)
             {
                 _runStart = _clock.Now;
@@ -124,12 +164,12 @@ namespace ColorBlockJam.Game.Gameplay.Session
             }
             else if (!shouldRun)
             {
-                Freeze();
+                StopCounting();
             }
         }
 
         /// <summary>Stops counting and keeps what is left.</summary>
-        void Freeze()
+        void StopCounting()
         {
             if (!IsRunning)
                 return;
@@ -138,6 +178,53 @@ namespace ColorBlockJam.Game.Gameplay.Session
             _run.Dispose();
             _run = null;
         }
+
+        void StartFreezeRun()
+        {
+            _freezeStart = _clock.Now;
+            _freezeRun = new CancellationTokenSource();
+            RunFreezeAsync(_freezeRun.Token).Forget();
+            AnnounceFreeze(true);
+        }
+
+        void StopFreezeRun()
+        {
+            _freezeLeft = FreezeSecondsLeft;
+            _freezeRun.Cancel();
+            _freezeRun.Dispose();
+            _freezeRun = null;
+            AnnounceFreeze(false);
+        }
+
+        async UniTaskVoid RunFreezeAsync(CancellationToken cancellation)
+        {
+            if (await _clock.DelayAsync(_freezeLeft, cancellation).SuppressCancellationThrow())
+                return;
+            _freezeRun.Dispose();
+            _freezeRun = null;
+            _freezeLeft = 0f;
+            AnnounceFreeze(false);
+            Refresh();
+        }
+
+        /// <summary>A new attempt starts unfrozen.</summary>
+        void ClearFreeze()
+        {
+            if (_freezeRun != null)
+            {
+                _freezeRun.Cancel();
+                _freezeRun.Dispose();
+                _freezeRun = null;
+            }
+
+            if (!IsFrozen)
+                return;
+            _freezeLeft = 0f;
+            AnnounceFreeze(false);
+        }
+
+        void AnnounceFreeze(bool counting) =>
+            _signalBus.Fire(new TimerFreezeChangedSignal(FreezeSecondsLeft, _freezeTotal, counting));
 
         async UniTaskVoid RunAsync(CancellationToken cancellation)
         {
@@ -160,7 +247,7 @@ namespace ColorBlockJam.Game.Gameplay.Session
 
         void Expire()
         {
-            Freeze();
+            StopCounting();
             _remaining = 0f;
             Announce();
             _session.Fail();
@@ -177,7 +264,9 @@ namespace ColorBlockJam.Game.Gameplay.Session
 
         public void Dispose()
         {
-            Freeze();
+            StopCounting();
+            _freezeRun?.Cancel();
+            _freezeRun?.Dispose();
             _signalBus.Unsubscribe<BoardLoadedSignal>(OnBoardLoaded);
             _signalBus.Unsubscribe<LevelStartedSignal>(OnLevelStarted);
             _signalBus.Unsubscribe<BlockGrabbedSignal>(OnBlockGrabbed);

@@ -72,11 +72,13 @@ after the reference screens, sizes measured on them and scaled to the canvas (DA
 | `TopBar/TimePanel` | `bg_popup`, `ic_time`, `bg_gameplay_time_holder` | `TimerChangedSignal`, `mm:ss` |
 | `TopBar/RestartButton`, `PauseButton` | `Btn_square_retry` + `ic_restart`, `Btn_settings_normal` + `ic_pause` | restart at once; pause opens the pause popup |
 | `TopBar/CoinCounter` | `bg_home_coin_holder`, `Coin_Single`, `Btn_circle_green_small` + `ic_plus` | balance from `IWalletService` and `CoinsChangedSignal` ("1.28k" from 1000); "+" is a placeholder |
-| `SafeArea/BoosterBar` | `Btn_booster_normal` with `Clock_Freeze`, `Rocket_Purple_Icon`, `Hammer`, `Vacuum`, count badge `Btn_circle_blue_small` | placeholders: press feedback only (DA-16) |
+| `SafeArea/BoosterBar` | `Btn_booster_normal` with `Clock_Freeze`, `Rocket_Purple_Icon`, `Hammer`, `Vacuum`, count badge `Btn_circle_blue_small`, buy badge `Btn_circle_green_small` + `ic_plus` | `BoosterBarView`: stock from `BoosterInventory`; taps use or offer a booster ([boosters.md](boosters.md)) |
+| `SafeArea/BoosterBanner`, `IceFrame`, `TopBar/TimePanel/FreezeMeter` | title and hint text; `icetexture` strips; `bg_gameplay_time_holder` + `SquareRoundedMask` fill + `Clock_Freeze` | booster targeting and freeze looks ([boosters.md](boosters.md) §4) |
 | `PausePopup` prefab | "SETTINGS": vibration, sound and music switches, Legal Terms, Restore Purchases, Support, Language, Home | switches show and set `ISettingsService`; the four blue buttons are placeholders (DA-29) |
 | `WinPopup` prefab | "LEVEL COMPLETE", a pile of `Coin_Single`, Continue with the reward | Continue plays the next level (DA-12) |
 | `OutOfTimePopup` prefab | "Out of Time!", `Clock`, "+20", Continue with the price | buys more time; close gives up (DA-30) |
 | `LevelFailedPopup` prefab | "Level Failed!" with `Heart`, Retry | Retry restarts; close goes Home (DA-31) |
+| `BoosterPurchasePopup` prefab | the booster's title, icon, "x1", description, Buy with the price | buys one booster; close resumes (DA-36) |
 
 Text uses `LiberationSans SDF` with the `LiberationSans SDF - Hud` material (outline and drop shadow) until
 the game has its own font. A switch's "off" look is a dark track with a plain knob, because the art has

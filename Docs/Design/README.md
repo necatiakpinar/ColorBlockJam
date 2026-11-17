@@ -55,7 +55,7 @@ requirement keeps its id and is marked `Dropped`.
 | R-29 | Saved levels have one format, and the game reads that same format | must | T-08, T-30 |
 | R-30 | The 5 shipped levels are made with the editor | must | T-32 |
 | R-31 | The editor warns before saving an unsolvable level | must (developer, 2026-11-17) | T-33 |
-| R-32 | Functional boosters | could | T-36 |
+| R-32 | Functional boosters: freeze, rocket, hammer and vacuum work, each with a stock and a coin price | must (developer, 2026-11-17) | T-36 |
 | R-33 | Ice blocker | could | T-34 |
 | R-34 | Arrow block | could | T-35 |
 | R-35 | Separation of data, logic and view; low coupling; easy to extend | should | all; T-37 |
@@ -109,6 +109,8 @@ requirement keeps its id and is marked `Dropped`.
 10. **The level editor is one task chain on branch `feature/level_editor`** (developer, 2026-11-17): T-26 –
    T-31, the solver T-33 (pulled out of the optional scope: the developer wants every level proved
    finishable) and the generator T-47 land there and merge into `main` together.
+11. **The four boosters are one task on branch `boosters`** (developer, 2026-11-17): T-36 grows from one
+   booster to all four (R-32 becomes must); the ice blocker T-34 follows on its own branch.
 
 ## 3. Open questions
 
@@ -162,7 +164,7 @@ task is marked `Dropped`, never deleted. Detail per task: [tasks.md](tasks.md).
 | T-33 | 10 | (could) Solvability validation | Saving an unsolvable level shows a warning | T-30 | Done |
 | T-34 | 10 | (could) Ice blocker | Frozen block thaws after N exits; editor places it | T-32 | Todo |
 | T-35 | 10 | (could) Arrow block | Block moves only along its arrow; editor places it | T-32 | Todo |
-| T-36 | 10 | (could) One functional booster | Freeze or hammer works with a count | T-32 | Todo |
+| T-36 | 10 | Four functional boosters | Freeze, rocket, hammer and vacuum work from the HUD with a stock; none left offers one for coins | T-32 | Done |
 | T-37 | 11 | Architecture tests | Tests fail on `Update`, Core → Game references, raw `Debug.Log` | T-04 | Todo |
 | T-38 | 11 | Performance pass | 0 B GC per gameplay frame measured; 60 FPS on a mid-range device | T-22 | Todo |
 | T-39 | 11 | Full QA pass on device and aspect ratios | Every QA checklist ticked at 1080x1920 and 20:9 | T-32 | Todo |

@@ -16,8 +16,9 @@ spirit of SRDebugger but ours.
 | Level | state readout (level, state, time left, coins); **Win now**, **Run out of time**, **Restart** |
 | Timer | set the seconds left; 3 s, 10 s, 30 s left; +30 s |
 | Coins | add or spend any amount; +100, +1000, +10000 |
+| Boosters | each booster's stock; +1, +5, or none left (to see the purchase offer) |
 | Levels | play any level number; next level |
-| Saves (edit mode) | clear the player's saves: progress, coins, settings |
+| Saves (edit mode) | clear the player's saves: progress, coins, settings, boosters |
 | Log | a text area listing what was done, and why a shortcut was refused |
 
 The level shortcuts need the Gameplay scene in play mode; outside it the window says so. A refused shortcut

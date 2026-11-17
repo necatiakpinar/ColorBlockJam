@@ -76,6 +76,49 @@ namespace ColorBlockJam.Game.Gameplay.Board
             return result;
         }
 
+        /// <summary>Takes a block off the board at once (a booster, DA-36): its cells free up and it counts as gone.</summary>
+        public void RemoveBlock(int blockId)
+        {
+            BoardBlock block = RequireOnBoard(blockId);
+            Clear(block);
+            block.MarkExited();
+            RemainingBlocks--;
+        }
+
+        /// <summary>
+        /// Takes the block's cell at <paramref name="cell"/> out of it (the rocket, DA-36). The rest stays one
+        /// block, even if it falls apart into pieces that keep moving together.
+        /// </summary>
+        /// <returns>True when that was its last cell and the block is gone.</returns>
+        public bool RemoveCell(int blockId, Vector2Int cell)
+        {
+            BoardBlock block = RequireOnBoard(blockId);
+            for (int i = 0; i < block.CellCount; i++)
+            {
+                if (block.GetCell(i) != cell)
+                    continue;
+                if (block.CellCount == 1)
+                {
+                    RemoveBlock(blockId);
+                    return true;
+                }
+
+                _occupancy[IndexOf(cell)] = Empty;
+                block.RemoveCellAt(i);
+                return false;
+            }
+
+            throw new ArgumentException($"Block {blockId} has no cell at {cell}.", nameof(cell));
+        }
+
+        BoardBlock RequireOnBoard(int blockId)
+        {
+            BoardBlock block = _blocks[blockId];
+            if (block.HasExited)
+                throw new InvalidOperationException($"Block {blockId} has already left the board.");
+            return block;
+        }
+
         /// <summary>
         /// Lays every block out at once, at <paramref name="offsets"/> or gone (<paramref name="exited"/>). The
         /// level solver uses it to visit board states with these same rules; play never does.

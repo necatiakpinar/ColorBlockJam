@@ -1,6 +1,7 @@
 using System;
 using Cysharp.Threading.Tasks;
 using ColorBlockJam.Core.Persistence;
+using ColorBlockJam.Game.Gameplay.Boosters;
 using ColorBlockJam.Game.Gameplay.Hud;
 using ColorBlockJam.Game.Gameplay.Popups;
 using ColorBlockJam.Game.Gameplay.Session;
@@ -13,7 +14,8 @@ namespace ColorBlockJam.Game.Gameplay
     /// <summary>
     /// Entry point of the gameplay scene: starts the attempt at the current level through
     /// <see cref="LevelSession"/>, and routes the HUD and the pause popup. Restart restarts at once; pause
-    /// pauses the session, then opens the pause popup; closing it resumes; its switches go to
+    /// pauses the session (putting back a booster that waits for a target), then opens the pause popup; closing
+    /// it resumes; its switches go to
     /// <see cref="ISettingsService"/>; Home leaves. The session and the settings own every change.
     /// </summary>
     public sealed class GameplayFlow : IStartable, IDisposable
@@ -25,10 +27,13 @@ namespace ColorBlockJam.Game.Gameplay
         readonly IPopupService _popups;
         readonly ISettingsService _settings;
         readonly INavigationService _navigation;
+        readonly BoosterService _boosters;
 
         public GameplayFlow(IPlayerProgressService playerProgress, LevelSession session, GameplayHudView hudView,
-            PausePopupView pausePopup, IPopupService popups, ISettingsService settings, INavigationService navigation)
+            PausePopupView pausePopup, IPopupService popups, ISettingsService settings, INavigationService navigation,
+            BoosterService boosters)
         {
+            _boosters = boosters;
             _playerProgress = playerProgress;
             _session = session;
             _hudView = hudView;
@@ -49,6 +54,7 @@ namespace ColorBlockJam.Game.Gameplay
 
         void OnPauseClicked()
         {
+            _boosters.CancelTargeting();
             if (!_session.Pause())
                 return;
             _pausePopup.Refresh();

@@ -49,7 +49,7 @@ new fake.
 | `LevelRewardTests` | coins by difficulty, a missing entry throws, the shipped table rises with difficulty, a win pays its layout's reward (also when looped), a loss or a disposed service pays nothing |
 | `GameplayFlowTests` | start, HUD restart, pause opens the settings popup only while playing, close resumes, switches flip settings, Home, nothing after dispose (`RecordingPopupService`) |
 | `LevelResultFlowTests` | win popup after the delay with the reward, Continue plays the next level; out-of-time offer, buying time, giving up, Retry, Home |
-| `GameplayDebugCommandsTests` | the debug shortcuts: win, run out of time, refused when not playing, timer, coins, jump to a level |
+| `GameplayDebugCommandsTests` | the debug shortcuts: win, run out of time, refused when not playing, timer, coins, boosters, jump to a level |
 | `PopupPrefabTests` | both settings popups are variants of the base prefab; the popup configs list every prefab; prefabs start hidden and full-screen; every popup button gives press feedback; every popup text auto-sizes |
 | `LevelContinueTests` | spending coins, buying more time on the same board, failing again when it runs out, nothing without coins or outside a loss |
 | `LevelTimerTests` | full time on start, counting only from the first grab, one signal per second, stands still while paused or in the background, fails once at zero, stops on a win, full again on restart, stops when disposed (`FakeGameClock`) |
@@ -57,6 +57,10 @@ new fake.
 | `LevelSessionTests` | the attempt's transition table, refused transitions, signal order, restart equal to a fresh start |
 | `GameplayHapticsTests` | an exit taps light, nothing after dispose (`RecordingHaptics`) |
 | `ExitPathTests` | a leaving block's wall, length, door span, edge and door centre |
+| `BoardRemovalTests` | boosters taking a whole block, one cell (the rest stays one block and still exits) or a whole colour; the clear fires once |
+| `BoosterInventoryTests` | starting stock saved, use, none left, bad saves, the shop paying or refusing |
+| `BoosterServiceTests` | freeze at once and no stacking; rocket, hammer and vacuum wait for a tapped block, spend one, change the board, resume, can win; cancel, purchase needed, refused when not playing, restart |
+| `LevelTimerFreezeTests` | the freeze holds the timer for its seconds, stands still with a pause or the background, does not stack, ends on restart |
 | `ActiveBoardTests` | a load sizes the board space and starts fresh; steps announce move, exit (with the cell left from) and clear |
 | `BlockDragControllerTests` | free follow and diagonals, nearest-cell commit, fast drags, sliding, slipping into gaps without drift, jitter on a slow push, or locking out of a side corridor or a wobbled-at gap, exit on a small push into the door, picking a block a press narrowly missed, dropping the held block on pause and ignoring input until the level resumes, lean, grab, snap, exit, zero allocation |
 | `OutlineMeshBuilderTests` | the outline is one rounded loop per boundary (1x1, L, ring with a hole), hugs a bar a gap outside it along its bottom edge, rounds its corners, and gives each vertex its outward normal and the rim lift |
@@ -69,6 +73,7 @@ new fake.
 | `NavigationFlowTests` (PlayMode) | real boot reaches Home; Home ⇄ Gameplay round trip |
 | `ButtonPressFeedbackTests` (PlayMode) | press shrinks, release restores; non-interactable and disabled cases |
 | `GameplayBoardTests` (PlayMode) | every part and block drawn; the wall ring closes corner to corner without seams; every door has one centred arrow pointing out; swipes take blocks out and clear once; a wrong door holds; outline while held; reload mid-exit; a held block glides after a sudden finger move instead of jumping; the door opens and closes for a leaving block, the whole door for a narrower block; two blocks leaving one door together share one spray; an exiting block settles at its door before sliding in, and is cut at the door at full size while debris sprays; following and snapping allocate nothing |
+| `BoosterFlowTests` (PlayMode) | through the real HUD and input: the hammer smashes a tapped block, the rocket rebuilds a block without its cell, the freeze holds the timer and shows the ice, an empty booster offers one for coins and plays on (restores saves) |
 | `LevelProgressionFlowTests` (PlayMode) | a full lap of wins: each starts the next level and the last loops to the first layout (restores saved progress) |
 | `CoinPersistenceTests` (PlayMode) | a win pays its reward once; the balance survives going Home and back, with or without a win (restores the saves) |
 | `RestartResetsStateTests` (PlayMode) | ten restarts leave the board, block views, timer, coins, state and object count of a fresh start; Home after a loss gives the same level fresh; no gameplay listener survives going Home (restores the saves) |

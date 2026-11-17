@@ -30,6 +30,52 @@ namespace ColorBlockJam.Game.Gameplay.Board
             _signalBus.Fire(new BoardLoadedSignal(level));
         }
 
+        /// <summary>Removes a whole block (hammer) and announces it; the last one clears the board.</summary>
+        public void RemoveBlock(int blockId)
+        {
+            Current.RemoveBlock(blockId);
+            _signalBus.Fire(new BlockRemovedSignal(blockId, BlockRemovalKind.Smashed, 0));
+            AnnounceIfCleared();
+        }
+
+        /// <summary>
+        /// Removes one cell of a block (rocket) and announces <see cref="BlockCellRemovedSignal"/>, or
+        /// <see cref="BlockRemovedSignal"/> when it was the block's last cell.
+        /// </summary>
+        public void RemoveCell(int blockId, Vector2Int cell)
+        {
+            if (Current.RemoveCell(blockId, cell))
+                _signalBus.Fire(new BlockRemovedSignal(blockId, BlockRemovalKind.Blasted, 0));
+            else
+                _signalBus.Fire(new BlockCellRemovedSignal(blockId, cell));
+            AnnounceIfCleared();
+        }
+
+        /// <summary>Removes every block of <paramref name="color"/> on the board (vacuum), in id order.</summary>
+        /// <returns>How many blocks went.</returns>
+        public int RemoveColor(BlockColor color)
+        {
+            int removed = 0;
+            for (int id = 0; id < Current.Blocks.Count; id++)
+            {
+                BoardBlock block = Current.Blocks[id];
+                if (block.HasExited || block.Color != color)
+                    continue;
+                Current.RemoveBlock(id);
+                _signalBus.Fire(new BlockRemovedSignal(id, BlockRemovalKind.Vacuumed, removed));
+                removed++;
+            }
+
+            AnnounceIfCleared();
+            return removed;
+        }
+
+        void AnnounceIfCleared()
+        {
+            if (Current.IsCleared)
+                _signalBus.Fire(new BoardClearedSignal());
+        }
+
         /// <summary>
         /// Pushes a block one cell (<see cref="BoardState.TryStep"/>) and announces the outcome:
         /// <see cref="BlockMovedSignal"/>, or <see cref="BlockExitedSignal"/> followed by

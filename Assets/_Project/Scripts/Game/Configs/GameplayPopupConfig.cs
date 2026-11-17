@@ -22,9 +22,13 @@ namespace ColorBlockJam.Game.Configs
         [SerializeField]
         LevelFailedPopupView _levelFailedPopup;
 
+        [SerializeField]
+        BoosterPurchasePopupView _boosterPurchasePopup;
+
         public PausePopupView PausePopup => _pausePopup;
         public WinPopupView WinPopup => _winPopup;
         public OutOfTimePopupView OutOfTimePopup => _outOfTimePopup;
         public LevelFailedPopupView LevelFailedPopup => _levelFailedPopup;
+        public BoosterPurchasePopupView BoosterPurchasePopup => _boosterPurchasePopup;
     }
 }

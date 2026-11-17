@@ -29,9 +29,10 @@ Assets/_Project/
 │   │   ├── Solving/     LevelSolver (can a level be finished)
 │   │   └── Generation/  LevelGenerator (build a level from settings)
 │   ├── Economy/         LevelRewardProvider, LevelRewardService
+│   ├── Boosters/        BoosterType, BoosterInventory (saved stock), BoosterShop
 │   ├── Debugging/       GameplayDebugCommands (the debug window's shortcuts)
 │   ├── UI/              safe area, button press feedback, popup service, PopupView, SettingToggleView
-│   ├── Gameplay/        GameplayFlow, signals, HUD, Board/ (rules, ActiveBoard), Input/ (touch, drag),
+│   ├── Gameplay/        GameplayFlow, signals, HUD, Board/ (rules, ActiveBoard), Input/ (touch, drag), Boosters/ (BoosterService),
 │   │                    View/ (board, blocks, tiling, camera), Animations/
 │   └── Common/Animations/  reusable IAnimation structs
 ├── Scripts/Editor/    ColorBlockJam.Editor   editor tooling: LevelEditing/ (level editor), Debugging/
