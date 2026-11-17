@@ -9,22 +9,62 @@ using UnityEditor;
 namespace ColorBlockJam.Tests.EditMode
 {
     /// <summary>
-    /// Every level in the shipped catalog is valid, can be finished (proved by <see cref="LevelSolver"/> on the real
-    /// board rules) and ramps up: more blocks, a higher solver score, and from level 3 on blocks that must be moved
-    /// out of the way first (T-32, level-data.md §3).
+    /// Every level in the shipped catalog is valid and can be finished (proved by <see cref="LevelSolver"/> on the
+    /// real board rules). Levels 1–8 ramp up gently: more blocks, a higher solver score, and from level 3 on blocks
+    /// that must be moved out of the way first. From level 9 they come in groups of six with a breather and a peak
+    /// that needs more room-making moves than the last group's (T-32, T-49, DA-40, level-data.md §3).
     /// </summary>
     public sealed class ShippedLevelsTests
     {
         const string CatalogPath = "Assets/_Project/Levels/LevelCatalog.asset";
         const string RulesPath = "Assets/_Project/Configs/LevelRulesConfig.asset";
 
+        const int RampLevels = 8;
+        const int GroupSize = 6;
+        const int FinalPeakMoves = 8;
+
         static IReadOnlyList<LevelDefinition> Levels() =>
             AssetDatabase.LoadAssetAtPath<LevelCatalog>(CatalogPath).Levels;
 
-        [Test]
-        public void Catalog_ShouldShipEightLevels_WhenBuilt()
+        static int[] MovesOfEveryLevel()
         {
-            Assert.That(Levels().Count, Is.EqualTo(8));
+            var solver = new LevelSolver(AssetDatabase.LoadAssetAtPath<LevelRulesConfig>(RulesPath).SolverStateCap);
+            var moves = new int[Levels().Count];
+            for (int i = 0; i < moves.Length; i++)
+                moves[i] = solver.Solve(Levels()[i].Data).Moves;
+            return moves;
+        }
+
+        /// <summary>A Hard level after the ramp gives the player a rest between peaks.</summary>
+        static bool IsBreather(int index) => index >= RampLevels && Levels()[index].Data.Difficulty == LevelDifficulty.Hard;
+
+        [Test]
+        public void Catalog_ShouldShipTwentyLevels_WhenBuilt()
+        {
+            Assert.That(Levels().Count, Is.EqualTo(20));
+        }
+
+        [Test]
+        public void ShippedLevels_ShouldPeakAtTheEndOfEachGroup_WhenFromLevelNineOn()
+        {
+            int[] moves = MovesOfEveryLevel();
+            int previousPeak = 0;
+            for (int first = RampLevels; first < moves.Length; first += GroupSize)
+            {
+                int last = System.Math.Min(first + GroupSize, moves.Length) - 1;
+                bool hasBreather = false;
+                for (int i = first; i <= last; i++)
+                {
+                    Assert.That(moves[i], Is.LessThanOrEqualTo(moves[last]), $"Level {i + 1} is harder than its group's peak.");
+                    hasBreather |= IsBreather(i);
+                }
+
+                Assert.That(hasBreather, Is.True, $"Levels {first + 1}–{last + 1} have no breather.");
+                Assert.That(moves[last], Is.GreaterThan(previousPeak), $"Level {last + 1} peaks no higher than the group before.");
+                previousPeak = moves[last];
+            }
+
+            Assert.That(previousPeak, Is.GreaterThanOrEqualTo(FinalPeakMoves), "The last peak is a real puzzle.");
         }
 
         [Test]
@@ -63,17 +103,17 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
-        public void ShippedLevels_ShouldNeverGetEasierInDifficulty_WhenTheLevelNumberRises()
+        public void ShippedLevels_ShouldNeverGetEasierInDifficulty_WhenTheRampIsPlayed()
         {
             LevelDifficulty previous = LevelDifficulty.Normal;
-            for (int i = 0; i < Levels().Count; i++)
+            for (int i = 0; i < RampLevels; i++)
             {
                 LevelDifficulty difficulty = Levels()[i].Data.Difficulty;
                 Assert.That(difficulty, Is.GreaterThanOrEqualTo(previous), $"Level {i + 1}");
                 previous = difficulty;
             }
 
-            Assert.That(previous, Is.EqualTo(LevelDifficulty.VeryHard), "The last level is the hardest kind.");
+            Assert.That(Levels()[Levels().Count - 1].Data.Difficulty, Is.EqualTo(LevelDifficulty.VeryHard), "The last level is the hardest kind.");
         }
 
         [Test]
@@ -93,11 +133,11 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
-        public void ShippedLevels_ShouldScoreHigher_WhenTheLevelNumberRises()
+        public void ShippedLevels_ShouldScoreHigher_WhenTheRampIsPlayed()
         {
             var solver = new LevelSolver(AssetDatabase.LoadAssetAtPath<LevelRulesConfig>(RulesPath).SolverStateCap);
             int previous = 0;
-            for (int i = 0; i < Levels().Count; i++)
+            for (int i = 0; i < RampLevels; i++)
             {
                 int score = solver.Solve(Levels()[i].Data).Score;
                 Assert.That(score, Is.GreaterThanOrEqualTo(previous), $"Level {i + 1} plays easier than the one before.");
@@ -106,18 +146,19 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
-        public void ShippedLevels_ShouldNeedRoomMadeFirst_WhenFromLevelThreeOn()
+        public void ShippedLevels_ShouldNeedRoomMadeFirst_WhenFromLevelThreeOnButABreather()
         {
-            var solver = new LevelSolver(AssetDatabase.LoadAssetAtPath<LevelRulesConfig>(RulesPath).SolverStateCap);
-            for (int i = 2; i < Levels().Count; i++)
-                Assert.That(solver.Solve(Levels()[i].Data).Moves, Is.GreaterThanOrEqualTo(1), $"Level {i + 1}");
+            int[] moves = MovesOfEveryLevel();
+            for (int i = 2; i < moves.Length; i++)
+                if (!IsBreather(i))
+                    Assert.That(moves[i], Is.GreaterThanOrEqualTo(1), $"Level {i + 1}");
         }
 
         [Test]
-        public void ShippedLevels_ShouldGetHarder_WhenTheLevelNumberRises()
+        public void ShippedLevels_ShouldGetMoreBlocks_WhenTheRampIsPlayed()
         {
             int previous = 0;
-            for (int i = 0; i < Levels().Count; i++)
+            for (int i = 0; i < RampLevels; i++)
             {
                 int blocks = Levels()[i].Data.Blocks.Count;
                 Assert.That(blocks, Is.GreaterThanOrEqualTo(previous), $"Level {i + 1} has fewer blocks than the one before.");

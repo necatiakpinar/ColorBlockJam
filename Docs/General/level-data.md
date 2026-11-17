@@ -51,7 +51,7 @@ The game never mutates `LevelData`. The catalog is registered by the root scope;
 level number to its entry and loops after the last one (DA-8). Each attempt builds a new `BoardState`
 ([gameplay.md](gameplay.md) §3, §4), which is what makes a restart start clean.
 
-The catalog ships eight levels, `Level_001` to `Level_008`, made with the level editor (T-32): each was
+The catalog ships twenty levels, `Level_001` to `Level_020`. Levels 1–8 were made with the level editor (T-32): each was
 generated with the settings and seed below, its timer set by hand, and saved from the editor. They ramp up
 by board size, block count, exit rounds (a block can only leave once the ones in its way have) and, from
 level 3, blocks that must be moved out of the way first. Level 6 adds the ice blocker (T-34): its blue
@@ -71,6 +71,32 @@ keep its score; level 8's three (purple and orange vertical, cyan horizontal) cu
 | 7 | 6x7 | 6 | 9 | 12, 2 arrows | 7 | 3 | 10 | 200 s | Very Hard |
 | 8 | 6x8 | 6 | 10 | 2, 3 arrows | 9 | 2 | 11 | 220 s | Very Hard |
 
-`ShippedLevelsTests` keeps every catalog level free of validator issues, solvable by `LevelSolver`, as hard
-as its label, and the ramp rising (blocks, score, room-making from level 3); level 6 keeps its two
-frozen blocks and levels 7 and 8 their arrow blocks.
+Levels 9–20 follow the DA-40 curve in two groups of six. Each group's third level is a breather: a Hard
+level that needs no room made. Each group ends on its peak, the level that needs the most room-making moves.
+- **How they were made.** Each hard level was generated at Very Hard, then pushed by the level hardener
+  (`LevelHardener`, T-49) toward more room-making moves, with arrows and ice where it chose them.
+  The levels were picked from a pool of about 70 by their moves.
+- **Timer.** The generator's suggestion plus 15 s per room-making move, rounded to 5 s.
+
+| Level | Board | Blocks | Arrows | Ice | Rounds | Moves | Score | Timer | Difficulty |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 9 | 6x7 | 9 | 0 | 0 | 9 | 3 | 12 | 220 s | Very Hard |
+| 10 | 6x7 | 10 | 0 | 0 | 10 | 3 | 13 | 235 s | Very Hard |
+| 11 | 6x7 | 9 | 0 | 0 | 4 | 0 | 4 | 145 s | Hard (breather) |
+| 12 | 6x7 | 10 | 1 | 0 | 10 | 4 | 14 | 250 s | Very Hard |
+| 13 | 6x8 | 11 | 1 | 3 | 7 | 4 | 11 | 270 s | Very Hard |
+| 14 | 6x8 | 11 | 0 | 7 | 7 | 6 | 13 | 300 s | Very Hard (peak) |
+| 15 | 7x8 | 12 | 1 | 6 | 10 | 4 | 14 | 285 s | Very Hard |
+| 16 | 7x8 | 12 | 1 | 8 | 9 | 5 | 14 | 300 s | Very Hard |
+| 17 | 7x8 | 11 | 0 | 0 | 4 | 0 | 4 | 170 s | Hard (breather) |
+| 18 | 7x8 | 12 | 1 | 8 | 9 | 5 | 14 | 300 s | Very Hard |
+| 19 | 6x8 | 11 | 0 | 9 | 10 | 6 | 16 | 300 s | Very Hard |
+| 20 | 7x8 | 12 | 4 | 6 | 11 | 10 | 21 | 375 s | Very Hard (peak) |
+
+`ShippedLevelsTests` checks:
+- **Every level** is free of validator issues, solvable by `LevelSolver` and as hard as its label, and the
+  last level is Very Hard.
+- **Levels 1–8** ramp up: blocks, difficulty and score never fall, and room-making is needed from level 3.
+- **Level 6** keeps its two frozen blocks; levels 7 and 8 keep their arrow blocks.
+- **From level 9** every group of six has a breather. No level outdoes its group's peak, each peak needs more
+  room-making moves than the last, and the final peak needs at least 8.

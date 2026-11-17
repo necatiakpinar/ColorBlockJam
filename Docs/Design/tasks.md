@@ -65,6 +65,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - [ ] [T-46 Boot waits for a connection](#t-46-boot-waits-for-a-connection)
 - [x] [T-47 Level generator](#t-47-level-generator)
 - [x] [T-48 Lives](#t-48-lives)
+- [x] [T-49 Twenty levels and the level hardener](#t-49-twenty-levels-and-the-level-hardener)
 
 ---
 
@@ -822,3 +823,17 @@ and (T-33) the solver from `ColorBlockJam.Game`, so the editor never has its own
 - **Tests:** `EM LivesServiceTests`, `LevelAttemptLivesTests`, `HomeFlowTests`, `GameplayFlowTests`,
   `LevelResultFlowTests`.
 - **Docs:** `lives.md`, `lives-qa.md`, persistence.md, economy.md, ui.md, gameplay.md.
+
+### T-49 Twenty levels and the level hardener
+
+- **Req:** R-51. Implements DA-40.
+- **Arch:** `LevelHardener` (Game assembly, seeded): from a generated level it climbs toward more room-making
+  moves. Each round it draws 16 changes from the seed (move a block, slide a door, set an arrow or ice), checks
+  them in parallel and keeps the one that needs the most moves while the level stays valid and solvable.
+  The editor's Generate panel has **Make harder** (`H`). Levels 9–20 come from the hardener and are
+  arranged by moves into the DA-40 curve.
+- **Accept:** the catalog has 20 valid, solvable levels. From level 9 each group of six has a breather and
+  ends on a peak no easier than the last group's, and the last peaks need about 10 room-making moves. Make
+  harder never makes a level easier, and the same seed gives the same level.
+- **Tests:** `EM LevelHardenerTests`, `ShippedLevelsTests`.
+- **Docs:** level-data.md, level-editor.md.

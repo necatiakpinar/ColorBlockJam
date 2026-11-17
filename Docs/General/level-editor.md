@@ -54,6 +54,7 @@ Or press **Generate** (`G`) and edit what it builds.
 | `C` | check now |
 | `Space` | step through the solution on the canvas |
 | `G` | generate into this level |
+| `H` | make the level harder |
 | `P` | save and play |
 | `F1` | show or hide the help |
 
@@ -87,6 +88,13 @@ passes every check and plays at the chosen difficulty, puts it on the canvas (un
 back) and moves to the next seed, so pressing again gives another level. The same seed with the same
 settings always gives the same level. When no candidate hits the difficulty exactly it gives the closest
 one and says so; when the settings cannot work (too many blocks for the board) it says why.
+
+**Make harder** (`H`) runs `LevelHardener` on the level on the canvas:
+- **What it changes.** For 25 rounds it tries 16 small changes at a time (move a block, slide a door, set an
+  arrow or ice) and keeps the one that needs the most room-making moves.
+- **What it keeps.** The level stays valid and solvable.
+- **Result.** It says how many moves the level now needs; undo brings the old one back, and pressing again
+  pushes further. The seed field seeds it too, so the same level and seed give the same result.
 
 ## 2. Play-test
 

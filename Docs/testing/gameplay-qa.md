@@ -30,7 +30,8 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 - [ ] ⚙ Going Home after a loss and back gives the same level, fresh — `RestartResetsStateTests.Home_ShouldGiveTheSameLevelAndAFreshAttempt_WhenLeftAfterALoss`
 - [ ] ⚙ No gameplay listener survives going Home — `RestartResetsStateTests.SceneUnload_ShouldLeaveNoGameplayListener_WhenGoingHome`
 - [ ] ⚙ Winning starts the next level; after the last level the first layout comes back — `LevelProgressionFlowTests`
-- [ ] ⚙ All eight shipped levels are valid, solvable and ramp up; level 6 has two frozen blocks, levels 7 and 8 arrow blocks — `ShippedLevelsTests`
+- [ ] ⚙ All twenty shipped levels are valid and solvable; 1–8 ramp up, then groups of six with a breather and a rising peak; level 6 has two frozen blocks, levels 7 and 8 arrow blocks — `ShippedLevelsTests`
+- [ ] 👁 Play levels 14 and 20 by hand: they need blocks moved around in the right order before most can leave, and the timer leaves room to think.
 - [x] 👁 Play levels 1 to 5 by hand (developer, 2026-11-17): each one is a little harder than the one before, and each finishes well inside its timer.
   The solver's solutions, blocks numbered as in the editor (Space steps them on its canvas):
   - L1: 1 Cyan out right; 2 Purple out down.

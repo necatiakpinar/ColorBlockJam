@@ -49,9 +49,9 @@ MonoBehaviour:
           _axis: 0
     - _color: 7000
       _cells:
+      - {x: 5, y: 4}
       - {x: 5, y: 5}
       - {x: 5, y: 6}
-      - {x: 5, y: 7}
       _blockers:
         _ice:
           _exits: 0

@@ -29,6 +29,9 @@ namespace ColorBlockJam.Editor.LevelEditing
         const float InspectorWidth = 320f;
         // The generator's own search cap: candidates past it are dropped, not waited on.
         const int GeneratorStateCap = 2000;
+        // Make harder: its search cap per proposal, and rounds of 16 proposals per press.
+        const int HardenerStateCap = 5000;
+        const int HardenerRounds = 25;
         // How long the edits must pause before the solver starts; a drag or a slider never waits for it.
         const int SolveSettleMilliseconds = 250;
         static readonly Color IceTint = new(0.85f, 0.95f, 1f);
@@ -50,6 +53,7 @@ namespace ColorBlockJam.Editor.LevelEditing
         LevelChecker _checker;
         BlockShapeLibrary _shapes;
         LevelGenerator _generator;
+        LevelHardener _hardener;
         LevelCanvas _canvas;
         LevelEditorState _state;
 
@@ -111,6 +115,7 @@ namespace ColorBlockJam.Editor.LevelEditing
             _checker.Solved += Repaint;
             _shapes = new BlockShapeLibrary();
             _generator = new LevelGenerator(_validator, GeneratorStateCap, _shapes);
+            _hardener = new LevelHardener(_validator, HardenerStateCap);
             _toolLabels = new[]
             {
                 new GUIContent("Select", "Pick and drag blocks, pick doors (1)."), new GUIContent("Block", "Stamp or paint blocks (2)."),
@@ -511,7 +516,7 @@ namespace ColorBlockJam.Editor.LevelEditing
                 "A frozen block (Ice above 0 on a selected block) cannot move until that many other blocks have left.\n\n" +
                 "Shortcuts: 1 Select · 2 Block · 3 Door · 4 Erase · Q/E colour · Tab shape · R rotate · I / Shift+I ice · A arrow · arrows move · " +
                 "Del remove · Esc deselect · Ctrl+Z / Ctrl+Y undo / redo · Ctrl+S save · N new · Shift+D copy · " +
-                "C check · Space step the solution · G generate · P play · [ ] previous / next level · F1 help",
+                "C check · Space step the solution · G generate · H make harder · P play · [ ] previous / next level · F1 help",
                 MessageType.None);
         }
 
@@ -653,9 +658,16 @@ namespace ColorBlockJam.Editor.LevelEditing
                 _genSeed = UnityEngine.Random.Range(1, 1_000_000);
             GUILayout.EndHorizontal();
             using (new EditorGUI.DisabledScope(_generating))
-                if (GUILayout.Button(new GUIContent(_generating ? "Generating…" : _level >= 0 ? "Generate into this level" : "Generate a new level",
+            {
+                if (GUILayout.Button(new GUIContent(_generating ? "Working…" : _level >= 0 ? "Generate into this level" : "Generate a new level",
                         "Replaces the canvas with a generated level; undo brings the old one back.")))
                     Generate();
+                using (new EditorGUI.DisabledScope(_level < 0))
+                    if (GUILayout.Button(new GUIContent("Make harder (H)",
+                            "Moves blocks and doors and sets arrows and ice so the level needs more room-making moves; undo brings the old one back.")))
+                        Harden();
+            }
+
             if (!string.IsNullOrEmpty(_genMessage))
                 EditorGUILayout.HelpBox(_genMessage, MessageType.None);
         }
@@ -693,6 +705,7 @@ namespace ColorBlockJam.Editor.LevelEditing
                 case KeyCode.C when !ctrl: CheckNow(); break;
                 case KeyCode.Space: StepPreview(); break;
                 case KeyCode.G when !ctrl: Generate(); break;
+                case KeyCode.H when !ctrl: Harden(); break;
                 case KeyCode.P when !ctrl: PlayTest(); break;
                 case KeyCode.LeftBracket: TrySwitchTo(Mathf.Max(0, _level - 1)); break;
                 case KeyCode.RightBracket: TrySwitchTo(Mathf.Min(_catalog.Catalog.Levels.Count - 1, _level + 1)); break;
@@ -974,6 +987,51 @@ namespace ColorBlockJam.Editor.LevelEditing
             _generation.Dispose();
             _generation = null;
             ApplyGenerated(result);
+            Repaint();
+        }
+
+        void Harden()
+        {
+            if (!_generating && _level >= 0 && !_validator.HasErrors(_checker.Issues))
+                HardenAsync().Forget();
+        }
+
+        /// <summary>Hardens the draft on worker threads (T-49); the editor stays usable meanwhile.</summary>
+        async UniTaskVoid HardenAsync()
+        {
+            _generating = true;
+            _genMessage = "Making it harder…";
+            _generation = new CancellationTokenSource();
+            CancellationToken token = _generation.Token;
+            LevelData level = Draft.ToLevel();
+            var request = new LevelHardeningRequest(_genSeed, HardenerRounds, int.MaxValue, true, true);
+            LevelHardeningResult result;
+            try
+            {
+                result = await UniTask.RunOnThreadPool(() => _hardener.Harden(level, request, token), cancellationToken: token);
+            }
+            catch (OperationCanceledException)
+            {
+                // The window closed while it ran.
+                return;
+            }
+            finally
+            {
+                _generating = false;
+            }
+
+            _generation.Dispose();
+            _generation = null;
+            if (result == null)
+                _genMessage = "The solver cannot finish this level within its cap; make it solvable first.";
+            else
+            {
+                Change("Make harder", () => _state.Draft = LevelDraft.From(result.Level));
+                _genMessage = $"Now {result.Solution.Moves} room-making moves (score {result.Solution.Score}). Press again to push further.";
+                _genSeed++;
+                Select(-1, -1);
+            }
+
             Repaint();
         }
 
