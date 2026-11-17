@@ -71,6 +71,18 @@ Updated: 2026-11-17
 - `TMP_Text.SetCharArray` allocates in the editor only (it mirrors the chars into `text` under
   `#if UNITY_EDITOR`), so `Is.Not.AllocatingGCMemory()` cannot prove a TMP label update allocation-free
   (2026-11-17).
+- Never capture an editor window with `InternalEditorUtility.ReadScreenPixel`: it reads the desktop, so a
+  window behind another app returns that app's pixels. Capture the window's own buffer instead: get the
+  `m_Parent` field of the `EditorWindow` by reflection, call `RepaintImmediately` (non-public) on the window,
+  then `GrabPixels(RenderTexture, Rect)` on the parent and `ReadPixels`; the image comes out upside down
+  and, in this Linear project, too light (raising each channel to the power 2.2 gives a close look)
+  (2026-11-17).
+- MCP `generate_audio` (fal.ai) answers `configured: false` until a fal key is entered in the editor's
+  MCP for Unity Asset Generation tab; only the developer can enter it (2026-11-17).
+- `execute_code`: `??` on a Unity component returns the destroyed-or-missing "fake null" and the next call
+  throws `MissingComponentException`; test `== null` explicitly (2026-11-17).
+- `refresh_unity` with `scope: scripts` does not import a new `.cs` file (`CS0246` on its type); use
+  `scope: all` after adding files (2026-11-17).
 
 ## 2. Shell (Windows, Git Bash)
 
