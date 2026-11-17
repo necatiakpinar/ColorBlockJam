@@ -25,6 +25,8 @@ namespace ColorBlockJam.Game.Gameplay.Input
     /// soon as it is pushed <see cref="BoardViewConfig.ExitPush"/> into the door.</item>
     /// <item>A press next to a block picks it when the finger is within
     /// <see cref="BoardViewConfig.TouchTolerance"/> of it. A door the block cannot use is a wall to it.</item>
+    /// <item>Input counts only while the level plays: a pause, a win or a fail drops the held block onto its
+    /// cell and ignores the finger until the level starts or resumes again.</item>
     /// <item>What is drawn may lean toward the finger past an obstacle by
     /// <see cref="BoardViewConfig.HoldGive"/>, so a held block never feels frozen; that lean is never
     /// committed.</item>
@@ -42,6 +44,7 @@ namespace ColorBlockJam.Game.Gameplay.Input
         readonly BoardViewConfig _config;
         readonly SignalBus _signalBus;
         int _blockId = NoBlock;
+        bool _acceptsInput = true;
         Vector2 _position;
         Vector2 _grab;
         // Where the finger wants the block this event.
@@ -60,12 +63,44 @@ namespace ColorBlockJam.Game.Gameplay.Input
             _signalBus = signalBus;
             _signalBus.Subscribe<BoardPointerSignal>(OnBoardPointer);
             _signalBus.Subscribe<BoardLoadedSignal>(OnBoardLoaded);
+            _signalBus.Subscribe<LevelStartedSignal>(OnLevelStarted);
+            _signalBus.Subscribe<LevelResumedSignal>(OnLevelResumed);
+            _signalBus.Subscribe<LevelPausedSignal>(OnLevelPaused);
+            _signalBus.Subscribe<LevelCompletedSignal>(OnLevelCompleted);
+            _signalBus.Subscribe<LevelFailedSignal>(OnLevelFailed);
         }
 
         void OnBoardLoaded(BoardLoadedSignal signal) => _blockId = NoBlock;
 
+        void OnLevelStarted(LevelStartedSignal signal) => _acceptsInput = true;
+
+        void OnLevelResumed(LevelResumedSignal signal) => _acceptsInput = true;
+
+        void OnLevelPaused(LevelPausedSignal signal) => StopInput();
+
+        void OnLevelCompleted(LevelCompletedSignal signal) => StopInput();
+
+        void OnLevelFailed(LevelFailedSignal signal) => StopInput();
+
+        /// <summary>
+        /// Lets go of the held block where the board has it, and ignores the finger from now on. The last exit
+        /// completes the level from inside that exit's step, before the drag has let go of the block: a block
+        /// that has left is only forgotten, never dropped.
+        /// </summary>
+        void StopInput()
+        {
+            _acceptsInput = false;
+            if (_blockId == NoBlock)
+                return;
+            if (!_board.Current.Blocks[_blockId].HasExited)
+                _signalBus.Fire(new BlockDroppedSignal(_blockId, CellOffset));
+            _blockId = NoBlock;
+        }
+
         void OnBoardPointer(BoardPointerSignal signal)
         {
+            if (!_acceptsInput)
+                return;
             switch (signal.Phase)
             {
                 case BoardPointerPhase.Pressed:
@@ -358,6 +393,11 @@ namespace ColorBlockJam.Game.Gameplay.Input
         {
             _signalBus.Unsubscribe<BoardPointerSignal>(OnBoardPointer);
             _signalBus.Unsubscribe<BoardLoadedSignal>(OnBoardLoaded);
+            _signalBus.Unsubscribe<LevelStartedSignal>(OnLevelStarted);
+            _signalBus.Unsubscribe<LevelResumedSignal>(OnLevelResumed);
+            _signalBus.Unsubscribe<LevelPausedSignal>(OnLevelPaused);
+            _signalBus.Unsubscribe<LevelCompletedSignal>(OnLevelCompleted);
+            _signalBus.Unsubscribe<LevelFailedSignal>(OnLevelFailed);
         }
     }
 }

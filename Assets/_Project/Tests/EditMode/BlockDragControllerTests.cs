@@ -364,6 +364,63 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
+        public void Pause_ShouldDropTheHeldBlockOntoItsCell_WhenTheLevelPausesMidDrag()
+        {
+            _board.Load(new LevelDataBuilder(5, 5).Block(Red, 0, 0).Build());
+            Finger(BoardPointerPhase.Pressed, 0, 0);
+            Finger(BoardPointerPhase.Dragged, 1.3f, 0);
+
+            _bus.Fire(new LevelPausedSignal());
+
+            Assert.That(_drops.Count, NUnit.Framework.Is.EqualTo(1));
+            Assert.That(_drops[0].Offset, NUnit.Framework.Is.EqualTo(new Vector2Int(1, 0)), "Onto the cell the board has.");
+        }
+
+        [Test]
+        public void Win_ShouldForgetTheExitedBlockWithoutDroppingIt_WhenTheLastExitCompletesTheLevel()
+        {
+            // The level completes from inside the last exit's step, while the drag still holds the block.
+            _board.Load(new LevelDataBuilder(4, 4).Block(Red, 0, 1).Door(Left, 1, 1, Red).Build());
+            _bus.Subscribe<BoardClearedSignal>(_ => _bus.Fire(new LevelCompletedSignal(1)));
+            Finger(BoardPointerPhase.Pressed, 0, 1);
+
+            Assert.DoesNotThrow(() => Finger(BoardPointerPhase.Dragged, -1f, 1));
+
+            Assert.That(_exits.Count, NUnit.Framework.Is.EqualTo(1));
+            Assert.That(_drops, NUnit.Framework.Is.Empty, "An exited block is not dropped.");
+        }
+
+        [Test]
+        public void Input_ShouldBeIgnored_UntilTheLevelResumes()
+        {
+            _board.Load(new LevelDataBuilder(5, 5).Block(Red, 0, 0).Build());
+            _bus.Fire(new LevelPausedSignal());
+
+            Finger(BoardPointerPhase.Pressed, 0, 0);
+            Finger(BoardPointerPhase.Dragged, 2f, 0);
+            int dragsWhilePaused = _drags.Count;
+            _bus.Fire(new LevelResumedSignal());
+            Finger(BoardPointerPhase.Pressed, 0, 0);
+            Finger(BoardPointerPhase.Dragged, 2f, 0);
+
+            Assert.That(dragsWhilePaused, NUnit.Framework.Is.Zero);
+            Assert.That(CellOf(0), NUnit.Framework.Is.EqualTo(new Vector2Int(2, 0)), "Moves again once resumed.");
+        }
+
+        [Test]
+        public void Input_ShouldBeIgnored_WhenTheLevelIsLost()
+        {
+            _board.Load(new LevelDataBuilder(5, 5).Block(Red, 0, 0).Build());
+            _bus.Fire(new LevelFailedSignal(1));
+
+            Finger(BoardPointerPhase.Pressed, 0, 0);
+            Finger(BoardPointerPhase.Dragged, 2f, 0);
+
+            Assert.That(_drags, NUnit.Framework.Is.Empty);
+            Assert.That(CellOf(0), NUnit.Framework.Is.EqualTo(Vector2Int.zero));
+        }
+
+        [Test]
         public void Drag_ShouldDoNothing_WhenThePressMissedEveryBlock()
         {
             _board.Load(new LevelDataBuilder(5, 5).Block(Red, 0, 0).Build());

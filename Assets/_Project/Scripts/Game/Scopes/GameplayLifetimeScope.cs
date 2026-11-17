@@ -3,6 +3,7 @@ using ColorBlockJam.Game.Gameplay;
 using ColorBlockJam.Game.Gameplay.Feedback;
 using ColorBlockJam.Game.Gameplay.Hud;
 using ColorBlockJam.Game.Gameplay.Input;
+using ColorBlockJam.Game.Gameplay.Session;
 using ColorBlockJam.Game.Gameplay.View;
 using ColorBlockJam.Game.Installers;
 using UnityEngine;
@@ -55,6 +56,7 @@ namespace ColorBlockJam.Game.Scopes
             {
                 resolver.Resolve<BlockDragController>();
                 resolver.Resolve<GameplayHaptics>();
+                resolver.Resolve<LevelProgression>();
             });
 
             builder.RegisterEntryPoint<GameplayFlow>();

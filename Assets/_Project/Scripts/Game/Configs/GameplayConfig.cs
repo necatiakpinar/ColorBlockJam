@@ -11,12 +11,18 @@ namespace ColorBlockJam.Game.Configs
         [SerializeField]
         FadeScaleInSettings _hudReveal = new(0.35f, 0.9f, Ease.OutCubic);
 
+        [Tooltip("Seconds between winning a level and the next one starting, while there is no win popup "
+            + "yet (T-21): long enough to see the last block leave (DA-23).")]
+        [SerializeField, Min(0f)]
+        float _nextLevelDelay = 1f;
+
         [Header("Haptics")]
         [Tooltip("Tap when a block leaves through its door.")]
         [SerializeField]
         HapticImpact _exitHaptic = HapticImpact.Light;
 
         public FadeScaleInSettings HudReveal => _hudReveal;
+        public float NextLevelDelay => _nextLevelDelay;
         public HapticImpact ExitHaptic => _exitHaptic;
     }
 }

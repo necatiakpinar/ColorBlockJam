@@ -48,5 +48,17 @@ The game never mutates `LevelData`. The catalog is registered by the root scope;
 level number to its entry and loops after the last one (DA-8). Each attempt builds a new `BoardState`
 ([gameplay.md](gameplay.md) §3, §4), which is what makes a restart start clean.
 
-`Level_001` is a development level made in code to drive the board views; T-32 replaces the catalog's
-content with the five levels made in the level editor.
+The catalog ships five levels, `Level_001` to `Level_005`, made in code until the level editor
+exists (T-32 remakes them with it). They ramp up by board size, block count and how many rounds of exits
+the blocks need (a block can only leave once the ones in its way have):
+
+| Level | Board | Blocks | Rounds | Timer |
+| --- | --- | --- | --- | --- |
+| 1 | 4x4 | 2 | 1 | 60 s |
+| 2 | 5x5 | 3 | 2 | 60 s |
+| 3 | 5x6 | 5 | 4 | 90 s |
+| 4 | 6x7 | 8 | 4 | 120 s |
+| 5 | 6x7 | 8 | 6 | 150 s |
+
+`ShippedLevelsTests` keeps every catalog level free of validator issues and proves it solvable with the
+real `BoardState` rules: it takes blocks out one at a time, each searching every cell it can slide to.

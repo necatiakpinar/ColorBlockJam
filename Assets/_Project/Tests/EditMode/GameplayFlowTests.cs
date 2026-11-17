@@ -3,9 +3,11 @@ using NUnit.Framework;
 using ColorBlockJam.Core.Persistence;
 using ColorBlockJam.Core.Scenes;
 using ColorBlockJam.Core.Signals;
+using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Gameplay;
 using ColorBlockJam.Game.Gameplay.Board;
 using ColorBlockJam.Game.Gameplay.Hud;
+using ColorBlockJam.Game.Gameplay.Session;
 using ColorBlockJam.Game.Gameplay.Signals;
 using ColorBlockJam.Game.Levels;
 using ColorBlockJam.Tests.EditMode.Helpers;
@@ -23,6 +25,8 @@ namespace ColorBlockJam.Tests.EditMode
         SignalBus _bus;
         LevelProvider _levels;
         ActiveBoard _activeBoard;
+        LevelSession _session;
+        GameplayConfig _config;
 
         [SetUp]
         public void SetUp()
@@ -35,11 +39,15 @@ namespace ColorBlockJam.Tests.EditMode
                 new LevelDataBuilder(4, 4).Block(Red, 0, 0).Door(Left, 0, 1, Red).Build(),
                 new LevelDataBuilder(5, 6).Block(Blue, 0, 0).Door(Left, 0, 1, Blue).Build()));
             _activeBoard = new ActiveBoard(new BoardSpace(1f), _bus);
+            _session = new LevelSession(_activeBoard, _levels, _bus);
+            _config = ScriptableObject.CreateInstance<GameplayConfig>();
         }
 
         [TearDown]
         public void TearDown()
         {
+            _session.Dispose();
+            Object.DestroyImmediate(_config);
             _views.Dispose();
             _catalogs.Dispose();
         }
@@ -57,7 +65,7 @@ namespace ColorBlockJam.Tests.EditMode
         GameplayHudView CreateHud(out UnityEngine.UI.Button homeButton) => _views.CreateHud(new SignalBus(), out homeButton);
 
         GameplayFlow CreateFlow(int level) =>
-            new(CreateProgressAtLevel(level), _bus, CreateHud(out _), _navigation, _levels, _activeBoard);
+            new(CreateProgressAtLevel(level), _session, CreateHud(out _), _navigation, _bus, _config);
 
         [Test]
         public void Start_ShouldLoadTheBoardThenAnnounceTheLevel_WhenSceneStarts()
@@ -70,13 +78,14 @@ namespace ColorBlockJam.Tests.EditMode
 
             Assert.That(events, Is.EqualTo(new[] { "board 5x6", "level 2" }));
             Assert.That(_activeBoard.Current.Width, Is.EqualTo(5));
+            Assert.That(_session.State, Is.EqualTo(LevelState.Playing));
         }
 
         [Test]
         public void HomeButton_ShouldNavigateHome_WhenTapped()
         {
             var hud = CreateHud(out var homeButton);
-            using var flow = new GameplayFlow(CreateProgressAtLevel(1), _bus, hud, _navigation, _levels, _activeBoard);
+            using var flow = new GameplayFlow(CreateProgressAtLevel(1), _session, hud, _navigation, _bus, _config);
 
             homeButton.onClick.Invoke();
 
@@ -87,7 +96,7 @@ namespace ColorBlockJam.Tests.EditMode
         public void HomeButton_ShouldNotNavigate_WhenFlowIsDisposed()
         {
             var hud = CreateHud(out var homeButton);
-            new GameplayFlow(CreateProgressAtLevel(1), _bus, hud, _navigation, _levels, _activeBoard).Dispose();
+            new GameplayFlow(CreateProgressAtLevel(1), _session, hud, _navigation, _bus, _config).Dispose();
 
             homeButton.onClick.Invoke();
 

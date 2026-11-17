@@ -123,10 +123,10 @@ task is marked `Dropped`, never deleted. Detail per task: [tasks.md](tasks.md).
 | T-11 | 3 | Block view: modular block meshes and colours | Any polyomino shows with correct corners and colour | T-10 | Done |
 | T-12 | 3 | Drag and slide | A held block follows the finger smoothly, stops at obstacles, snaps to its cell on release | T-06, T-09, T-11 | Done |
 | T-13 | 3 | Exit through door and level complete | A block leaves through a matching door; last exit completes the level | T-12 | Done |
-| T-14 | 4 | Level session state machine | Loading → Playing ⇄ Paused → Won / Failed; restart rebuilds from data | T-09 | Todo |
+| T-14 | 4 | Level session state machine | Loading → Playing ⇄ Paused → Won / Failed; restart rebuilds from data | T-09 | Done |
 | T-15 | 4 | Countdown timer | Counts down, pauses, fails the level at 0 | T-14 | Todo |
 | T-16 | 4 | Coin rewards | Win adds the reward once, before the popup; leaving never changes coins | T-07, T-14 | Todo |
-| T-17 | 4 | Level progression and looping | Win advances the level; after level 5 the catalog loops | T-07, T-14 | In progress |
+| T-17 | 4 | Level progression and looping | Win advances the level; after level 5 the catalog loops | T-07, T-14 | Done |
 | T-18 | 5 | Gameplay HUD | Level, timer, coins, pause, boosters and lives shown and updating | T-05, T-15, T-16 | Todo |
 | T-19 | 5 | Pause popup | Pause freezes timer and input; resume, restart, home work | T-18 | Todo |
 | T-20 | 5 | Fail popup | Opens on timeout; restart and home work | T-18 | Todo |
@@ -141,7 +141,7 @@ task is marked `Dropped`, never deleted. Detail per task: [tasks.md](tasks.md).
 | T-29 | 8 | Door placement tools | Place, recolour, resize, delete doors on wall edges | T-27 | Todo |
 | T-30 | 8 | Save, load, play-test and structural validation | Save writes the game's format; Play opens the level in the game | T-28, T-29, T-14 | Todo |
 | T-31 | 8 | Editor usability pass and designer guide | A new user makes and plays a level with only the in-editor help | T-30 | Todo |
-| T-32 | 9 | Author levels 1–5 in the editor | Five levels, rising difficulty, each solvable within its timer | T-31, T-22 | Todo |
+| T-32 | 9 | Author levels 1–5 in the editor | Five levels, rising difficulty, each solvable within its timer | T-31, T-22 | In progress |
 | T-33 | 10 | (could) Solvability validation | Saving an unsolvable level shows a warning | T-30 | Todo |
 | T-34 | 10 | (could) Ice blocker | Frozen block thaws after N exits; editor places it | T-32 | Todo |
 | T-35 | 10 | (could) Arrow block | Block moves only along its arrow; editor places it | T-32 | Todo |
