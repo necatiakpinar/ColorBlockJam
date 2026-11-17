@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using ColorBlockJam.Game.Gameplay.Board;
 using UnityEngine;
 
@@ -35,7 +36,14 @@ namespace ColorBlockJam.Game.Levels.Solving
         }
 
         /// <summary>The level must pass the validator's errors first; the solver assumes a buildable board.</summary>
-        public SolveResult Solve(LevelData level)
+        public SolveResult Solve(LevelData level) => Solve(level, CancellationToken.None);
+
+        /// <summary>
+        /// As <see cref="Solve(LevelData)"/>, stopping with <see cref="System.OperationCanceledException"/> once
+        /// <paramref name="token"/> is cancelled: the level editor solves on a worker thread and drops a search the
+        /// next edit makes stale. One instance per thread.
+        /// </summary>
+        public SolveResult Solve(LevelData level, CancellationToken token)
         {
             var board = new BoardState(level);
             int count = level.Blocks.Count;
@@ -47,6 +55,7 @@ namespace ColorBlockJam.Game.Levels.Solving
             queue.Enqueue(start);
             while (queue.Count > 0)
             {
+                token.ThrowIfCancellationRequested();
                 Node node = queue.Dequeue();
                 if (AllExited(node.Exited))
                     return new SolveResult(SolveStatus.Solvable, Path(node), visited.Count, node.Rounds);

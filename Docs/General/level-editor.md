@@ -70,6 +70,16 @@ Every control also has a tooltip.
 - **The solution**: the steps one by one ("Block 3 leaves ▶ right", "Block 2 makes room"). Drag *Show
   step* or press `Space` to replay it on the canvas; the moving block is outlined and gone blocks fade.
 
+The checks never hold up an edit (`LevelChecker`):
+- **Structure** answers at once.
+- **The solver** starts on a worker thread once the edits pause for 250 ms; meanwhile Checks says *Solving…*.
+- **A newer edit** cancels the search still running for the old draft. `C` or Check solves at once.
+- **Save** does not wait for a running solve.
+- **Generate** also runs on a worker thread; its button reads *Generating…* until the level lands.
+
+Everything the window draws from the draft (the unsaved mark, block labels, the level list) is worked out once
+per change, not on every GUI event.
+
 ### Generator
 
 Set width, height, colours, blocks, difficulty and seed, then **Generate** (`G`). It builds a level that
@@ -90,6 +100,7 @@ changes the saved progress to that level; the debug window's *Clear player saves
 | --- | --- | --- |
 | `LevelEditorWindow` | Editor | the window: panels, mouse, shortcuts, checks |
 | `LevelCanvas` | Editor | draws a draft top-down and maps the mouse to board and wall cells |
+| `LevelChecker` | Editor | validates a draft at once and solves it on a worker thread, cancelling a stale search |
 | `LevelDraft` | Editor | the level being edited; every change keeps the board buildable and answers false otherwise |
 | `LevelEditorState` | Editor | holds the draft for Unity's undo (`Undo.RecordObject`) |
 | `LevelCatalogEditing` | Editor | create, copy, delete, reorder and save level assets in the catalog, straight to disk without undo (git is the history; an undo record on an asset lets the test runner's rollback revert a save) |
@@ -102,7 +113,8 @@ changes the saved progress to that level; the debug window's *Clear player saves
 rules are never copied. A move takes one block along any path of free cells, as the drag allows. Leaving
 never hurts, so after every move all blocks that can reach their door leave, in waves (each wave is every
 block that can leave at that moment). The search branches only over room-making moves, breadth first, and
-stops at `LevelRulesConfig.SolverStateCap` (20 000 states) with *Unknown*.
+stops at `LevelRulesConfig.SolverStateCap` (20 000 states) with *Unknown*. `Solve(level, token)` stops with
+`OperationCanceledException` once the token is cancelled; use one instance per thread.
 
 Ice needs no extra state in the search: every exit counts every frozen block down by one, so a block's ice
 is its starting ice minus the blocks already gone (`BoardState.Arrange`).
@@ -119,6 +131,6 @@ Hard and 60 % for Very Hard, rounded to 5 s.
 
 ## 4. Tests
 
-`LevelDraftTests`, `LevelCatalogEditingTests`, `LevelSolverTests` (each solution is replayed on a real board),
+`LevelDraftTests`, `LevelCatalogEditingTests`, `LevelCheckerTests`, `LevelSolverTests` (each solution is replayed on a real board),
 `LevelGeneratorTests`, `ShippedLevelsTests`. The window itself is checked by hand
 ([level-editor-qa.md](../testing/level-editor-qa.md)).

@@ -113,6 +113,15 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
+        public void Solve_ShouldStop_WhenItsSearchIsCancelled()
+        {
+            using var cancelled = new System.Threading.CancellationTokenSource();
+            cancelled.Cancel();
+
+            Assert.Throws<System.OperationCanceledException>(() => _solver.Solve(NeedsRoom(), cancelled.Token));
+        }
+
+        [Test]
         public void Solve_ShouldSayUnknown_WhenTheStateCapIsHit()
         {
             Assert.That(new LevelSolver(1).Solve(NeedsRoom()).Status, Is.EqualTo(SolveStatus.Unknown));

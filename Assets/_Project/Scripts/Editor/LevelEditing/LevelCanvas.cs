@@ -19,6 +19,9 @@ namespace ColorBlockJam.Editor.LevelEditing
         static readonly Color Selection = Color.white;
 
         readonly BoardViewConfig _colors;
+        // Reused on every draw: OnGUI runs several times a frame and must not allocate per block or label.
+        readonly HashSet<Vector2Int> _blockCells = new();
+        GUIStyle _label;
         Rect _area;
         float _cell;
         Vector2 _origin;
@@ -122,9 +125,10 @@ namespace ColorBlockJam.Editor.LevelEditing
         /// <summary>A block as joined cells, at its cells moved by <paramref name="offset"/>.</summary>
         public void DrawBlock(IReadOnlyList<Vector2Int> cells, Vector2Int offset, Color color, bool selected, string label)
         {
-            var set = new HashSet<Vector2Int>();
-            foreach (Vector2Int cell in cells)
-                set.Add(cell + offset);
+            HashSet<Vector2Int> set = _blockCells;
+            set.Clear();
+            for (int i = 0; i < cells.Count; i++)
+                set.Add(cells[i] + offset);
             float gap = Mathf.Max(2f, _cell * 0.08f);
             foreach (Vector2Int cell in set)
             {
@@ -176,11 +180,12 @@ namespace ColorBlockJam.Editor.LevelEditing
             EditorGUI.DrawRect(new Rect(rect.xMax - width, rect.y, width, rect.height), color);
         }
 
-        static GUIStyle CenteredLabel(int size, Color color) => new(EditorStyles.boldLabel)
+        GUIStyle CenteredLabel(int size, Color color)
         {
-            alignment = TextAnchor.MiddleCenter,
-            fontSize = Mathf.Max(8, size),
-            normal = { textColor = color },
-        };
+            _label ??= new GUIStyle(EditorStyles.boldLabel) { alignment = TextAnchor.MiddleCenter };
+            _label.fontSize = Mathf.Max(8, size);
+            _label.normal.textColor = color;
+            return _label;
+        }
     }
 }

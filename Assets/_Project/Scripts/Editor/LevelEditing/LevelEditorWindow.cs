@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Levels;
 using ColorBlockJam.Game.Levels.Blockers;
 using ColorBlockJam.Game.Levels.Generation;
 using ColorBlockJam.Game.Levels.Solving;
+using Cysharp.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 
@@ -27,6 +29,8 @@ namespace ColorBlockJam.Editor.LevelEditing
         const float InspectorWidth = 320f;
         // The generator's own search cap: candidates past it are dropped, not waited on.
         const int GeneratorStateCap = 2000;
+        // How long the edits must pause before the solver starts; a drag or a slider never waits for it.
+        const int SolveSettleMilliseconds = 250;
         static readonly Color IceTint = new(0.85f, 0.95f, 1f);
 
         enum Tool
@@ -43,7 +47,7 @@ namespace ColorBlockJam.Editor.LevelEditing
         LevelRulesConfig _rules;
         LevelRewardConfig _rewards;
         LevelDefinitionValidator _validator;
-        LevelSolver _solver;
+        LevelChecker _checker;
         BlockShapeLibrary _shapes;
         LevelGenerator _generator;
         LevelCanvas _canvas;
@@ -69,11 +73,19 @@ namespace ColorBlockJam.Editor.LevelEditing
         int _doorFrom = -1;
         int _doorTo = -1;
 
-        // Check results, refreshed after every change.
-        string _checkedJson;
-        IReadOnlyList<LevelIssue> _issues = Array.Empty<LevelIssue>();
-        SolveResult _solution;
         int _previewStep;
+
+        // Worked out once per change, not on every GUI event.
+        bool _isDirty;
+        readonly List<string> _blockLabels = new();
+        string[] _levelLabels = Array.Empty<string>();
+        GUIContent[] _toolLabels;
+        string[] _shapeNames;
+        GUIStyle _levelStyle;
+        GUIStyle _currentLevelStyle;
+        int _hoverKey = int.MinValue;
+        bool _generating;
+        CancellationTokenSource _generation;
 
         // Generator settings.
         int _genWidth = 6;
@@ -95,14 +107,26 @@ namespace ColorBlockJam.Editor.LevelEditing
             _rules = AssetDatabase.LoadAssetAtPath<LevelRulesConfig>(RulesPath);
             _rewards = AssetDatabase.LoadAssetAtPath<LevelRewardConfig>(RewardsPath);
             _validator = new LevelDefinitionValidator(_rules);
-            _solver = new LevelSolver(_rules.SolverStateCap);
+            _checker = new LevelChecker(_validator, _rules.SolverStateCap, SolveSettleMilliseconds);
+            _checker.Solved += Repaint;
             _shapes = new BlockShapeLibrary();
-            _generator = new LevelGenerator(_validator, new LevelSolver(GeneratorStateCap), _shapes);
+            // The generator runs on a worker thread, so it gets a validator and solver of its own.
+            _generator = new LevelGenerator(new LevelDefinitionValidator(_rules), new LevelSolver(GeneratorStateCap), _shapes);
+            _toolLabels = new[]
+            {
+                new GUIContent("Select", "Pick and drag blocks, pick doors (1)."), new GUIContent("Block", "Stamp or paint blocks (2)."),
+                new GUIContent("Door", "Drag along a wall to add a door (3)."), new GUIContent("Erase", "Click a block or door to remove it (4)."),
+            };
+            var shapeNames = new List<string> { "Free" };
+            foreach (BlockShape shape in _shapes.Shapes)
+                shapeNames.Add(shape.Name);
+            _shapeNames = shapeNames.ToArray();
             _canvas = new LevelCanvas(AssetDatabase.LoadAssetAtPath<BoardViewConfig>(ViewConfigPath));
             _state = CreateInstance<LevelEditorState>();
             _state.hideFlags = HideFlags.HideAndDontSave;
             wantsMouseMove = true;
             Undo.undoRedoPerformed += OnUndoRedo;
+            RefreshLevelList();
             if (_catalog.Catalog.Levels.Count > 0)
                 Load(0);
         }
@@ -110,6 +134,9 @@ namespace ColorBlockJam.Editor.LevelEditing
         void OnDisable()
         {
             Undo.undoRedoPerformed -= OnUndoRedo;
+            _checker.Solved -= Repaint;
+            _checker.Dispose();
+            _generation?.Cancel();
             Undo.ClearUndo(_state);
             DestroyImmediate(_state);
         }
@@ -117,15 +144,51 @@ namespace ColorBlockJam.Editor.LevelEditing
         void OnUndoRedo()
         {
             ClampSelection();
+            OnDraftChanged();
             Repaint();
         }
+
+        /// <summary>
+        /// Everything that depends on the draft, worked out once per change: the checks (solved in the background),
+        /// the unsaved mark and the block labels.
+        /// </summary>
+        void OnDraftChanged()
+        {
+            if (_level < 0)
+                return;
+            LevelData level = Draft.ToLevel();
+            _checker.Check(level);
+            _isDirty = JsonUtility.ToJson(level) != JsonUtility.ToJson(_catalog.Catalog.Levels[_level].Data);
+            _previewStep = 0;
+            _blockLabels.Clear();
+            for (int i = 0; i < Draft.Blocks.Count; i++)
+                _blockLabels.Add(MakeBlockLabel(i));
+        }
+
+        void CheckNow()
+        {
+            if (_level >= 0)
+                _checker.Check(Draft.ToLevel(), now: true);
+        }
+
+        void RefreshLevelList()
+        {
+            IReadOnlyList<LevelDefinition> levels = _catalog.Catalog.Levels;
+            _levelLabels = new string[levels.Count];
+            for (int i = 0; i < levels.Count; i++)
+            {
+                LevelData data = levels[i].Data;
+                _levelLabels[i] = $"{i + 1}. {data.Width}x{data.Height} · {data.Blocks.Count} blocks · {data.Difficulty}";
+            }
+        }
+
+        SolveResult Solution => _checker.Solution;
 
         // ---------------------------------------------------------------- layout
 
         void OnGUI()
         {
             HandleShortcuts(Event.current);
-            RefreshChecks();
             DrawToolbar();
             float top = EditorGUIUtility.singleLineHeight + 6f;
             var list = new Rect(0, top, ListWidth, position.height - top);
@@ -139,7 +202,7 @@ namespace ColorBlockJam.Editor.LevelEditing
         void DrawToolbar()
         {
             GUILayout.BeginHorizontal(EditorStyles.toolbar);
-            GUILayout.Label(_level >= 0 ? $"Level {_level + 1}{(IsDirty ? " *" : "")}" : "No level", EditorStyles.boldLabel,
+            GUILayout.Label(_level >= 0 ? (_isDirty ? $"Level {_level + 1} *" : $"Level {_level + 1}") : "No level", EditorStyles.boldLabel,
                 GUILayout.Width(110));
             using (new EditorGUI.DisabledScope(_level < 0))
             {
@@ -148,7 +211,7 @@ namespace ColorBlockJam.Editor.LevelEditing
                 if (GUILayout.Button(new GUIContent("Revert", "Drop the unsaved changes."), EditorStyles.toolbarButton))
                     Load(_level);
                 if (GUILayout.Button(new GUIContent("Check", "Validate and solve now (C)."), EditorStyles.toolbarButton))
-                    RefreshChecks(true);
+                    CheckNow();
                 if (GUILayout.Button(new GUIContent("▶ Play", "Save and play this level in the game (P)."), EditorStyles.toolbarButton))
                     PlayTest();
             }
@@ -167,14 +230,11 @@ namespace ColorBlockJam.Editor.LevelEditing
             IReadOnlyList<LevelDefinition> levels = _catalog.Catalog.Levels;
             if (levels.Count == 0)
                 EditorGUILayout.HelpBox("The catalog is empty. Press New to make the first level.", MessageType.Info);
-            for (int i = 0; i < levels.Count; i++)
-            {
-                LevelData data = levels[i].Data;
-                string text = $"{i + 1}. {data.Width}x{data.Height} · {data.Blocks.Count} blocks · {data.Difficulty}";
-                var style = new GUIStyle(EditorStyles.miniButton) { alignment = TextAnchor.MiddleLeft, fontStyle = i == _level ? FontStyle.Bold : FontStyle.Normal };
-                if (GUILayout.Toggle(i == _level, text, style) && i != _level)
+            _levelStyle ??= new GUIStyle(EditorStyles.miniButton) { alignment = TextAnchor.MiddleLeft };
+            _currentLevelStyle ??= new GUIStyle(_levelStyle) { fontStyle = FontStyle.Bold };
+            for (int i = 0; i < _levelLabels.Length; i++)
+                if (GUILayout.Toggle(i == _level, _levelLabels[i], i == _level ? _currentLevelStyle : _levelStyle) && i != _level)
                     TrySwitchTo(i);
-            }
 
             GUILayout.EndScrollView();
             GUILayout.BeginHorizontal();
@@ -212,7 +272,7 @@ namespace ColorBlockJam.Editor.LevelEditing
 
             _canvas.Layout(new Rect(area.x + 8, area.y + 8, area.width - 16, area.height - 16), Draft.Width, Draft.Height);
             _canvas.DrawBoard(Draft, _selectedDoor);
-            if (_previewStep > 0 && _solution != null && _solution.Status == SolveStatus.Solvable)
+            if (_previewStep > 0 && Solution != null && Solution.Status == SolveStatus.Solvable)
                 DrawSolutionPreview();
             else
                 for (int i = 0; i < Draft.Blocks.Count; i++)
@@ -259,7 +319,14 @@ namespace ColorBlockJam.Editor.LevelEditing
             switch (e.type)
             {
                 case EventType.MouseMove:
-                    Repaint();
+                    // Redraw only when the hover reaches another cell or wall cell, not on every pixel.
+                    int hover = onWall ? -1 - (int)side - index : onCell ? 1 + cell.x * 1000 + cell.y : 0;
+                    if (hover != _hoverKey)
+                    {
+                        _hoverKey = hover;
+                        Repaint();
+                    }
+
                     break;
                 case EventType.MouseDown when e.button == 0:
                     _previewStep = 0;
@@ -379,15 +446,15 @@ namespace ColorBlockJam.Editor.LevelEditing
         {
             var offsets = new Vector2Int[Draft.Blocks.Count];
             var exited = new bool[Draft.Blocks.Count];
-            int count = Mathf.Min(_previewStep, _solution.Steps.Count);
+            int count = Mathf.Min(_previewStep, Solution.Steps.Count);
             for (int i = 0; i < count; i++)
             {
-                SolveStep step = _solution.Steps[i];
+                SolveStep step = Solution.Steps[i];
                 offsets[step.BlockId] = step.Offset;
                 exited[step.BlockId] = step.Exits;
             }
 
-            int moving = _solution.Steps[count - 1].BlockId;
+            int moving = Solution.Steps[count - 1].BlockId;
             for (int i = 0; i < Draft.Blocks.Count; i++)
                 if (!exited[i] || i == moving)
                     _canvas.DrawBlock(Draft.Blocks[i].Cells, offsets[i], BlockTint(Draft.Blocks[i]) * (exited[i] ? 0.45f : 1f),
@@ -398,7 +465,9 @@ namespace ColorBlockJam.Editor.LevelEditing
         Color BlockTint(DraftBlock block) =>
             block.Blockers.Ice.IsActive ? Color.Lerp(_canvas.ColorOf(block.Color), IceTint, 0.6f) : _canvas.ColorOf(block.Color);
 
-        string BlockLabel(int index)
+        string BlockLabel(int index) => index < _blockLabels.Count ? _blockLabels[index] : MakeBlockLabel(index);
+
+        string MakeBlockLabel(int index)
         {
             BlockerSet blockers = Draft.Blocks[index].Blockers;
             string label = (index + 1).ToString();
@@ -450,9 +519,7 @@ namespace ColorBlockJam.Editor.LevelEditing
         void DrawTools()
         {
             Header("Tool");
-            var labels = new[] { new GUIContent("Select", "Pick and drag blocks, pick doors (1)."), new GUIContent("Block", "Stamp or paint blocks (2)."),
-                new GUIContent("Door", "Drag along a wall to add a door (3)."), new GUIContent("Erase", "Click a block or door to remove it (4).") };
-            int tool = GUILayout.Toolbar(ToolIndex(_tool), labels);
+            int tool = GUILayout.Toolbar(ToolIndex(_tool), _toolLabels);
             _tool = ToolAt(tool);
 
             Header("Colour (Q / E)");
@@ -470,10 +537,7 @@ namespace ColorBlockJam.Editor.LevelEditing
             GUILayout.EndHorizontal();
 
             Header("Shape (Tab, R turns)");
-            var shapeNames = new List<string> { "Free" };
-            foreach (BlockShape shape in _shapes.Shapes)
-                shapeNames.Add(shape.Name);
-            _shape = GUILayout.SelectionGrid(_shape + 1, shapeNames.ToArray(), 4) - 1;
+            _shape = GUILayout.SelectionGrid(_shape + 1, _shapeNames, 4) - 1;
         }
 
         void DrawLevelProperties()
@@ -532,36 +596,43 @@ namespace ColorBlockJam.Editor.LevelEditing
         void DrawChecks()
         {
             Header("Checks");
-            if (_issues.Count == 0)
+            if (_checker.Issues.Count == 0)
                 EditorGUILayout.HelpBox("Structure: no problems.", MessageType.Info);
-            foreach (LevelIssue issue in _issues)
+            foreach (LevelIssue issue in _checker.Issues)
                 EditorGUILayout.HelpBox(issue.Message, issue.Severity == LevelIssueSeverity.Error ? MessageType.Error : MessageType.Warning);
 
-            if (_solution == null)
+            if (_checker.IsSolving)
+            {
+                EditorGUILayout.HelpBox("Solving…", MessageType.None);
+                return;
+            }
+
+            SolveResult solution = Solution;
+            if (solution == null)
             {
                 EditorGUILayout.HelpBox("Fix the errors above to see whether the level can be finished.", MessageType.None);
                 return;
             }
 
-            switch (_solution.Status)
+            switch (solution.Status)
             {
                 case SolveStatus.Solvable:
-                    EditorGUILayout.HelpBox($"Solvable: {_solution.Rounds} exit rounds, {_solution.Moves} room-making moves " +
-                                            $"(score {_solution.Score}, plays like {DifficultyFor(_solution.Score)}).", MessageType.Info);
+                    EditorGUILayout.HelpBox($"Solvable: {solution.Rounds} exit rounds, {solution.Moves} room-making moves " +
+                                            $"(score {solution.Score}, plays like {DifficultyFor(solution.Score)}).", MessageType.Info);
                     break;
                 case SolveStatus.Unsolvable:
                     EditorGUILayout.HelpBox("Unsolvable: some block can never reach a door of its colour.", MessageType.Error);
                     return;
                 default:
-                    EditorGUILayout.HelpBox($"Unknown: gave up after {_solution.StatesSearched} board states.", MessageType.Warning);
+                    EditorGUILayout.HelpBox($"Unknown: gave up after {solution.StatesSearched} board states.", MessageType.Warning);
                     return;
             }
 
             GUILayout.Label("Solution (Space steps through it)", EditorStyles.miniBoldLabel);
-            _previewStep = EditorGUILayout.IntSlider("Show step", _previewStep, 0, _solution.Steps.Count);
-            for (int i = 0; i < _solution.Steps.Count; i++)
+            _previewStep = EditorGUILayout.IntSlider("Show step", _previewStep, 0, solution.Steps.Count);
+            for (int i = 0; i < solution.Steps.Count; i++)
             {
-                SolveStep step = _solution.Steps[i];
+                SolveStep step = solution.Steps[i];
                 string text = step.Exits
                     ? $"{i + 1}. Block {step.BlockId + 1} leaves {Arrow(step.ExitDirection)}"
                     : $"{i + 1}. Block {step.BlockId + 1} makes room";
@@ -582,9 +653,10 @@ namespace ColorBlockJam.Editor.LevelEditing
             if (GUILayout.Button("Random", GUILayout.Width(60)))
                 _genSeed = UnityEngine.Random.Range(1, 1_000_000);
             GUILayout.EndHorizontal();
-            if (GUILayout.Button(new GUIContent(_level >= 0 ? "Generate into this level" : "Generate a new level",
-                    "Replaces the canvas with a generated level; undo brings the old one back.")))
-                Generate();
+            using (new EditorGUI.DisabledScope(_generating))
+                if (GUILayout.Button(new GUIContent(_generating ? "Generating…" : _level >= 0 ? "Generate into this level" : "Generate a new level",
+                        "Replaces the canvas with a generated level; undo brings the old one back.")))
+                    Generate();
             if (!string.IsNullOrEmpty(_genMessage))
                 EditorGUILayout.HelpBox(_genMessage, MessageType.None);
         }
@@ -619,7 +691,7 @@ namespace ColorBlockJam.Editor.LevelEditing
                 case KeyCode.S when ctrl: Save(); break;
                 case KeyCode.N when !ctrl: NewLevel(); break;
                 case KeyCode.D when e.shift: DuplicateLevel(); break;
-                case KeyCode.C when !ctrl: RefreshChecks(true); break;
+                case KeyCode.C when !ctrl: CheckNow(); break;
                 case KeyCode.Space: StepPreview(); break;
                 case KeyCode.G when !ctrl: Generate(); break;
                 case KeyCode.P when !ctrl: PlayTest(); break;
@@ -753,7 +825,7 @@ namespace ColorBlockJam.Editor.LevelEditing
         {
             Undo.RecordObject(_state, name);
             change();
-            _previewStep = 0;
+            OnDraftChanged();
             Repaint();
         }
 
@@ -763,9 +835,10 @@ namespace ColorBlockJam.Editor.LevelEditing
             string before = JsonUtility.ToJson(Draft);
             Undo.RecordObject(_state, name);
             bool done = change();
-            if (!done)
+            if (done)
+                OnDraftChanged();
+            else
                 JsonUtility.FromJsonOverwrite(before, Draft);
-            _previewStep = 0;
             Repaint();
             return done;
         }
@@ -776,12 +849,11 @@ namespace ColorBlockJam.Editor.LevelEditing
             Undo.RecordObject(_state, "Open level");
             _state.Draft = LevelDraft.From(_catalog.Catalog.Levels[index].Data);
             Select(-1, -1);
-            _checkedJson = null;
-            _previewStep = 0;
+            OnDraftChanged();
             Repaint();
         }
 
-        bool IsDirty => _level >= 0 && JsonUtility.ToJson(Draft.ToLevel()) != JsonUtility.ToJson(_catalog.Catalog.Levels[_level].Data);
+        bool IsDirty => _level >= 0 && _isDirty;
 
         /// <summary>Asks before dropping unsaved changes; true when it is fine to leave this level.</summary>
         bool ConfirmLeave()
@@ -805,17 +877,19 @@ namespace ColorBlockJam.Editor.LevelEditing
         {
             if (_level < 0)
                 return;
-            if (_validator.HasErrors(_validator.Validate(Draft.ToLevel())))
+            if (_validator.HasErrors(_checker.Issues))
             {
                 EditorUtility.DisplayDialog("Cannot save", "Fix the errors under Checks first; the game cannot load this level.", "OK");
                 return;
             }
 
-            RefreshChecks(true);
-            if (_solution != null && _solution.Status != SolveStatus.Solvable &&
+            // A solve still running is not waited on: its verdict shows under Checks when it lands.
+            if (Solution != null && Solution.Status != SolveStatus.Solvable &&
                 !EditorUtility.DisplayDialog("Save anyway?", "The solver could not finish this level. Players may get stuck.", "Save", "Cancel"))
                 return;
             _catalog.Save(_level, Draft);
+            _isDirty = false;
+            RefreshLevelList();
             ShowNotification(new GUIContent($"Level {_level + 1} saved"));
         }
 
@@ -825,6 +899,7 @@ namespace ColorBlockJam.Editor.LevelEditing
                 return;
             var empty = new LevelData(5, 5, 60, new List<BlockData>(), new List<DoorData>());
             _catalog.Append(empty);
+            RefreshLevelList();
             Load(_catalog.Catalog.Levels.Count - 1);
         }
 
@@ -833,6 +908,7 @@ namespace ColorBlockJam.Editor.LevelEditing
             if (_level < 0 || !ConfirmLeave())
                 return;
             _catalog.Duplicate(_level);
+            RefreshLevelList();
             Load(_level + 1);
         }
 
@@ -842,6 +918,7 @@ namespace ColorBlockJam.Editor.LevelEditing
                 return;
             int deleted = _level;
             _catalog.Delete(deleted);
+            RefreshLevelList();
             int count = _catalog.Catalog.Levels.Count;
             _level = -1;
             if (count > 0)
@@ -853,6 +930,7 @@ namespace ColorBlockJam.Editor.LevelEditing
             if (!ConfirmLeave())
                 return;
             _catalog.Move(_level, _level + by);
+            RefreshLevelList();
             Load(_level + by);
         }
 
@@ -867,8 +945,41 @@ namespace ColorBlockJam.Editor.LevelEditing
 
         void Generate()
         {
-            LevelGenerationResult result = _generator.Generate(new LevelGenerationRequest(_genWidth, _genHeight, _genColors,
-                _genBlocks, _genDifficulty, _genSeed, 300));
+            if (!_generating)
+                GenerateAsync().Forget();
+        }
+
+        /// <summary>Generates on a worker thread; the editor stays usable and the result lands when it is ready.</summary>
+        async UniTaskVoid GenerateAsync()
+        {
+            _generating = true;
+            _genMessage = "Generating…";
+            _generation = new CancellationTokenSource();
+            CancellationToken token = _generation.Token;
+            var request = new LevelGenerationRequest(_genWidth, _genHeight, _genColors, _genBlocks, _genDifficulty, _genSeed, 300);
+            LevelGenerationResult result;
+            try
+            {
+                result = await UniTask.RunOnThreadPool(() => _generator.Generate(request), cancellationToken: token);
+            }
+            catch (OperationCanceledException)
+            {
+                // The window closed while it ran.
+                return;
+            }
+            finally
+            {
+                _generating = false;
+            }
+
+            _generation.Dispose();
+            _generation = null;
+            ApplyGenerated(result);
+            Repaint();
+        }
+
+        void ApplyGenerated(LevelGenerationResult result)
+        {
             if (!result.HasLevel)
             {
                 _genMessage = result.Failure;
@@ -878,6 +989,7 @@ namespace ColorBlockJam.Editor.LevelEditing
             if (_level < 0)
             {
                 _catalog.Append(result.Level);
+                RefreshLevelList();
                 Load(_catalog.Catalog.Levels.Count - 1);
             }
             else
@@ -886,30 +998,13 @@ namespace ColorBlockJam.Editor.LevelEditing
                           $" after {result.Attempts} tries: score {result.Solution.Score}. Edit it, then Save.";
             _genSeed++;
             Select(-1, -1);
-            RefreshChecks(true);
         }
 
         void StepPreview()
         {
-            if (_solution == null || _solution.Status != SolveStatus.Solvable)
+            if (Solution == null || Solution.Status != SolveStatus.Solvable)
                 return;
-            _previewStep = (_previewStep + 1) % (_solution.Steps.Count + 1);
-        }
-
-        /// <summary>Re-validates and re-solves when the level changed (or when forced).</summary>
-        void RefreshChecks(bool force = false)
-        {
-            if (_level < 0)
-                return;
-            LevelData level = Draft.ToLevel();
-            string json = JsonUtility.ToJson(level);
-            if (!force && json == _checkedJson)
-                return;
-            _checkedJson = json;
-            _issues = _validator.Validate(level);
-            _solution = _validator.HasErrors(_issues) ? null : _solver.Solve(level);
-            if (_solution == null || _previewStep > _solution.Steps.Count)
-                _previewStep = 0;
+            _previewStep = (_previewStep + 1) % (Solution.Steps.Count + 1);
         }
 
         // ---------------------------------------------------------------- small helpers
