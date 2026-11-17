@@ -146,6 +146,50 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
             return view;
         }
 
+        /// <summary>The lives popup with its Refill and close buttons.</summary>
+        public OutOfLivesPopupView CreateOutOfLivesPopup(SignalBus signalBus, out Button refillButton, out Button closeButton)
+        {
+            var root = Track(new GameObject("OutOfLivesPopup"));
+            var view = root.AddComponent<OutOfLivesPopupView>();
+            refillButton = Child(root, "RefillButton").AddComponent<Button>();
+            closeButton = Child(root, "CloseButton").AddComponent<Button>();
+            WirePopup(view, root);
+            Assign(view, "_titleLabel", Label(root, "Title"));
+            Assign(view, "_countLabel", Label(root, "CountLabel"));
+            Assign(view, "_timerLabel", Label(root, "TimerLabel"));
+            Assign(view, "_priceLabel", Label(root, "PriceLabel"));
+            Assign(view, "_refillButton", refillButton);
+            Assign(view, "_closeButton", closeButton);
+            view.Construct(signalBus);
+            return view;
+        }
+
+        /// <summary>The Home lives bar: count, status and "+".</summary>
+        public LivesBarView CreateLivesBar(SignalBus signalBus, out Button plusButton)
+        {
+            var root = Track(new GameObject("LivesBar"));
+            var view = root.AddComponent<LivesBarView>();
+            plusButton = Child(root, "PlusButton").AddComponent<Button>();
+            Assign(view, "_countLabel", Label(root, "Count"));
+            Assign(view, "_statusLabel", Label(root, "LivesLabel"));
+            Assign(view, "_plusButton", plusButton);
+            view.Construct(signalBus);
+            return view;
+        }
+
+        public LeaveLevelPopupView CreateLeaveLevelPopup(out Button leaveButton, out Button closeButton)
+        {
+            var root = Track(new GameObject("LeaveLevelPopup"));
+            var view = root.AddComponent<LeaveLevelPopupView>();
+            leaveButton = Child(root, "LeaveButton").AddComponent<Button>();
+            closeButton = Child(root, "CloseButton").AddComponent<Button>();
+            WirePopup(view, root);
+            Assign(view, "_leaveButton", leaveButton);
+            Assign(view, "_closeButton", closeButton);
+            view.Construct();
+            return view;
+        }
+
         public LevelFailedPopupView CreateLevelFailedPopup(out Button retryButton, out Button closeButton)
         {
             var root = Track(new GameObject("LevelFailedPopup"));

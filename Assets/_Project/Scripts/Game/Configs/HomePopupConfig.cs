@@ -11,6 +11,11 @@ namespace ColorBlockJam.Game.Configs
         [SerializeField]
         SettingsPopupView _settingsPopup;
 
+        [Tooltip("The lives popup, shared with Gameplay.")]
+        [SerializeField]
+        OutOfLivesPopupView _outOfLivesPopup;
+
         public SettingsPopupView SettingsPopup => _settingsPopup;
+        public OutOfLivesPopupView OutOfLivesPopup => _outOfLivesPopup;
     }
 }

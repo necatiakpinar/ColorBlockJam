@@ -78,6 +78,8 @@ after the reference screens, sizes measured on them and scaled to the canvas (DA
 | `WinPopup` prefab | "LEVEL COMPLETE", a pile of `Coin_Single`, Continue with the reward | Continue plays the next level (DA-12) |
 | `OutOfTimePopup` prefab | "Out of Time!", `Clock`, "+20", Continue with the price | buys more time; close gives up (DA-30) |
 | `LevelFailedPopup` prefab | "Level Failed!" with `Heart`, Retry | Retry restarts; close goes Home (DA-31) |
+| `LeaveLevelPopup` prefab | "Leave Level?", `Heart` with "-1", "You will lose a life!", Leave | Leave takes the life and goes Home; close goes back to pause (DA-38) |
+| `OutOfLivesPopup` prefab (Home and Gameplay) | "Out of Lives", `Heart` with the count, the next life's countdown, Refill with the price | fills every life for coins; in Gameplay close goes Home (DA-38) |
 | `BoosterPurchasePopup` prefab | the booster's title, icon, "x1", description, Buy with the price | buys one booster; close resumes (DA-36) |
 
 Text uses `LiberationSans SDF` with the `LiberationSans SDF - Hud` material (outline and drop shadow) until
@@ -107,7 +109,7 @@ Authored in `Home.unity` under `HomeCanvas`, laid out after the reference (T-23)
 | --- | --- | --- |
 | `Background` | `bg_home_screen` | fills the screen, outside the safe area |
 | `TopBar/ProfileButton` | `profile_box_blue` | placeholder |
-| `TopBar/Lives` | `bg_home_resource_holder`, `Heart`, "Full" and 5, green "+" | placeholder (DA-9) |
+| `TopBar/Lives` | `bg_home_resource_holder`, `Heart`, "Full" and 5, green "+" | `LivesBarView`: lives, "Full" or the countdown; "+" opens the lives popup ([lives.md](lives.md)) |
 | `TopBar/Coins` | `bg_home_resource_holder`, `Coin_Single`, green "+" | balance (`CoinAmountText`); "+" is a placeholder |
 | `TopBar/SettingsButton` | `Settings_Icon` | opens the Home settings popup |
 | `LevelPath` | gold rails, `Btn_level_green` tile for the current level, `Btn_settings_normal` + `lock` for the next two | numbers from the saved level |

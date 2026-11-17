@@ -2,6 +2,7 @@ using NUnit.Framework;
 using ColorBlockJam.Core.Persistence;
 using ColorBlockJam.Core.Scenes;
 using ColorBlockJam.Core.Signals;
+using ColorBlockJam.Game.Lives;
 using ColorBlockJam.Game.Home;
 using ColorBlockJam.Game.UI;
 using ColorBlockJam.Tests.EditMode.Helpers;
@@ -25,6 +26,12 @@ namespace ColorBlockJam.Tests.EditMode
         SettingsPopupView _settingsPopup;
         Button _closeButton;
         SettingToggleView[] _toggles;
+        LivesRig _lives;
+        LivesBarView _livesBar;
+        OutOfLivesPopupView _livesPopup;
+        Button _plusButton;
+        Button _refillButton;
+        Button _livesCloseButton;
 
         [SetUp]
         public void SetUp()
@@ -41,13 +48,77 @@ namespace ColorBlockJam.Tests.EditMode
             _settings.Load();
             _view = _views.CreateHomeView(out _levelButton, out _settingsButton);
             _settingsPopup = _views.CreateSettingsPopup(_bus, _settings, out _closeButton, out _toggles);
+            _lives = new LivesRig(_bus, _wallet);
+            _livesBar = _views.CreateLivesBar(_bus, out _plusButton);
+            _livesPopup = _views.CreateOutOfLivesPopup(_bus, out _refillButton, out _livesCloseButton);
         }
 
         [TearDown]
-        public void TearDown() => _views.Dispose();
+        public void TearDown()
+        {
+            _views.Dispose();
+            _lives.Dispose();
+        }
 
         HomeFlow CreateFlow() =>
-            new(_view, _settingsPopup, _popups, _progress, _wallet, _settings, _navigation);
+            new(_view, _settingsPopup, _popups, _progress, _wallet, _settings, _navigation, _lives.Lives, _livesBar,
+                _livesPopup);
+
+        [Test]
+        public void Start_ShouldShowFullLives_WhenNoLifeIsMissing()
+        {
+            using HomeFlow flow = CreateFlow();
+
+            flow.Start();
+
+            Assert.That(_livesBar.CountText, Is.EqualTo("5"));
+            Assert.That(_livesBar.StatusText, Is.EqualTo("Full"));
+        }
+
+        [Test]
+        public void Play_ShouldOpenTheLivesPopupInsteadOfTheLevel_WhenNoLivesAreLeft()
+        {
+            _lives.LoseAll();
+            using HomeFlow flow = CreateFlow();
+            flow.Start();
+
+            _levelButton.onClick.Invoke();
+
+            Assert.That(_navigation.Requests, Is.Empty);
+            Assert.That(_popups.Current, Is.SameAs(_livesPopup));
+            Assert.That(_livesPopup.CountText, Is.EqualTo("0"));
+            Assert.That(_livesPopup.TitleText, Is.EqualTo("Out of Lives"));
+            Assert.That(_livesPopup.TimerText, Is.EqualTo("Next life in 30:00"));
+        }
+
+        [Test]
+        public void Refill_ShouldFillTheLivesForCoinsAndClose_WhenThePlayerCanPay()
+        {
+            _lives.LoseAll();
+            _wallet.Add(_lives.Lives.RefillPrice);
+            using HomeFlow flow = CreateFlow();
+            flow.Start();
+            _plusButton.onClick.Invoke();
+
+            _refillButton.onClick.Invoke();
+
+            Assert.That(_lives.Lives.Count, Is.EqualTo(5));
+            Assert.That(_wallet.Coins, Is.Zero);
+            Assert.That(_popups.Current, Is.Null);
+            Assert.That(_livesBar.StatusText, Is.EqualTo("Full"));
+        }
+
+        [Test]
+        public void LivesPopup_ShouldNotLetThePlayerRefill_WhenTheCoinsAreShort()
+        {
+            _lives.LoseAll();
+            using HomeFlow flow = CreateFlow();
+            flow.Start();
+
+            _levelButton.onClick.Invoke();
+
+            Assert.That(_livesPopup.CanRefill, Is.False);
+        }
 
         [Test]
         public void Start_ShouldShowTheLevelPathAndTheBalance_WhenSceneStarts()

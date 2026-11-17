@@ -13,6 +13,7 @@ using ColorBlockJam.Game.Gameplay.Session;
 using ColorBlockJam.Game.Gameplay.Signals;
 using ColorBlockJam.Game.Gameplay.View;
 using ColorBlockJam.Game.Home;
+using ColorBlockJam.Game.Lives;
 using ColorBlockJam.Game.Scopes;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -28,7 +29,8 @@ namespace ColorBlockJam.Tests.PlayMode
     /// </summary>
     public sealed class RestartResetsStateTests
     {
-        static readonly string[] SavedKeys = { PlayerProgressService.StorageKey, WalletService.StorageKey };
+        static readonly string[] SavedKeys =
+            { PlayerProgressService.StorageKey, WalletService.StorageKey, LivesService.StorageKey };
         readonly string[] _saved = new string[SavedKeys.Length];
 
         [SetUp]
@@ -82,6 +84,16 @@ namespace ColorBlockJam.Tests.PlayMode
             return text.ToString();
         }
 
+        /// <summary>
+        /// Each restart of a started attempt costs a life (DA-38); ten in a row would run out, so the lives start
+        /// full every round. The saved lives are put back in TearDown.
+        /// </summary>
+        static void FillLives()
+        {
+            PlayerPrefs.DeleteKey(LivesService.StorageKey);
+            Gameplay().Resolve<LivesService>().Load();
+        }
+
         /// <summary>Drags the first block one cell to the right with the real input, starting the timer.</summary>
         static void DragFirstBlock()
         {
@@ -110,6 +122,7 @@ namespace ColorBlockJam.Tests.PlayMode
 
             for (int attempt = 0; attempt < 10; attempt++)
             {
+                FillLives();
                 DragFirstBlock();
                 yield return WaitRealtime(0.4f);
                 Assert.That(Snapshot(), Is.Not.EqualTo(fresh), "The attempt changed something to restart from.");
@@ -175,6 +188,8 @@ namespace ColorBlockJam.Tests.PlayMode
                 bus.Fire(new LevelCompletedSignal(level));
                 bus.Fire(new LevelFailedSignal(level));
                 bus.Fire(new CoinsChangedSignal(coins, 0));
+                // A gameplay popup that was never opened must not keep listening either (lives.md).
+                bus.Fire(new LivesChangedSignal(4, 5, 60));
             });
             yield return WaitRealtime(1.5f);
 

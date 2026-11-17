@@ -80,11 +80,14 @@ namespace ColorBlockJam.Game.Scopes
             builder.RegisterComponentInNewPrefab(_popupConfig.OutOfTimePopup, Lifetime.Scoped).UnderTransform(_popupLayer);
             builder.RegisterComponentInNewPrefab(_popupConfig.LevelFailedPopup, Lifetime.Scoped).UnderTransform(_popupLayer);
             builder.RegisterComponentInNewPrefab(_popupConfig.BoosterPurchasePopup, Lifetime.Scoped).UnderTransform(_popupLayer);
+            builder.RegisterComponentInNewPrefab(_popupConfig.OutOfLivesPopup, Lifetime.Scoped).UnderTransform(_popupLayer);
+            builder.RegisterComponentInNewPrefab(_popupConfig.LeaveLevelPopup, Lifetime.Scoped).UnderTransform(_popupLayer);
 
             // Flows that only listen; they need the scene's popups, so the scope registers them, not the installer.
             builder.Register<WinFlow>(Lifetime.Singleton);
             builder.Register<FailFlow>(Lifetime.Singleton);
             builder.Register<BoosterFlow>(Lifetime.Singleton);
+            builder.Register<GameplayLivesFlow>(Lifetime.Singleton);
 
             // Listen to board signals without being entry points: build them before any entry point starts.
             builder.RegisterBuildCallback(resolver =>
@@ -98,6 +101,8 @@ namespace ColorBlockJam.Game.Scopes
                 resolver.Resolve<FailFlow>();
                 resolver.Resolve<BoosterService>();
                 resolver.Resolve<BoosterFlow>();
+                resolver.Resolve<LevelAttemptLives>();
+                resolver.Resolve<GameplayLivesFlow>();
             });
 
             builder.RegisterEntryPoint<GameplayFlow>();

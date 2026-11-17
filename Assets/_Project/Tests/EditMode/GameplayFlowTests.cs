@@ -28,6 +28,9 @@ namespace ColorBlockJam.Tests.EditMode
         ActiveBoard _activeBoard;
         LevelSession _session;
         BoosterRig _boosters;
+        LivesRig _lives;
+        LevelAttemptLives _attempt;
+        GameplayLivesFlow _livesFlow;
         SettingsService _settings;
         Button _restartButton;
         Button _pauseButton;
@@ -35,6 +38,9 @@ namespace ColorBlockJam.Tests.EditMode
         Button _homeButton;
         SettingToggleView[] _toggles;
         PausePopupView _pausePopup;
+        LeaveLevelPopupView _leavePopup;
+        Button _leaveButton;
+        Button _stayButton;
 
         [SetUp]
         public void SetUp()
@@ -50,6 +56,8 @@ namespace ColorBlockJam.Tests.EditMode
             _activeBoard = new ActiveBoard(new BoardSpace(1f), _bus);
             _session = new LevelSession(_activeBoard, levels, _bus);
             _boosters = new BoosterRig(_activeBoard, _session, _bus);
+            _lives = new LivesRig(_bus);
+            _attempt = new LevelAttemptLives(_lives.Lives, _bus);
             _settings = new SettingsService(new InMemoryKeyValueStorage(), new RecordingLogger(), _bus);
             _settings.Load();
         }
@@ -58,6 +66,9 @@ namespace ColorBlockJam.Tests.EditMode
         public void TearDown()
         {
             _boosters.Dispose();
+            _livesFlow?.Dispose();
+            _attempt.Dispose();
+            _lives.Dispose();
             _session.Dispose();
             _views.Dispose();
             _catalogs.Dispose();
@@ -79,8 +90,11 @@ namespace ColorBlockJam.Tests.EditMode
             // The HUD listens on its own bus so these tests observe the flow, not the HUD's reveal.
             var hud = _views.CreateHud(new SignalBus(), wallet, out _restartButton, out _pauseButton);
             _pausePopup = _views.CreatePausePopup(_bus, _settings, out _closeButton, out _homeButton, out _toggles);
+            _livesFlow = new GameplayLivesFlow(_lives.Lives, _lives.Wallet,
+                _views.CreateOutOfLivesPopup(_bus, out _, out _), _popups, _session, _navigation);
+            _leavePopup = _views.CreateLeaveLevelPopup(out _leaveButton, out _stayButton);
             return new GameplayFlow(CreateProgressAtLevel(level), _session, hud, _pausePopup, _popups, _settings, _navigation,
-                _boosters.Service);
+                _boosters.Service, _attempt, _livesFlow, _leavePopup);
         }
 
         [Test]
@@ -173,6 +187,50 @@ namespace ColorBlockJam.Tests.EditMode
             _homeButton.onClick.Invoke();
 
             Assert.That(_navigation.Requests, Is.EqualTo(new[] { SceneId.Home }));
+        }
+
+        [Test]
+        public void PausePopupHome_ShouldAskFirst_WhenLeavingWouldCostALife()
+        {
+            CreateFlow(1).Start();
+            _bus.Fire(new BlockGrabbedSignal(0));
+            _pauseButton.onClick.Invoke();
+
+            _homeButton.onClick.Invoke();
+
+            Assert.That(_navigation.Requests, Is.Empty);
+            Assert.That(_popups.Current, Is.SameAs(_leavePopup));
+            Assert.That(_lives.Lives.Count, Is.EqualTo(5), "Nothing is taken before the player confirms.");
+        }
+
+        [Test]
+        public void LeavePopup_ShouldTakeTheLifeAndGoHome_WhenConfirmed()
+        {
+            CreateFlow(1).Start();
+            _bus.Fire(new BlockGrabbedSignal(0));
+            _pauseButton.onClick.Invoke();
+            _homeButton.onClick.Invoke();
+
+            _leaveButton.onClick.Invoke();
+
+            Assert.That(_lives.Lives.Count, Is.EqualTo(4));
+            Assert.That(_navigation.Requests, Is.EqualTo(new[] { SceneId.Home }));
+        }
+
+        [Test]
+        public void LeavePopup_ShouldGoBackToThePausePopup_WhenThePlayerStays()
+        {
+            CreateFlow(1).Start();
+            _bus.Fire(new BlockGrabbedSignal(0));
+            _pauseButton.onClick.Invoke();
+            _homeButton.onClick.Invoke();
+
+            _stayButton.onClick.Invoke();
+
+            Assert.That(_popups.Current, Is.SameAs(_pausePopup));
+            Assert.That(_session.State, Is.EqualTo(LevelState.Paused));
+            Assert.That(_lives.Lives.Count, Is.EqualTo(5));
+            Assert.That(_navigation.Requests, Is.Empty);
         }
 
         [Test]

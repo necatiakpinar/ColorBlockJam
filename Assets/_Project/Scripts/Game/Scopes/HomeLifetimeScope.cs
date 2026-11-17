@@ -13,6 +13,9 @@ namespace ColorBlockJam.Game.Scopes
         HomeView _homeView;
 
         [SerializeField]
+        LivesBarView _livesBarView;
+
+        [SerializeField]
         HomePopupConfig _popupConfig;
 
         [Tooltip("Full-screen layer above the Home canvas content that the popup prefabs are created under.")]
@@ -24,7 +27,9 @@ namespace ColorBlockJam.Game.Scopes
             new HomeInstaller().Install(builder);
 
             builder.RegisterComponent(_homeView);
+            builder.RegisterComponent(_livesBarView);
             builder.RegisterComponentInNewPrefab(_popupConfig.SettingsPopup, Lifetime.Scoped).UnderTransform(_popupLayer);
+            builder.RegisterComponentInNewPrefab(_popupConfig.OutOfLivesPopup, Lifetime.Scoped).UnderTransform(_popupLayer);
 
             builder.RegisterEntryPoint<HomeFlow>();
         }

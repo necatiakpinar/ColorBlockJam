@@ -17,3 +17,5 @@ MonoBehaviour:
   _outOfTimePopup: {fileID: 8590823045028497426, guid: 4c9ce249656e4924698922b42ae052ba, type: 3}
   _levelFailedPopup: {fileID: 5650790499462278772, guid: 0cc23b587d0cb174d8e22b2056686d0c, type: 3}
   _boosterPurchasePopup: {fileID: 2946924015867068379, guid: b1e05ecc003c08242bb96839a7fcf8a8, type: 3}
+  _outOfLivesPopup: {fileID: 2333152101242731821, guid: 7b68b2e254ee8e5428140a975b946769, type: 3}
+  _leaveLevelPopup: {fileID: 4328286982899180037, guid: 8f385f17f70a26e46a9426c7632bd6cd, type: 3}
