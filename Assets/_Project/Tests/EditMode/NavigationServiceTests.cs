@@ -79,6 +79,8 @@ namespace ColorBlockJam.Tests.EditMode
             _navigation.GoToHomeAsync().Forget();
 
             Assert.That(failed.Status, Is.EqualTo(UniTaskStatus.Faulted));
+            // Reading the fault observes it; left unread, UniTask reports it from the finalizer in a later test.
+            Assert.Throws<InvalidOperationException>(() => failed.GetAwaiter().GetResult());
             Assert.That(_loader.Loads, Is.EqualTo(new[] { SceneId.Gameplay, SceneId.Home }));
         }
     }
