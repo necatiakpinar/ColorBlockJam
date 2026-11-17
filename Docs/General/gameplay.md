@@ -196,8 +196,8 @@ Failed --Continue(s)--> Playing
 - **Progression:** `LevelProgression` (plain class, built by the scope's build callback) advances
   `IPlayerProgressService` on `LevelCompletedSignal`, before anything presents the win (T-17). The
   catalog loops (DA-8): after the last level the next number plays the first layout again.
-- The flows only route (§7): the win popup's Continue plays the next level through `LevelSession.Next`
-  with the already advanced level number.
+- The flows only route (§7): after the win popup's Continue the game goes Home, whose level button plays
+  the already advanced level number.
 
 ### Timer
 
@@ -231,7 +231,17 @@ own every change:
   `ISettingsService`, Home leaves for Home, close resumes (T-19).
 - **`WinFlow`** opens the win popup `GameplayConfig.WinPopupDelay` (1 s, through `IGameClock`) after
   `LevelCompletedSignal`, so the last block is seen leaving, with the reward the win already paid.
-  Continue plays the next level with `LevelSession.Next` (T-21, DA-12).
+  The win flow runs in this order (T-21, T-51, DA-12):
+  1. **At the win** the HUD coin counter keeps the balance from before the reward (`ICoinFlight.HoldCounter`).
+     The wallet has already paid it in the same signal.
+  2. **Continue** closes the popup. `CoinFlightView` flies one coin from each coin of the popup's pile to the
+     counter's coin icon (`CoinFlightAnimation`).
+  3. **Each landing** adds its share of the reward to the counter, swells the icon (`PunchScaleAnimation`) and
+     plays a pooled sparkle burst (`SparkleBurstView`).
+  4. **Home.** `CoinFlightSettings.HomeDelay` after the last coin lands, the game goes Home.
+
+  An invisible blocker takes every tap while the coins fly. The burst is UI images, not a particle system:
+  particle systems do not draw over the screen-space overlay HUD canvas.
 - **Lives** ([lives.md](lives.md)): HUD restart, pause → Home and giving up cost a started attempt's life
   through `LevelAttemptLives`; restart and Retry play again through `GameplayLivesFlow`, which needs a life
   and otherwise offers a refill (DA-38).

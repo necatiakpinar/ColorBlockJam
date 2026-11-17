@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using ColorBlockJam.Game.UI;
 using TMPro;
 using UnityEngine;
@@ -7,7 +8,10 @@ using VContainer;
 
 namespace ColorBlockJam.Game.Gameplay.Popups
 {
-    /// <summary>"Level complete" with the coins the win paid (already in the wallet) and Continue (T-21, DA-12).</summary>
+    /// <summary>
+    /// "Level complete" with the coins the win paid (already in the wallet) and Continue (T-21, DA-12). Its coin
+    /// pile is where the flying coins start when Continue is tapped (T-51).
+    /// </summary>
     public sealed class WinPopupView : PopupView
     {
         const string RewardFormat = "+{0}";
@@ -18,9 +22,15 @@ namespace ColorBlockJam.Game.Gameplay.Popups
         [SerializeField]
         Button _continueButton;
 
+        [Tooltip("The pile of coins above Continue; each one becomes a flying coin.")]
+        [SerializeField]
+        RectTransform[] _coinPile = Array.Empty<RectTransform>();
+
         public event Action ContinueClicked;
 
         public string RewardText => _rewardLabel.text;
+
+        public IReadOnlyList<RectTransform> CoinPile => _coinPile;
 
         [Inject]
         public void Construct() => _continueButton.onClick.AddListener(OnContinueClicked);

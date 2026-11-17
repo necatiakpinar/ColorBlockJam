@@ -46,6 +46,9 @@ namespace ColorBlockJam.Game.Gameplay.Hud
         GameplayConfig _config;
         IWalletService _wallet;
         Sequence _revealSequence;
+        // After a win the counter shows the coins as they fly in, not the paid balance at once (T-51).
+        bool _holdingCoins;
+        int _shownCoins;
         // mm:ss written in place, so a tick allocates nothing on device (in the editor TMP mirrors it into a string).
         readonly char[] _timerChars = new char[5];
 
@@ -69,9 +72,25 @@ namespace ColorBlockJam.Game.Gameplay.Hud
         public string TimerLabelText => _timerLabel.text;
         public string CoinLabelText => _coins.Text;
 
+        /// <summary>Shows <paramref name="coins"/> and ignores balance changes until the next level starts.</summary>
+        public void HoldCoins(int coins)
+        {
+            _holdingCoins = true;
+            _shownCoins = coins;
+            _coins.Show(coins);
+        }
+
+        /// <summary>Counts <paramref name="coins"/> more onto the held counter, as a flying coin lands.</summary>
+        public void AddHeldCoins(int coins)
+        {
+            _shownCoins += coins;
+            _coins.Show(_shownCoins);
+        }
+
         void OnLevelStarted(LevelStartedSignal signal)
         {
             _levelLabel.SetText("{0}", signal.LevelNumber);
+            _holdingCoins = false;
             _coins.Show(_wallet.Coins);
 
             _revealSequence?.Kill();
@@ -91,7 +110,11 @@ namespace ColorBlockJam.Game.Gameplay.Hud
             _timerLabel.SetCharArray(_timerChars, 0, _timerChars.Length);
         }
 
-        void OnCoinsChanged(CoinsChangedSignal signal) => _coins.Show(signal.Coins);
+        void OnCoinsChanged(CoinsChangedSignal signal)
+        {
+            if (!_holdingCoins)
+                _coins.Show(signal.Coins);
+        }
 
         void OnRestartClicked() => RestartClicked?.Invoke();
 

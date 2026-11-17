@@ -58,5 +58,33 @@ namespace ColorBlockJam.Tests.EditMode
 
             Assert.That(_hud.CoinLabelText, Is.EqualTo(expected));
         }
+
+        [Test]
+        public void Coins_ShouldWaitForTheFlyingCoins_WhenHeldAfterAWin()
+        {
+            _wallet.Add(100);
+            _hud.HoldCoins(100);
+            _wallet.Add(25);
+            string whilePaid = _hud.CoinLabelText;
+
+            _hud.AddHeldCoins(10);
+            string afterOneCoin = _hud.CoinLabelText;
+            _hud.AddHeldCoins(15);
+
+            Assert.That(whilePaid, Is.EqualTo("100"), "The paid reward does not jump onto the counter.");
+            Assert.That(afterOneCoin, Is.EqualTo("110"));
+            Assert.That(_hud.CoinLabelText, Is.EqualTo("125"));
+        }
+
+        [Test]
+        public void Coins_ShouldFollowTheWalletAgain_WhenTheNextLevelStarts()
+        {
+            _hud.HoldCoins(0);
+
+            _bus.Fire(new LevelStartedSignal(2));
+            _wallet.Add(40);
+
+            Assert.That(_hud.CoinLabelText, Is.EqualTo("40"));
+        }
     }
 }

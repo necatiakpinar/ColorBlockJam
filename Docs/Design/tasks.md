@@ -67,6 +67,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - [x] [T-48 Lives](#t-48-lives)
 - [x] [T-49 Twenty levels and the level hardener](#t-49-twenty-levels-and-the-level-hardener)
 - [x] [T-50 Level packs (JSON, remote-ready)](#t-50-level-packs-json-remote-ready)
+- [x] [T-51 Coin flight on a win](#t-51-coin-flight-on-a-win)
 
 ---
 
@@ -515,7 +516,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
   (`Btn_popup_green`). Opens on `LevelCompletedSignal` after the last exit animation.
   - [x] `WinFlow` opens it `WinPopupDelay` after the win; Continue replaces the timed next level (DA-23
     withdrawn).
-- **Accept:** shows the reward already credited; Continue loads the next level number.
+- **Accept:** shows the reward already credited; Continue moves on to the next level number (through Home since T-51).
 - **Tests:** `EM LevelResultFlowTests`, `PM LevelProgressionFlowTests`, `PM CoinPersistenceTests`.
 - **Docs:** `ui.md`; `gameplay-qa.md`.
 
@@ -859,3 +860,21 @@ and (T-33) the solver from `ColorBlockJam.Game`, so the editor never has its own
 - **Tests:** `EM LevelPackJsonTests`, `LevelPackServiceTests`, `LevelCatalogEditingTests`,
   `ShippedLevelsTests`, `InstallerResolutionTests`.
 - **Docs:** level-packs.md, level-data.md, persistence.md, splash-boot.md, architecture.md.
+
+### T-51 Coin flight on a win
+
+- **Req:** R-53. Implements DA-12 (as confirmed).
+- **Arch:**
+  - `WinFlow` holds the HUD counter at the win. On Continue it closes the popup, awaits `ICoinFlight.FlyAsync`,
+    then goes Home through `INavigationService`.
+  - `CoinFlightView` sits on the top layer of the HUD canvas. It pools `FlyingCoin.prefab` and
+    `CoinSparkle.prefab` and plays `CoinFlightAnimation`, `SparkleBurstAnimation` and `PunchScaleAnimation`;
+    tunables are in `GameplayConfig.CoinFlight`.
+  - The sparkle and glow sprites (`fx_sparkle`, `fx_glow`) are drawn by the project.
+- **Accept:**
+  - The counter does not jump at the win.
+  - Every pile coin flies to the counter and its landing counts in, swells the icon and sparkles.
+  - Home then shows the next level, and its button plays it.
+- **Tests:** `EM LevelResultFlowTests`, `GameplayHudViewTests`, `ArchitectureTests` (scene wiring);
+  `PM LevelProgressionFlowTests`, `CoinPersistenceTests`.
+- **Docs:** gameplay.md §7, ui.md, DA-12, gameplay-qa.md.

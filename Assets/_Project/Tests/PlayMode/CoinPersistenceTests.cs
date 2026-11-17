@@ -76,9 +76,8 @@ namespace ColorBlockJam.Tests.PlayMode
             container.Resolve<SignalBus>().Fire(new BoardClearedSignal());
             int afterWin = wallet.Coins;
             yield return WaitRealtime(container.Resolve<GameplayConfig>().WinPopupDelay + 0.2f);
+            // Continue flies the coins and goes Home (T-51).
             SceneTestUtility.TapButton<WinPopupView>("ContinueButton");
-
-            GoHome();
             yield return SceneTestUtility.WaitForScene(SceneTestUtility.HomeScene);
             SceneTestUtility.TapButton<HomeView>("LevelButton");
             yield return SceneTestUtility.WaitForScene(SceneTestUtility.GameplayScene);

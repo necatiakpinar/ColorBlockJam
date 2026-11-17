@@ -53,12 +53,12 @@ new fake.
 | `LevelCatalogEditingTests` | append, duplicate, move, delete and save level assets on a throw-away catalog; a save survives an undo rollback |
 | `LevelRewardTests` | coins by difficulty, a missing entry throws, the shipped table rises with difficulty, a win pays its layout's reward (also when looped), a loss or a disposed service pays nothing |
 | `GameplayFlowTests` | start, HUD restart, pause opens the settings popup only while playing, close resumes, switches flip settings, Home, nothing after dispose (`RecordingPopupService`) |
-| `LevelResultFlowTests` | win popup after the delay with the reward, Continue plays the next level; out-of-time offer, buying time, giving up, Retry, Home |
+| `LevelResultFlowTests` | win popup after the delay with the reward; the counter held at the old balance; Continue flies the coins once, then goes Home; out-of-time offer, buying time, giving up, Retry, Home |
 | `GameplayDebugCommandsTests` | the debug shortcuts: win, run out of time, refused when not playing, timer, coins, boosters, jump to a level |
 | `PopupPrefabTests` | both settings popups are variants of the base prefab; the popup configs list every prefab; prefabs start hidden and full-screen; every popup button gives press feedback; every popup text auto-sizes |
 | `LevelContinueTests` | spending coins, buying more time on the same board, failing again when it runs out, nothing without coins or outside a loss |
 | `LevelTimerTests` | full time on start, counting only from the first grab, one signal per second, stands still while paused or in the background, fails once at zero, stops on a win, full again on restart, stops when disposed (`FakeGameClock`) |
-| `GameplayHudViewTests` | the timer label reads `mm:ss` |
+| `GameplayHudViewTests` | the timer label reads `mm:ss`; the coin counter follows the wallet, or, held after a win, counts the flying coins in until the next level |
 | `LevelSessionTests` | the attempt's transition table, refused transitions, signal order, restart equal to a fresh start |
 | `GameplayHapticsTests` | an exit taps light, nothing after dispose (`RecordingHaptics`) |
 | `ExitPathTests` | a leaving block's wall, length, door span, edge and door centre |
@@ -85,7 +85,7 @@ new fake.
 | `DragAllocationTests` (PlayMode) | 200 one-cell drags in the real Gameplay scene allocate 0 B after a warm-up ([performance.md](performance.md)) |
 | `IceBlockerViewTests` (PlayMode) | a frozen block shows its ice count, counts down as others leave and thaws |
 | `BoosterFlowTests` (PlayMode) | through the real HUD and input: the hammer smashes a tapped block, the rocket rebuilds a block without its cell, the freeze holds the timer and shows the ice, an empty booster offers one for coins and plays on (restores saves) |
-| `LevelProgressionFlowTests` (PlayMode) | a full lap of wins: each starts the next level and the last loops to the first layout (restores saved progress) |
+| `LevelProgressionFlowTests` (PlayMode) | a win holds the counter, Continue flies the coins and goes Home, which offers and plays the next level (restores saved progress) |
 | `CoinPersistenceTests` (PlayMode) | a win pays its reward once; the balance survives going Home and back, with or without a win (restores the saves) |
 | `RestartResetsStateTests` (PlayMode) | ten restarts leave the board, block views, timer, coins, state and object count of a fresh start; Home after a loss gives the same level fresh; no gameplay listener survives going Home (restores the saves) |
 | `HomeScreenTests` (PlayMode) | Home shows the current level on the path and the button; the settings popup opens and closes |

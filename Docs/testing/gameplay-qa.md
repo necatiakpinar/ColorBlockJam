@@ -19,7 +19,8 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 - [x] ⚙ Coins stay the same after going Home and coming back — `CoinPersistenceTests`
 - [ ] 👁 Kill the app after a win and open it again: the balance is the same.
 - [x] ⚙ Pause opens the settings popup, the switches remember their state, close resumes — `GameplayFlowTests`, `GameplayPopupTests`
-- [x] ⚙ A win opens the win popup with the reward; Continue plays the next level — `LevelResultFlowTests`, `LevelProgressionFlowTests`
+- [x] ⚙ A win opens the win popup with the reward; Continue flies the coins to the counter and goes Home — `LevelResultFlowTests`, `LevelProgressionFlowTests`
+- [ ] 👁 The coins burst out of the popup's pile and arc to the coin counter one after another; each landing swells the counter, sparkles and counts it up; then Home shows the next level.
 - [x] ⚙ Out of time sells 20 s for 50 coins; giving up shows Level Failed; Retry restarts, close goes Home — `LevelResultFlowTests`, `LevelContinueTests`, `GameplayPopupTests`
 - [ ] 👁 Compare the HUD and the four popups with the reference screens at 1080x1920 and 20:9. Open them
   with the debug window ([debug-tools.md](../General/debug-tools.md)): **Win now**, **Run out of time**,
@@ -29,7 +30,7 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 - [x] ⚙ Ten restarts in a row leave the same board, timer, coins and objects as a fresh start — `RestartResetsStateTests.Restart_ShouldLeaveTheSameStateAsAFreshStart_WhenRepeatedTenTimes`
 - [x] ⚙ Going Home after a loss and back gives the same level, fresh — `RestartResetsStateTests.Home_ShouldGiveTheSameLevelAndAFreshAttempt_WhenLeftAfterALoss`
 - [x] ⚙ No gameplay listener survives going Home — `RestartResetsStateTests.SceneUnload_ShouldLeaveNoGameplayListener_WhenGoingHome`
-- [x] ⚙ Winning starts the next level; after the last level the first layout comes back — `LevelProgressionFlowTests`
+- [x] ⚙ Winning moves on to the next level, played from Home; after the last level the first layout comes back — `LevelProgressionFlowTests`, `LevelProviderTests`
 - [x] ⚙ All twenty shipped levels are valid and solvable; 1–8 ramp up, then groups of six with a breather and a rising peak; level 6 has two frozen blocks, levels 7 and 8 arrow blocks — `ShippedLevelsTests`
 - [ ] 👁 Play levels 14 and 20 by hand: they need blocks moved around in the right order before most can leave, and the timer leaves room to think.
 - [x] 👁 Play levels 1 to 5 by hand (developer, 2026-11-17): each one is a little harder than the one before, and each finishes well inside its timer.

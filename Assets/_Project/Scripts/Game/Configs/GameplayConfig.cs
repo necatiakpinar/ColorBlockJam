@@ -15,6 +15,10 @@ namespace ColorBlockJam.Game.Configs
         [SerializeField, Min(0f)]
         float _winPopupDelay = 1f;
 
+        [Tooltip("The won coins' flight to the counter after Continue (T-51).")]
+        [SerializeField]
+        CoinFlightSettings _coinFlight = new();
+
         [Header("Out of time")]
         [Tooltip("Seconds a continue adds to a lost level's timer (DA-30).")]
         [SerializeField, Min(1)]
@@ -52,6 +56,7 @@ namespace ColorBlockJam.Game.Configs
         public float BoosterDimAlpha => _boosterDimAlpha;
         public float BoosterFadeDuration => _boosterFadeDuration;
         public float WinPopupDelay => _winPopupDelay;
+        public CoinFlightSettings CoinFlight => _coinFlight;
         public int ContinueSeconds => _continueSeconds;
         public int ContinueCost => _continueCost;
         public HapticImpact ExitHaptic => _exitHaptic;

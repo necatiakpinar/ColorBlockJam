@@ -43,6 +43,10 @@ namespace ColorBlockJam.Game.Scopes
         [SerializeField]
         BoardCameraView _boardCameraView;
 
+        [Tooltip("The won coins' flight to the HUD counter (T-51).")]
+        [SerializeField]
+        CoinFlightView _coinFlight;
+
         [Tooltip("Full-screen layer above the HUD that the popup prefabs are created under.")]
         [SerializeField]
         Transform _popupLayer;
@@ -64,6 +68,7 @@ namespace ColorBlockJam.Game.Scopes
             builder.RegisterComponent(_boardView);
             builder.RegisterComponent(_blockLayerView);
             builder.RegisterComponent(_boardCameraView);
+            builder.RegisterComponent(_coinFlight).As<ICoinFlight>();
             // Popups come from their prefabs (GameplayPopupConfig), created under the popup layer and injected.
             builder.RegisterComponentInNewPrefab(popups.PausePopup, Lifetime.Scoped).UnderTransform(_popupLayer);
             builder.RegisterComponentInNewPrefab(popups.WinPopup, Lifetime.Scoped).UnderTransform(_popupLayer);

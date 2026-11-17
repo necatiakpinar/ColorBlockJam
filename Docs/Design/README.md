@@ -76,6 +76,7 @@ requirement keeps its id and is marked `Dropped`.
 | R-50 | Lives: a lost life refills on a casual-game timer read from trusted time, and coins refill them at once | must (developer, 2026-11-17) | T-48 |
 | R-51 | 20 shipped levels on a mixed difficulty curve; the hard ones are real puzzles that make the player move blocks around in the right order | must (developer, 2026-11-17; first asked for 50, then 20) | T-49 |
 | R-52 | Levels can be changed later from remote config without an app update: they ship as JSON, and a remote pack is checked before it plays | must (developer, 2026-11-17) | T-50 |
+| R-53 | Winning flies the reward's coins to the coin counter with a sparkle effect, then returns Home, where the next level starts | must (developer, 2026-11-17) | T-51 |
 
 ## 2. Scope decisions
 
@@ -153,7 +154,7 @@ task is marked `Dropped`, never deleted. Detail per task: [tasks.md](tasks.md).
 | T-18 | 5 | Gameplay HUD | Level, timer, coins, pause, boosters and lives shown and updating | T-05, T-15, T-16 | Done |
 | T-19 | 5 | Pause popup | Pause freezes timer and input; resume, restart, home work | T-18 | Done |
 | T-20 | 5 | Fail popup | Opens on timeout; restart and home work | T-18 | Done |
-| T-21 | 5 | Win popup | Shows the reward; Continue loads the next level | T-18, T-17 | Done |
+| T-21 | 5 | Win popup | Shows the reward; Continue moves on to the next level (since T-51 through Home) | T-18, T-17 | Done |
 | T-22 | 5 | Restart and home correctness | No state leaks across attempts; Play Mode tests prove it | T-19–T-21 | Done |
 | T-23 | 6 | Home screen layout | Top UI, level button, tab bar match the assets at 1080x1920 and 20:9 | T-05 | Done |
 | T-24 | 6 | Home behaviors | Level button plays the current level; settings opens Settings | T-23, T-04 | Done |
@@ -183,5 +184,6 @@ task is marked `Dropped`, never deleted. Detail per task: [tasks.md](tasks.md).
 | T-48 | 8 | Lives | Abandoned attempts cost a life; lives refill every 30 min of trusted time; no lives offers a coin refill | T-44, T-07 | Done |
 | T-49 | 8 | Twenty levels and the level hardener | 20 catalog levels, valid and solvable, on a saw-tooth curve whose peaks need many room-making moves; the editor can harden a level | T-47, T-34, T-35 | Done |
 | T-50 | 8 | Level packs (JSON, remote-ready) | The game plays levels.json; the editor writes it on every change; a remote pack is validated, stored and played from the next launch; bad or older packs fall back to the bundled one | T-49, T-07 | Done |
+| T-51 | 5 | Coin flight on a win | Continue flies the pile's coins to the HUD counter with sparkles, counting the reward in, then goes Home | T-21 | Done |
 
 Status values: `Todo`, `In progress`, `Blocked`, `Done`, `Dropped`.

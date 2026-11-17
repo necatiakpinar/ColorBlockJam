@@ -34,6 +34,8 @@ namespace ColorBlockJam.Tests.EditMode
         GameplayConfig _config;
         LevelRewardConfig _rewardConfig;
         WinFlow _winFlow;
+        LevelRewardService _rewardService;
+        RecordingCoinFlight _coinFlight;
         FailFlow _failFlow;
         WinPopupView _winPopup;
         OutOfTimePopupView _outOfTime;
@@ -75,8 +77,11 @@ namespace ColorBlockJam.Tests.EditMode
             _winPopup = _views.CreateWinPopup(out _continueAfterWin);
             _outOfTime = _views.CreateOutOfTimePopup(out _buyTime, out _giveUp);
             _levelFailed = _views.CreateLevelFailedPopup(out _retry, out _goHome);
-            _winFlow = new WinFlow(_bus, _popups, _winPopup, _session, _progress, levels,
-                new LevelRewardProvider(_rewardConfig), _config, _clock);
+            // As in the scope: the reward is paid before the win flow hears of the win.
+            _rewardService = new LevelRewardService(_bus, levels, new LevelRewardProvider(_rewardConfig), _wallet);
+            _coinFlight = new RecordingCoinFlight();
+            _winFlow = new WinFlow(_bus, _popups, _winPopup, levels, new LevelRewardProvider(_rewardConfig), _config, _clock,
+                _wallet, _coinFlight, _navigation);
             _lives = new LivesRig(_bus, _wallet);
             _attempt = new LevelAttemptLives(_lives.Lives, _bus);
             _livesPopup = _views.CreateOutOfLivesPopup(_bus, out _refill, out _livesClose);
@@ -90,6 +95,7 @@ namespace ColorBlockJam.Tests.EditMode
         public void TearDown()
         {
             _winFlow.Dispose();
+            _rewardService.Dispose();
             _failFlow.Dispose();
             _livesFlow.Dispose();
             _attempt.Dispose();
@@ -121,18 +127,44 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
-        public void WinContinue_ShouldCloseAndStartTheNextLevel_WhenTapped()
+        public void Win_ShouldHoldTheCounterAtTheBalanceBeforeTheReward_WhenTheLevelIsWon()
+        {
+            Win();
+
+            Assert.That(_wallet.Coins, Is.EqualTo(25), "The wallet is paid at once.");
+            Assert.That(_coinFlight.HeldAt, Is.EqualTo(0), "The counter waits for the coins to fly in.");
+        }
+
+        [Test]
+        public void WinContinue_ShouldFlyTheCoinsThenGoHome_WhenTapped()
         {
             Win();
             _clock.Advance(_config.WinPopupDelay);
-            int started = 0;
-            _bus.Subscribe<LevelStartedSignal>(signal => started = signal.LevelNumber);
 
             _continueAfterWin.onClick.Invoke();
+            bool homeBeforeLanding = _navigation.Requests.Count > 0;
+            _coinFlight.Land();
+            bool homeBeforeDelay = _navigation.Requests.Count > 0;
+            _clock.Advance(_config.CoinFlight.HomeDelay);
 
             Assert.That(_popups.IsOpen, Is.False);
-            Assert.That(started, Is.EqualTo(2));
-            Assert.That(_session.State, Is.EqualTo(LevelState.Playing));
+            Assert.That(_coinFlight.Flights, Is.EqualTo(new[] { 25 }));
+            Assert.That(homeBeforeLanding, Is.False, "Home waits for the coins.");
+            Assert.That(homeBeforeDelay, Is.False);
+            Assert.That(_navigation.Requests, Is.EqualTo(new[] { SceneId.Home }), "The next level starts from Home.");
+            Assert.That(_session.State, Is.EqualTo(LevelState.Won), "No level starts here.");
+        }
+
+        [Test]
+        public void WinContinue_ShouldFlyOnce_WhenTappedTwice()
+        {
+            Win();
+            _clock.Advance(_config.WinPopupDelay);
+
+            _continueAfterWin.onClick.Invoke();
+            _continueAfterWin.onClick.Invoke();
+
+            Assert.That(_coinFlight.Flights, Has.Count.EqualTo(1));
         }
 
         [Test]
