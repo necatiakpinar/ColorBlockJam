@@ -27,5 +27,13 @@ namespace ColorBlockJam.Core.Persistence
             Data.CurrentLevel++;
             _record.Save(_data);
         }
+
+        public void SetCurrentLevel(int level)
+        {
+            if (level < PlayerProgressData.FirstLevel)
+                throw new ArgumentOutOfRangeException(nameof(level), level, "Level numbers start at 1.");
+            Data.CurrentLevel = level;
+            _record.Save(_data);
+        }
     }
 }

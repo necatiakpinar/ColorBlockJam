@@ -2,8 +2,10 @@ using System.Collections;
 using NUnit.Framework;
 using ColorBlockJam.Core.Persistence;
 using ColorBlockJam.Core.Signals;
+using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Economy;
 using ColorBlockJam.Game.Gameplay.Hud;
+using ColorBlockJam.Game.Gameplay.Popups;
 using ColorBlockJam.Game.Home;
 using ColorBlockJam.Game.Gameplay.Session;
 using ColorBlockJam.Game.Gameplay.Signals;
@@ -43,6 +45,20 @@ namespace ColorBlockJam.Tests.PlayMode
             PlayerPrefs.Save();
         }
 
+        static IEnumerator WaitRealtime(float seconds)
+        {
+            float end = Time.realtimeSinceStartup + seconds;
+            while (Time.realtimeSinceStartup < end)
+                yield return null;
+        }
+
+        /// <summary>Home is reached through the pause popup.</summary>
+        static void GoHome()
+        {
+            SceneTestUtility.TapButton<GameplayHudView>("PauseButton");
+            SceneTestUtility.TapButton<PausePopupView>("HomeButton");
+        }
+
         static IObjectResolver GameplayContainer() =>
             SceneTestUtility.FindInActiveScene<GameplayLifetimeScope>().Container;
 
@@ -59,8 +75,10 @@ namespace ColorBlockJam.Tests.PlayMode
             container.Resolve<SignalBus>().Fire(new BoardClearedSignal());
             container.Resolve<SignalBus>().Fire(new BoardClearedSignal());
             int afterWin = wallet.Coins;
+            yield return WaitRealtime(container.Resolve<GameplayConfig>().WinPopupDelay + 0.2f);
+            SceneTestUtility.TapButton<WinPopupView>("ContinueButton");
 
-            SceneTestUtility.TapButton<GameplayHudView>("HomeButton");
+            GoHome();
             yield return SceneTestUtility.WaitForScene(SceneTestUtility.HomeScene);
             SceneTestUtility.TapButton<HomeView>("LevelButton");
             yield return SceneTestUtility.WaitForScene(SceneTestUtility.GameplayScene);
@@ -75,7 +93,7 @@ namespace ColorBlockJam.Tests.PlayMode
             yield return SceneTestUtility.BootToGameplay();
             int before = GameplayContainer().Resolve<IWalletService>().Coins;
 
-            SceneTestUtility.TapButton<GameplayHudView>("HomeButton");
+            GoHome();
             yield return SceneTestUtility.WaitForScene(SceneTestUtility.HomeScene);
             SceneTestUtility.TapButton<HomeView>("LevelButton");
             yield return SceneTestUtility.WaitForScene(SceneTestUtility.GameplayScene);

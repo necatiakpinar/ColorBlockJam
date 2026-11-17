@@ -170,6 +170,7 @@ Loading --Start(n)--> Playing --Pause--> Paused --Resume--> Playing
 Playing --(BoardClearedSignal)--> Won          Playing --Fail--> Failed
 Playing | Paused | Failed --Restart--> Playing
 Won --Next(n)--> Playing
+Failed --Continue(s)--> Playing
 ```
 
 | Transition | Signals |
@@ -178,16 +179,15 @@ Won --Next(n)--> Playing
 | `Pause` / `Resume` | `LevelPausedSignal` / `LevelResumedSignal` |
 | board cleared while playing | `LevelCompletedSignal` (once) |
 | `Fail` (the timer, T-15) | `LevelFailedSignal` (once) |
+| `Continue(s)` (after a loss, paid first) | `LevelContinuedSignal(s)`: the timer gets `s` more seconds, input comes back |
 
 - Restart rebuilds everything from the level's data, so nothing of the previous attempt stays (DA-15); a
   won level is not restarted, it moves on (T-17, T-21). A paused level cannot fail: its timer stands still.
 - **Progression:** `LevelProgression` (plain class, built by the scope's build callback) advances
   `IPlayerProgressService` on `LevelCompletedSignal`, before anything presents the win (T-17). The
   catalog loops (DA-8): after the last level the next number plays the first layout again.
-- `GameplayFlow` only starts the session and routes. Until the win popup (T-21), it starts the next level
-  itself `GameplayConfig.NextLevelDelay` (1 s) after a win, through `LevelSession.Next` with the already
-  advanced level number (DA-23). The pause, fail and win popups (T-19 – T-21) will call the session and
-  present its signals.
+- The flows only route (§7): the win popup's Continue plays the next level through `LevelSession.Next`
+  with the already advanced level number.
 
 ### Timer
 
@@ -208,7 +208,20 @@ Won --Next(n)--> Playing
   (`TMP_Text.SetCharArray`) so a tick allocates nothing on device. The label sits in the placeholder top
   bar until the HUD layout (T-18) puts it in the timer holder art.
 
-## 7. Navigation
+## 7. Popups and navigation
 
-`GameplayHudView` has a Home button that routes back to Home through `GameplayFlow` and
-`INavigationService`. It is a placeholder until the pause popup (T-19) owns the route.
+Three flows route the HUD and the popups ([ui.md](ui.md) §5); the session, the wallet and the settings
+own every change:
+
+- **`GameplayFlow`** (entry point) starts the level. HUD restart calls `LevelSession.Restart`. HUD pause
+  calls `LevelSession.Pause` and, if the level was playing, opens the pause popup: its switches flip
+  `ISettingsService`, Home leaves for Home, close resumes (T-19).
+- **`WinFlow`** opens the win popup `GameplayConfig.WinPopupDelay` (1 s, through `IGameClock`) after
+  `LevelCompletedSignal`, so the last block is seen leaving, with the reward the win already paid.
+  Continue plays the next level with `LevelSession.Next` (T-21, DA-12).
+- **`FailFlow`** opens the out-of-time popup on `LevelFailedSignal`. Continue buys
+  `GameplayConfig.ContinueSeconds` (20) for `ContinueCost` (50) coins through `LevelContinueService`:
+  the wallet pays first (`IWalletService.TrySpend`), then `LevelSession.Continue` plays on with the same
+  board and `LevelContinuedSignal` adds the seconds to the timer and gives input back. The button cannot
+  be pressed without the coins. Closing gives up and opens the level-failed popup: Retry restarts, close
+  goes Home (T-20, DA-30, DA-31).

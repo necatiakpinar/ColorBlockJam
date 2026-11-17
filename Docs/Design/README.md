@@ -137,14 +137,14 @@ task is marked `Dropped`, never deleted. Detail per task: [tasks.md](tasks.md).
 | T-15 | 4 | Countdown timer | Counts down, pauses, fails the level at 0 | T-14 | Done |
 | T-16 | 4 | Coin rewards | Win adds the reward once, before the popup; leaving never changes coins | T-07, T-14 | Done |
 | T-17 | 4 | Level progression and looping | Win advances the level; after level 5 the catalog loops | T-07, T-14 | Done |
-| T-18 | 5 | Gameplay HUD | Level, timer, coins, pause, boosters and lives shown and updating | T-05, T-15, T-16 | Todo |
-| T-19 | 5 | Pause popup | Pause freezes timer and input; resume, restart, home work | T-18 | Todo |
-| T-20 | 5 | Fail popup | Opens on timeout; restart and home work | T-18 | Todo |
-| T-21 | 5 | Win popup | Shows the reward; Continue loads the next level | T-18, T-17 | Todo |
+| T-18 | 5 | Gameplay HUD | Level, timer, coins, pause, boosters and lives shown and updating | T-05, T-15, T-16 | Done |
+| T-19 | 5 | Pause popup | Pause freezes timer and input; resume, restart, home work | T-18 | Done |
+| T-20 | 5 | Fail popup | Opens on timeout; restart and home work | T-18 | Done |
+| T-21 | 5 | Win popup | Shows the reward; Continue loads the next level | T-18, T-17 | Done |
 | T-22 | 5 | Restart and home correctness | No state leaks across attempts; Play Mode tests prove it | T-19–T-21 | Todo |
-| T-23 | 6 | Home screen layout | Top UI, level button, tab bar match the assets at 1080x1920 and 20:9 | T-05 | Todo |
-| T-24 | 6 | Home behaviors | Level button plays the current level; settings opens Settings | T-23, T-04 | Todo |
-| T-25 | 7 | Settings popup | Three toggles show on/off; buttons give feedback; close returns Home | T-05, T-07 | Todo |
+| T-23 | 6 | Home screen layout | Top UI, level button, tab bar match the assets at 1080x1920 and 20:9 | T-05 | Done |
+| T-24 | 6 | Home behaviors | Level button plays the current level; settings opens Settings | T-23, T-04 | Done |
+| T-25 | 7 | Settings popup | Three toggles show on/off; buttons give feedback; close returns Home | T-05, T-07 | Done |
 | T-26 | 8 | Level editor window and level list | Designer opens the editor, creates, duplicates, deletes, reorders levels | T-08 | Todo |
 | T-27 | 8 | Visual board canvas, size and timer | Board drawn as a grid; width, height and timer editable | T-26 | Todo |
 | T-28 | 8 | Block placement tools | Paint, colour, move, rotate, delete blocks on the canvas | T-27 | Todo |

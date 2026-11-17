@@ -58,6 +58,7 @@ top), otherwise a wall stretched over many cells opens a visible seam at the cor
 | `Wall_Corner3` | `corner_3` | 1 × 1 | L-shaped corner |
 | `Door_Segment` | `Door_1x1` | 1 × 0.5, along x | one per door, stretched over its cells, tinted by colour |
 | `Door_Arrow` | `Door_Arrow` | 0.2 | one per door, centred on its top, tip toward local -z (out of the board) |
+| UI `Btn_level_green` | — | 420 x 418 | nine-sliced (border 120) so the Home "Level N" button can be wide; square tiles use it as is |
 | `BlockPart_Center`, `_Edge`, `_OuterCorner` | `ModularBlock_*` | 0.5 × 0.5 quarter cell | pivot at the quarter's corner; four quarters make one cell |
 | `BlockPart_InnerCorner` | `ModularBlock_InnerCorner` | 1 × 1 centred | fills a concave corner between cells |
 | `Arrow_1`, `Arrow_2`, `Arrow_3` | `Arrow_*` | 0.45 × 0.8 / 1.75 / 2.71 | arrow over a 1-, 2- or 3-cell block |

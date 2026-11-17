@@ -11,10 +11,9 @@ namespace ColorBlockJam.Game.Configs
         [SerializeField]
         FadeScaleInSettings _hudReveal = new(0.35f, 0.9f, Ease.OutCubic);
 
-        [Tooltip("Seconds between winning a level and the next one starting, while there is no win popup "
-            + "yet (T-21): long enough to see the last block leave (DA-23).")]
+        [Tooltip("Seconds between winning a level and the win popup: long enough to see the last block leave.")]
         [SerializeField, Min(0f)]
-        float _nextLevelDelay = 1f;
+        float _winPopupDelay = 1f;
 
         [Header("Out of time")]
         [Tooltip("Seconds a continue adds to a lost level's timer (DA-30).")]
@@ -31,7 +30,7 @@ namespace ColorBlockJam.Game.Configs
         HapticImpact _exitHaptic = HapticImpact.Light;
 
         public FadeScaleInSettings HudReveal => _hudReveal;
-        public float NextLevelDelay => _nextLevelDelay;
+        public float WinPopupDelay => _winPopupDelay;
         public int ContinueSeconds => _continueSeconds;
         public int ContinueCost => _continueCost;
         public HapticImpact ExitHaptic => _exitHaptic;

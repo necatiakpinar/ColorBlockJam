@@ -71,5 +71,16 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(service.CurrentLevel, Is.EqualTo(PlayerProgressData.FirstLevel));
             Assert.That(_logger.Warnings, Has.Count.EqualTo(1));
         }
+
+        [Test]
+        public void SetCurrentLevel_ShouldPersistTheLevel_WhenItIsOneOrMore()
+        {
+            PlayerProgressService service = CreateLoaded();
+
+            service.SetCurrentLevel(7);
+
+            Assert.That(CreateLoaded().CurrentLevel, Is.EqualTo(7));
+            Assert.Throws<System.ArgumentOutOfRangeException>(() => service.SetCurrentLevel(0));
+        }
     }
 }

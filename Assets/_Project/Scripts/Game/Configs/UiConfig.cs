@@ -10,6 +10,11 @@ namespace ColorBlockJam.Game.Configs
         [SerializeField]
         PressFeedbackSettings _pressFeedback = new(0.92f, 0.08f, Ease.OutQuad, 0.18f, Ease.OutBack);
 
+        [Tooltip("How a popup appears: the blocker fades in while the panel scales up.")]
+        [SerializeField]
+        FadeScaleInSettings _popupReveal = new(0.25f, 0.85f, Ease.OutBack);
+
         public PressFeedbackSettings PressFeedback => _pressFeedback;
+        public FadeScaleInSettings PopupReveal => _popupReveal;
     }
 }

@@ -9,5 +9,8 @@ namespace ColorBlockJam.Core.Persistence
 
         /// <summary>Moves the player to the next level and persists it immediately.</summary>
         void AdvanceLevel();
+
+        /// <summary>Puts the player on <paramref name="level"/> (1 or more) and persists it immediately.</summary>
+        void SetCurrentLevel(int level);
     }
 }

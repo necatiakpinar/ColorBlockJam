@@ -18,6 +18,11 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 - [ ] ⚙ A win pays its difficulty's coins once; failing or leaving pays nothing — `LevelRewardTests`, `CoinPersistenceTests`
 - [ ] ⚙ Coins stay the same after going Home and coming back — `CoinPersistenceTests`
 - [ ] 👁 Kill the app after a win and open it again: the balance is the same.
+- [ ] ⚙ Pause opens the settings popup, the switches remember their state, close resumes — `GameplayFlowTests`, `GameplayPopupTests`
+- [ ] ⚙ A win opens the win popup with the reward; Continue plays the next level — `LevelResultFlowTests`, `LevelProgressionFlowTests`
+- [ ] ⚙ Out of time sells 20 s for 50 coins; giving up shows Level Failed; Retry restarts, close goes Home — `LevelResultFlowTests`, `LevelContinueTests`, `GameplayPopupTests`
+- [ ] 👁 Compare the HUD and the four popups with the reference screens at 1080x1920 and 20:9.
+- [ ] 👁 Every HUD and popup button shrinks while pressed; boosters and the coin "+" do nothing else.
 - [ ] ⚙ Winning starts the next level; after the last level the first layout comes back — `LevelProgressionFlowTests`
 - [ ] ⚙ All five shipped levels are valid and solvable — `ShippedLevelsTests`
 - [ ] 👁 Play levels 1 to 5 by hand: each one is a little harder than the one before, and each finishes well inside its timer.

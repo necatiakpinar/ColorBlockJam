@@ -1,61 +1,125 @@
 using NUnit.Framework;
 using ColorBlockJam.Core.Persistence;
 using ColorBlockJam.Core.Scenes;
+using ColorBlockJam.Core.Signals;
 using ColorBlockJam.Game.Home;
+using ColorBlockJam.Game.UI;
 using ColorBlockJam.Tests.EditMode.Helpers;
+using UnityEngine.UI;
 
 namespace ColorBlockJam.Tests.EditMode
 {
+    /// <summary>The Home screen's flow: level, balance, play, settings (T-24, T-25).</summary>
     public sealed class HomeFlowTests
     {
         TestViews _views;
         RecordingNavigation _navigation;
+        RecordingPopupService _popups;
+        SignalBus _bus;
         PlayerProgressService _progress;
+        WalletService _wallet;
+        SettingsService _settings;
+        HomeView _view;
+        Button _levelButton;
+        Button _settingsButton;
+        SettingsPopupView _settingsPopup;
+        Button _closeButton;
+        SettingToggleView[] _toggles;
 
         [SetUp]
         public void SetUp()
         {
             _views = new TestViews();
             _navigation = new RecordingNavigation();
+            _popups = new RecordingPopupService();
+            _bus = new SignalBus();
             _progress = new PlayerProgressService(new InMemoryKeyValueStorage(), new RecordingLogger());
             _progress.Load();
+            _wallet = new WalletService(new InMemoryKeyValueStorage(), new RecordingLogger(), _bus);
+            _wallet.Load();
+            _settings = new SettingsService(new InMemoryKeyValueStorage(), new RecordingLogger(), _bus);
+            _settings.Load();
+            _view = _views.CreateHomeView(out _levelButton, out _settingsButton);
+            _settingsPopup = _views.CreateSettingsPopup(_bus, _settings, out _closeButton, out _toggles);
         }
 
         [TearDown]
         public void TearDown() => _views.Dispose();
 
+        HomeFlow CreateFlow() =>
+            new(_view, _settingsPopup, _popups, _progress, _wallet, _settings, _navigation);
+
         [Test]
-        public void Start_ShouldShowCurrentLevel_WhenSceneStarts()
+        public void Start_ShouldShowTheLevelPathAndTheBalance_WhenSceneStarts()
         {
-            _progress.AdvanceLevel();
-            HomeView view = _views.CreateHomeView(out _);
-            using var flow = new HomeFlow(view, _progress, _navigation);
+            _progress.SetCurrentLevel(23);
+            _wallet.Add(1280);
+            using HomeFlow flow = CreateFlow();
 
             flow.Start();
 
-            Assert.That(view.LevelLabelText, Is.EqualTo("Level 2"));
+            Assert.That(_view.LevelLabelText, Is.EqualTo("Level 23"));
+            Assert.That(_view.PathLabelText(0), Is.EqualTo("23"));
+            Assert.That(_view.PathLabelText(1), Is.EqualTo("24"));
+            Assert.That(_view.PathLabelText(2), Is.EqualTo("25"));
+            Assert.That(_view.CoinText, Is.EqualTo("1.28k"));
         }
 
         [Test]
         public void LevelButton_ShouldNavigateToGameplay_WhenTapped()
         {
-            HomeView view = _views.CreateHomeView(out var levelButton);
-            using var flow = new HomeFlow(view, _progress, _navigation);
+            using HomeFlow flow = CreateFlow();
 
-            levelButton.onClick.Invoke();
+            _levelButton.onClick.Invoke();
 
             Assert.That(_navigation.Requests, Is.EqualTo(new[] { SceneId.Gameplay }));
         }
 
         [Test]
-        public void LevelButton_ShouldNotNavigate_WhenFlowIsDisposed()
+        public void SettingsButton_ShouldOpenTheSettingsShowingTheSavedSwitches_WhenTapped()
         {
-            HomeView view = _views.CreateHomeView(out var levelButton);
-            new HomeFlow(view, _progress, _navigation).Dispose();
+            _settings.Set(GameSetting.Music, false);
+            using HomeFlow flow = CreateFlow();
 
-            levelButton.onClick.Invoke();
+            _settingsButton.onClick.Invoke();
+
+            Assert.That(_popups.Current, Is.SameAs(_settingsPopup));
+            SettingToggleView music = _toggles[2];
+            Assert.That(music.transform.Find("Off").gameObject.activeSelf, Is.True);
+        }
+
+        [Test]
+        public void SettingsSwitch_ShouldFlipTheSetting_WhenTapped()
+        {
+            using HomeFlow flow = CreateFlow();
+            _settingsButton.onClick.Invoke();
+
+            _toggles[0].Button.onClick.Invoke();
+
+            Assert.That(_settings.IsOn(GameSetting.Vibration), Is.False);
+        }
+
+        [Test]
+        public void SettingsClose_ShouldCloseThePopup_WhenTapped()
+        {
+            using HomeFlow flow = CreateFlow();
+            _settingsButton.onClick.Invoke();
+
+            _closeButton.onClick.Invoke();
+
+            Assert.That(_popups.IsOpen, Is.False);
+        }
+
+        [Test]
+        public void Buttons_ShouldDoNothing_WhenFlowIsDisposed()
+        {
+            CreateFlow().Dispose();
+
+            _levelButton.onClick.Invoke();
+            _settingsButton.onClick.Invoke();
 
             Assert.That(_navigation.Requests, Is.Empty);
+            Assert.That(_popups.Opened, Is.Empty);
         }
     }
 }

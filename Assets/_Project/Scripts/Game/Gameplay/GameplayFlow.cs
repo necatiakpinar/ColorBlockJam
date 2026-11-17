@@ -1,66 +1,77 @@
 using System;
-using System.Threading;
 using Cysharp.Threading.Tasks;
 using ColorBlockJam.Core.Persistence;
-using ColorBlockJam.Core.Signals;
-using ColorBlockJam.Game.Configs;
-using ColorBlockJam.Game.Gameplay.Signals;
 using ColorBlockJam.Game.Gameplay.Hud;
+using ColorBlockJam.Game.Gameplay.Popups;
 using ColorBlockJam.Game.Gameplay.Session;
 using ColorBlockJam.Game.Navigation;
+using ColorBlockJam.Game.UI;
 using VContainer.Unity;
 
 namespace ColorBlockJam.Game.Gameplay
 {
     /// <summary>
     /// Entry point of the gameplay scene: starts the attempt at the current level through
-    /// <see cref="LevelSession"/>, which owns the level's state, moves on to the next level after a win and
-    /// routes back to Home. Until the win popup exists (T-21), the next level starts by itself after
-    /// <see cref="GameplayConfig.NextLevelDelay"/> (DA-23); the level number has already been advanced by
-    /// <see cref="LevelProgression"/> when the win was announced.
+    /// <see cref="LevelSession"/>, and routes the HUD and the pause popup. Restart restarts at once; pause
+    /// pauses the session, then opens the pause popup; closing it resumes; its switches go to
+    /// <see cref="ISettingsService"/>; Home leaves. The session and the settings own every change.
     /// </summary>
     public sealed class GameplayFlow : IStartable, IDisposable
     {
         readonly IPlayerProgressService _playerProgress;
         readonly LevelSession _session;
         readonly GameplayHudView _hudView;
+        readonly PausePopupView _pausePopup;
+        readonly IPopupService _popups;
+        readonly ISettingsService _settings;
         readonly INavigationService _navigation;
-        readonly SignalBus _signalBus;
-        readonly GameplayConfig _config;
-        readonly CancellationTokenSource _lifetime = new();
 
         public GameplayFlow(IPlayerProgressService playerProgress, LevelSession session, GameplayHudView hudView,
-            INavigationService navigation, SignalBus signalBus, GameplayConfig config)
+            PausePopupView pausePopup, IPopupService popups, ISettingsService settings, INavigationService navigation)
         {
             _playerProgress = playerProgress;
             _session = session;
             _hudView = hudView;
+            _pausePopup = pausePopup;
+            _popups = popups;
+            _settings = settings;
             _navigation = navigation;
-            _signalBus = signalBus;
-            _config = config;
-            _hudView.HomeButtonClicked += OnHomeButtonClicked;
-            _signalBus.Subscribe<LevelCompletedSignal>(OnLevelCompleted);
+            _hudView.RestartClicked += OnRestartClicked;
+            _hudView.PauseClicked += OnPauseClicked;
+            _pausePopup.CloseClicked += OnPauseClosed;
+            _pausePopup.HomeClicked += OnHomeClicked;
+            _pausePopup.ToggleClicked += OnToggleClicked;
         }
 
         public void Start() => _session.Start(_playerProgress.CurrentLevel);
 
-        void OnLevelCompleted(LevelCompletedSignal signal) => StartNextLevelAsync(_lifetime.Token).Forget();
+        void OnRestartClicked() => _session.Restart();
 
-        async UniTaskVoid StartNextLevelAsync(CancellationToken cancellation)
+        void OnPauseClicked()
         {
-            await UniTask.Delay(TimeSpan.FromSeconds(_config.NextLevelDelay), DelayType.Realtime,
-                cancellationToken: cancellation);
-            _session.Next(_playerProgress.CurrentLevel);
+            if (!_session.Pause())
+                return;
+            _pausePopup.Refresh();
+            _popups.Open(_pausePopup);
         }
 
-        void OnHomeButtonClicked() => _navigation.GoToHomeAsync().Forget();
+        void OnPauseClosed()
+        {
+            _popups.Close();
+            _session.Resume();
+        }
+
+        void OnToggleClicked(GameSetting setting) => _settings.Set(setting, !_settings.IsOn(setting));
+
+        void OnHomeClicked() => _navigation.GoToHomeAsync().Forget();
 
         public void Dispose()
         {
-            _lifetime.Cancel();
-            _lifetime.Dispose();
-            _signalBus.Unsubscribe<LevelCompletedSignal>(OnLevelCompleted);
-            _hudView.HomeButtonClicked -= OnHomeButtonClicked;
+            _hudView.RestartClicked -= OnRestartClicked;
+            _hudView.PauseClicked -= OnPauseClicked;
+            _pausePopup.CloseClicked -= OnPauseClosed;
+            _pausePopup.HomeClicked -= OnHomeClicked;
+            _pausePopup.ToggleClicked -= OnToggleClicked;
         }
     }
 }

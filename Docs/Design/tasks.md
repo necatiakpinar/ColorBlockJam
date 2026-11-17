@@ -34,14 +34,14 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - [x] [T-15 Countdown timer](#t-15-countdown-timer)
 - [x] [T-16 Coin rewards](#t-16-coin-rewards)
 - [x] [T-17 Level progression and looping](#t-17-level-progression-and-looping)
-- [ ] [T-18 Gameplay HUD](#t-18-gameplay-hud)
-- [ ] [T-19 Pause popup](#t-19-pause-popup)
-- [ ] [T-20 Fail popup](#t-20-fail-popup)
-- [ ] [T-21 Win popup](#t-21-win-popup)
+- [x] [T-18 Gameplay HUD](#t-18-gameplay-hud)
+- [x] [T-19 Pause popup](#t-19-pause-popup)
+- [x] [T-20 Fail popup](#t-20-fail-popup)
+- [x] [T-21 Win popup](#t-21-win-popup)
 - [ ] [T-22 Restart and home correctness](#t-22-restart-and-home-correctness)
-- [ ] [T-23 Home screen layout](#t-23-home-screen-layout)
-- [ ] [T-24 Home behaviors](#t-24-home-behaviors)
-- [ ] [T-25 Settings popup](#t-25-settings-popup)
+- [x] [T-23 Home screen layout](#t-23-home-screen-layout)
+- [x] [T-24 Home behaviors](#t-24-home-behaviors)
+- [x] [T-25 Settings popup](#t-25-settings-popup)
 - [ ] [T-26 Level editor window and level list](#t-26-level-editor-window-and-level-list)
 - [ ] [T-27 Visual board canvas, size and timer](#t-27-visual-board-canvas-size-and-timer)
 - [ ] [T-28 Block placement tools](#t-28-block-placement-tools)
@@ -475,7 +475,8 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
   (`Heart`). `GameplayHudView` binds signals; text via `TMP_Text.SetText(format, value)`.
 - **Accept:** HUD values update live without per-frame code; booster buttons give press feedback and do
   nothing else; layout fits 20:9 and the safe area.
-- **Tests:** `PM GameplayHudTests` (timer and coin text after signals).
+  - [x] Laid out after the reference screen (DA-28); lives are not shown in gameplay.
+- **Tests:** `EM GameplayHudViewTests` (level, timer and coin text after signals), `PM GameplayPopupTests`.
 - **Docs:** `ui.md` §Gameplay HUD; `gameplay-qa.md`.
 
 ### T-19 Pause popup
@@ -483,9 +484,11 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - **Req:** R-21. Implements DA-15.
 - **Arch:** `PausePopupView` (authored, `bg_popup`, `bg_popup_header`, `Popup_Close_Button`): Resume, Restart
   (`ic_restart`), Home (`home_icon`). Calls the session / navigation; owns no rules.
+  - [x] Built as the reference settings popup instead (DA-29): working switches, placeholders, Home; close
+    resumes, the HUD's restart button restarts.
 - **Accept:** opening pauses timer and board input; Resume continues from the same second; Restart and Home
   work from the popup.
-- **Tests:** `PM PauseFlowTests`.
+- **Tests:** `EM GameplayFlowTests` (pause, close, switches, Home), `PM GameplayPopupTests`.
 - **Docs:** `ui.md` §Popups; `gameplay-qa.md`.
 
 ### T-20 Fail popup
@@ -493,9 +496,12 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - **Req:** R-20. Implements DA-15.
 - **Arch:** `FailPopupView`: "Time's up" header, Restart (`Btn_square_retry`), Home. Opens on
   `LevelFailedSignal`.
+  - [x] Two popups after the reference (DA-30, DA-31): "Out of Time!" sells 20 s for 50 coins
+    (`LevelContinueService`, `LevelSession.Continue`, `IWalletService.TrySpend`); closing it opens
+    "Level Failed!" with Retry, and its close goes Home (`FailFlow`).
 - **Accept:** opens at timer zero; Restart replays the same level from its start state; Home returns to Home
   with the same level number.
-- **Tests:** `PM FailFlowTests` (fake clock forces expiry).
+- **Tests:** `EM LevelResultFlowTests`, `EM LevelContinueTests`, `PM GameplayPopupTests`.
 - **Docs:** `ui.md`; `gameplay-qa.md`.
 
 ### T-21 Win popup
@@ -503,8 +509,10 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - **Req:** R-24, R-19. Implements DA-12.
 - **Arch:** `WinPopupView`: level cleared header, reward amount (`Coin_Single`), Continue
   (`Btn_popup_green`). Opens on `LevelCompletedSignal` after the last exit animation.
+  - [x] `WinFlow` opens it `WinPopupDelay` after the win; Continue replaces the timed next level (DA-23
+    withdrawn).
 - **Accept:** shows the reward already credited; Continue loads the next level number.
-- **Tests:** `PM WinFlowTests`.
+- **Tests:** `EM LevelResultFlowTests`, `PM LevelProgressionFlowTests`, `PM CoinPersistenceTests`.
 - **Docs:** `ui.md`; `gameplay-qa.md`.
 
 ### T-22 Restart and home correctness
@@ -537,7 +545,9 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
   and coins.
 - **Accept:** layout matches at 1080x1920 and 1080x2400 with nothing clipped or overlapping; every button
   gives press feedback; Home tab stays highlighted.
-- **Tests:** `PM HomeLayoutTests` (top UI and tab bar rects inside the safe area at both resolutions).
+  - [x] Laid out after the reference screen with the project's art (ui.md §7); the portrait and the
+    hard-level skull have no art.
+- **Tests:** `EM HomeFlowTests`, `PM HomeScreenTests`, `EM SceneSetupTests` (press feedback on every button).
 - **Docs:** `ui.md` §Home; `Docs/testing/home-qa.md`.
 
 ### T-24 Home behaviors
@@ -547,7 +557,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
   button to `IPopupService.Open<SettingsPopup>()`.
 - **Accept:** level button plays the current level; settings opens Settings; coin and level values are
   current on every return.
-- **Tests:** `PM HomeNavigationTests`.
+- **Tests:** `EM HomeFlowTests` (level path, balance, play, settings), `PM HomeScreenTests`.
 - **Docs:** `home-qa.md`.
 
 ---
@@ -562,10 +572,12 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
   same sprite greyed and knob position flipped (the art set has no off sprite — asset feedback). Placeholder
   buttons (e.g. Support with `Support_icon`) give feedback only. Close (`Popup_Close_Button`) returns Home.
   State read from and written to `ISettingsService`.
+  - [x] One base prefab (`SettingsPopup`) with a Home and a Gameplay variant (ui.md §6); the gameplay
+    variant is the pause popup.
 - **Accept:** each toggle visibly differs on vs off; state survives closing, reopening and app restart;
   close returns to Home with nothing else changed.
-- **Tests:** `EM ToggleViewModel` tests if a model exists, `PM SettingsPopupTests` (toggle → visual and
-  stored state).
+- **Tests:** `EM HomeFlowTests` (switch → stored state and look), `EM PopupPrefabTests` (both variants of the
+  base), `PM HomeScreenTests` (open and close).
 - **Docs:** `ui.md` §Settings; `Docs/testing/settings-qa.md`.
 
 ---

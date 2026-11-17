@@ -42,6 +42,13 @@ namespace ColorBlockJam.Game.Scopes
         [SerializeField]
         BoardCameraView _boardCameraView;
 
+        [SerializeField]
+        GameplayPopupConfig _popupConfig;
+
+        [Tooltip("Full-screen layer above the HUD that the popup prefabs are created under.")]
+        [SerializeField]
+        Transform _popupLayer;
+
         protected override void Configure(IContainerBuilder builder)
         {
             new GameplayInstaller(_gameplayConfig, _boardViewConfig, _levelRewardConfig).Install(builder);
@@ -54,6 +61,15 @@ namespace ColorBlockJam.Game.Scopes
             builder.RegisterComponent(_boardView);
             builder.RegisterComponent(_blockLayerView);
             builder.RegisterComponent(_boardCameraView);
+            // Popups come from their prefabs (GameplayPopupConfig), created under the popup layer and injected.
+            builder.RegisterComponentInNewPrefab(_popupConfig.PausePopup, Lifetime.Scoped).UnderTransform(_popupLayer);
+            builder.RegisterComponentInNewPrefab(_popupConfig.WinPopup, Lifetime.Scoped).UnderTransform(_popupLayer);
+            builder.RegisterComponentInNewPrefab(_popupConfig.OutOfTimePopup, Lifetime.Scoped).UnderTransform(_popupLayer);
+            builder.RegisterComponentInNewPrefab(_popupConfig.LevelFailedPopup, Lifetime.Scoped).UnderTransform(_popupLayer);
+
+            // Flows that only listen; they need the scene's popups, so the scope registers them, not the installer.
+            builder.Register<WinFlow>(Lifetime.Singleton);
+            builder.Register<FailFlow>(Lifetime.Singleton);
 
             // Listen to board signals without being entry points: build them before any entry point starts.
             builder.RegisterBuildCallback(resolver =>
@@ -63,6 +79,8 @@ namespace ColorBlockJam.Game.Scopes
                 resolver.Resolve<LevelProgression>();
                 resolver.Resolve<LevelTimer>();
                 resolver.Resolve<LevelRewardService>();
+                resolver.Resolve<WinFlow>();
+                resolver.Resolve<FailFlow>();
             });
 
             builder.RegisterEntryPoint<GameplayFlow>();

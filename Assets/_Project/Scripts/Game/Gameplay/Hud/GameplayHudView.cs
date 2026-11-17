@@ -1,9 +1,11 @@
 using System;
 using DG.Tweening;
+using ColorBlockJam.Core.Persistence;
 using ColorBlockJam.Core.Signals;
 using ColorBlockJam.Game.Common.Animations;
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Gameplay.Signals;
+using ColorBlockJam.Game.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,10 +13,13 @@ using VContainer;
 
 namespace ColorBlockJam.Game.Gameplay.Hud
 {
+    /// <summary>
+    /// The authored gameplay HUD (T-18, ui.md §5): level badge, time panel, restart and pause buttons, coin
+    /// counter and the booster bar. It shows what the signals announce and reports taps; the boosters and the
+    /// coin "+" are placeholders with press feedback only (DA-16).
+    /// </summary>
     public sealed class GameplayHudView : MonoBehaviour
     {
-        const string LevelLabelFormat = "Level {0}";
-
         [SerializeField]
         CanvasGroup _group;
 
@@ -24,38 +29,50 @@ namespace ColorBlockJam.Game.Gameplay.Hud
         [SerializeField]
         TMP_Text _levelLabel;
 
-        [Tooltip("Time left as mm:ss (T-15); T-18 places it in the timer holder art.")]
+        [Tooltip("Time left as mm:ss (T-15).")]
         [SerializeField]
         TMP_Text _timerLabel;
 
-        [Tooltip("Placeholder route back to Home until the pause popup owns it (T-19).")]
         [SerializeField]
-        Button _homeButton;
+        CoinAmountText _coins;
+
+        [SerializeField]
+        Button _restartButton;
+
+        [SerializeField]
+        Button _pauseButton;
 
         SignalBus _signalBus;
         GameplayConfig _config;
+        IWalletService _wallet;
         Sequence _revealSequence;
         // mm:ss written in place, so a tick allocates nothing on device (in the editor TMP mirrors it into a string).
         readonly char[] _timerChars = new char[5];
 
-        public event Action HomeButtonClicked;
+        public event Action RestartClicked;
+        public event Action PauseClicked;
 
         [Inject]
-        public void Construct(SignalBus signalBus, GameplayConfig config)
+        public void Construct(SignalBus signalBus, GameplayConfig config, IWalletService wallet)
         {
             _signalBus = signalBus;
             _config = config;
+            _wallet = wallet;
             _signalBus.Subscribe<LevelStartedSignal>(OnLevelStarted);
             _signalBus.Subscribe<TimerChangedSignal>(OnTimerChanged);
-            _homeButton.onClick.AddListener(OnHomeButtonClicked);
+            _signalBus.Subscribe<CoinsChangedSignal>(OnCoinsChanged);
+            _restartButton.onClick.AddListener(OnRestartClicked);
+            _pauseButton.onClick.AddListener(OnPauseClicked);
         }
 
         public string LevelLabelText => _levelLabel.text;
         public string TimerLabelText => _timerLabel.text;
+        public string CoinLabelText => _coins.Text;
 
         void OnLevelStarted(LevelStartedSignal signal)
         {
-            _levelLabel.SetText(LevelLabelFormat, signal.LevelNumber);
+            _levelLabel.SetText("{0}", signal.LevelNumber);
+            _coins.Show(_wallet.Coins);
 
             _revealSequence?.Kill();
             _revealSequence = default(FadeScaleInAnimation).Play(
@@ -74,13 +91,19 @@ namespace ColorBlockJam.Game.Gameplay.Hud
             _timerLabel.SetCharArray(_timerChars, 0, _timerChars.Length);
         }
 
-        void OnHomeButtonClicked() => HomeButtonClicked?.Invoke();
+        void OnCoinsChanged(CoinsChangedSignal signal) => _coins.Show(signal.Coins);
+
+        void OnRestartClicked() => RestartClicked?.Invoke();
+
+        void OnPauseClicked() => PauseClicked?.Invoke();
 
         void OnDestroy()
         {
             _signalBus.Unsubscribe<LevelStartedSignal>(OnLevelStarted);
             _signalBus.Unsubscribe<TimerChangedSignal>(OnTimerChanged);
-            _homeButton.onClick.RemoveListener(OnHomeButtonClicked);
+            _signalBus.Unsubscribe<CoinsChangedSignal>(OnCoinsChanged);
+            _restartButton.onClick.RemoveListener(OnRestartClicked);
+            _pauseButton.onClick.RemoveListener(OnPauseClicked);
             _revealSequence?.Kill();
         }
     }

@@ -5,6 +5,7 @@ using ColorBlockJam.Core.Persistence;
 using ColorBlockJam.Core.Signals;
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Gameplay.Board;
+using ColorBlockJam.Game.Gameplay.Popups;
 using ColorBlockJam.Game.Gameplay.Session;
 using ColorBlockJam.Game.Gameplay.Signals;
 using ColorBlockJam.Game.Levels;
@@ -15,27 +16,31 @@ using VContainer;
 
 namespace ColorBlockJam.Tests.PlayMode
 {
-    /// <summary>Winning moves on to the next level, and after the last one the catalog starts over.</summary>
+    /// <summary>Winning shows the win popup, Continue moves on to the next level, and after the last one the catalog starts over.</summary>
     public sealed class LevelProgressionFlowTests
     {
-        string _savedProgress;
-        bool _hadProgress;
+        static readonly string[] SavedKeys = { PlayerProgressService.StorageKey, WalletService.StorageKey };
+        readonly string[] _saved = new string[SavedKeys.Length];
 
         [SetUp]
         public void SetUp()
         {
-            // These tests win levels, which saves the player's progress: put it back afterwards.
-            _hadProgress = PlayerPrefs.HasKey(PlayerProgressService.StorageKey);
-            _savedProgress = PlayerPrefs.GetString(PlayerProgressService.StorageKey);
+            // These tests win levels, which saves the player's progress and coins: put them back afterwards.
+            for (int i = 0; i < SavedKeys.Length; i++)
+                _saved[i] = PlayerPrefs.HasKey(SavedKeys[i]) ? PlayerPrefs.GetString(SavedKeys[i]) : null;
         }
 
         [TearDown]
         public void TearDown()
         {
-            if (_hadProgress)
-                PlayerPrefs.SetString(PlayerProgressService.StorageKey, _savedProgress);
-            else
-                PlayerPrefs.DeleteKey(PlayerProgressService.StorageKey);
+            for (int i = 0; i < SavedKeys.Length; i++)
+            {
+                if (_saved[i] == null)
+                    PlayerPrefs.DeleteKey(SavedKeys[i]);
+                else
+                    PlayerPrefs.SetString(SavedKeys[i], _saved[i]);
+            }
+
             PlayerPrefs.Save();
         }
 
@@ -56,7 +61,7 @@ namespace ColorBlockJam.Tests.PlayMode
             var progress = container.Resolve<IPlayerProgressService>();
             var board = container.Resolve<ActiveBoard>();
             var levels = container.Resolve<LevelProvider>();
-            float delay = container.Resolve<GameplayConfig>().NextLevelDelay;
+            float delay = container.Resolve<GameplayConfig>().WinPopupDelay;
             int catalogSize = container.Resolve<LevelCatalog>().Levels.Count;
             int first = session.LevelNumber;
             var started = new List<int>();
@@ -69,6 +74,8 @@ namespace ColorBlockJam.Tests.PlayMode
                 Assert.That(session.State, Is.EqualTo(LevelState.Won));
                 Assert.That(progress.CurrentLevel, Is.EqualTo(first + win + 1), "Progress moves on at the win.");
                 yield return WaitRealtime(delay + 0.2f);
+                Assert.That(SceneTestUtility.FindInActiveScene<WinPopupView>().gameObject.activeSelf, Is.True);
+                SceneTestUtility.TapButton<WinPopupView>("ContinueButton");
             }
 
             var expected = new List<int>();

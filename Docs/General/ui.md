@@ -38,10 +38,80 @@
    Gameplay installers). One popup at a time: opening a second one throws `InvalidOperationException`,
    because the open popup's blocker makes that a wiring bug (`PopupServiceTests`).
 2. A popup is an authored view implementing `IPopup`, inactive until shown, whose root is a full-screen
-   blocker. The shared popup view and its in/out animations land with the first popup (T-19, T-25).
+   blocker. Every popup derives from **`PopupView`**: its root holds a `CanvasGroup`, a dimming `Blocker`
+   and a `Panel`; showing activates the root and plays `FadeScaleInAnimation` (`UiConfig.PopupReveal`),
+   hiding deactivates it at once. A framed popup uses `bg_popup` for the panel, `bg_popup_header` with the
+   title, `Popup_Close_Button` at the top right and `bg_popup_info_holder` for inner panels.
+   - **Popups are prefabs** under `Assets/_Project/Prefabs/UI/Popups/`, saved inactive with a full-screen
+     root. The scenes hold none: `GameplayPopupConfig` and `HomePopupConfig` list the prefabs and each scope
+     creates them under its `Popups` layer with `RegisterComponentInNewPrefab` and injects it. Change a
+     popup by editing its prefab (`PopupPrefabTests` checks the config, the inactive root, press
+     feedback on every button and auto-sized texts).
+   - **Texts fit their box:** every label stretches over the area it belongs to (anchors, not a fixed
+     size) and auto-sizes between a minimum and a maximum, so nothing spills out of its button or panel.
+   - **Sprite padding:** `bg_popup` has transparent margins (50 units left and right, 19 on top, 37 below),
+     so a panel's rect is its visible size plus (100, 56). The button and holder sprites have almost none.
+3. A popup view only reports taps as C# events; a flow decides what they do (§2.3).
 
 ## 4. Configs
 
 | Asset | Holds |
 | --- | --- |
-| `UiConfig` (Root) | button press feedback |
+| `UiConfig` (Root) | button press feedback, popup reveal |
+| `GameplayPopupConfig` (Gameplay) | the gameplay popup prefabs |
+| `HomePopupConfig` (Home) | the Home popup prefabs (the Home settings variant) |
+
+## 5. Gameplay HUD and popups
+
+The HUD is authored in `Gameplay.unity` under `HudCanvas`; the popups are prefabs (§3). Both are laid out
+after the reference screens, sizes measured on them and scaled to the canvas (DA-28):
+
+| Part | Art | Behaviour |
+| --- | --- | --- |
+| `SafeArea/TopBar/LevelBadge` | `Btn_booster_normal`, "Level" and the number | `LevelStartedSignal` |
+| `TopBar/TimePanel` | `bg_popup`, `ic_time`, `bg_gameplay_time_holder` | `TimerChangedSignal`, `mm:ss` |
+| `TopBar/RestartButton`, `PauseButton` | `Btn_square_retry` + `ic_restart`, `Btn_settings_normal` + `ic_pause` | restart at once; pause opens the pause popup |
+| `TopBar/CoinCounter` | `bg_home_coin_holder`, `Coin_Single`, `Btn_circle_green_small` + `ic_plus` | balance from `IWalletService` and `CoinsChangedSignal` ("1.28k" from 1000); "+" is a placeholder |
+| `SafeArea/BoosterBar` | `Btn_booster_normal` with `Clock_Freeze`, `Rocket_Purple_Icon`, `Hammer`, `Vacuum`, count badge `Btn_circle_blue_small` | placeholders: press feedback only (DA-16) |
+| `PausePopup` prefab | "SETTINGS": vibration, sound and music switches, Legal Terms, Restore Purchases, Support, Language, Home | switches show and set `ISettingsService`; the four blue buttons are placeholders (DA-29) |
+| `WinPopup` prefab | "LEVEL COMPLETE", a pile of `Coin_Single`, Continue with the reward | Continue plays the next level (DA-12) |
+| `OutOfTimePopup` prefab | "Out of Time!", `Clock`, "+20", Continue with the price | buys more time; close gives up (DA-30) |
+| `LevelFailedPopup` prefab | "Level Failed!" with `Heart`, Retry | Retry restarts; close goes Home (DA-31) |
+
+Text uses `LiberationSans SDF` with the `LiberationSans SDF - Hud` material (outline and drop shadow) until
+the game has its own font. A switch's "off" look is a dark track with a plain knob, because the art has
+only the "on" knob (asset-feedback.md A-1).
+
+## 6. Settings popup
+
+One layout, two scenes. **`SettingsPopup.prefab`** is the base: panel, header, the vibration, sound and
+music switches, and the Legal Terms, Restore Purchases, Support and Language placeholders, laid out after
+the Home reference. It carries no view component; each scene uses a **prefab variant** of it:
+
+| Variant | View | Adds |
+| --- | --- | --- |
+| `HomeSettingsPopup` (`HomePopupConfig`) | `SettingsPopupView` | nothing: close returns to Home |
+| `GameplaySettingsPopup` (`GameplayPopupConfig`, the pause popup) | `PausePopupView : SettingsPopupView` | a taller panel and Home; close resumes |
+
+A change to the shared layout goes in the base prefab and reaches both. `SettingsPopupView` shows the saved
+switches (`Refresh` before opening, `SettingChangedSignal` after) and reports taps; the flow sets
+`ISettingsService` (DA-10). `PopupPrefabTests` checks both are variants of the base.
+
+## 7. Home screen
+
+Authored in `Home.unity` under `HomeCanvas`, laid out after the reference (T-23):
+
+| Part | Art | Behaviour |
+| --- | --- | --- |
+| `Background` | `bg_home_screen` | fills the screen, outside the safe area |
+| `TopBar/ProfileButton` | `profile_box_blue` | placeholder |
+| `TopBar/Lives` | `bg_home_resource_holder`, `Heart`, "Full" and 5, green "+" | placeholder (DA-9) |
+| `TopBar/Coins` | `bg_home_resource_holder`, `Coin_Single`, green "+" | balance (`CoinAmountText`); "+" is a placeholder |
+| `TopBar/SettingsButton` | `Settings_Icon` | opens the Home settings popup |
+| `LevelPath` | gold rails, `Btn_level_green` tile for the current level, `Btn_settings_normal` + `lock` for the next two | numbers from the saved level |
+| `LevelPath/LevelButton` | `Btn_level_green` (nine-sliced, art-pipeline.md §4), "Level N" | plays the current level |
+| `TabBar` | `bg_menu`, `bg_home_line` separators, `ActiveTab` under Home, `lock`, `shop`, `home_icon`, `block_collection`, `lock` "Lvl 50" | placeholders: press feedback only; Home stays active (DA-11) |
+
+The reference's chef portrait and its skull marker for hard levels have no art in the project, so the
+profile frame stays empty and locked tiles all look alike. `HomeFlow` shows the level and the balance on
+start and routes the level and settings buttons (T-24).

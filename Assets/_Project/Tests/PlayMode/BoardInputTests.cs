@@ -150,12 +150,12 @@ namespace ColorBlockJam.Tests.PlayMode
         public IEnumerator EventSystemRaycast_ShouldHitTheHudButtonFirst_WhenTheButtonCoversTheBoard()
         {
             yield return SetUpBoard(ScreenCoveringBoardSize);
-            var homeButton = (RectTransform)SceneTestUtility.FindButton<GameplayHudView>("HomeButton").transform;
-            Vector2 buttonCentre = RectTransformUtility.WorldToScreenPoint(null, homeButton.TransformPoint(homeButton.rect.center));
+            var pauseButton = (RectTransform)SceneTestUtility.FindButton<GameplayHudView>("PauseButton").transform;
+            Vector2 buttonCentre = RectTransformUtility.WorldToScreenPoint(null, pauseButton.TransformPoint(pauseButton.rect.center));
 
             List<RaycastResult> results = RaycastAll(buttonCentre);
 
-            Assert.That(results[0].gameObject, Is.SameAs(homeButton.gameObject));
+            Assert.That(results[0].gameObject, Is.SameAs(pauseButton.gameObject));
             Assert.That(results.Exists(result => result.gameObject == _input.gameObject), Is.True,
                 "The board should lie under the button for this test to mean anything.");
         }
