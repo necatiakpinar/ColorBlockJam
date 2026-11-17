@@ -14,6 +14,8 @@ namespace ColorBlockJam.Game.Navigation
             _sceneLoader = sceneLoader;
         }
 
+        public bool IsLoading => _isLoading;
+
         public UniTask GoToHomeAsync() => LoadAsync(SceneId.Home);
 
         public UniTask GoToGameplayAsync() => LoadAsync(SceneId.Gameplay);

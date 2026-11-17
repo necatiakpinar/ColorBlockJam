@@ -46,6 +46,20 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
+        public void IsLoading_ShouldBeTrueOnlyWhileASceneLoads_WhenRouted()
+        {
+            bool before = _navigation.IsLoading;
+            _navigation.GoToGameplayAsync().Forget();
+            bool during = _navigation.IsLoading;
+
+            _loader.CompleteLoad();
+
+            Assert.That(before, Is.False);
+            Assert.That(during, Is.True);
+            Assert.That(_navigation.IsLoading, Is.False);
+        }
+
+        [Test]
         public void GoToHome_ShouldLoad_WhenThePreviousLoadFinished()
         {
             _navigation.GoToGameplayAsync().Forget();

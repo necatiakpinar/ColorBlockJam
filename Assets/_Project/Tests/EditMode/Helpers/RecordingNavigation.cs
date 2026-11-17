@@ -9,6 +9,8 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
     {
         public List<SceneId> Requests { get; } = new();
 
+        public bool IsLoading => false;
+
         public UniTask GoToHomeAsync()
         {
             Requests.Add(SceneId.Home);
