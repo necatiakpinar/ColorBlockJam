@@ -15,9 +15,11 @@ namespace ColorBlockJam.Game.Gameplay.Board
         const int Empty = -1;
 
         readonly int[] _occupancy;
-        readonly BoardBlock[] _blocks;
+        // Grows when the rocket splits a block into pieces (DA-36); ids stay their index.
+        readonly List<BoardBlock> _blocks;
         readonly DoorResolver _doorResolver;
         readonly List<int> _thawed = new();
+        readonly List<int> _splitOff = new();
 
         public BoardState(LevelData level)
         {
@@ -27,15 +29,15 @@ namespace ColorBlockJam.Game.Gameplay.Board
             Array.Fill(_occupancy, Empty);
             _doorResolver = new DoorResolver(level.Doors);
 
-            _blocks = new BoardBlock[level.Blocks.Count];
-            for (int id = 0; id < _blocks.Length; id++)
+            _blocks = new List<BoardBlock>(level.Blocks.Count);
+            for (int id = 0; id < level.Blocks.Count; id++)
             {
                 BlockData data = level.Blocks[id];
-                _blocks[id] = new BoardBlock(id, data.Color, data.Cells, data.Ice);
+                _blocks.Add(new BoardBlock(id, data.Color, data.Cells, data.Ice));
                 Place(_blocks[id]);
             }
 
-            RemainingBlocks = _blocks.Length;
+            RemainingBlocks = _blocks.Count;
         }
 
         public int Width { get; }
@@ -43,6 +45,9 @@ namespace ColorBlockJam.Game.Gameplay.Board
         public IReadOnlyList<BoardBlock> Blocks => _blocks;
         public int RemainingBlocks { get; private set; }
         public bool IsCleared => RemainingBlocks == 0;
+
+        /// <summary>Blocks the last <see cref="RemoveCell"/> split off as blocks of their own (DA-36); empty when none.</summary>
+        public IReadOnlyList<int> JustSplitOff => _splitOff;
 
         /// <summary>Blocks the last exit or removal thawed (T-34), in id order; empty when none did.</summary>
         public IReadOnlyList<int> JustThawed => _thawed;
@@ -100,12 +105,14 @@ namespace ColorBlockJam.Game.Gameplay.Board
         }
 
         /// <summary>
-        /// Takes the block's cell at <paramref name="cell"/> out of it (the rocket, DA-36). The rest stays one
-        /// block, even if it falls apart into pieces that keep moving together.
+        /// Takes the block's cell at <paramref name="cell"/> out of it (the rocket, DA-36). When the rest falls apart,
+        /// the biggest piece (the first on a tie) stays the block and every other piece becomes a block of its own,
+        /// with the same colour and ice, listed in <see cref="JustSplitOff"/>.
         /// </summary>
         /// <returns>True when that was its last cell and the block is gone.</returns>
         public bool RemoveCell(int blockId, Vector2Int cell)
         {
+            _splitOff.Clear();
             BoardBlock block = RequireOnBoard(blockId);
             for (int i = 0; i < block.CellCount; i++)
             {
@@ -119,11 +126,76 @@ namespace ColorBlockJam.Game.Gameplay.Board
 
                 _occupancy[IndexOf(cell)] = Empty;
                 block.RemoveCellAt(i);
+                SplitIntoPieces(block);
                 return false;
             }
 
             throw new ArgumentException($"Block {blockId} has no cell at {cell}.", nameof(cell));
         }
+
+        /// <summary>Every edge-connected piece of the block but the biggest becomes a new block where it lies.</summary>
+        void SplitIntoPieces(BoardBlock block)
+        {
+            List<List<Vector2Int>> pieces = Pieces(block);
+            if (pieces.Count < 2)
+                return;
+
+            int keep = 0;
+            for (int i = 1; i < pieces.Count; i++)
+                if (pieces[i].Count > pieces[keep].Count)
+                    keep = i;
+
+            for (int i = 0; i < pieces.Count; i++)
+            {
+                if (i == keep)
+                    continue;
+                // The new block starts where the piece lies now, so its offset starts at zero.
+                var piece = new BoardBlock(_blocks.Count, block.Color, pieces[i], block.Ice);
+                block.RemoveBoardCells(pieces[i]);
+                _blocks.Add(piece);
+                foreach (Vector2Int cell in pieces[i])
+                    _occupancy[IndexOf(cell)] = piece.Id;
+                RemainingBlocks++;
+                _splitOff.Add(piece.Id);
+            }
+        }
+
+        /// <summary>The block's board cells grouped into edge-connected pieces, in the order of its cells.</summary>
+        List<List<Vector2Int>> Pieces(BoardBlock block)
+        {
+            var cells = new HashSet<Vector2Int>();
+            for (int i = 0; i < block.CellCount; i++)
+                cells.Add(block.GetCell(i));
+
+            var pieces = new List<List<Vector2Int>>();
+            var seen = new HashSet<Vector2Int>();
+            var frontier = new Queue<Vector2Int>();
+            for (int i = 0; i < block.CellCount; i++)
+            {
+                Vector2Int start = block.GetCell(i);
+                if (!seen.Add(start))
+                    continue;
+                var piece = new List<Vector2Int>();
+                frontier.Enqueue(start);
+                while (frontier.Count > 0)
+                {
+                    Vector2Int cell = frontier.Dequeue();
+                    piece.Add(cell);
+                    foreach (Vector2Int step in Neighbours)
+                    {
+                        Vector2Int next = cell + step;
+                        if (cells.Contains(next) && seen.Add(next))
+                            frontier.Enqueue(next);
+                    }
+                }
+
+                pieces.Add(piece);
+            }
+
+            return pieces;
+        }
+
+        static readonly Vector2Int[] Neighbours = { Vector2Int.right, Vector2Int.left, Vector2Int.up, Vector2Int.down };
 
         BoardBlock RequireOnBoard(int blockId)
         {
@@ -143,10 +215,10 @@ namespace ColorBlockJam.Game.Gameplay.Board
             RemainingBlocks = 0;
             // Every exit counts every frozen block down by one, so the ice follows from how many have left.
             int gone = 0;
-            for (int id = 0; id < _blocks.Length; id++)
+            for (int id = 0; id < _blocks.Count; id++)
                 if (exited[id])
                     gone++;
-            for (int id = 0; id < _blocks.Length; id++)
+            for (int id = 0; id < _blocks.Count; id++)
             {
                 _blocks[id].Reset(offsets[id], exited[id], Math.Max(0, _blocks[id].StartIce - gone));
                 if (exited[id])

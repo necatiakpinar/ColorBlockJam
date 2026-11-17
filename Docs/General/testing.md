@@ -60,7 +60,7 @@ new fake.
 | `IceBlockerTests` | a frozen block cannot move or be picked up; exits and booster removals count it down and thaw it; the hammer thaws it; the solver waits for it and spots a frozen deadlock; the validator caps ice; the editor keeps it |
 | `LivesServiceTests` | full start; trusted-time countdown, catch-up, remainder, offline start, reload; losing; coin refill; the second tick |
 | `LevelAttemptLivesTests` | only a started, abandoned attempt costs a life, once; a win costs none; playing again without lives offers a refill; Refill restarts, close goes Home |
-| `BoardRemovalTests` | boosters taking a whole block, one cell (the rest stays one block and still exits) or a whole colour; the clear fires once |
+| `BoardRemovalTests` | boosters taking a whole block, one cell (a block that falls apart splits into blocks that move and leave on their own; the biggest piece keeps the id) or a whole colour; the clear fires once |
 | `BoosterInventoryTests` | starting stock saved, use, none left, bad saves, the shop paying or refusing |
 | `BoosterServiceTests` | freeze at once and no stacking; rocket, hammer and vacuum wait for a tapped block, spend one, change the board, resume, can win; cancel, purchase needed, refused when not playing, restart |
 | `LevelTimerFreezeTests` | the freeze holds the timer for its seconds, stands still with a pause or the background, does not stack, ends on restart |

@@ -32,6 +32,7 @@ namespace ColorBlockJam.Tests.EditMode
             _events.Clear();
             _bus.Subscribe<BlockRemovedSignal>(signal => _events.Add($"removed {signal.BlockId} {signal.Kind} #{signal.Order}"));
             _bus.Subscribe<BlockCellRemovedSignal>(signal => _events.Add($"cell {signal.BlockId} {signal.Cell}"));
+            _bus.Subscribe<BlockSplitOffSignal>(signal => _events.Add($"split {signal.BlockId} from {signal.FromBlockId}"));
             _bus.Subscribe<BoardClearedSignal>(_ => _events.Add("cleared"));
         }
 
@@ -48,16 +49,42 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
-        public void RemoveCell_ShouldKeepTheRestOfTheBlock_WhenItHasOtherCells()
+        public void RemoveCell_ShouldKeepTheRestAsOneBlock_WhenItStaysInOnePiece()
         {
-            _board.RemoveCell(0, new Vector2Int(1, 3));
+            _board.RemoveCell(0, new Vector2Int(2, 3));
 
             BoardBlock bar = _board.Current.Blocks[0];
             Assert.That(bar.HasExited, Is.False);
-            Assert.That(bar.StartCells, Is.EqualTo(new[] { new Vector2Int(0, 3), new Vector2Int(2, 3) }));
-            Assert.That(_board.Current.TryGetBlockAt(new Vector2Int(1, 3), out _), Is.False);
-            Assert.That(_board.Current.TryGetBlockAt(new Vector2Int(2, 3), out int owner) && owner == 0, Is.True);
-            Assert.That(_events, Is.EqualTo(new[] { "cell 0 (1, 3)" }));
+            Assert.That(bar.StartCells, Is.EqualTo(new[] { new Vector2Int(0, 3), new Vector2Int(1, 3) }));
+            Assert.That(_board.Current.TryGetBlockAt(new Vector2Int(2, 3), out _), Is.False);
+            Assert.That(_board.Current.Blocks.Count, Is.EqualTo(3));
+            Assert.That(_events, Is.EqualTo(new[] { "cell 0 (2, 3)" }));
+        }
+
+        [Test]
+        public void RemoveCell_ShouldMakeEachPieceABlock_WhenTheBlockFallsApart()
+        {
+            _board.RemoveCell(0, new Vector2Int(1, 3));
+
+            BoardState board = _board.Current;
+            Assert.That(board.Blocks.Count, Is.EqualTo(4));
+            Assert.That(board.RemainingBlocks, Is.EqualTo(4));
+            Assert.That(board.Blocks[0].StartCells, Is.EqualTo(new[] { new Vector2Int(0, 3) }));
+            Assert.That(board.Blocks[3].StartCells, Is.EqualTo(new[] { new Vector2Int(2, 3) }));
+            Assert.That(board.Blocks[3].Color, Is.EqualTo(Red));
+            Assert.That(board.TryGetBlockAt(new Vector2Int(2, 3), out int owner) && owner == 3, Is.True);
+            Assert.That(_events, Is.EqualTo(new[] { "cell 0 (1, 3)", "split 3 from 0" }));
+        }
+
+        [Test]
+        public void RemoveCell_ShouldKeepTheBiggestPieceAsTheBlock_WhenThePiecesDiffer()
+        {
+            _board.Load(new LevelDataBuilder(4, 4).Block(Red, 0, 3, 1, 3, 2, 3, 3, 3).Door(Top, 0, 4, Red).Build());
+
+            _board.RemoveCell(0, new Vector2Int(1, 3));
+
+            Assert.That(_board.Current.Blocks[0].StartCells, Is.EqualTo(new[] { new Vector2Int(2, 3), new Vector2Int(3, 3) }));
+            Assert.That(_board.Current.Blocks[1].StartCells, Is.EqualTo(new[] { new Vector2Int(0, 3) }));
         }
 
         [Test]
@@ -98,14 +125,16 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
-        public void BlastedBlock_ShouldStillMoveAndExitAsOne_WhenItFellApart()
+        public void SplitPieces_ShouldMoveAndLeaveOnTheirOwn_WhenTheBlockFellApart()
         {
-            // The bar loses its middle: its two ends keep moving together and leave through the top door.
+            // The bar loses its middle: each end is a block now and leaves through the top door by itself.
             _board.RemoveCell(0, new Vector2Int(1, 3));
 
-            StepResult result = _board.TryStep(0, Vector2Int.up);
+            StepResult piece = _board.TryStep(3, Vector2Int.up);
 
-            Assert.That(result, Is.EqualTo(StepResult.Exited));
+            Assert.That(piece, Is.EqualTo(StepResult.Exited));
+            Assert.That(_board.Current.Blocks[0].HasExited, Is.False, "The other piece stays where it was.");
+            Assert.That(_board.TryStep(0, Vector2Int.up), Is.EqualTo(StepResult.Exited));
         }
 
         [Test]

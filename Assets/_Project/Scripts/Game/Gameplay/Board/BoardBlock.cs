@@ -6,7 +6,8 @@ namespace ColorBlockJam.Game.Gameplay.Board
 {
     /// <summary>
     /// A block during one attempt. Only <see cref="BoardState"/> moves or removes it. The rocket booster can take
-    /// single cells out of it (DA-36), so its cells may change during the attempt; the level data never does.
+    /// single cells out of it and split it into blocks (DA-36), so its cells may change during the attempt; the
+    /// level data never does.
     /// </summary>
     public sealed class BoardBlock
     {
@@ -50,6 +51,14 @@ namespace ColorBlockJam.Game.Gameplay.Board
         internal void MarkExited() => HasExited = true;
 
         internal void RemoveCellAt(int index) => _startCells.RemoveAt(index);
+
+        /// <summary>Drops the cells that now lie at <paramref name="boardCells"/> (a piece that split off).</summary>
+        internal void RemoveBoardCells(List<Vector2Int> boardCells)
+        {
+            for (int i = _startCells.Count - 1; i >= 0; i--)
+                if (boardCells.Contains(_startCells[i] + Offset))
+                    _startCells.RemoveAt(i);
+        }
 
         /// <summary>One other block left; true when that thawed it.</summary>
         internal bool CountDownIce()

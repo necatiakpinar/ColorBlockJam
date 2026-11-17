@@ -91,6 +91,7 @@ namespace ColorBlockJam.Game.Gameplay.View
             _signalBus.Subscribe<BlockExitedSignal>(OnBlockExited);
             _signalBus.Subscribe<BlockRemovedSignal>(OnBlockRemoved);
             _signalBus.Subscribe<BlockCellRemovedSignal>(OnBlockCellRemoved);
+            _signalBus.Subscribe<BlockSplitOffSignal>(OnBlockSplitOff);
             _signalBus.Subscribe<BoosterTargetingChangedSignal>(OnBoosterTargetingChanged);
             _signalBus.Subscribe<IceCountedDownSignal>(OnIceCountedDown);
             _signalBus.Subscribe<BlockThawedSignal>(OnBlockThawed);
@@ -230,7 +231,10 @@ namespace ColorBlockJam.Game.Gameplay.View
             Burst(centre, _config.TintOf(block.Color), _config.SmashDebrisPerCell * block.CellCount);
         }
 
-        /// <summary>The rocket blasted one cell: the block is rebuilt from the cells it has left, where it is.</summary>
+        /// <summary>
+        /// The rocket blasted one cell: the block is rebuilt from the cells it has left, where it is (a piece that split
+        /// off follows with <see cref="BlockSplitOffSignal"/>).
+        /// </summary>
         void OnBlockCellRemoved(BlockCellRemovedSignal signal)
         {
             BoardBlock block = _board.Current.Blocks[signal.BlockId];
@@ -265,6 +269,18 @@ namespace ColorBlockJam.Game.Gameplay.View
             ExitBurstView shatter = _shatterPool.Get();
             shatter.Play(centre + Vector3.up * _config.ExitDebrisHeight, Vector2Int.up, 1f, Color.white, 0f,
                 _config.ThawDuration, 0f, _config.ThawDebrisPerCell * block.CellCount, _releaseShatter);
+        }
+
+        /// <summary>A piece the rocket split off is a block of its own now: it gets its own view where it lies.</summary>
+        void OnBlockSplitOff(BlockSplitOffSignal signal)
+        {
+            BoardBlock block = _board.Current.Blocks[signal.BlockId];
+            BlockView view = _blockPool.Get();
+            view.transform.SetParent(_root, false);
+            Build(view, block.StartCells, block.Color, block.Ice);
+            view.PlaceAt(block.Offset);
+            // Board ids are the views' indices; a split-off block always takes the next one.
+            _views.Add(view);
         }
 
         void OnBoosterTargetingChanged(BoosterTargetingChangedSignal signal)
@@ -330,6 +346,7 @@ namespace ColorBlockJam.Game.Gameplay.View
             _signalBus.Unsubscribe<BlockExitedSignal>(OnBlockExited);
             _signalBus.Unsubscribe<BlockRemovedSignal>(OnBlockRemoved);
             _signalBus.Unsubscribe<BlockCellRemovedSignal>(OnBlockCellRemoved);
+            _signalBus.Unsubscribe<BlockSplitOffSignal>(OnBlockSplitOff);
             _signalBus.Unsubscribe<BoosterTargetingChangedSignal>(OnBoosterTargetingChanged);
             _signalBus.Unsubscribe<IceCountedDownSignal>(OnIceCountedDown);
             _signalBus.Unsubscribe<BlockThawedSignal>(OnBlockThawed);

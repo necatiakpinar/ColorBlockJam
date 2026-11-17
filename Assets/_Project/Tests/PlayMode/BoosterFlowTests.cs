@@ -118,6 +118,7 @@ namespace ColorBlockJam.Tests.PlayMode
                     block = candidate;
             Assume.That(block, Is.Not.Null, "The level needs a block of more than one cell.");
             int cells = block.CellCount;
+            int blocksBefore = board.Blocks.Count;
             BlockView view = SceneTestUtility.FindInActiveScene<BlockLayerView>().Views[block.Id];
             int parts = view.PartCount;
 
@@ -125,8 +126,14 @@ namespace ColorBlockJam.Tests.PlayMode
             TapCell(block.GetCell(0));
             yield return null;
 
-            Assert.That(block.CellCount, Is.EqualTo(cells - 1));
+            // The cells left are the block's and those of any piece that split off as a block of its own.
+            int left = block.CellCount;
+            for (int id = blocksBefore; id < board.Blocks.Count; id++)
+                left += board.Blocks[id].CellCount;
+            Assert.That(left, Is.EqualTo(cells - 1));
             Assert.That(view.PartCount, Is.LessThan(parts));
+            Assert.That(SceneTestUtility.FindInActiveScene<BlockLayerView>().Views, Has.Count.EqualTo(board.Blocks.Count),
+                "Every split-off piece has a view of its own.");
             LogAssert.NoUnexpectedReceived();
         }
 

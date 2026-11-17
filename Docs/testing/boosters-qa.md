@@ -17,7 +17,8 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 - [ ] ⚙ Freeze holds the timer for 10 s of play, pauses with the level, does not stack, ends on restart — `LevelTimerFreezeTests`
 - [ ] ⚙ Rocket, hammer and vacuum wait for a tap on a block, spend one, change the board and play on — `BoosterServiceTests`
 - [ ] ⚙ Taking the last blocks wins the level — `BoosterServiceTests.Booster_ShouldWinTheLevel_WhenItRemovesTheLastBlocks`
-- [ ] ⚙ A blasted block that fell apart still moves and exits as one — `BoardRemovalTests.BlastedBlock_ShouldStillMoveAndExitAsOne_WhenItFellApart`
+- [ ] ⚙ A blasted block that falls apart splits into blocks that move and leave on their own — `BoardRemovalTests.RemoveCell_ShouldMakeEachPieceABlock_WhenTheBlockFallsApart`, `SplitPieces_ShouldMoveAndLeaveOnTheirOwn_WhenTheBlockFellApart`
+- [ ] 👁 Blast the middle of a long block: both ends are drawn as separate blocks and can be dragged one by one.
 - [ ] ⚙ Through the real HUD: hammer smashes, rocket rebuilds the block, freeze shows the ice — `BoosterFlowTests`
 - [ ] 👁 Tapping the waiting booster again puts it back; tapping another switches; pause while choosing puts it back first.
 

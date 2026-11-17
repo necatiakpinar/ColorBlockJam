@@ -48,7 +48,8 @@ namespace ColorBlockJam.Game.Gameplay.Board
         }
 
         /// <summary>
-        /// Removes one cell of a block (rocket) and announces <see cref="BlockCellRemovedSignal"/>, or
+        /// Removes one cell of a block (rocket) and announces <see cref="BlockCellRemovedSignal"/>, then a
+        /// <see cref="BlockSplitOffSignal"/> for each piece that became a block of its own; or
         /// <see cref="BlockRemovedSignal"/> when it was the block's last cell.
         /// </summary>
         public void RemoveCell(int blockId, Vector2Int cell)
@@ -61,6 +62,9 @@ namespace ColorBlockJam.Game.Gameplay.Board
             else
             {
                 _signalBus.Fire(new BlockCellRemovedSignal(blockId, cell));
+                IReadOnlyList<int> pieces = Current.JustSplitOff;
+                for (int i = 0; i < pieces.Count; i++)
+                    _signalBus.Fire(new BlockSplitOffSignal(pieces[i], blockId));
             }
 
             AnnounceIfCleared();

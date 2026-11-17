@@ -8,7 +8,7 @@ Four boosters sit at the bottom of the gameplay HUD, left to right (T-36, DA-36)
 | Booster | Use | What it does |
 | --- | --- | --- |
 | Freeze | at once | the level timer stands still for `BoosterConfig.FreezeSeconds` (10 s) of play |
-| Rocket | tap a block | blasts the tapped cell out of the block; the rest stays one block |
+| Rocket | tap a block | blasts the tapped cell out of the block; if the rest falls apart, every piece but the biggest becomes a block of its own |
 | Hammer | tap a block | smashes the whole block; on a frozen block it breaks the ice instead (DA-37) |
 | Vacuum | tap a block | clears every block of the tapped block's colour |
 
@@ -43,9 +43,12 @@ level.
 
 `ActiveBoard` announces the change: `BlockRemovedSignal` (with `BlockRemovalKind` Smashed, Blasted or
 Vacuumed and an order for the vacuum's stagger), `BlockCellRemovedSignal` when a rocket leaves the block
-with cells, and `BoardClearedSignal` once when nothing is left. A blasted block may fall apart into pieces;
-they keep moving and leaving as one block (`BoardBlock.StartCells` holds the cells it still has, and the
-views read exit paths from it, not from the level data).
+with cells, and `BoardClearedSignal` once when nothing is left. When the blasted block falls apart, the
+biggest piece (the first on a tie) stays the block and every other piece becomes a new block of the same
+colour and ice, with the next free id, where it lies (`BoardState.JustSplitOff`); `BlockSplitOffSignal`
+announces each one and `BlockLayerView` gives it a view of its own. Each piece then moves and leaves by
+itself. `BoardBlock.StartCells` holds the cells a block still has; the views read exit paths from it, not
+from the level data.
 
 ## 3. The freeze
 
