@@ -356,6 +356,21 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
+        public void Cancel_ShouldDropTheHeldBlockOntoItsCellAndTakeTheNextPress_WhenTheTouchIsLost()
+        {
+            _board.Load(new LevelDataBuilder(5, 5).Block(Red, 0, 0).Build());
+            Finger(BoardPointerPhase.Pressed, 0, 0);
+            Finger(BoardPointerPhase.Dragged, 1.3f, 0);
+
+            Finger(BoardPointerPhase.Cancelled, 1.3f, 0);
+            Finger(BoardPointerPhase.Pressed, 1, 0);
+            Finger(BoardPointerPhase.Dragged, 3f, 0);
+
+            Assert.That(_drops[0].Offset, NUnit.Framework.Is.EqualTo(new Vector2Int(1, 0)), "Onto the cell the board has.");
+            Assert.That(CellOf(0), NUnit.Framework.Is.EqualTo(new Vector2Int(3, 0)), "The next press drags again.");
+        }
+
+        [Test]
         public void Win_ShouldForgetTheExitedBlockWithoutDroppingIt_WhenTheLastExitCompletesTheLevel()
         {
             _board.Load(new LevelDataBuilder(4, 4).Block(Red, 0, 1).Door(Left, 1, 1, Red).Build());

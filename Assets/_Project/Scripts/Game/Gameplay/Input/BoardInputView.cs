@@ -1,3 +1,4 @@
+using ColorBlockJam.Core.Lifecycle;
 using ColorBlockJam.Core.Signals;
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Gameplay.Board;
@@ -29,9 +30,18 @@ namespace ColorBlockJam.Game.Gameplay.Input
             _config = config;
             _signalBus = signalBus;
             _signalBus.Subscribe<BoardLoadedSignal>(OnBoardLoaded);
+            _signalBus.Subscribe<ApplicationPausedSignal>(OnApplicationPaused);
         }
 
         void OnBoardLoaded(BoardLoadedSignal signal) => FitToBoard();
+
+        void OnApplicationPaused(ApplicationPausedSignal signal)
+        {
+            if (!signal.IsPaused || !_isPressed)
+                return;
+            _isPressed = false;
+            Fire(BoardPointerPhase.Cancelled);
+        }
 
         public void FitToBoard()
         {
@@ -69,6 +79,7 @@ namespace ColorBlockJam.Game.Gameplay.Input
         void OnDestroy()
         {
             _signalBus.Unsubscribe<BoardLoadedSignal>(OnBoardLoaded);
+            _signalBus.Unsubscribe<ApplicationPausedSignal>(OnApplicationPaused);
         }
 
         void OnDisable()

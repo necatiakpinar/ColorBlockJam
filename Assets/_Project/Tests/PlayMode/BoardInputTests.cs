@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
+using ColorBlockJam.Core.Lifecycle;
 using ColorBlockJam.Core.Signals;
 using ColorBlockJam.Game.Gameplay.Board;
 using ColorBlockJam.Game.Gameplay.Hud;
@@ -154,6 +155,22 @@ namespace ColorBlockJam.Tests.PlayMode
             Assert.That(results[0].gameObject, Is.SameAs(pauseButton.gameObject));
             Assert.That(results.Exists(result => result.gameObject == _input.gameObject), Is.True,
                 "The board should lie under the button for this test to mean anything.");
+        }
+
+        [UnityTest]
+        public IEnumerator Background_ShouldCancelTheHeldPressAndAcceptTheNextOne_WhenTheAppPausesMidDrag()
+        {
+            yield return SetUpBoard(BoardSize);
+
+            _input.OnPointerDown(PointerAt(new Vector2Int(2, 3), 0));
+            _signalBus.Fire(new ApplicationPausedSignal(true));
+            _signalBus.Fire(new ApplicationPausedSignal(false));
+            _input.OnPointerDown(PointerAt(new Vector2Int(1, 1), 1));
+
+            Assert.That(_received.ConvertAll(signal => signal.Phase), Is.EqualTo(new[]
+            {
+                BoardPointerPhase.Pressed, BoardPointerPhase.Cancelled, BoardPointerPhase.Pressed,
+            }));
         }
     }
 }

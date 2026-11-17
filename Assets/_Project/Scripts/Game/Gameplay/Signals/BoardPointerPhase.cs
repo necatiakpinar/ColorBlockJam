@@ -5,5 +5,6 @@ namespace ColorBlockJam.Game.Gameplay.Signals
         Pressed = 1000,
         Dragged = 2000,
         Released = 3000,
+        Cancelled = 4000,
     }
 }

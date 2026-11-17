@@ -105,3 +105,5 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 - [x] ⚙ A HUD button over the board wins the touch — `BoardInputTests.EventSystemRaycast_ShouldHitTheHudButtonFirst_WhenTheButtonCoversTheBoard`
 - [x] ⚙ A release off the board plane ends the touch at the last cell — `BoardInputTests.Release_ShouldEndTheTouchAtTheLastCell_WhenTheReleaseRayMissesTheBoardPlane`
 - [x] ⚙ Disabling the board mid-touch frees input — `BoardInputTests.Press_ShouldBeAccepted_WhenTheViewWasDisabledMidTouch`
+- [x] ⚙ A touch lost to the background drops the held block and the next press works — `BlockDragControllerTests.Cancel_ShouldDropTheHeldBlockOntoItsCellAndTakeTheNextPress_WhenTheTouchIsLost`, `BoardInputTests.Background_ShouldCancelTheHeldPressAndAcceptTheNextOne_WhenTheAppPausesMidDrag`
+- [ ] 👁 On a device, drag a block, press Home or take a call, come back: the block sits on a cell and the board takes the next drag.

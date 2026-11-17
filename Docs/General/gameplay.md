@@ -100,7 +100,10 @@ and restart, so no state survives an attempt. `BoardStateTests` pins every rule 
    - input counts only while the level plays: `LevelPausedSignal`, `LevelCompletedSignal` and
      `LevelFailedSignal` drop the held block onto its cell (`BlockDroppedSignal`) and the finger is ignored
      until `LevelStartedSignal` or `LevelResumedSignal` (DA-22); `BoosterTargetingChangedSignal` does the same
-     while a booster waits for its target ([boosters.md](boosters.md) §2).
+     while a booster waits for its target ([boosters.md](boosters.md) §2);
+   - when the app goes to the background mid-touch, `BoardInputView` ends the touch with
+     `BoardPointerPhase.Cancelled`: the held block drops onto its cell and the next press works, even if
+     the platform never sends the pointer-up (a booster target tap is dropped, not used).
    A drag allocates nothing (`BlockDragControllerTests`).
 
 ## 5. View

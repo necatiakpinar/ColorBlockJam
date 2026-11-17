@@ -77,6 +77,8 @@ namespace ColorBlockJam.Game.Gameplay.Boosters
                 return;
             }
 
+            if (signal.Phase == BoardPointerPhase.Cancelled)
+                _hasPress = false;
             if (signal.Phase != BoardPointerPhase.Released || !_hasPress)
                 return;
             _hasPress = false;

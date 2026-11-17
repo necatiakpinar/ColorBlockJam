@@ -99,6 +99,9 @@ namespace ColorBlockJam.Game.Gameplay.Input
                         _signalBus.Fire(new BlockDroppedSignal(_blockId, CellOffset));
                     _blockId = NoBlock;
                     break;
+                case BoardPointerPhase.Cancelled:
+                    DropHeldBlock();
+                    break;
             }
         }
 
