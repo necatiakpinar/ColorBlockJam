@@ -60,6 +60,9 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - [ ] [T-41 Android APK](#t-41-android-apk)
 - [ ] [T-42 Repository hygiene](#t-42-repository-hygiene)
 - [x] [T-43 Touch and door feel](#t-43-touch-and-door-feel)
+- [ ] [T-44 Connectivity probe and trusted time](#t-44-connectivity-probe-and-trusted-time)
+- [ ] [T-45 No-internet popup over every scene](#t-45-no-internet-popup-over-every-scene)
+- [ ] [T-46 Boot waits for a connection](#t-46-boot-waits-for-a-connection)
 
 ---
 
@@ -319,6 +322,73 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - **Tests:** `EM BlockDragControllerTests` (near miss, wrong door is a wall), `EM ExitPathTests`,
   `EM GameplayHapticsTests`, `PM GameplayBoardTests` (door gate, shared spray).
 - **Docs:** `gameplay.md` §4–§5, `art-pipeline.md` §4, `testing.md`, `gameplay-qa.md`.
+
+---
+
+## Online requirement
+
+### T-44 Connectivity probe and trusted time
+
+- **Req:** R-43, R-44. Implements DA-25, DA-27.
+- **Arch:** Root scope. `IConnectivityService` (Core, `Network/`) with `UnityWebRequestConnectivityService`:
+  a `GET` to `NetworkConfig.ProbeUrl` with `ProbeTimeout`; success is any 2xx answer. It keeps `IsOnline`
+  and fires `ConnectivityChangedSignal(isOnline)` only on a change. It probes at start, every
+  `OnlineProbeInterval` while online, every `OfflineProbeInterval` while offline, at once when the app
+  comes back from the background (`ApplicationPausedSignal`), and on `ProbeNowAsync` (Retry). Waits use
+  `IGameClock` delays, not `Update`. `ITrustedClock` (Core): `TryGetUtcNow(out DateTime)` = the last
+  successful probe's `Date` header plus the monotonic time since it; false before the first success.
+  The HTTP call sits behind a small `IProbeRequest` seam so Edit Mode tests answer it by hand.
+- **Subtasks:**
+  - [ ] `NetworkConfig` (Root) with probe URL, timeout and intervals.
+  - [ ] Probe loop, change-only signal, resume probe, `ProbeNowAsync`.
+  - [ ] Trusted clock from the `Date` header (RFC 1123); missing or unparsable header keeps the last value.
+- **Accept:** with the network cut, `IsOnline` turns false within one probe interval plus the timeout;
+  reconnecting turns it true within one offline interval; the trusted time stays right after the device
+  clock is moved.
+- **Tests:** `EM ConnectivityServiceTests` (fake request and `FakeGameClock`: start, change-only signal,
+  intervals, resume, retry, cancel on dispose), `EM TrustedClockTests` (date parse, monotonic advance,
+  unavailable before the first success).
+- **Docs:** new `network.md` (probe, intervals, trusted time, editor bypass); `architecture.md` §1 tree;
+  `network-qa.md`.
+
+### T-45 No-internet popup over every scene
+
+- **Req:** R-43. Implements DA-26.
+- **Arch:** an authored overlay canvas on the `RootLifetimeScope` prefab (sort order above every scene
+  canvas, `SafeArea`, full-screen blocker), `NoInternetPopupView` bound by `[Inject] Construct`, shown on
+  `ConnectivityChangedSignal(false)` and hidden on `(true)`. Retry calls `IConnectivityService.ProbeNowAsync`
+  and shows a short busy state. Gameplay: `LevelTimer` and `BlockDragController` treat offline like the
+  app being in the background (timer freezes, a held block is dropped, the finger is ignored); the level is
+  not paused, so no pause popup opens under it.
+- **Subtasks:**
+  - [ ] Author the overlay (title, message, Retry with `ButtonPressFeedback`) from the UI art set.
+  - [ ] Show / hide with the popup animation used by the other popups (T-19 / T-25 shared view).
+  - [ ] Timer and drag listen to the connectivity signal.
+- **Accept:** cutting the network on Home or mid-level shows the popup within one probe interval; a
+  mid-level timer stands still under it and the board ignores touches; Retry with the network back
+  closes it and play continues where it stopped.
+- **Tests:** `EM LevelTimerTests` (offline freezes, online resumes), `EM BlockDragControllerTests`
+  (offline drops and ignores), `PM NoInternetPopupTests` (fake connectivity: shows over Gameplay, Retry
+  probes, back online hides).
+- **Docs:** `network.md`, `ui.md` §3 (the Root overlay is the one popup outside `IPopupService`),
+  `gameplay.md` §6 Timer, `network-qa.md`.
+
+### T-46 Boot waits for a connection
+
+- **Req:** R-43. Implements DA-25.
+- **Arch:** `ConnectivityBootStep` (first in `SplashInstaller`) awaits the first successful probe; while
+  offline the Root popup is up and the step keeps waiting (no timeout: the game cannot run offline).
+  `splash-boot.md` §1 guarantee 3 changes to "Splash reaches Home once online". In the editor,
+  `NetworkConfig.BypassInEditor` skips the gate so play mode and Play Mode tests do not need a network;
+  tests of the gate use a fake service.
+- **Subtasks:**
+  - [ ] Boot step and its weight on the loading bar.
+  - [ ] Editor bypass; Play Mode tests run with it on.
+- **Accept:** a device in airplane mode stays on Splash with the popup; turning the network on continues
+  to Home without a restart; the editor plays without a network when the bypass is on.
+- **Tests:** `EM ConnectivityBootStepTests` (waits while offline, completes on the first success),
+  `EM InstallerResolutionTests` (step order), `PM NavigationFlowTests` stay green with the bypass.
+- **Docs:** `splash-boot.md` §1–§3, `network.md`, `navigation-qa.md`.
 
 ---
 

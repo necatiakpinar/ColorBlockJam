@@ -41,3 +41,4 @@ Pages marked **binding** carry rules agents must follow before touching the path
 | [testing/settings-qa.md](testing/settings-qa.md) | the Settings popup (stub) |
 | [testing/gameplay-qa.md](testing/gameplay-qa.md) | gameplay, timer, coins, popups, levels 1–5 (stub) |
 | [testing/level-editor-qa.md](testing/level-editor-qa.md) | the level editor (stub) |
+| [testing/network-qa.md](testing/network-qa.md) | the online requirement: connectivity, trusted time, no-internet popup (stub) |

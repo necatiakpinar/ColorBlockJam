@@ -66,6 +66,9 @@ requirement keeps its id and is marked `Dropped`.
 | R-40 | Problems found in the art set are logged in [asset-feedback.md](asset-feedback.md) | should | T-03, T-40 |
 | R-41 | An unclear requirement gets a decision, registered as `DA-n`, and work continues | must | DA registry, T-40 |
 | R-42 | Touch and door feedback feel forgiving and clear: near-miss presses pick a block, wrong doors answer a push, doors open for a leaving block | should | T-43 |
+| R-43 | The game needs a working internet connection: without one, a full-screen "No internet connection" popup with a Retry button blocks the game at boot and during play, and closes itself once the connection is back | must | T-44, T-45, T-46 |
+| R-44 | Wall-clock game features (lives refill, daily rewards) read a trusted time taken from the internet, never the device clock | should | T-44 |
+| R-45 | Changing the device clock cannot change the level timer | must | T-15 |
 
 ## 2. Scope decisions
 
@@ -92,6 +95,13 @@ requirement keeps its id and is marked `Dropped`.
    class, `BoardSpace`, and reads `BoardViewConfig.CellSize`; no code assumes a cell is 1 unit. **Why:**
    the art convention stays an import detail, the world size is one tunable, and changing either never
    touches data or rules. The project README states this decision (T-40).
+9. **Online only** (R-43, developer decision 2026-11-17). A real request to a probe URL decides whether
+   the game is online; Unity's `Application.internetReachability` only reports a network interface, so
+   Wi-Fi without internet would pass it. The probe's response also carries the server's time (HTTP `Date`
+   header), kept as the trusted wall clock (R-44). The level timer never needed it: it counts monotonic
+   real time, which the device clock does not move (R-45, T-15). The no-internet popup sits above every
+   scene and every other popup, so it lives on the Root scope, outside the scenes' one-popup
+   `IPopupService`. This replaces the rule that Splash never waits on the network (splash-boot.md §1).
 
 ## 3. Open questions
 
@@ -152,6 +162,9 @@ task is marked `Dropped`, never deleted. Detail per task: [tasks.md](tasks.md).
 | T-40 | 12 | Project README | Open and run, level editor how-to, architecture decisions, known problems, asset feedback | T-39 | Todo |
 | T-41 | 12 | Android APK | APK installs and plays the full flow on a device | T-39 | Todo |
 | T-42 | 12 | Repository hygiene | Clean clone opens and runs; no Library, Temp or Build tracked | T-40, T-41 | Todo |
+| T-44 | 4 | Connectivity probe and trusted time | Online state follows a real request; server time is readable once a probe succeeds | T-04 | Todo |
+| T-45 | 5 | No-internet popup over every scene | Going offline anywhere shows the blocking popup; in gameplay the timer and input stop; back online closes it | T-44, T-05, T-15 | Todo |
+| T-46 | 5 | Boot waits for a connection | Splash does not reach Home offline; the popup's Retry or a returning connection continues the boot | T-44, T-45 | Todo |
 | T-43 | 3 | Touch and door feel | Near-miss presses pick a block; wrong doors stop a block like a wall; doors open and close; close exits share one spray | T-12, T-13 | Done |
 
 Status values: `Todo`, `In progress`, `Blocked`, `Done`, `Dropped`.
