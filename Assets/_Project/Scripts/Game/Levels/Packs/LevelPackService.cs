@@ -1,8 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using Cysharp.Threading.Tasks;
+using ColorBlockJam.Core.Assets;
 using ColorBlockJam.Core.Logging;
 using ColorBlockJam.Core.Persistence;
 using ColorBlockJam.Game.Configs;
+using UnityEngine;
 
 namespace ColorBlockJam.Game.Levels.Packs
 {
@@ -15,11 +19,15 @@ namespace ColorBlockJam.Game.Levels.Packs
         readonly IGameLogger _logger;
         readonly LevelPackJson _json = new();
         readonly LevelDefinitionValidator _validator;
+        readonly AssetLoader _assets;
         LevelPack _current;
+        string _bundledJson;
 
-        public LevelPackService(LevelPackConfig config, LevelRulesConfig rules, IKeyValueStorage storage, IGameLogger logger)
+        public LevelPackService(LevelPackConfig config, LevelRulesConfig rules, IKeyValueStorage storage, IGameLogger logger,
+            AssetLoader assets)
         {
             _config = config;
+            _assets = assets;
             _storage = storage;
             _logger = logger;
             _validator = new LevelDefinitionValidator(rules);
@@ -33,9 +41,34 @@ namespace ColorBlockJam.Game.Levels.Packs
 
         public LevelData GetLevel(int index) => Current.Levels[index];
 
-        public void Load()
+        public async UniTask LoadAsync(CancellationToken cancellationToken)
         {
-            if (!TryCheck(_config.BundledPack.text, out LevelPack bundled, out string problem))
+            TextAsset bundledPack = await _assets.LoadAsync(_config.BundledPack, cancellationToken);
+            _bundledJson = bundledPack.text;
+            _assets.Release(_config.BundledPack);
+            ChoosePack();
+        }
+
+        public bool TryStoreRemote(string json, out string error)
+        {
+            if (!TryCheck(json, out LevelPack remote, out error))
+                return false;
+            if (!TryCheck(BundledJson, out LevelPack bundled, out error))
+                throw new InvalidOperationException($"The bundled level pack is broken: {error}");
+            if (remote.Revision < bundled.Revision)
+            {
+                error = $"Revision {remote.Revision} is older than the bundled {bundled.Revision}.";
+                return false;
+            }
+
+            _storage.Set(RemoteKey, json);
+            _storage.Flush();
+            return true;
+        }
+
+        void ChoosePack()
+        {
+            if (!TryCheck(_bundledJson, out LevelPack bundled, out string problem))
                 throw new InvalidOperationException($"The bundled level pack is broken: {problem}");
             _current = bundled;
             IsRemote = false;
@@ -55,22 +88,7 @@ namespace ColorBlockJam.Game.Levels.Packs
             _storage.Flush();
         }
 
-        public bool TryStoreRemote(string json, out string error)
-        {
-            if (!TryCheck(json, out LevelPack remote, out error))
-                return false;
-            if (!TryCheck(_config.BundledPack.text, out LevelPack bundled, out error))
-                throw new InvalidOperationException($"The bundled level pack is broken: {error}");
-            if (remote.Revision < bundled.Revision)
-            {
-                error = $"Revision {remote.Revision} is older than the bundled {bundled.Revision}.";
-                return false;
-            }
-
-            _storage.Set(RemoteKey, json);
-            _storage.Flush();
-            return true;
-        }
+        string BundledJson => _bundledJson ?? throw new InvalidOperationException("Load the level pack at boot before storing a remote one.");
 
         bool TryCheck(string json, out LevelPack pack, out string problem)
         {

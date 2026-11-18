@@ -14,7 +14,12 @@ namespace ColorBlockJam.Game.Configs
         [SerializeField]
         FadeScaleInSettings _popupReveal = new(0.25f, 0.85f, Ease.OutBack);
 
+        [Tooltip("Addressables address of the late-bound UI atlas; it must equal the atlas name, the tag Unity requests.")]
+        [SerializeField]
+        string _atlasAddress = "UiAtlas";
+
         public PressFeedbackSettings PressFeedback => _pressFeedback;
         public FadeScaleInSettings PopupReveal => _popupReveal;
+        public string AtlasAddress => _atlasAddress;
     }
 }

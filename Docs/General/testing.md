@@ -27,9 +27,11 @@ before writing a new fake.
 | `SignalBusTests` | delivery, order, type isolation, duplicate guard, (un)subscribe during fire |
 | `AssetLoaderTests` | one backend load for repeat and concurrent asks; keys split by type; asset references; holder counting; a cancelled holder, a shared failure, a release refused mid-load; dispose releases loaded and in-flight assets ([addressables.md](addressables.md)) |
 | `InitializeAssetsStepTests` | the boot step initializes the asset source |
+| `SpriteAtlasBinderTests` | a requested atlas tag is loaded by address and handed to Unity, once, and kept while its scope lives; a preloaded atlas binds at once; a disposed binder binds nothing and releases the late load |
+| `AddressablesSetupTests` | the atlas is addressable by its name and not built into the player; every cue clip and the bundled pack are addressable; groups list GUIDs; content builds with the player |
 | `BootSequenceTests` | step order, weighted progress, empty sequence, cancellation, weight validation |
 | `PlayerProgressServiceTests` | defaults, read-before-load, persist + flush, corrupt and invalid data, setting a level |
-| `InstallerResolutionTests` | every installer builds; one SignalBus; one `AssetLoader` per scope; boot step order; board space cell size; one command per booster |
+| `InstallerResolutionTests` | every installer builds; one SignalBus; one `AssetLoader` per scope, Root singletons keep the Root one; boot step order; board space cell size; one command per booster |
 | `HomeFlowTests` | Home shows the level path and the balance; the level button routes to Gameplay; settings open showing the saved switches, a switch flips its setting, close closes |
 | `NavigationServiceTests` | each route loads its scene; a request during a load is ignored; a failed load frees the guard |
 | `PopupServiceTests` | one popup at a time; close allows the next |
@@ -40,7 +42,7 @@ before writing a new fake.
 | `ArchitectureTests` | no comments in scripts or tests, no per-frame code, Core never references Game, logs only through `IGameLogger`, no `Camera.main` or `Find*`, every build scene's serialized references set |
 | `LevelProviderTests` | level number to catalog entry; looping; empty catalog |
 | `LevelPackJsonTests` | the level pack JSON: round trip, names not numbers, compact output, unknown fields ignored, refusals worded with level and item |
-| `LevelPackServiceTests` | bundled or stored remote pack per launch; stale and broken packs dropped; remote packs stored only when good, for the next launch |
+| `LevelPackServiceTests` | the bundled pack loaded through the asset loader and released once read; bundled or stored remote pack per launch; stale and broken packs dropped; remote packs stored only when good, for the next launch |
 | `LevelWinServiceTests` | a win advances the level once and pays its layout's reward (also when looped) in one save, then announces it; a loss or a disposed service changes nothing |
 | `ShippedLevelsTests` | the catalog's twenty levels: no validator issues, solved by `LevelSolver` as hard as their label; levels 1–8 ramp up; from level 9 each group of six has a breather and a higher peak, the last needing 8+ room-making moves |
 | `LevelHardenerTests` | Make harder never needs fewer moves, finds more, keeps the level valid and solvable, repeats per seed, adds no blockers when they are off, stops at its target, refuses an unfinishable level |

@@ -14,11 +14,13 @@ namespace ColorBlockJam.Game.Configs
 
         public IReadOnlyList<AudioCueSettings> Cues => _cues;
 
-        public AudioCueSettings For(AudioCue cue)
+        public AudioCueSettings For(AudioCue cue) => _cues[IndexOf(cue)];
+
+        public int IndexOf(AudioCue cue)
         {
             for (int i = 0; i < _cues.Count; i++)
                 if (_cues[i].Cue == cue)
-                    return _cues[i];
+                    return i;
             throw new InvalidOperationException($"{name} has no clip for the {cue} cue.");
         }
     }

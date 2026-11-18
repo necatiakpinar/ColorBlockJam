@@ -12,4 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78874af25a8fb5140937818523c6fe95, type: 3}
   m_Name: LevelPackConfig
   m_EditorClassIdentifier: 
-  _bundledPack: {fileID: 4900000, guid: d0fd4ff29f8006b4392ff94ab9213c1e, type: 3}
+  _bundledPack:
+    m_AssetGUID: d0fd4ff29f8006b4392ff94ab9213c1e
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0

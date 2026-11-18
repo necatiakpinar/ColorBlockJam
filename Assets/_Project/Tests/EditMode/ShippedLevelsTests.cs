@@ -37,7 +37,7 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void BundledPack_ShouldHoldTheCatalogsLevels_WhenTheGameShips()
         {
-            TextAsset bundled = AssetDatabase.LoadAssetAtPath<LevelPackConfig>(PackConfigPath).BundledPack;
+            TextAsset bundled = AssetDatabase.LoadAssetAtPath<LevelPackConfig>(PackConfigPath).BundledPack.editorAsset;
 
             Assert.That(new LevelPackJson().TryRead(bundled.text, out LevelPack pack, out string error), Is.True, error);
             Assert.That(pack.Levels, Has.Count.EqualTo(Levels().Count));

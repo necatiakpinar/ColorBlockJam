@@ -42,10 +42,11 @@ namespace ColorBlockJam.Game.Installers
             builder.Register<LevelPackService>(Lifetime.Singleton).As<ILevelSource>().AsSelf();
             builder.Register<IAssetSource, AddressablesAssetSource>(Lifetime.Singleton);
             builder.Register<AssetLoader>(Lifetime.Scoped);
+            builder.Register<SpriteAtlasBinder>(Lifetime.Singleton);
             builder.Register<ISceneLoader, SceneLoader>(Lifetime.Singleton);
             builder.Register<INavigationService, NavigationService>(Lifetime.Singleton);
             builder.Register<IHapticService, MobileHapticService>(Lifetime.Singleton);
-            builder.Register<IAudioService, AudioService>(Lifetime.Singleton);
+            builder.Register<AudioService>(Lifetime.Singleton).As<IAudioService>().AsSelf();
             builder.Register<IGameClock, RealtimeGameClock>(Lifetime.Singleton);
             builder.Register<IProbeRequest, UnityWebRequestProbe>(Lifetime.Singleton);
             builder.Register<TrustedClock>(Lifetime.Singleton).As<ITrustedClock>().AsSelf();

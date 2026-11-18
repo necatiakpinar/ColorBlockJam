@@ -115,6 +115,7 @@ namespace ColorBlockJam.Tests.EditMode
             var builder = new ContainerBuilder();
             new CoreServicesInstaller(Configs()).Install(builder);
             new SplashInstaller().Install(builder);
+            builder.RegisterInstance<IAudioOutput>(new Helpers.RecordingAudioOutput());
             return builder.Build();
         }
 
@@ -136,6 +137,7 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(container.Resolve<LivesService>(), Is.Not.Null);
             Assert.That(container.Resolve<IAssetSource>(), Is.InstanceOf<AddressablesAssetSource>());
             Assert.That(container.Resolve<AssetLoader>(), Is.Not.Null);
+            Assert.That(container.Resolve<SpriteAtlasBinder>(), Is.Not.Null);
             Assert.That(container.Resolve<ISceneLoader>(), Is.Not.Null);
             Assert.That(container.Resolve<INavigationService>(), Is.Not.Null);
             Assert.That(container.Resolve<UiConfig>(), Is.Not.Null);
@@ -144,7 +146,7 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(container.Resolve<IHapticService>(), Is.Not.Null);
             Assert.That(container.Resolve<IGameClock>(), Is.Not.Null);
             Assert.That(container.Resolve<IConnectivityService>(), Is.Not.Null);
-            Assert.That(container.Resolve<IAudioService>(), Is.Not.Null);
+            Assert.That(container.Resolve<IAudioService>(), Is.SameAs(container.Resolve<AudioService>()));
             Assert.That(container.Resolve<ITrustedClock>(), Is.SameAs(container.Resolve<TrustedClock>()));
         }
 
@@ -177,6 +179,32 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
+        public void RootSingleton_ShouldKeepTheRootAssetLoader_WhenFirstResolvedFromASceneScope()
+        {
+            var builder = new ContainerBuilder();
+            new CoreServicesInstaller(Configs()).Install(builder);
+            builder.Register<LoaderHolder>(Lifetime.Singleton);
+            using IObjectResolver root = builder.Build();
+            LoaderHolder holder;
+            using (IScopedObjectResolver scene = root.CreateScope(_ => { }))
+                holder = scene.Resolve<LoaderHolder>();
+
+            Assert.That(holder.Loader, Is.SameAs(root.Resolve<AssetLoader>()));
+            Assert.Throws<System.InvalidOperationException>(() => holder.Loader.Release<Object>("any"),
+                "The root loader is still alive after the scene scope is gone.");
+        }
+
+        sealed class LoaderHolder
+        {
+            public LoaderHolder(AssetLoader loader)
+            {
+                Loader = loader;
+            }
+
+            public AssetLoader Loader { get; }
+        }
+
+        [Test]
         public void SplashInstaller_ShouldRegisterBootStepsInExecutionOrder_WhenBuilt()
         {
             using IObjectResolver container = BuildCoreAndSplash();
@@ -186,9 +214,11 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(steps.Select(step => step.GetType()), Is.EqualTo(new[]
             {
                 typeof(InitializeAssetsStep),
+                typeof(PreloadUiAtlasStep),
                 typeof(ApplyApplicationSettingsStep),
                 typeof(LoadLevelsStep),
                 typeof(LoadPlayerDataStep),
+                typeof(LoadAudioStep),
             }));
         }
 

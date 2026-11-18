@@ -16,7 +16,7 @@ The game plays a **level pack**: the whole ordered level list as one JSON docume
 | `Assets/_Project/Levels/LevelCatalog.asset` + `Level_NNN.asset` | the levels as authored (`LevelCatalog`, [level-data.md](level-data.md)) | the level editor |
 | `Assets/_Project/Levels/levels.json` | the **bundled pack**, built into the app | `LevelCatalogEditing.WritePack`, on every catalog change |
 | `IKeyValueStorage` key `level_pack_remote_v1` | the **stored remote pack**, waiting for the next launch | `LevelPackService.TryStoreRemote` |
-| `LevelPackConfig` (`Assets/_Project/Configs/`, in the `ConfigProvider`) | the bundled pack's `TextAsset`; packs are checked against `LevelRulesConfig` | by hand |
+| `LevelPackConfig` (`Assets/_Project/Configs/`, in the `ConfigProvider`) | an `AssetReferenceT<TextAsset>` to the bundled pack, which is addressable (`Levels` group, [addressables.md](addressables.md) §7); packs are checked against `LevelRulesConfig` | by hand |
 
 Rules:
 1. **The catalog and `levels.json` never drift.** Every editor change to the catalog (save, add, copy,
@@ -69,9 +69,10 @@ Reading (`LevelPackJson.TryRead`) is strict about what it understands and tolera
 ## 3. Which pack a launch plays
 
 `LoadLevelsStep` (Splash, before `LoadPlayerDataStep`, [splash-boot.md](splash-boot.md)) calls
-`LevelPackService.Load()` once:
+`LevelPackService.LoadAsync` once:
 
-1. Read the bundled pack and check every level with `LevelDefinitionValidator`. A broken bundled pack throws:
+1. Load the bundled pack through the Root `AssetLoader`, keep its text, release the asset,
+   and check every level with `LevelDefinitionValidator`. A broken bundled pack throws:
    it is a build bug and must fail loudly.
 2. If a remote pack is stored, it **reads**, **passes the validator** (errors; warnings pass) and its
    `revision` is **not lower** than the bundled one, then this launch plays it (`IsRemote` is true).
@@ -112,7 +113,7 @@ reached still works: the number loops over the pack (DA-8).
 | Test | Covers |
 | --- | --- |
 | `LevelPackJsonTests` | round trip of every field, names not numbers, compact output, absent arrow, unknown fields ignored, refusals worded with level and item |
-| `LevelPackServiceTests` | bundled by default; stored remote pack when valid and not older; stale or broken stored packs dropped with a warning; `TryStoreRemote` stores only good packs and only for the next launch; reading before `Load` throws |
+| `LevelPackServiceTests` | bundled by default; stored remote pack when valid and not older; stale or broken stored packs dropped with a warning; `TryStoreRemote` stores only good packs and only for the next launch; reading before `LoadAsync` throws; the bundled asset is released once read |
 | `LevelCatalogEditingTests` | catalog changes rewrite the pack; the revision rises only when the levels changed |
 | `ShippedLevelsTests` | the bundled pack holds exactly the catalog's levels |
 | `InstallerResolutionTests` | `ILevelSource` is the `LevelPackService`; `LoadLevelsStep` runs before `LoadPlayerDataStep` |

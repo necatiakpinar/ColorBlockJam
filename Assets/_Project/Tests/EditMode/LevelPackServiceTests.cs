@@ -1,5 +1,7 @@
 using System;
+using System.Threading;
 using NUnit.Framework;
+using ColorBlockJam.Core.Assets;
 using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Levels;
 using ColorBlockJam.Game.Levels.Packs;
@@ -15,6 +17,7 @@ namespace ColorBlockJam.Tests.EditMode
     public sealed class LevelPackServiceTests
     {
         const int BundledRevision = 5;
+        const string BundledGuid = "fedcba9876543210fedcba9876543210";
 
         readonly LevelPackJson _json = new();
         InMemoryKeyValueStorage _storage;
@@ -22,6 +25,7 @@ namespace ColorBlockJam.Tests.EditMode
         LevelRulesConfig _rules;
         LevelPackConfig _config;
         TextAsset _bundled;
+        FakeAssetSource _source;
 
         static LevelData Level(int width) => new LevelDataBuilder(width, 4).Block(Red, 0, 0).Door(Left, 0, 1, Red).Build();
 
@@ -39,6 +43,7 @@ namespace ColorBlockJam.Tests.EditMode
             _storage = new InMemoryKeyValueStorage();
             _logger = new RecordingLogger();
             _rules = ScriptableObject.CreateInstance<LevelRulesConfig>();
+            _source = new FakeAssetSource();
             UseBundled(Pack(BundledRevision, 4, 5));
         }
 
@@ -57,19 +62,31 @@ namespace ColorBlockJam.Tests.EditMode
             _bundled = new TextAsset(json);
             _config = ScriptableObject.CreateInstance<LevelPackConfig>();
             var serialized = new SerializedObject(_config);
-            serialized.FindProperty("_bundledPack").objectReferenceValue = _bundled;
+            serialized.FindProperty("_bundledPack.m_AssetGUID").stringValue = BundledGuid;
+            _source.Add(BundledGuid, _bundled);
             serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 
         LevelPackService Loaded()
         {
-            var service = new LevelPackService(_config, _rules, _storage, _logger);
-            service.Load();
+            LevelPackService service = Unloaded();
+            service.LoadAsync(CancellationToken.None).GetAwaiter().GetResult();
             return service;
         }
 
+        LevelPackService Unloaded() => new(_config, _rules, _storage, _logger, new AssetLoader(_source));
+
         [Test]
-        public void Load_ShouldPlayTheBundledPack_WhenNothingIsStored()
+        public void LoadAsync_ShouldReleaseTheBundledPack_WhenItHasBeenRead()
+        {
+            Loaded();
+
+            Assert.That(_source.Loads, Is.EqualTo(new[] { BundledGuid }));
+            Assert.That(_source.Releases, Is.EqualTo(new[] { BundledGuid }));
+        }
+
+        [Test]
+        public void LoadAsync_ShouldPlayTheBundledPack_WhenNothingIsStored()
         {
             LevelPackService service = Loaded();
 
@@ -79,7 +96,7 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
-        public void Load_ShouldPlayTheStoredRemotePack_WhenItIsValidAndNotOlder()
+        public void LoadAsync_ShouldPlayTheStoredRemotePack_WhenItIsValidAndNotOlder()
         {
             _storage.Set(LevelPackService.RemoteKey, Pack(BundledRevision, 6, 7, 8));
 
@@ -91,7 +108,7 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
-        public void Load_ShouldDropTheStoredPack_WhenTheBuildShipsANewerOne()
+        public void LoadAsync_ShouldDropTheStoredPack_WhenTheBuildShipsANewerOne()
         {
             _storage.Set(LevelPackService.RemoteKey, Pack(BundledRevision - 1, 6));
 
@@ -103,7 +120,7 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
-        public void Load_ShouldDropTheStoredPack_WhenItHasAnUnplayableLevel()
+        public void LoadAsync_ShouldDropTheStoredPack_WhenItHasAnUnplayableLevel()
         {
             _storage.Set(LevelPackService.RemoteKey, Pack(BundledRevision + 1, 2));
 
@@ -147,13 +164,14 @@ namespace ColorBlockJam.Tests.EditMode
         [Test]
         public void Levels_ShouldThrow_WhenReadBeforeLoad()
         {
-            var service = new LevelPackService(_config, _rules, _storage, _logger);
+            LevelPackService service = Unloaded();
 
             Assert.Throws<InvalidOperationException>(() => _ = service.LevelCount);
+            Assert.Throws<InvalidOperationException>(() => service.TryStoreRemote(Pack(BundledRevision + 1, 9), out _));
         }
 
         [Test]
-        public void Load_ShouldThrow_WhenTheBundledPackIsBroken()
+        public void LoadAsync_ShouldThrow_WhenTheBundledPackIsBroken()
         {
             UseBundled("{}");
 

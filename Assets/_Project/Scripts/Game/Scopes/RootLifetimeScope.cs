@@ -1,3 +1,4 @@
+using ColorBlockJam.Core.Assets;
 using ColorBlockJam.Core.Lifecycle;
 using ColorBlockJam.Core.Network;
 using ColorBlockJam.Game.Audio;
@@ -30,7 +31,11 @@ namespace ColorBlockJam.Game.Scopes
             builder.RegisterComponent(_pauseReporter);
             builder.RegisterComponent(_sfxPlayer).As<IAudioOutput>();
 
-            builder.RegisterBuildCallback(resolver => resolver.Resolve<ConnectivityService>().Start());
+            builder.RegisterBuildCallback(resolver =>
+            {
+                resolver.Resolve<SpriteAtlasBinder>();
+                resolver.Resolve<ConnectivityService>().Start();
+            });
 
             builder.RegisterEntryPoint<TweeningInitializer>();
             builder.RegisterEntryPoint<LivesClock>();

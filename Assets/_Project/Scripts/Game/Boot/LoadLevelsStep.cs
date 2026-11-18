@@ -16,10 +16,6 @@ namespace ColorBlockJam.Game.Boot
 
         public float Weight => 1f;
 
-        public UniTask ExecuteAsync(CancellationToken cancellationToken)
-        {
-            _levels.Load();
-            return UniTask.CompletedTask;
-        }
+        public UniTask ExecuteAsync(CancellationToken cancellationToken) => _levels.LoadAsync(cancellationToken);
     }
 }

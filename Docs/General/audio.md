@@ -10,8 +10,8 @@ the music toggle only stores its state (DA-10).
 
 | Part | Scope | Does |
 | --- | --- | --- |
-| `IAudioService` / `AudioService` | Root (`CoreServicesInstaller`) | `Play(AudioCue)`: plays the cue's clip at its volume, or nothing when the sound toggle is off (`ISettingsService`) |
-| `AudioConfig` | Root (`ConfigProvider`), `Configs/AudioConfig.asset` | one entry per `AudioCue`: clip and volume; a cue without an entry throws |
+| `IAudioService` / `AudioService` | Root (`CoreServicesInstaller`) | `LoadAsync` (boot, `LoadAudioStep`) loads every cue's clip through the Root `AssetLoader`; `Play(AudioCue)` plays the cue's clip at its volume, or nothing when the sound toggle is off (`ISettingsService`); playing before the load throws |
+| `AudioConfig` | Root (`ConfigProvider`), `Configs/AudioConfig.asset` | one entry per `AudioCue`: an addressable clip (`AssetReferenceT<AudioClip>`) and a volume; a cue without an entry throws |
 | `IAudioOutput` / `SfxPlayer` | Root prefab child `Audio` | one 2D `AudioSource` (`PlayOneShot`, so effects overlap) and the session's only `AudioListener` |
 | `GameplaySounds` | Gameplay (`GameplayInstaller`, built by the scope's build callback) | grab, exit, booster used, win, fail from their signals; the tick on every `TimerChangedSignal` in the low-time range |
 | `ButtonTapSounds` | Home `HomeCanvas`, Gameplay `HudCanvas` | on `Start` adds the tap cue to every `Button` under the canvas, popups included (they are built under it before `Start`) |
@@ -32,8 +32,9 @@ the music toggle only stores its state (DA-10).
 
 1. Play a sound only through `IAudioService`; never add an `AudioSource` or `AudioListener` to a scene. The
    listener lives on the Root prefab so every scene has exactly one.
-2. A new cue gets an `AudioCue` value, an `AudioConfig` entry and a clip; `AudioServiceTests` fails when the
-   shipped config misses a cue.
+2. A new cue gets an `AudioCue` value, an `AudioConfig` entry and an addressable clip
+   ([addressables.md](addressables.md) §7); `AudioServiceTests` fails when the shipped config misses a cue
+   and `AddressablesSetupTests` when the clip is not in the `Audio` group.
 3. Sounds react to signals or button clicks; game rules never wait on a sound.
 4. Playing allocates nothing: `PlayOneShot` on one source, the cue found by a loop over a short list.
 

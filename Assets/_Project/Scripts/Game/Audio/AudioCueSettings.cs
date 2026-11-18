@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace ColorBlockJam.Game.Audio
 {
@@ -9,14 +10,15 @@ namespace ColorBlockJam.Game.Audio
         [SerializeField]
         AudioCue _cue;
 
+        [Tooltip("The cue's addressable clip, loaded at boot.")]
         [SerializeField]
-        AudioClip _clip;
+        AssetReferenceT<AudioClip> _clip;
 
         [SerializeField, Range(0f, 1f)]
         float _volume = 1f;
 
         public AudioCue Cue => _cue;
-        public AudioClip Clip => _clip;
+        public AssetReferenceT<AudioClip> Clip => _clip;
         public float Volume => _volume;
     }
 }

@@ -29,6 +29,9 @@ The art set is used as imported (R-3). `AssetImportTests` enforces §2 and §3.
    source would be compressed twice and lose detail. The atlas must fit on **one 2048 page**: a second
    page splits the UI's draw calls and doubles its memory. A new sprite that does not fit means shrinking
    one by rule 2 first.
+   The atlas is **late-bound**: "Include in Build" is off and it is addressable as `UiAtlas` (`UI` group).
+   UI keeps referencing the sprites; when Unity first asks for the atlas, `SpriteAtlasBinder` loads it
+   through Addressables ([addressables.md](addressables.md) §7).
 4. Sprites outside the atlas (`bg_home_screen`, and the unused `bg_block_texture`, `Btn_levelBg_normal`,
    `Lego_Brickv1`, `leaderboard`, `bg_popup_info_holder_2`) keep an Android ASTC 6x6 override. An unused
    sprite is not built into the player; it joins the atlas when a screen starts using it.

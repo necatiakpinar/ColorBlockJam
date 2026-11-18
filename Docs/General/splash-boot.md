@@ -22,9 +22,11 @@ SplashFlow.StartAsync
   ├─ start minimum-display timer                       SplashConfig.MinimumDisplaySeconds, realtime
   ├─ BootSequence.RunAsync(progress → SplashView)      steps in SplashInstaller order
   │    InitializeAssetsStep          (weight 1)        Addressables catalog (addressables.md §3)
+  │    PreloadUiAtlasStep            (weight 1)        UI atlas, so Home draws at once (addressables.md §7)
   │    ApplyApplicationSettingsStep  (weight 1)        Application.targetFrameRate
   │    LoadLevelsStep                (weight 1)        level pack: stored remote or bundled (level-packs.md)
   │    LoadPlayerDataStep            (weight 2)        progress, wallet, settings .Load()
+  │    LoadAudioStep                 (weight 1)        every cue's clip, addressable (audio.md)
   ├─ await minimum-display timer
   ├─ await SplashView.WaitForPresentationAsync         intro + last bar fill finished
   └─ INavigationService.GoToHomeAsync()                single mode; Splash scope is destroyed

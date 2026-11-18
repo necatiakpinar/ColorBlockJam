@@ -16,7 +16,7 @@ Assets/_Project/
 │   ├── Clock/           IGameClock, RealtimeGameClock
 │   ├── Lifecycle/       ApplicationPausedSignal, ApplicationPauseReporter (Root prefab component)
 │   ├── Network/         IConnectivityService, ConnectivityService, ITrustedClock, TrustedClock, probe
-│   ├── Assets/          IAssetSource, AddressablesAssetSource, AssetLoader
+│   ├── Assets/          IAssetSource, AddressablesAssetSource, AssetLoader, SpriteAtlasBinder
 │   └── Animation/       IAnimation<TConfig>
 ├── Scripts/Game/      ColorBlockJam.Game     this game
 │   ├── Scopes/          Root / Splash / Home / Gameplay LifetimeScopes

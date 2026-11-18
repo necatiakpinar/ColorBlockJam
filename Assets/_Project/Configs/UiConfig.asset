@@ -18,3 +18,8 @@ MonoBehaviour:
     _pressEase: 6
     _releaseDuration: 0.18
     _releaseEase: 27
+  _popupReveal:
+    _duration: 0.25
+    _fromScale: 0.85
+    _ease: 27
+  _atlasAddress: UiAtlas

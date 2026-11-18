@@ -18,6 +18,7 @@ All of them live in `Scripts/Core/Assets/` (namespace `ColorBlockJam.Core.Assets
 | `IAssetHandle` | one loaded asset: `Asset` and `Release()` | not registered |
 | `AddressablesAssetHandle<T>` | holds one `AsyncOperationHandle<T>`; `Release` calls `Addressables.Release` | not registered |
 | `AssetLoader` | what game code injects: `LoadAsync<T>`, `Release<T>`, by address string or `AssetReferenceT<T>` | Root, **scoped** |
+| `SpriteAtlasBinder` | answers Unity's `SpriteAtlasManager.atlasRequested` by loading the atlas whose address is the requested tag; keeps it for the session | Root, singleton built by the scope's build callback |
 | `InitializeAssetsStep` (Game/Boot) | first boot step; initializes the source before any other step can load | Splash, `IBootStep` |
 
 ```
@@ -35,8 +36,9 @@ scope ends ──Dispose()──────▶ AssetLoader ──▶ releases e
    always be in memory.
 2. **One loader per scope.** `AssetLoader` is `Lifetime.Scoped`: the Root scope and each scene scope resolve
    their own instance, and VContainer disposes it with its scope. Everything a scene loaded is released when
-   that scene unloads, even if a consumer forgot to (`InstallerResolutionTests`). A session-long asset is
-   loaded by a Root service through the Root loader.
+   that scene unloads, even if a consumer forgot to. A session-long asset is loaded by a Root service: a Root
+   singleton always gets the Root loader, even when a scene scope resolves it first. Both are pinned by
+   `InstallerResolutionTests`.
 3. **Pair every load with a release** of the same type and key, unless the asset lives as long as the scope.
    Release only after your load returned: releasing something the loader does not hold, or a load still
    running, throws `InvalidOperationException`. Cancel the load's token to abandon it in flight.
@@ -67,7 +69,7 @@ needs a timeout (splash-boot.md §3, item 4).
 | Setting | Value | Why |
 | --- | --- | --- |
 | Settings asset | `Assets/AddressableAssetsData/AddressableAssetSettings.asset` | created by the package; commit the whole folder with its `.meta` files |
-| Groups | `UI`, `Audio`, `Levels`, the empty `Default Local Group` and the package's `Built In Data`; all local build and load paths | no remote content yet |
+| Groups | `UI`, `Audio`, `Levels` (§7), the empty `Default Local Group` and the package's `Built In Data`; all local build and load paths | no remote content yet |
 | `EditorBuildSettings` config object | `com.unity.addressableassets` points at the settings asset | how the editor finds the settings; keep it |
 | Build Addressables on Player Build | Build With Player | a player build always carries current content |
 | Include GUIDs in Catalog (each group) | on | `AssetReferenceT<T>` loads by GUID; turning it off breaks every reference |
@@ -90,8 +92,31 @@ the Groups window.
 
 ## 6. Tests
 
-`AssetLoaderTests` and `InitializeAssetsStepTests` (Edit Mode, over `FakeAssetSource`) cover the loader and
-the boot step; `AddressablesAssetSourceTests` (Play Mode) runs the real source against the project's catalog;
-`InstallerResolutionTests` pins the registrations. What each pins is listed in [testing.md](testing.md) §2;
-the manual checks are in [addressables-qa.md](../testing/addressables-qa.md).
+`AssetLoaderTests`, `SpriteAtlasBinderTests` and `InitializeAssetsStepTests` (Edit Mode, over `FakeAssetSource`)
+cover the loader, the atlas binder and the boot step; `AudioServiceTests` and `LevelPackServiceTests` cover the
+two consumers; `AddressablesSetupTests` pins the shipped content and settings (§7);
+`AddressablesAssetSourceTests` (Play Mode) runs the real source against the project's catalog, and every Play
+Mode boot loads the real clips and pack. `InstallerResolutionTests` pins the registrations. What each pins is
+listed in [testing.md](testing.md) §2; the device checks are in
+[addressables-qa.md](../testing/addressables-qa.md).
 
+## 7. What is addressable
+
+The project is a showcase: three kinds of content go through Addressables, everything else (scenes, 3D models,
+board prefabs, configs) stays a direct reference.
+
+| Group | Content | Address | Loaded by | Lives |
+| --- | --- | --- | --- | --- |
+| `UI` | `Art/UI/UiAtlas.spriteatlas`, "Include in Build" off | `UiAtlas` (the atlas name, which is the tag Unity requests; `UiConfig.AtlasAddress`) | `PreloadUiAtlasStep` at boot, then `SpriteAtlasBinder` on Unity's request | the session |
+| `Audio` | the seven `Audio/sfx_*.wav` clips | `Audio/<file name without extension>` (`Audio/sfx_tap`) | `AudioService.LoadAsync` (`LoadAudioStep`) through `AudioConfig` references | the session |
+| `Levels` | `Levels/levels.json`, the bundled level pack | `Levels/BundledPack` | `LevelPackService.LoadAsync` (`LoadLevelsStep`) through the `LevelPackConfig` reference | read at boot, then released |
+
+- **Late-bound atlas.** UI images and prefabs keep referencing the packed sprites. Because the atlas is not
+  built into the player, Unity raises `atlasRequested` the first time a sprite draws. Splash draws no atlas
+  sprite and `PreloadUiAtlasStep` loads the atlas during Splash, so when Home asks, the binder hands it over
+  in the same frame. The editor's packer mode is "Enabled For Builds", so in Play Mode the editor draws the
+  source textures and never raises the request: the binding is checked on a device
+  ([addressables-qa.md](../testing/addressables-qa.md)).
+- `AddressablesSetupTests` fails when the atlas, a cue's clip or the bundled pack stops being addressable,
+  when the atlas is built into the player again, or when a group stops listing GUIDs.
+- Adding a sound or swapping the pack needs no code: put the asset in its group and point the config at it.
