@@ -21,6 +21,8 @@ The game plays a **level pack**: the whole ordered level list as one JSON docume
 Rules:
 1. **The catalog and `levels.json` never drift.** Every editor change to the catalog (save, add, copy,
    delete, reorder) rewrites `levels.json`. **ColorBlockJam ▸ Write Level Pack** rewrites it by hand.
+   A level with validator errors is never written: the change throws and the old pack stays, because the
+   game refuses a broken bundled pack at boot.
    `ShippedLevelsTests.BundledPack_ShouldHoldTheCatalogsLevels_WhenTheGameShips` fails if they differ.
 2. **Never edit `levels.json` by hand** in the repository: change the catalog in the editor instead.
 3. **The game reads only packs.** Runtime code asks `ILevelSource` (`LevelPackService`), never the catalog.

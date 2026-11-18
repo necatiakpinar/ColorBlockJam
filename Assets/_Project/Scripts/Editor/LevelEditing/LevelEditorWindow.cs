@@ -28,6 +28,7 @@ namespace ColorBlockJam.Editor.LevelEditing
         const int HardenerStateCap = 5000;
         const int HardenerRounds = 25;
         const int SolveSettleMilliseconds = 250;
+        const string OpenLevelKey = "ColorBlockJam.LevelEditor.OpenLevel";
         static readonly Color IceTint = new(0.85f, 0.95f, 1f);
 
         enum Tool
@@ -95,7 +96,8 @@ namespace ColorBlockJam.Editor.LevelEditing
 
         [MenuItem("ColorBlockJam/Write Level Pack (levels.json)")]
         static void WritePack() =>
-            new LevelCatalogEditing(AssetDatabase.LoadAssetAtPath<LevelCatalog>(CatalogPath), LevelsFolder).WritePack();
+            new LevelCatalogEditing(AssetDatabase.LoadAssetAtPath<LevelCatalog>(CatalogPath), LevelsFolder,
+                new LevelDefinitionValidator(AssetDatabase.LoadAssetAtPath<LevelRulesConfig>(RulesPath))).WritePack();
 
         [MenuItem("ColorBlockJam/Copy Level Pack for Remote Config")]
         static void CopyPackForRemote()
@@ -113,10 +115,10 @@ namespace ColorBlockJam.Editor.LevelEditing
 
         void OnEnable()
         {
-            _catalog = new LevelCatalogEditing(AssetDatabase.LoadAssetAtPath<LevelCatalog>(CatalogPath), LevelsFolder);
             _rules = AssetDatabase.LoadAssetAtPath<LevelRulesConfig>(RulesPath);
             _rewards = AssetDatabase.LoadAssetAtPath<LevelRewardConfig>(RewardsPath);
             _validator = new LevelDefinitionValidator(_rules);
+            _catalog = new LevelCatalogEditing(AssetDatabase.LoadAssetAtPath<LevelCatalog>(CatalogPath), LevelsFolder, _validator);
             _checker = new LevelChecker(_validator, _rules.SolverStateCap, SolveSettleMilliseconds);
             _checker.Solved += Repaint;
             _shapes = new BlockShapeLibrary();
@@ -140,8 +142,9 @@ namespace ColorBlockJam.Editor.LevelEditing
             wantsMouseMove = true;
             Undo.undoRedoPerformed += OnUndoRedo;
             RefreshLevelList();
-            if (_catalog.Catalog.Levels.Count > 0)
-                Load(0);
+            int count = _catalog.Catalog.Levels.Count;
+            if (count > 0)
+                Load(Mathf.Clamp(SessionState.GetInt(OpenLevelKey, 0), 0, count - 1));
         }
 
         void OnDisable()
@@ -737,7 +740,7 @@ namespace ColorBlockJam.Editor.LevelEditing
 
         void HandleShortcuts(Event e)
         {
-            if (e.type != EventType.KeyDown || _level < 0 && e.keyCode != KeyCode.N)
+            if (e.type != EventType.KeyDown || EditorGUIUtility.editingTextField || _level < 0 && e.keyCode != KeyCode.N)
                 return;
             bool ctrl = e.control || e.command;
             bool used = true;
@@ -911,8 +914,10 @@ namespace ColorBlockJam.Editor.LevelEditing
 
         void Load(int index)
         {
+            _generation?.Cancel();
             _level = index;
-            Undo.RecordObject(_state, "Open level");
+            SessionState.SetInt(OpenLevelKey, index);
+            Undo.ClearUndo(_state);
             _state.Draft = LevelDraft.From(_catalog.Catalog.Levels[index].Data);
             Select(-1, -1);
             OnDraftChanged();
@@ -927,9 +932,12 @@ namespace ColorBlockJam.Editor.LevelEditing
                 return true;
             int choice = EditorUtility.DisplayDialogComplex("Unsaved changes", $"Level {_level + 1} has unsaved changes.",
                 "Save", "Cancel", "Discard");
-            if (choice == 0)
-                Save();
-            return choice != 1;
+            return choice switch
+            {
+                0 => Save(),
+                1 => false,
+                _ => true,
+            };
         }
 
         void TrySwitchTo(int index)
@@ -938,31 +946,37 @@ namespace ColorBlockJam.Editor.LevelEditing
                 Load(index);
         }
 
-        void Save()
+        bool Save()
         {
             if (_level < 0)
-                return;
+                return false;
             if (_validator.HasErrors(_checker.Issues))
             {
                 EditorUtility.DisplayDialog("Cannot save", "Fix the errors under Checks first; the game cannot load this level.", "OK");
-                return;
+                return false;
             }
 
-            if (Solution != null && Solution.Status != SolveStatus.Solvable &&
-                !EditorUtility.DisplayDialog("Save anyway?", "The solver could not finish this level. Players may get stuck.", "Save", "Cancel"))
-                return;
+            if (Solution == null || Solution.Status != SolveStatus.Solvable)
+            {
+                string reason = Solution == null
+                    ? "The solver has not finished checking this level yet."
+                    : "The solver could not finish this level. Players may get stuck.";
+                if (!EditorUtility.DisplayDialog("Save anyway?", reason, "Save", "Cancel"))
+                    return false;
+            }
+
             _catalog.Save(_level, Draft);
             _isDirty = false;
             RefreshLevelList();
             ShowNotification(new GUIContent($"Level {_level + 1} saved"));
+            return true;
         }
 
         void NewLevel()
         {
             if (!ConfirmLeave())
                 return;
-            var empty = new LevelData(5, 5, 60, new List<BlockData>(), new List<DoorData>());
-            _catalog.Append(empty);
+            _catalog.AppendStarter();
             RefreshLevelList();
             Load(_catalog.Catalog.Levels.Count - 1);
         }
@@ -1002,8 +1016,7 @@ namespace ColorBlockJam.Editor.LevelEditing
         {
             if (_level < 0)
                 return;
-            Save();
-            if (!IsDirty)
+            if (!IsDirty || Save())
                 LevelPlayTest.Play(_level + 1);
         }
 
@@ -1027,6 +1040,7 @@ namespace ColorBlockJam.Editor.LevelEditing
             }
             catch (OperationCanceledException)
             {
+                _genMessage = "Stopped: another level was opened.";
                 return;
             }
             finally
@@ -1061,6 +1075,7 @@ namespace ColorBlockJam.Editor.LevelEditing
             }
             catch (OperationCanceledException)
             {
+                _genMessage = "Stopped: another level was opened.";
                 return;
             }
             finally

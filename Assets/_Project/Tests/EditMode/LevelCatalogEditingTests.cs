@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using ColorBlockJam.Editor.LevelEditing;
+using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.Levels;
 using ColorBlockJam.Game.Levels.Packs;
 using ColorBlockJam.Tests.EditMode.Helpers;
@@ -16,6 +18,7 @@ namespace ColorBlockJam.Tests.EditMode
         const string Folder = "Assets/__LevelEditorTests";
 
         LevelCatalog _catalog;
+        LevelRulesConfig _rules;
         LevelCatalogEditing _editing;
 
         [SetUp]
@@ -24,13 +27,20 @@ namespace ColorBlockJam.Tests.EditMode
             AssetDatabase.CreateFolder("Assets", "__LevelEditorTests");
             _catalog = ScriptableObject.CreateInstance<LevelCatalog>();
             AssetDatabase.CreateAsset(_catalog, Folder + "/Catalog.asset");
-            _editing = new LevelCatalogEditing(_catalog, Folder);
+            _rules = ScriptableObject.CreateInstance<LevelRulesConfig>();
+            _editing = new LevelCatalogEditing(_catalog, Folder, new LevelDefinitionValidator(_rules));
         }
 
         [TearDown]
-        public void TearDown() => AssetDatabase.DeleteAsset(Folder);
+        public void TearDown()
+        {
+            AssetDatabase.DeleteAsset(Folder);
+            UnityEngine.Object.DestroyImmediate(_rules);
+        }
 
         static LevelData Level(int width) => new LevelDataBuilder(width, 4).Block(Red, 0, 0).Door(Left, 0, 1, Red).Build();
+
+        static LevelData EmptyLevel() => new(5, 5, 60, Array.Empty<BlockData>(), Array.Empty<DoorData>());
 
         List<int> Widths()
         {
@@ -143,6 +153,52 @@ namespace ColorBlockJam.Tests.EditMode
 
             Assert.That(_catalog.Levels[0].Data.TimerSeconds, Is.EqualTo(123));
             Assert.That(Widths(), Is.EqualTo(new[] { 3, 4 }));
+        }
+
+        [Test]
+        public void Append_ShouldThrowAndChangeNothing_WhenTheLevelHasErrors()
+        {
+            _editing.Append(Level(3));
+            string pack = System.IO.File.ReadAllText(_editing.PackPath);
+
+            Assert.Throws<InvalidOperationException>(() => _editing.Append(EmptyLevel()));
+
+            Assert.That(Widths(), Is.EqualTo(new[] { 3 }));
+            Assert.That(System.IO.File.ReadAllText(_editing.PackPath), Is.EqualTo(pack), "The game must keep a pack it can load.");
+            Assert.That(System.IO.File.Exists(Folder + "/Level_002.asset"), Is.False);
+        }
+
+        [Test]
+        public void Save_ShouldThrowAndKeepTheAsset_WhenTheDraftHasErrors()
+        {
+            _editing.Append(Level(3));
+            LevelDraft draft = LevelDraft.From(EmptyLevel());
+
+            Assert.Throws<InvalidOperationException>(() => _editing.Save(0, draft));
+
+            Assert.That(_catalog.Levels[0].Data.Blocks.Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void WritePack_ShouldThrowAndKeepThePack_WhenACatalogLevelHasErrors()
+        {
+            _editing.Append(Level(3));
+            string pack = System.IO.File.ReadAllText(_editing.PackPath);
+            _catalog.Levels[0].SetData(EmptyLevel());
+
+            Assert.Throws<InvalidOperationException>(() => _editing.WritePack());
+
+            Assert.That(System.IO.File.ReadAllText(_editing.PackPath), Is.EqualTo(pack));
+        }
+
+        [Test]
+        public void AppendStarter_ShouldAddALevelTheGameCanLoad_WhenANewLevelIsMade()
+        {
+            LevelDefinition starter = _editing.AppendStarter();
+
+            var validator = new LevelDefinitionValidator(_rules);
+            Assert.That(validator.HasErrors(validator.Validate(starter.Data)), Is.False);
+            Assert.That(WrittenPack().Levels.Count, Is.EqualTo(1));
         }
     }
 }

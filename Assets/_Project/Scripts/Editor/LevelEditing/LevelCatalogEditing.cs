@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using ColorBlockJam.Game.Levels;
 using ColorBlockJam.Game.Levels.Packs;
 using UnityEditor;
+using UnityEngine;
 
 namespace ColorBlockJam.Editor.LevelEditing
 {
@@ -10,14 +12,18 @@ namespace ColorBlockJam.Editor.LevelEditing
     {
         const string ListField = "_levels";
         public const string PackFile = "levels.json";
+        const int StarterSize = 5;
+        const int StarterTimerSeconds = 60;
 
         readonly LevelCatalog _catalog;
         readonly string _folder;
+        readonly LevelDefinitionValidator _validator;
 
-        public LevelCatalogEditing(LevelCatalog catalog, string folder)
+        public LevelCatalogEditing(LevelCatalog catalog, string folder, LevelDefinitionValidator validator)
         {
             _catalog = catalog;
             _folder = folder;
+            _validator = validator;
         }
 
         public LevelCatalog Catalog => _catalog;
@@ -29,7 +35,11 @@ namespace ColorBlockJam.Editor.LevelEditing
             var json = new LevelPackJson();
             var levels = new List<LevelData>(_catalog.Levels.Count);
             foreach (LevelDefinition definition in _catalog.Levels)
+            {
+                EnsurePlayable(definition.Data, $"Level {levels.Count + 1}");
                 levels.Add(definition.Data);
+            }
+
             int revision = 1;
             if (File.Exists(PackPath) && json.TryRead(File.ReadAllText(PackPath), out LevelPack previous, out _))
             {
@@ -43,6 +53,7 @@ namespace ColorBlockJam.Editor.LevelEditing
 
         public LevelDefinition Insert(int index, LevelData data)
         {
+            EnsurePlayable(data, "The new level");
             var definition = UnityEngine.ScriptableObject.CreateInstance<LevelDefinition>();
             definition.SetData(data);
             AssetDatabase.CreateAsset(definition, NextFreePath());
@@ -58,6 +69,14 @@ namespace ColorBlockJam.Editor.LevelEditing
         }
 
         public LevelDefinition Append(LevelData data) => Insert(_catalog.Levels.Count, data);
+
+        public LevelDefinition AppendStarter()
+        {
+            int middle = StarterSize / 2;
+            var block = new BlockData(BlockColor.Red, new[] { new Vector2Int(middle, middle) });
+            var door = new DoorData(WallSide.Left, middle, 1, BlockColor.Red);
+            return Append(new LevelData(StarterSize, StarterSize, StarterTimerSeconds, new[] { block }, new[] { door }));
+        }
 
         public LevelDefinition Duplicate(int index) => Insert(index + 1, LevelDraft.From(_catalog.Levels[index].Data).ToLevel());
 
@@ -85,11 +104,24 @@ namespace ColorBlockJam.Editor.LevelEditing
 
         public void Save(int index, LevelDraft draft)
         {
+            LevelData data = draft.ToLevel();
+            EnsurePlayable(data, $"Level {index + 1}");
             LevelDefinition definition = _catalog.Levels[index];
-            definition.SetData(draft.ToLevel());
+            definition.SetData(data);
             EditorUtility.SetDirty(definition);
             AssetDatabase.SaveAssets();
             WritePack();
+        }
+
+        void EnsurePlayable(LevelData level, string name)
+        {
+            IReadOnlyList<LevelIssue> issues = _validator.Validate(level);
+            if (!_validator.HasErrors(issues))
+                return;
+            foreach (LevelIssue issue in issues)
+                if (issue.Severity == LevelIssueSeverity.Error)
+                    throw new InvalidOperationException(
+                        $"{name} cannot go into {PackFile}; the game would refuse the pack: {issue.Message}");
         }
 
         string NextFreePath()

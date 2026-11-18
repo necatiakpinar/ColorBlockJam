@@ -23,6 +23,9 @@ It only draws; every tool, shortcut (DA-34) and check works as before (T-55).
 
 ### Make a level in five steps
 
+Press **+ New** (`N`) for a new level at the end of the list. It starts as a 5 x 5 board with one red block
+and its red door, so the game can always load the pack; change it from there.
+
 1. **Board.** Set Width, Height, Timer and Difficulty under *Level*; the win reward shows under them.
 2. **Doors.** Door tool (`3`): pick a colour, drag along a wall. A door can be 1 cell up to the whole wall;
    corners are not wall cells. Click a door to select it and change its colour, start or length.
@@ -50,7 +53,7 @@ Or press **Generate** (`G`) and edit what it builds.
 | arrows | move the selected block one cell |
 | `Delete` | remove the selected block or door |
 | `Esc` | clear the selection |
-| `Ctrl+Z` / `Ctrl+Y` | undo / redo any edit |
+| `Ctrl+Z` / `Ctrl+Y` | undo / redo any edit to the open level; opening another level clears the undo history |
 | `Ctrl+S` | save |
 | `N` | new level at the end |
 | `Shift+D` | copy this level after itself |
@@ -62,7 +65,8 @@ Or press **Generate** (`G`) and edit what it builds.
 | `P` | save and play |
 | `F1` | show or hide the help |
 
-Every control also has a tooltip.
+Every control also has a tooltip. Shortcuts do nothing while a text or number field has the keyboard, so
+typing a seed or a timer never switches a tool or deletes the selection.
 
 ### Checks
 
@@ -71,7 +75,8 @@ Every control also has a tooltip.
   on their wall and apart, a difficulty. Errors block saving; warnings do not.
 - **Can it be finished?** (`LevelSolver`): **Solvable** with the number of exit rounds and room-making moves
   and the difficulty it plays like; **Unsolvable** when some block can never reach its door; **Unknown**
-  when the search gave up (very large levels). Saving an unsolvable level asks first.
+  when the search gave up (very large levels). Saving a level that is unsolvable, unknown or still being
+  solved asks first.
 - **The solution**: the steps one by one ("Block 3 leaves ▶ right", "Block 2 makes room"). Drag *Show
   step* or press `Space` to replay it on the canvas; the moving block is outlined and gone blocks fade.
 
@@ -79,8 +84,9 @@ The checks never hold up an edit (`LevelChecker`):
 - **Structure** answers at once.
 - **The solver** starts on a worker thread once the edits pause for 250 ms; meanwhile Checks says *Solving…*.
 - **A newer edit** cancels the search still running for the old draft. `C` or Check solves at once.
-- **Save** does not wait for a running solve.
-- **Generate** also runs on a worker thread; its button reads *Generating…* until the level lands.
+- **Save** does not wait for a running solve; it asks first, as for an unsolvable level.
+- **Generate** also runs on a worker thread; its button reads *Generating…* until the level lands. Opening
+  another level stops Generate and Make harder, so a result never lands in a level it was not made for.
 
 Everything the window draws from the draft (the unsaved mark, block labels, the level list) is worked out once
 per change, not on every GUI event.
@@ -100,10 +106,16 @@ one and says so; when the settings cannot work (too many blocks for the board) i
 - **Result.** It says how many moves the level now needs; undo brings the old one back, and pressing again
   pushes further. The seed field seeds it too, so the same level and seed give the same result.
 
+### Leaving a level
+
+Switching level, New, Copy and moving a level ask **Save / Cancel / Discard** when the open level has unsaved
+changes. When Save is refused (errors, or Cancel on *Save anyway?*) the open level stays open with its
+changes. The window reopens the level it had open after play mode or a script reload.
+
 ## 2. Play-test
 
-▶ Play saves the level (it refuses while there are errors), makes it the player's current level, enters play
-mode through Splash as always, and opens Gameplay as soon as Home is up (`LevelPlayTest`, editor-only). It
+▶ Play saves unsaved changes first (it stops if Save is refused), makes the level the player's current
+level, enters play mode through Splash as always, and opens Gameplay as soon as Home is up (`LevelPlayTest`, editor-only). It
 changes the saved progress to that level; the debug window's *Clear player saves* resets it.
 
 ## 3. How it works
@@ -115,7 +127,7 @@ changes the saved progress to that level; the debug window's *Clear player saves
 | `LevelChecker` | Editor | validates a draft at once and solves it on a worker thread, cancelling a stale search |
 | `LevelDraft` | Editor | the level being edited; every change keeps the board buildable and answers false otherwise |
 | `LevelEditorState` | Editor | holds the draft for Unity's undo (`Undo.RecordObject`) |
-| `LevelCatalogEditing` | Editor | create, copy, delete, reorder and save level assets in the catalog, straight to disk without undo (git is the history; an undo record on an asset lets the test runner's rollback revert a save); every change rewrites `levels.json` ([level-packs.md](level-packs.md)) |
+| `LevelCatalogEditing` | Editor | create, copy, delete, reorder and save level assets in the catalog, straight to disk without undo (git is the history; an undo record on an asset lets the test runner's rollback revert a save); every change rewrites `levels.json` ([level-packs.md](level-packs.md)) and throws, writing nothing, when a level has validator errors |
 | `LevelPlayTest` | Editor | play-test from the editor |
 | `LevelSolver` | Game | finishes a level with the game's rules (below) |
 | `LevelGenerator` | Game | builds levels from a `LevelGenerationRequest` (below) |
