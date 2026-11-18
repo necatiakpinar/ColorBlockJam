@@ -103,6 +103,20 @@ Updated: 2026-11-18
   is saved; migrate by writing each old GUID to `<field>.m_AssetGUID` through `SerializedObject` right after the
   compile, then check the `.asset` diff (2026-11-18).
 
+- The Sprite Editor (nine-slice borders) needs `com.unity.2d.sprite`; without it Unity shows "No Sprite
+  Editor Window registered". From code, set `TextureImporter.spriteBorder` (x left, y bottom, z right,
+  w top) and `SaveAndReimport` (2026-11-18).
+- `ScreenCapture.CaptureScreenshot` with a relative path wrote nothing here; pass
+  `System.IO.Path.GetFullPath("Temp/Screenshots/x.png")` and wait a second before reading it (2026-11-18).
+- `PrefabUtility.ConvertToPrefabInstance(go, prefabAsset, settings, InteractionMode.AutomatedAction)` (2022.3)
+  turns matching scene objects into instances of a prefab and keeps every reference to them; the differences
+  (icon sprite, an enum) become overrides. For a prefab nested in another prefab instance,
+  `GetCorrespondingObjectFromSource` returns the outer prefab's copy; `GetCorrespondingObjectFromOriginalSource`
+  returns the nested prefab (2026-11-18).
+- `RestartResetsStateTests.Restart_ShouldLeaveTheSameStateAsAFreshStart_WhenRepeatedTenTimes` depends on the
+  saved level: it drags the first block one cell right, so it fails on a level where that block cannot move
+  (seen on levels 33 and 36, with and without the change under test) (2026-11-18).
+
 ## 2. Shell (Windows, Git Bash)
 
 - Long multi-file `cat <<'EOF'` heredoc chains in one Bash call can fail with "unexpected EOF while
