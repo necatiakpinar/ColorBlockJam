@@ -141,7 +141,7 @@ namespace ColorBlockJam.Game.Configs
         [Tooltip("How long a held block takes to catch up with the finger; retargeted on every drag, so the "
             + "block trails the finger by about this much and glides instead of jumping on a fast flick.")]
         [SerializeField, Min(0.01f)]
-        float _followDuration = 0.12f;
+        float _followDuration = 0.089f;
 
         [SerializeField]
         Ease _followEase = Ease.OutQuad;

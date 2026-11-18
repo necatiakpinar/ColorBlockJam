@@ -25,7 +25,7 @@ Use this page when tuning feel; record a decision that follows from it in the
 | Touching a block shows a cream outline around it at once; no lift, no scale | outline on the frame of the touch | `OutlineMeshBuilder`, `SelectionOutline.shader` |
 | The outline follows the block's silhouette: below the front face for far rows, tight for near rows | — | outline lifted by side visibility (gameplay.md §5) |
 | The outline stays visible where the block goes under another object | — | outline drawn over everything |
-| The block trails the finger slightly and never jumps | about 0.1 s behind on fast moves | `FollowDuration` 0.12 s, `FollowEase` OutQuad |
+| The block trails the finger slightly and never jumps | about 0.1 s behind on fast moves | `FollowDuration` 0.089 s (35% faster than the first 0.12 s, developer), `FollowEase` OutQuad |
 | A block lined up roughly with a gap or a door slips into it | — | `CornerTolerance` 0.4 cell (DA-4) |
 
 ## 3. Leaving through a door

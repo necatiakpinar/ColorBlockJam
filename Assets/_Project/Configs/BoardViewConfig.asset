@@ -60,7 +60,7 @@ MonoBehaviour:
   _outlineGap: 0.03
   _blockCornerRadius: 0.27
   _outlineCornerSegments: 6
-  _followDuration: 0.12
+  _followDuration: 0.089
   _followEase: 6
   _snapDuration: 0.12
   _snapEase: 27
