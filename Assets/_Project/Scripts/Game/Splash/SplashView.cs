@@ -4,7 +4,6 @@ using DG.Tweening;
 using ColorBlockJam.Game.Common.Animations;
 using ColorBlockJam.Game.Configs;
 using UnityEngine;
-using UnityEngine.UI;
 using VContainer;
 
 namespace ColorBlockJam.Game.Splash
@@ -17,8 +16,9 @@ namespace ColorBlockJam.Game.Splash
         [SerializeField]
         RectTransform _logo;
 
+        [Tooltip("The loading bar's fill; it grows from the left edge by its right anchor.")]
         [SerializeField]
-        Image _progressFill;
+        RectTransform _progressFill;
 
         SplashConfig _config;
         Sequence _introSequence;
@@ -28,7 +28,10 @@ namespace ColorBlockJam.Game.Splash
         public void Construct(SplashConfig config)
         {
             _config = config;
+            _progressFill.anchorMax = new Vector2(0f, _progressFill.anchorMax.y);
         }
+
+        public float ShownProgress => _progressFill.anchorMax.x;
 
         public void PlayIntro()
         {
@@ -40,7 +43,7 @@ namespace ColorBlockJam.Game.Splash
         public void ShowProgress(float progress)
         {
             _fillSequence?.Kill();
-            _fillSequence = default(FillAmountAnimation).Play(new FillAmountAnimation.Config(
+            _fillSequence = default(BarFillAnimation).Play(new BarFillAnimation.Config(
                 _progressFill, progress, _config.ProgressFillSeconds, _config.ProgressFillEase));
         }
 

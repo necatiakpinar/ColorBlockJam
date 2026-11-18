@@ -15,7 +15,7 @@ namespace ColorBlockJam.Game.Configs
         FadeScaleInSettings _logoIntro = new(0.6f, 0.85f, Ease.OutBack);
 
         [SerializeField, Min(0.01f)]
-        float _progressFillSeconds = 0.25f;
+        float _progressFillSeconds = 0.35f;
 
         [SerializeField]
         Ease _progressFillEase = Ease.OutQuad;

@@ -48,3 +48,18 @@ GameplayFlow.Start → LevelStartedSignal(level)         HUD shows "Level N" wit
 
 Scenes are loaded by `INavigationService`; why it ignores the calling scope's token is in
 [architecture.md](architecture.md) §2.
+
+## 5. Splash screen
+
+The splash is kept plain (`SplashLayoutTests`):
+
+| Part | Look |
+| --- | --- |
+| `Background` | `bg_home_screen`, envelope-fitted to the screen, the same art as Home |
+| `SafeArea/Logo/Title` | "COLOR BLOCK" in white over a larger yellow "JAM", Outlined style; fades and scales in |
+| `SafeArea/ProgressBar` | navy rounded track, 620x56, low on the screen |
+| `SafeArea/ProgressBar/Fill` | green rounded fill pinned to the track's left edge; `BarFillAnimation` grows its right anchor from 0 to the boot progress, so the bar fills left to right |
+| `SafeArea/LoadingLabel` | "Loading..." under the bar, Outlined style |
+
+The splash draws only sprites outside the UI atlas (`bg_home_screen` and Unity's built-in `UISprite`): the
+atlas is late-bound and loaded by a boot step, so it is not there yet ([addressables.md](addressables.md) §7).

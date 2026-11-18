@@ -61,7 +61,7 @@ styles (`TextStyleTests`):
 | Style | Material | Look | Used for |
 | --- | --- | --- | --- |
 | Outlined | `LilitaOne SDF - Outlined` | chunky face (dilate 0.12), thick navy outline (0.24), navy drop shadow just below | every text on blue or coloured art: titles, HUD, buttons, badges, popups, the ice counts |
-| Plain | `LilitaOne SDF - Plain` | chunky face, no outline | dark text on light art: the Home lives and coin bars, the splash subtitle |
+| Plain | `LilitaOne SDF - Plain` | chunky face, no outline | dark text on light art: the Home lives and coin bars |
 
 - **Font:** `Art/Fonts/LilitaOne/LilitaOne SDF` (static SDF atlas built from `LilitaOne-Regular.ttf`, Lilita
   One by Juan Montoreano, SIL Open Font License 1.1, `OFL.txt` beside it). It covers Basic Latin and Latin-1;
