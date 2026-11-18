@@ -15,6 +15,7 @@
 | VContainer (`jp.hadashikick.vcontainer`) | 1.19.0 | OpenUPM scoped registry |
 | UniTask (`com.cysharp.unitask`) | 2.5.11 | OpenUPM scoped registry |
 | Addressables (`com.unity.addressables`) | 1.29.0 | Unity registry; settings in `Assets/AddressableAssetsData/` ([addressables.md](addressables.md)) |
+| 2D Sprite (`com.unity.2d.sprite`) | 1.0.0 | Unity registry; the Sprite Editor, for nine-slice borders |
 | DOTween (free) | 1.3.045 | vendored in `Assets/Plugins/Demigiant/DOTween` |
 
 3. DOTween's modules compile through the committed `DOTween.Modules.asmdef`.
