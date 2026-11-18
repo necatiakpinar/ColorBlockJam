@@ -37,9 +37,25 @@ namespace ColorBlockJam.Game.Configs
         float _lowTimePulseDuration = 0.6f;
 
         [Header("Haptics")]
-        [Tooltip("Tap when a block leaves through its door.")]
+        [Tooltip("Tap when a finger picks a block.")]
+        [SerializeField]
+        HapticImpact _grabHaptic = HapticImpact.Medium;
+
+        [Tooltip("One tick of the trill a leaving block plays from its door until it has slid out.")]
         [SerializeField]
         HapticImpact _exitHaptic = HapticImpact.Light;
+
+        [Tooltip("Seconds between two ticks of the exit trill.")]
+        [SerializeField, Min(0.02f)]
+        float _exitTickInterval = 0.06f;
+
+        [Tooltip("Tap when the level is won.")]
+        [SerializeField]
+        HapticImpact _winHaptic = HapticImpact.Heavy;
+
+        [Tooltip("Tap when the level is lost.")]
+        [SerializeField]
+        HapticImpact _failHaptic = HapticImpact.Heavy;
 
         [Header("Boosters")]
         [Tooltip("Scale of a booster button while its booster waits for a target.")]
@@ -65,7 +81,11 @@ namespace ColorBlockJam.Game.Configs
         public float BoosterFadeDuration => _boosterFadeDuration;
         public float WinPopupDelay => _winPopupDelay;
         public CoinFlightSettings CoinFlight => _coinFlight;
+        public HapticImpact GrabHaptic => _grabHaptic;
         public HapticImpact ExitHaptic => _exitHaptic;
+        public float ExitTickInterval => _exitTickInterval;
+        public HapticImpact WinHaptic => _winHaptic;
+        public HapticImpact FailHaptic => _failHaptic;
         public Color LowTimeColor => _lowTimeColor;
         public float LowTimePulseScale => _lowTimePulseScale;
         public float LowTimePulseDuration => _lowTimePulseDuration;

@@ -16,3 +16,30 @@ MonoBehaviour:
     _duration: 0.35
     _fromScale: 0.9
     _ease: 9
+  _winPopupDelay: 1
+  _coinFlight:
+    _popDuration: 0.18
+    _scatter: 70
+    _flyDuration: 0.6
+    _stagger: 0.07
+    _sidewaysEase: 4
+    _upwardEase: 5
+    _arriveScale: 0.6
+    _punch: 0.25
+    _punchDuration: 0.2
+    _sparkleDistance: 120
+    _sparkleDuration: 0.45
+    _homeDelay: 0.35
+  _lowTimeSeconds: 10
+  _lowTimeColor: {r: 1, g: 0.25, b: 0.25, a: 1}
+  _lowTimePulseScale: 1.2
+  _lowTimePulseDuration: 0.6
+  _grabHaptic: 2000
+  _exitHaptic: 1000
+  _exitTickInterval: 0.06
+  _winHaptic: 3000
+  _failHaptic: 3000
+  _boosterSelectedScale: 1.15
+  _boosterFadedAlpha: 0.4
+  _boosterDimAlpha: 0.65
+  _boosterFadeDuration: 0.2

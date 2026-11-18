@@ -63,7 +63,7 @@ before writing a new fake.
 | `LevelTimerTests` | full time on start, counting only from the first grab, one signal per second, stands still while paused or in the background, fails once at zero, stops on a win, full again on restart, stops when disposed (`FakeGameClock`) |
 | `GameplayHudViewTests` | the timer label reads `mm:ss`; the coin counter follows the wallet, or, held after a win, counts the flying coins in until the next level |
 | `LevelSessionTests` | the attempt's transition table, refused transitions, signal order, restart equal to a fresh start |
-| `GameplayHapticsTests` | an exit taps light, nothing after dispose (`RecordingHaptics`) |
+| `GameplayHapticsTests` | a grab, a win and a fail tap their impacts; an exit ticks light until the block has slid out, longer for a longer block; blocks leaving together share one trill; a later exit starts a new one; a win ends it; nothing after dispose or with vibration off; the shipped impacts (`RecordingHaptics`, `FakeGameClock`) |
 | `ExitPathTests` | a leaving block's wall, length, door span, edge and door centre |
 | `ArrowBlockerTests` | an arrow block moves and leaves only along its axis, can be picked up, the drag does not give across it, the solver and the validator know it, a split piece and the editor keep it |
 | `IceBlockerTests` | a frozen block cannot move or be picked up; exits and booster removals count it down and thaw it; the hammer thaws it; the solver waits for it and spots a frozen deadlock; the validator caps ice; the editor keeps it |

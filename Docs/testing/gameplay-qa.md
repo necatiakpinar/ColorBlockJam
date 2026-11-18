@@ -74,7 +74,11 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 - [x] ⚙ A held block glides after the finger instead of jumping on a sudden move — `GameplayBoardTests.BlockView_ShouldGlideAfterTheFinger_WhenItMovesSuddenly`
 - [ ] 👁 Dragging feels smooth: the block trails the finger by about a tenth of a second and never teleports.
 - [x] ⚙ A press just next to a block picks it; a press further away picks nothing — `BlockDragControllerTests.Grab_ShouldPickTheNearestBlock_WhenThePressMissesItByLittle`, `Grab_ShouldPickNothing_WhenThePressIsBeyondTheTouchTolerance`
-- [x] ⚙ An exit taps the device lightly — `GameplayHapticsTests`
+- [x] ⚙ A grab taps medium; an exit ticks light until the block has slid out; a win and a fail tap heavy; the
+  vibration toggle silences them — `GameplayHapticsTests`
+- [ ] 👁 On a device, picking a block clicks once, and a block leaving its door ticks in a quick run that stops
+  as its last piece disappears; two blocks leaving together tick as one run.
+- [ ] 👁 On a device, a win and a fail each give one heavy tap.
 - [ ] 👁 On an Android and an iOS device, the tap is short and crisp (not a long buzz).
 - [ ] 👁 Pushing a block into a door of another colour stops it like a wall: no shake, no tap.
 - [ ] 👁 A block leaving through a bottom door (facing the camera) sits flush at the door while it is cut away; no gap shows between block and door.

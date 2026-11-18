@@ -157,13 +157,23 @@ All board views listen to signals only; the model has committed every change bef
    On `BlockExitedSignal` the **`BoardView`** opens the door: the whole door, however narrow the block, sinks
    `DoorGateDepth` into the floor while the block settles, stays down while it slides through, then rises
    back (`DoorGateAnimation`, `DoorGateCloseDuration`) (DA-21).
-   **`GameplayHaptics`** (plain class, Gameplay scope, built by the scope's build callback) taps the
-   device when a block leaves: `GameplayConfig.ExitHaptic` (Light) on `BlockExitedSignal`. The taps go
-   through the root scope's `IHapticService` (`Core/Haptics/MobileHapticService`): Android
-   `VibrationEffect` predefined effects (one-shot pulses before API 29; the VIBRATE permission comes from
-   `Plugins/Android/ColorBlockJamHaptics.androidlib`), iOS `UIImpactFeedbackGenerator`
-   (`Plugins/iOS/ColorBlockJamHaptics.mm`), silent in the editor. No third-party haptics package. The
-   Settings vibration toggle does not gate it yet (T-25).
+   **`GameplayHaptics`** (plain class, Gameplay scope, built by the scope's build callback) gives haptic
+   feedback for a grab, an exit, a win and a fail (DA-44), with impacts from `GameplayConfig`:
+
+   | Signal | Haptic |
+   | --- | --- |
+   | `BlockGrabbedSignal` | one `GrabHaptic` tap (Medium) |
+   | `BlockExitedSignal` | a trill of `ExitHaptic` ticks (Light), one every `ExitTickInterval` (0.06 s), from the door until the block has slid out: `ExitSnapDuration` plus `BoardViewConfig.ExitSlideSeconds` of its length, the same time the view slides it. Blocks leaving together share one trill, which runs until the last one is gone. A block dragged partly into its door before it leaves slides a little less than that, so its last two or three ticks can come after it is gone |
+   | `LevelCompletedSignal` / `LevelFailedSignal` | one `WinHaptic` / `FailHaptic` tap (Heavy); it ends a running trill, so the result is felt clearly |
+
+   The ticks are timed with `IGameClock.DelayAsync` without a cancellation token (registering one allocates
+   on every tick), not per frame; the trill stops at its next tick once the scope is disposed.
+   The Settings vibration toggle silences every tap (DA-10). The taps go through the root scope's
+   `IHapticService` (`Core/Haptics/MobileHapticService`): Android `VibrationEffect` predefined effects
+   (Light is `EFFECT_TICK`, Medium `EFFECT_CLICK`, Heavy `EFFECT_HEAVY_CLICK`; one-shot pulses before
+   API 29; the VIBRATE permission comes from `Plugins/Android/ColorBlockJamHaptics.androidlib`), iOS
+   `UIImpactFeedbackGenerator` (`Plugins/iOS/ColorBlockJamHaptics.mm`), silent in the editor. No
+   third-party haptics package.
 4. Every part, block view and piece comes from a pool (`PartPool`, `ObjectPool`), so a restart or the next
    level reuses objects. Colours are one shared material per colour (`ColorMaterialCache`) to keep the SRP
    batcher batching.
