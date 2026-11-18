@@ -43,6 +43,8 @@ namespace ColorBlockJam.Game.Gameplay.View
         ObjectPool<ExitBurstView> _shatterPool;
         System.Action<ExitBurstView> _releaseShatter;
         readonly Dictionary<(WallSide Side, int CrossMin, int CrossMax), (ExitBurstView Burst, float StartedAt)> _lastBursts = new();
+        readonly List<ExitBurstView> _playingBursts = new();
+        readonly List<ExitBurstView> _playingShatters = new();
         ActiveBoard _board;
         OutlineSettings _outline;
 
@@ -85,13 +87,13 @@ namespace ColorBlockJam.Game.Gameplay.View
                 burst => burst.gameObject.SetActive(true),
                 burst => burst.gameObject.SetActive(false),
                 burst => Destroy(burst.gameObject));
-            _releaseBurst = _burstPool.Release;
+            _releaseBurst = burst => Release(burst, _playingBursts, _burstPool);
             _shatterPool = new ObjectPool<ExitBurstView>(
                 () => Instantiate(config.IceShatter, _root),
                 shatter => shatter.gameObject.SetActive(true),
                 shatter => shatter.gameObject.SetActive(false),
                 shatter => Destroy(shatter.gameObject));
-            _releaseShatter = _shatterPool.Release;
+            _releaseShatter = shatter => Release(shatter, _playingShatters, _shatterPool);
 
             _signalBus.Subscribe<BoardLoadedSignal>(OnBoardLoaded);
             _signalBus.Subscribe<BlockGrabbedSignal>(OnBlockGrabbed);
@@ -308,6 +310,7 @@ namespace ColorBlockJam.Game.Gameplay.View
             view.PlayThaw(_config.ThawSwell, _config.ThawDuration);
             Vector3 centre = Centre(block.StartCells) + new Vector3(block.Offset.x, 0f, block.Offset.y);
             ExitBurstView shatter = _shatterPool.Get();
+            _playingShatters.Add(shatter);
             shatter.Play(centre + Vector3.up * _config.ExitDebrisHeight, Vector2Int.up, 1f, Color.white, 0f,
                 _config.ThawDuration, 0f, _config.ThawDebrisPerCell * block.CellCount, _releaseShatter);
         }
@@ -331,6 +334,7 @@ namespace ColorBlockJam.Game.Gameplay.View
         void Burst(Vector3 local, Color color, float cubes)
         {
             ExitBurstView burst = _burstPool.Get();
+            _playingBursts.Add(burst);
             burst.Play(local + Vector3.up * _config.ExitDebrisHeight, Vector2Int.up, 1f, color, 0f,
                 _config.SmashDuration, 0f, cubes, _releaseBurst);
         }
@@ -347,6 +351,7 @@ namespace ColorBlockJam.Game.Gameplay.View
             }
 
             ExitBurstView burst = _burstPool.Get();
+            _playingBursts.Add(burst);
             burst.Play(sprayLocal, path.Direction, path.Width, color, _config.ExitSnapDuration, slide,
                 _config.ExitDebrisRate, _config.ExitDebrisBurst, _releaseBurst);
             _lastBursts[door] = (burst, now);
@@ -360,8 +365,27 @@ namespace ColorBlockJam.Game.Gameplay.View
             _blockPool.Release(view);
         }
 
+        static void Release(ExitBurstView effect, List<ExitBurstView> playing, ObjectPool<ExitBurstView> pool)
+        {
+            playing.Remove(effect);
+            pool.Release(effect);
+        }
+
+        static void StopAll(List<ExitBurstView> playing, ObjectPool<ExitBurstView> pool)
+        {
+            for (int i = playing.Count - 1; i >= 0; i--)
+            {
+                ExitBurstView effect = playing[i];
+                effect.Stop();
+                Release(effect, playing, pool);
+            }
+        }
+
         void ReleaseAll()
         {
+            StopAll(_playingBursts, _burstPool);
+            StopAll(_playingShatters, _shatterPool);
+            _lastBursts.Clear();
             for (int i = _exiting.Count - 1; i >= 0; i--)
                 Recycle(_exiting[i]);
             foreach (BlockView view in _views)

@@ -36,6 +36,12 @@ namespace ColorBlockJam.Game.Gameplay.View
             _particles.Emit(emit, count);
         }
 
+        internal void Stop()
+        {
+            _onFinished = null;
+            _particles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
+
         void OnParticleSystemStopped() => _onFinished?.Invoke(this);
     }
 }

@@ -113,6 +113,7 @@ namespace ColorBlockJam.Game.Gameplay.View
 
         void Leave(Action<BlockView> onFinished)
         {
+            _thaw?.Kill();
             _move.Pause();
             _follow.Pause();
             SetOutlined(false);
@@ -146,12 +147,8 @@ namespace ColorBlockJam.Game.Gameplay.View
             float snapDuration, Ease snapEase, Ease ease, Material exitTemplate, Color color, Vector4 clipPlane,
             Action<BlockView> onFinished)
         {
-            _move.Pause();
-            _follow.Pause();
-            SetOutlined(false);
+            Leave(onFinished);
             UseExitMaterial(exitTemplate, color, clipPlane);
-            _onExitFinished = onFinished;
-            _exitFinished ??= OnExitFinished;
 
             var outward = new Vector3(direction.x, 0f, direction.y);
             Vector3 lined = _pivot + new Vector3(offset.x, 0f, offset.y);

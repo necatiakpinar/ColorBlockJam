@@ -385,6 +385,22 @@ namespace ColorBlockJam.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator Restart_ShouldClearTheDebris_WhenTheBoardReloadsMidExit()
+        {
+            yield return BootToBoard();
+            _board.Load(TwoBlockLevel());
+            Swipe(new Vector2Int(0, 1), new Vector2Int(-2, 1));
+            yield return null;
+            ExitBurstView burst = SceneTestUtility.FindInActiveScene<ExitBurstView>();
+            Assert.That(burst.gameObject.activeSelf, Is.True, "Debris sprays while the block leaves.");
+
+            _board.Load(TwoBlockLevel());
+
+            Assert.That(burst.gameObject.activeSelf, Is.False, "A new attempt starts on a clean board.");
+            Assert.That(burst.GetComponent<ParticleSystem>().particleCount, Is.Zero);
+        }
+
+        [UnityTest]
         public IEnumerator BlockView_ShouldGlideAfterTheFinger_WhenItMovesSuddenly()
         {
             yield return BootToBoard();

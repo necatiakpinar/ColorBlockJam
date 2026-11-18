@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -90,7 +91,17 @@ namespace ColorBlockJam.Game.Gameplay.Hud
             _flight?.Kill();
             _flight = default(CoinFlightAnimation).Play(new CoinFlightAnimation.Config(_coins, _from, _target.position,
                 transform.lossyScale.x, _settings, Land, gameObject));
-            await _flight.ToUniTask(cancellationToken: cancellation);
+            try
+            {
+                await _flight.ToUniTask(cancellationToken: cancellation);
+            }
+            catch (OperationCanceledException)
+            {
+                _inputBlocker.SetActive(false);
+                for (int i = 0; i < _coins.Count; i++)
+                    _coins[i].gameObject.SetActive(false);
+                throw;
+            }
         }
 
         void Land(int index)

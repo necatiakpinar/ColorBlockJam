@@ -27,6 +27,7 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
   the pause button.
 - [x] ⚙ The debug window's shortcuts go through the real services — `GameplayDebugCommandsTests`
 - [ ] 👁 Every HUD and popup button shrinks while pressed; boosters and the coin "+" do nothing else.
+- [x] ⚙ A restart while a block leaves stops its debris at once — `GameplayBoardTests.Restart_ShouldClearTheDebris_WhenTheBoardReloadsMidExit`
 - [x] ⚙ Ten restarts in a row leave the same board, timer, coins and objects as a fresh start — `RestartResetsStateTests.Restart_ShouldLeaveTheSameStateAsAFreshStart_WhenRepeatedTenTimes`
 - [x] ⚙ Going Home after a loss and back gives the same level, fresh — `RestartResetsStateTests.Home_ShouldGiveTheSameLevelAndAFreshAttempt_WhenLeftAfterALoss`
 - [x] ⚙ No gameplay listener survives going Home — `RestartResetsStateTests.SceneUnload_ShouldLeaveNoGameplayListener_WhenGoingHome`

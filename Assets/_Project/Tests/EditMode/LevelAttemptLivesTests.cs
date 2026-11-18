@@ -146,6 +146,19 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
+        public void PlayAgain_ShouldDoNothing_WhenTheLevelWasWon()
+        {
+            Grab();
+            _bus.Fire(new BoardClearedSignal());
+            _lives.LoseAll();
+
+            _flow.PlayAgain();
+
+            Assert.That(_session.State, Is.EqualTo(LevelState.Won));
+            Assert.That(_popups.Current, Is.Null, "The win popup is on its way; nothing may open over it.");
+        }
+
+        [Test]
         public void Refill_ShouldFillTheLivesAndRestart_WhenBoughtInGameplay()
         {
             _lives.LoseAll();

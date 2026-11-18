@@ -32,6 +32,8 @@ namespace ColorBlockJam.Game.Gameplay
 
         public void PlayAgain()
         {
+            if (_session.State == LevelState.Won)
+                return;
             if (_lives.Count > 0)
             {
                 _session.Restart();
