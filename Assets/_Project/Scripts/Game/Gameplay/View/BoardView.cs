@@ -180,7 +180,7 @@ namespace ColorBlockJam.Game.Gameplay.View
         {
             var path = new ExitPath(_board.Current.Blocks[signal.BlockId].StartCells, signal.Offset, signal.Direction,
                 _boardSpace.Size);
-            float hold = (path.Length + _config.ExitCutOffset + _config.ExitClearance) / _config.ExitSpeed;
+            float hold = _config.ExitSlideSeconds(path.Length);
             Transform door = _doorSegments[(path.Side, path.CrossMin)];
             if (_gates.TryGetValue(door, out Sequence running))
                 running.Kill();

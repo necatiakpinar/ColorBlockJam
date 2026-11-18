@@ -326,6 +326,10 @@ namespace ColorBlockJam.Game.Configs
         public float ExitClearance => _exitClearance;
         public Ease ExitEase => _exitEase;
         public float ExitCutOffset => _exitCutOffset;
+
+        public float ExitSlideDistance(int length) => length + _exitCutOffset + _exitClearance;
+
+        public float ExitSlideSeconds(int length) => ExitSlideDistance(length) / _exitSpeed;
         public Material BlockExitMaterial => _blockExitMaterial;
         public ExitBurstView ExitBurst => _exitBurst;
         public float ExitDebrisRate => _exitDebrisRate;

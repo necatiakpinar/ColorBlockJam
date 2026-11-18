@@ -244,7 +244,7 @@ namespace ColorBlockJam.Game.Gameplay.View
 
             BoardBlock block = _board.Current.Blocks[signal.BlockId];
             var path = new ExitPath(block.StartCells, signal.Offset, signal.Direction, _boardSpace.Size);
-            float distance = path.Length + _config.ExitCutOffset + _config.ExitClearance;
+            float distance = _config.ExitSlideDistance(path.Length);
             Vector3 doorLocal = path.DoorCentre(_config.ExitDebrisHeight);
 
             var outward = new Vector3(signal.Direction.x, 0f, signal.Direction.y);
