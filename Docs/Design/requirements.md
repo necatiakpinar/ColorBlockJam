@@ -63,7 +63,7 @@ requirement keeps its id and is marked `Dropped`.
 | R-37 | Clear names, no dead code, consistent style | should | all; T-37 |
 | R-38 | No unnecessary allocation in the update loop; stable frame rate on a mid-range device | should | T-38 |
 | R-39 | A small and complete result before a large and incomplete one | should | §2 below |
-| R-40 | Problems found in the art set are listed in the project README (§8) | should | T-03, T-40 |
+| R-40 | Problems found in the art set are listed in the project README (§7) | should | T-03, T-40 |
 | R-41 | An unclear requirement gets a decision, registered as `DA-n`, and work continues | must | DA registry, T-40 |
 | R-42 | Touch and door feedback feel forgiving and clear: near-miss presses pick a block, wrong doors answer a push, doors open for a leaving block | should | T-43 |
 | R-43 | The game knows whether it is online from a real request; it plays offline and shows no connection popup (developer, 2026-11-18) | must | T-44 |

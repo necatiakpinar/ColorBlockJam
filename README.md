@@ -156,40 +156,7 @@ Withdrawn entries (DA-9, DA-15, DA-16, DA-23, DA-26, DA-30) are left out below.
 | DA-47 | Home's level path stretches like a scroll view |
 | DA-48 | A strip at the bottom of Gameplay stays free for an ad banner |
 
-## 7. Known problems and incomplete parts
-
-Open tasks from the [task table](Docs/Design/requirements.md) §4:
-
-| Task | Status | What is missing |
-| --- | --- | --- |
-| T-02 | In progress | Player, Android and quality settings |
-| T-38 | In progress | Profiling a full level on an Android device; the editor checks are done ([performance.md](Docs/General/performance.md)) |
-| T-39 | In progress | The manual (👁) QA cases at 1080x1920 and 20:9, in the Game view and on a device |
-| T-41 | Todo | Release APK installed and smoke-tested on a device |
-
-Other known gaps:
-
-- Nothing fetches remote config yet; `LevelPackService.TryStoreRemote` is the seam a fetcher calls
-  ([level-packs.md](Docs/General/level-packs.md) §4).
-- The level editor window is checked by hand only ([level-editor-qa.md](Docs/testing/level-editor-qa.md)).
-- Several QA checklists are still stubs ([Docs/index.md](Docs/index.md)).
-- Editor screenshots are pending (§4).
-
-### Found in the QA pass
-
-Automated part of T-39, last run 2026-11-18 on a fresh clone of `origin/main`:
-- **Suites.** Edit Mode 643/643 and Play Mode 49/49 pass. Every ⚙ case on the QA pages is ticked.
-- **Fixed: a test that depended on the save.** `BoosterFlowTests` hammered block 0 of whatever level the
-  save held. On a level where that block is frozen, the hammer only breaks the ice (DA-37), so the test
-  failed. It now picks a block without ice.
-- **Fixed: QA cases that named missing tests.** Two navigation cases named tests that no longer exist.
-  They now point to the tests that cover them.
-- **Open: the manual cases.** The 57 👁 cases (looks, feel, device) are not ticked; they need a person
-  with a device.
-- **Open: draw calls.** Gameplay draws 173 batches with 8 SetPass calls. That is fine for a mid-range phone,
-  but worth a check on a device ([performance.md](Docs/General/performance.md) §4).
-
-## 8. Asset feedback
+## 7. Asset feedback
 
 Problems found in the art set, each with its workaround:
 
@@ -209,7 +176,7 @@ Everything on screen comes from the given art set, plus two additions it does no
 | Lilita One font (`Assets/_Project/Art/Fonts/LilitaOne`) | the set has no font; every text needs the rounded, bold look of the reference | Google Fonts, SIL Open Font License (`OFL.txt` beside it) |
 | Seven sound effects (`Assets/_Project/Audio/sfx_*.wav`) | the set has no audio (DA-43) | synthesized by `tools/synth_sfx.py` in this repository; no third-party audio |
 
-## 9. Documentation map
+## 8. Documentation map
 
 | Page | Owns |
 | --- | --- |
@@ -227,7 +194,7 @@ Everything on screen comes from the given art set, plus two additions it does no
 | [testing.md](Docs/General/testing.md) | test layout and how to run |
 | [contributing.md](Docs/General/contributing.md) | commit convention |
 
-## 10. Project layout
+## 9. Project layout
 
 ```
 Assets/_Project/
@@ -242,7 +209,7 @@ Docs/               design, architecture, rules, tasks, QA checklists
 .claude/skills/     agent workflows (task breakdown, simplify, review, commit plan)
 ```
 
-## 11. AI tools and time
+## 10. AI tools and time
 
 The game was built in about **16 hours** with **Claude** (Claude Code) as the coding assistant.
 
