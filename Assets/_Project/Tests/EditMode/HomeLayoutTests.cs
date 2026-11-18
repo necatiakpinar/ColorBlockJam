@@ -127,5 +127,19 @@ namespace ColorBlockJam.Tests.EditMode
             if (openedHere)
                 EditorSceneManager.CloseScene(scene, true);
         }
+
+        [Test]
+        public void LevelPath_ShouldStretchElasticallyAndSpringBack_WhenDragged()
+        {
+            var path = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/UI/Home/LevelPath.prefab");
+            var scroll = path.GetComponent<ScrollRect>();
+
+            Assert.That(scroll, Is.Not.Null);
+            Assert.That(scroll.vertical, Is.True);
+            Assert.That(scroll.horizontal, Is.False);
+            Assert.That(scroll.movementType, Is.EqualTo(ScrollRect.MovementType.Elastic));
+            Assert.That(scroll.content.Find("CurrentTile"), Is.Not.Null, "The tiles move with the drag.");
+            Assert.That(path.transform.Find("LevelButton"), Is.Not.Null, "The Level button stays put.");
+        }
     }
 }

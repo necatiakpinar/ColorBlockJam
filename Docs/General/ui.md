@@ -152,6 +152,7 @@ Change a part in its prefab:
 | `TopBar/Coins` | `bg_home_resource_holder`, `Coin_Single`, green "+" | balance (`CoinAmountText`); "+" is a placeholder |
 | `TopBar/SettingsButton` | `Settings_Icon` | opens the Home settings popup |
 | `LevelPath` | gold rails, `Btn_level_green` tile for the current level (`CurrentTile`), `Btn_settings_normal` + `lock` for the next two | numbers from the saved level; the current tile breathes (DA-45) |
+| `LevelPath` (`ScrollRect`) | `Viewport` (a clear image that catches drags) and `Content` with the rails and tiles | vertical and elastic: the path stretches when dragged and springs back; there is nothing to scroll to yet, the `Level N` button stays put (DA-47) |
 | `LevelPath/LevelButton` | `Btn_level_green` (nine-sliced, art-pipeline.md §4), "Level N" | plays the current level |
 | `TabBar` | `bg_menu`, `bg_home_line` separators, `ActiveTab` under Home, `lock`, `shop`, `home_icon`, `block_collection`, `lock` "Lvl 50" | placeholders: press feedback only; Home stays active (DA-11) |
 
