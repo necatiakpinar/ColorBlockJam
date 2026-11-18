@@ -125,6 +125,7 @@ namespace ColorBlockJam.Tests.EditMode
             var builder = new ContainerBuilder();
             new CoreServicesInstaller(Configs()).Install(builder);
             builder.RegisterInstance<IAudioOutput>(new Helpers.RecordingAudioOutput());
+            builder.RegisterInstance<IScreenFader>(new Helpers.RecordingScreenFader());
             using IObjectResolver container = builder.Build();
 
             Assert.That(container.Resolve<SignalBus>(), Is.Not.Null);

@@ -7,11 +7,13 @@ namespace ColorBlockJam.Game.Navigation
     public sealed class NavigationService : INavigationService
     {
         readonly ISceneLoader _sceneLoader;
+        readonly IScreenFader _fader;
         bool _isLoading;
 
-        public NavigationService(ISceneLoader sceneLoader)
+        public NavigationService(ISceneLoader sceneLoader, IScreenFader fader)
         {
             _sceneLoader = sceneLoader;
+            _fader = fader;
         }
 
         public bool IsLoading => _isLoading;
@@ -28,7 +30,15 @@ namespace ColorBlockJam.Game.Navigation
             _isLoading = true;
             try
             {
-                await _sceneLoader.LoadAsync(sceneId, CancellationToken.None);
+                await _fader.FadeOutAsync();
+                try
+                {
+                    await _sceneLoader.LoadAsync(sceneId, CancellationToken.None);
+                }
+                finally
+                {
+                    await _fader.FadeInAsync();
+                }
             }
             finally
             {

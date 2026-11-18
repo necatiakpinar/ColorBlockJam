@@ -1,9 +1,12 @@
 using System.Collections;
 using NUnit.Framework;
 using ColorBlockJam.Game.Home;
+using ColorBlockJam.Game.Navigation;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using VContainer;
+using VContainer.Unity;
 
 namespace ColorBlockJam.Tests.PlayMode
 {
@@ -24,7 +27,14 @@ namespace ColorBlockJam.Tests.PlayMode
             }
 
             yield return null;
+            while (Navigation().IsLoading)
+            {
+                Assert.That(Time.realtimeSinceStartup, Is.LessThan(deadline), $"{sceneName} never came out of the fade.");
+                yield return null;
+            }
         }
+
+        static INavigationService Navigation() => FindInActiveScene<LifetimeScope>().Container.Resolve<INavigationService>();
 
         public static IEnumerator BootToHome()
         {

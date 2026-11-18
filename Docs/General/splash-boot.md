@@ -29,7 +29,7 @@ SplashFlow.StartAsync
   │    LoadAudioStep                 (weight 1)        every cue's clip, addressable (audio.md)
   ├─ await minimum-display timer
   ├─ await SplashView.WaitForPresentationAsync         intro + last bar fill finished
-  └─ INavigationService.GoToHomeAsync()                single mode; Splash scope is destroyed
+  └─ INavigationService.GoToHomeAsync()                fade to black, single mode load, fade in; Splash scope is destroyed
 Home.unity → HomeLifetimeScope builds                  HomeView wires its level button
 HomeFlow.Start → HomeView.ShowLevel(level)             level button → GoToGameplayAsync
 Gameplay.unity → GameplayLifetimeScope builds          GameplayHudView subscribes in Construct

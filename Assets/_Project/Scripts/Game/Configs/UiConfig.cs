@@ -18,6 +18,14 @@ namespace ColorBlockJam.Game.Configs
         [SerializeField]
         IdlePulseSettings _currentLevelPulse = new(1.06f, 10f, 0.85f, Ease.InOutSine);
 
+        [Tooltip("Seconds the screen takes to go black before a scene change.")]
+        [SerializeField, Min(0f)]
+        float _sceneFadeOut = 0.25f;
+
+        [Tooltip("Seconds the new scene takes to come out of black.")]
+        [SerializeField, Min(0f)]
+        float _sceneFadeIn = 0.3f;
+
         [Tooltip("Addressables address of the late-bound UI atlas; it must equal the atlas name, the tag Unity requests.")]
         [SerializeField]
         string _atlasAddress = "UiAtlas";
@@ -25,6 +33,8 @@ namespace ColorBlockJam.Game.Configs
         public PressFeedbackSettings PressFeedback => _pressFeedback;
         public FadeScaleInSettings PopupReveal => _popupReveal;
         public string AtlasAddress => _atlasAddress;
+        public float SceneFadeOut => _sceneFadeOut;
+        public float SceneFadeIn => _sceneFadeIn;
         public IdlePulseSettings CurrentLevelPulse => _currentLevelPulse;
     }
 }

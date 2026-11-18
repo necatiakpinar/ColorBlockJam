@@ -22,7 +22,7 @@ Assets/_Project/
 │   ├── Scopes/          Root / Splash / Home / Gameplay LifetimeScopes
 │   ├── Installers/      CoreServicesInstaller, SplashInstaller, HomeInstaller, GameplayInstaller
 │   ├── Configs/         Application, Splash, Ui, Gameplay, BoardView configs (ScriptableObjects)
-│   ├── Navigation/      INavigationService, NavigationService
+│   ├── Navigation/      INavigationService, NavigationService, IScreenFader, ScreenFaderView (Root prefab)
 │   ├── Boot/            boot steps (InitializeAssetsStep first), TweeningInitializer
 │   ├── Splash/          SplashFlow, SplashView
 │   ├── Home/            HomeFlow, HomeView
@@ -64,7 +64,11 @@ RootLifetimeScope (prefab, VContainerSettings, DontDestroyOnLoad)
 - **Navigation**: flows change scenes only through `INavigationService` (Root). It loads with
   `CancellationToken.None`, because the load destroys the calling scope and cancels its token; a load
   listening to that token would report its own success as a cancellation. It ignores a request while a
-  load is running (a double tap) (`NavigationServiceTests`).
+  load is running (a double tap) (`NavigationServiceTests`). Every route goes through the screen fader
+  (`IScreenFader`, `ScreenFaderView` on the Root prefab's `ScreenFader` canvas): the screen fades to black
+  (`UiConfig.SceneFadeOut`, 0.25 s), the scene loads behind it, and the new scene fades in (`SceneFadeIn`,
+  0.3 s); a failed load still fades back in. The black layer sits above every canvas (sort order 32000) and
+  blocks taps while it shows; a route requested during a fade is ignored like one during a load (DA-46).
 
 ### Registration rules
 

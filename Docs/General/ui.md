@@ -57,7 +57,7 @@
 
 | Asset | Holds |
 | --- | --- |
-| `UiConfig` (Root) | button press feedback, popup reveal |
+| `UiConfig` (Root) | button press feedback, popup reveal, scene fade out and in, the Home level pulse, the atlas address |
 | `GameplayPopupConfig` (Gameplay) | the gameplay popup prefabs |
 | `HomePopupConfig` (Home) | the Home popup prefabs (the Home settings variant) |
 

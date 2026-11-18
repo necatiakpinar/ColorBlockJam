@@ -33,7 +33,7 @@ before writing a new fake.
 | `PlayerProgressServiceTests` | defaults, read-before-load, persist + flush, corrupt and invalid data, setting a level |
 | `InstallerResolutionTests` | every installer builds; one SignalBus; one `AssetLoader` per scope, Root singletons keep the Root one; boot step order; board space cell size; one command per booster |
 | `HomeFlowTests` | Home shows the level path and the balance; the level button routes to Gameplay; settings open showing the saved switches, a switch flips its setting, close closes |
-| `NavigationServiceTests` | each route loads its scene; a request during a load is ignored; a failed load frees the guard |
+| `NavigationServiceTests` | each route fades out, loads its scene behind the black and fades in; nothing loads before the screen is black; a request during a fade or a load is ignored; a failed load fades back in and frees the guard (`RecordingScreenFader`) |
 | `PopupServiceTests` | one popup at a time; close allows the next |
 | `SafeAreaTests` | safe area to anchors, full screen and notched |
 | `LevelDefinitionValidatorTests` | one test per level rule in level-data.md §2 |

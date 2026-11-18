@@ -10,13 +10,62 @@ namespace ColorBlockJam.Tests.EditMode
     public sealed class NavigationServiceTests
     {
         ControllableSceneLoader _loader;
+        RecordingScreenFader _fader;
         NavigationService _navigation;
 
         [SetUp]
         public void SetUp()
         {
             _loader = new ControllableSceneLoader();
-            _navigation = new NavigationService(_loader);
+            _fader = new RecordingScreenFader();
+            _navigation = new NavigationService(_loader, _fader);
+        }
+
+        [Test]
+        public void GoToHome_ShouldFadeOutLoadAndFadeIn_WhenCalled()
+        {
+            _navigation.GoToHomeAsync().Forget();
+            Assert.That(_fader.Log, Is.EqualTo(new[] { "fade out" }), "The screen is black while Home loads.");
+            Assert.That(_loader.Loads, Is.EqualTo(new[] { SceneId.Home }));
+
+            _loader.CompleteLoad();
+
+            Assert.That(_fader.Log, Is.EqualTo(new[] { "fade out", "fade in" }));
+        }
+
+        [Test]
+        public void GoToHome_ShouldLoadNothing_WhileTheScreenGoesBlack()
+        {
+            _fader.HoldFadeOut();
+
+            _navigation.GoToHomeAsync().Forget();
+            Assert.That(_loader.Loads, Is.Empty);
+
+            _fader.FinishFadeOut();
+            Assert.That(_loader.Loads, Is.EqualTo(new[] { SceneId.Home }));
+        }
+
+        [Test]
+        public void GoToHome_ShouldBeIgnored_WhenAnotherRouteIsFadingOut()
+        {
+            _fader.HoldFadeOut();
+            _navigation.GoToHomeAsync().Forget();
+
+            _navigation.GoToGameplayAsync().Forget();
+            _fader.FinishFadeOut();
+
+            Assert.That(_loader.Loads, Is.EqualTo(new[] { SceneId.Home }));
+        }
+
+        [Test]
+        public void GoToHome_ShouldBringTheScreenBack_WhenTheLoadFails()
+        {
+            UniTask failed = _navigation.GoToHomeAsync();
+
+            _loader.FailLoad(new InvalidOperationException("boom"));
+
+            Assert.That(_fader.Log, Is.EqualTo(new[] { "fade out", "fade in" }));
+            Assert.Throws<InvalidOperationException>(() => failed.GetAwaiter().GetResult());
         }
 
         [Test]

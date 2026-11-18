@@ -39,3 +39,5 @@ Verifies [splash-boot.md](../General/splash-boot.md) §1–§2 and the Home ⇄ 
 ## Residual gaps
 
 - Device runs (Android/iOS) not yet performed.
+- [x] ⚙ Every route fades out, loads behind the black and fades in; a failed load fades back in — `NavigationServiceTests`
+- [ ] 👁 Leaving a level for Home: the screen darkens smoothly, Home comes up out of black, and nothing can be tapped while it is dark.

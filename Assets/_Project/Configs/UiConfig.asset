@@ -27,4 +27,6 @@ MonoBehaviour:
     _rise: 10
     _halfPeriod: 0.85
     _ease: 4
+  _sceneFadeOut: 0.25
+  _sceneFadeIn: 0.3
   _atlasAddress: UiAtlas
