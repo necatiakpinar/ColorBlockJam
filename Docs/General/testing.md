@@ -70,7 +70,7 @@ before writing a new fake.
 | `LivesServiceTests` | full start; trusted-time countdown, catch-up, remainder, offline start, reload; losing; coin refill; the second tick |
 | `LevelAttemptLivesTests` | only a started, abandoned attempt costs a life, once; a win costs none; playing again without lives offers a refill; Refill restarts, close goes Home |
 | `BoardRemovalTests` | boosters taking a whole block, one cell (a block that falls apart splits into blocks that move and leave on their own; the biggest piece keeps the id) or a whole colour; the clear fires once |
-| `BoosterInventoryTests` | starting stock saved, use, none left, bad saves, the shop paying or refusing |
+| `BoosterInventoryTests` | starting stock saved, 20 of each in the shipped config, use, none left, bad saves, the shop paying or refusing |
 | `BoosterServiceTests` | freeze at once and no stacking; rocket, hammer and vacuum wait for a tapped block, spend one, change the board, resume, can win; cancel, purchase needed, refused when not playing, restart, two commands for one booster throw |
 | `LevelTimerFreezeTests` | the freeze holds the timer for its seconds, stands still with a pause or the background, does not stack, ends on restart |
 | `ActiveBoardTests` | a load sizes the board space and starts fresh; steps announce move, exit (with the cell left from) and clear |

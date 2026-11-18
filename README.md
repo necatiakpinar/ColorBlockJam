@@ -142,7 +142,7 @@ Withdrawn entries (DA-9, DA-15, DA-16, DA-23) are left out below.
 | DA-32 | Solvable means some order of moves clears the level; a move follows any free path |
 | DA-33 | Difficulty is exit waves plus room-making moves; the generator's timer formula |
 | DA-34 | The level editor's keyboard shortcuts |
-| DA-36 | Boosters: one of each to start, coin prices, freeze for 10 s, spent only when they work |
+| DA-36 | Boosters: 20 of each to start, coin prices, freeze for 10 s, spent only when they work |
 | DA-37 | Ice counts down with every block that leaves; the hammer breaks it |
 | DA-38 | Five lives, one back every 30 minutes of trusted time, a refill for 100 coins |
 | DA-39 | An arrow block moves and leaves only along its axis |

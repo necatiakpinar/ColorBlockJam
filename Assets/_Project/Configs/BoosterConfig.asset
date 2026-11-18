@@ -14,28 +14,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _boosters:
   - _type: 1000
-    _startingCount: 1
+    _startingCount: 20
     _price: 40
     _title: Freeze
     _hint: 
     _description: Stops the clock for 10 seconds.
     _icon: {fileID: 21300000, guid: 1273187880add7541b83afb6d6f88751, type: 3}
   - _type: 2000
-    _startingCount: 1
+    _startingCount: 20
     _price: 60
     _title: Rocket
     _hint: Tap a block to blast one piece off it
     _description: Blasts one piece off any block.
     _icon: {fileID: 21300000, guid: 658822c9fb868ef478ef3e7c21498686, type: 3}
   - _type: 3000
-    _startingCount: 1
+    _startingCount: 20
     _price: 80
     _title: Hammer
     _hint: Tap a block to smash it
     _description: Smashes one whole block.
     _icon: {fileID: 21300000, guid: d0b977f934931574fbf1cb3dfb7e29dd, type: 3}
   - _type: 4000
-    _startingCount: 1
+    _startingCount: 20
     _price: 120
     _title: Vacuum
     _hint: Tap a block to clear its whole colour

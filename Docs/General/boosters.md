@@ -18,7 +18,7 @@ level.
 ## 1. Stock and shop
 
 - **`BoosterInventory`** (Root scope, `boosters_v1`, [persistence.md](persistence.md)) holds how many of
-  each the player owns. A booster missing from the save starts at its `StartingCount` (1 each). `TryUse`
+  each the player owns. A booster missing from the save starts at its `StartingCount`: 20 each in the shipped `BoosterConfig.asset` (DA-36); the class's own default of 1 each is what the tests build on. `TryUse`
   takes one; every change is saved at once and fires `BoosterCountChangedSignal`.
 - **`BoosterShop`** (Gameplay scope) sells one for its `Price` in coins: the wallet pays first
   (`IWalletService.TrySpend`), then the stock grows ([economy.md](economy.md) §3).

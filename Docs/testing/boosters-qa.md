@@ -7,7 +7,7 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 
 ### Stock and shop
 
-- [x] ⚙ A new player owns one of each; using and buying are saved at once — `BoosterInventoryTests`
+- [x] ⚙ A new player owns 20 of each; using and buying are saved at once — `BoosterInventoryTests`
 - [x] ⚙ Buying takes the price, or changes nothing when the coins are short — `BoosterInventoryTests.Shop_ShouldTakeThePriceAndAddOne_WhenThePlayerCanPay`, `Shop_ShouldChangeNothing_WhenTheCoinsAreShort`
 - [x] ⚙ With none left the button shows "+", a tap pauses and offers one; Buy plays on — `BoosterFlowTests.EmptyBooster_ShouldOfferOneForCoinsAndPlayOn_WhenBought`
 - [ ] 👁 The purchase popup fits the screen; Buy is greyed out without the coins; close resumes the timer.

@@ -120,5 +120,14 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(shop.CanAfford(BoosterType.Hammer), Is.False);
             Assert.That(inventory.Count(BoosterType.Hammer), Is.EqualTo(1));
         }
+
+        [Test]
+        public void ShippedConfig_ShouldGiveANewPlayerTwentyOfEachBooster_WhenTheGameShips()
+        {
+            var shipped = UnityEditor.AssetDatabase.LoadAssetAtPath<BoosterConfig>("Assets/_Project/Configs/BoosterConfig.asset");
+
+            foreach (BoosterType type in System.Enum.GetValues(typeof(BoosterType)))
+                Assert.That(shipped.For(type).StartingCount, Is.EqualTo(20), type.ToString());
+        }
     }
 }
