@@ -132,7 +132,7 @@ after the reference screens, sizes measured on them and scaled to the canvas (DA
    look; change the look in the prefab.
 
 A switch's "off" look is a dark track with a plain knob, because the art has
-only the "on" knob (asset-feedback.md A-1).
+only the "on" knob (README §8).
 
 ## 7. Settings popup
 

@@ -7,11 +7,8 @@ owns one area; when a fact changes, it changes in the page that owns it.
 
 | Page | Owns |
 | --- | --- |
-| [Design/README.md](Design/README.md) | the game, requirements, scope, open questions, task status — the design authority |
+| [Design/requirements.md](Design/requirements.md) | the game, requirements, scope, open questions, task status — the design authority |
 | [Design/tasks.md](Design/tasks.md) | per-task subtasks, acceptance criteria, tests and docs |
-| [Design/code-review-tasks.md](Design/code-review-tasks.md) | improvement tasks (`CR-n`) and open questions from the full code review |
-| [Design/asset-feedback.md](Design/asset-feedback.md) | problems found in the art assets |
-| [Design/deconstruction.md](Design/deconstruction.md) | what the reference game shows on screen, measured from recordings, and how this project matches it |
 
 ## General (binding pages)
 
@@ -58,4 +55,4 @@ Pages marked **binding** carry rules agents must follow before touching the path
 | [testing/boosters-qa.md](testing/boosters-qa.md) | the four boosters, their stock, popup and looks |
 | [testing/audio-qa.md](testing/audio-qa.md) | sound effects, the low-time tick and flash, the sound toggle |
 | [testing/addressables-qa.md](testing/addressables-qa.md) | runtime asset loading through Addressables in the editor and on a device |
-| [testing/network-qa.md](testing/network-qa.md) | the online requirement: connectivity, trusted time, no-internet popup (stub) |
+| [testing/network-qa.md](testing/network-qa.md) | connectivity and trusted time |

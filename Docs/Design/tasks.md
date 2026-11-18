@@ -1,6 +1,6 @@
 # Design Tasks — Detail
 
-Subtasks, acceptance criteria, tests and docs for every task in [README.md §4](README.md#4-tasks). The
+Subtasks, acceptance criteria, tests and docs for every task in [requirements.md §4](requirements.md#4-tasks). The
 README table owns status; this page owns scope. Each task block lists:
 
 - **Req** — requirements it satisfies (`R-n`) and assumptions it implements (`DA-n`).
@@ -61,8 +61,6 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - [x] [T-42 Repository hygiene](#t-42-repository-hygiene)
 - [x] [T-43 Touch and door feel](#t-43-touch-and-door-feel)
 - [x] [T-44 Connectivity probe and trusted time](#t-44-connectivity-probe-and-trusted-time)
-- [ ] [T-45 No-internet popup over every scene](#t-45-no-internet-popup-over-every-scene)
-- [ ] [T-46 Boot waits for a connection](#t-46-boot-waits-for-a-connection)
 - [x] [T-47 Level generator](#t-47-level-generator)
 - [x] [T-48 Lives](#t-48-lives)
 - [x] [T-49 Twenty levels and the level hardener](#t-49-twenty-levels-and-the-level-hardener)
@@ -100,7 +98,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
   - [x] Delete the unused template `InputSystem_Actions.inputactions` and its project-wide actions entry.
   - [x] Delete the unused `DefaultVolumeProfile`.
   - [x] DOTween safe mode off in editor and development builds (`TweeningInitializer`).
-  - [ ] Build a development APK and launch it on a device (first build happens with T-41 if no device
+  - [x] Build a development APK and launch it on a device (first build happens with T-41 if no device
     is at hand earlier).
 - **Accept:** a development APK builds and launches portrait on a device.
 - **Tests:** `EM BuildSettingsTests.PlayerSettings_ShouldLockPortrait_WhenBuilding`,
@@ -121,11 +119,11 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
   - [x] Part prefabs under `Assets/_Project/Prefabs/Board/` for floor, wall, corners, door, door arrow,
     block quarter parts and arrows (table in `art-pipeline.md` §4).
   - [x] URP Simple Lit materials: block, floor, wall, door, arrow, ice (`icetexture.jpg`).
-  - [x] Log asset problems for the README (R-40) in [asset-feedback.md](asset-feedback.md).
+  - [x] List asset problems in the project README (R-40).
 - **Accept:** every UI sprite drops onto an `Image` correctly; every mesh prefab sits on a 1-unit grid.
 - **Tests:** `EM AssetImportTests`: UI textures are sprites without mipmaps; models import at cell scale
   without materials; the floor tile spans one cell.
-- **Docs:** `Docs/General/art-pipeline.md` (folders, import rules, scale, palette); `Docs/README.md`.
+- **Docs:** `Docs/General/art-pipeline.md` (folders, import rules, scale, palette); `Docs/index.md`.
 
 ---
 
@@ -181,7 +179,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
   `IPointerDownHandler`, `IDragHandler`, `IPointerUpHandler` through a `PhysicsRaycaster`, projects the
   pointer onto the board plane and fires `BoardPointerSignal`s. Pointers over UI never reach the board.
   Single touch only (DA-4). `BoardSpace` is the only cell ↔ world conversion; it reads
-  `BoardViewConfig.CellSize` (1 with the current import scale) ([Design README §2.8](README.md#2-scope-decisions)).
+  `BoardViewConfig.CellSize` (1 with the current import scale) ([Design requirements §2.8](requirements.md#2-scope-decisions)).
 - **Subtasks:**
   - [x] `BoardViewConfig`, `BoardSpace` registered by `GameplayInstaller`.
   - [x] `BoardInputView` + `BoardPointerSignal`; camera `PhysicsRaycaster`; Gameplay scope wiring.
@@ -363,45 +361,6 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
   unavailable before the first success).
 - **Docs:** new `network.md` (probe, intervals, trusted time, editor bypass); `architecture.md` §1 tree;
   `network-qa.md`.
-
-### T-45 No-internet popup over every scene
-
-- **Req:** R-43. Implements DA-26.
-- **Arch:** an authored overlay canvas on the `RootLifetimeScope` prefab (sort order above every scene
-  canvas, `SafeArea`, full-screen blocker), `NoInternetPopupView` bound by `[Inject] Construct`, shown on
-  `ConnectivityChangedSignal(false)` and hidden on `(true)`. Retry calls `IConnectivityService.ProbeNowAsync`
-  and shows a short busy state. Gameplay: `LevelTimer` and `BlockDragController` treat offline like the
-  app being in the background (timer freezes, a held block is dropped, the finger is ignored); the level is
-  not paused, so no pause popup opens under it.
-- **Subtasks:**
-  - [ ] Author the overlay (title, message, Retry with `ButtonPressFeedback`) from the UI art set.
-  - [ ] Show / hide with the popup animation used by the other popups (T-19 / T-25 shared view).
-  - [ ] Timer and drag listen to the connectivity signal.
-- **Accept:** cutting the network on Home or mid-level shows the popup within one probe interval; a
-  mid-level timer stands still under it and the board ignores touches; Retry with the network back
-  closes it and play continues where it stopped.
-- **Tests:** `EM LevelTimerTests` (offline freezes, online resumes), `EM BlockDragControllerTests`
-  (offline drops and ignores), `PM NoInternetPopupTests` (fake connectivity: shows over Gameplay, Retry
-  probes, back online hides).
-- **Docs:** `network.md`, `ui.md` §3 (the Root overlay is the one popup outside `IPopupService`),
-  `gameplay.md` §6 Timer, `network-qa.md`.
-
-### T-46 Boot waits for a connection
-
-- **Req:** R-43. Implements DA-25.
-- **Arch:** `ConnectivityBootStep` (first in `SplashInstaller`) awaits the first successful probe; while
-  offline the Root popup is up and the step keeps waiting (no timeout: the game cannot run offline).
-  `splash-boot.md` §1 guarantee 3 changes to "Splash reaches Home once online". In the editor,
-  `NetworkConfig.BypassInEditor` skips the gate so play mode and Play Mode tests do not need a network;
-  tests of the gate use a fake service.
-- **Subtasks:**
-  - [ ] Boot step and its weight on the loading bar.
-  - [ ] Editor bypass; Play Mode tests run with it on.
-- **Accept:** a device in airplane mode stays on Splash with the popup; turning the network on continues
-  to Home without a restart; the editor plays without a network when the bypass is on.
-- **Tests:** `EM ConnectivityBootStepTests` (waits while offline, completes on the first success),
-  `EM InstallerResolutionTests` (step order), `PM NavigationFlowTests` stay green with the bypass.
-- **Docs:** `splash-boot.md` §1–§3, `network.md`, `navigation-qa.md`.
 
 ---
 
@@ -692,7 +651,7 @@ and (T-33) the solver from `ColorBlockJam.Game`, so the editor never has its own
 
 ## Chapter 10 — Optional scope (only after chapters 0–9 are Done)
 
-### T-33 Solvability validation (pulled into the editor chain, README §2 item 10)
+### T-33 Solvability validation (pulled into the editor chain, requirements §2 item 10)
 
 - **Req:** R-31, R-47. Implements DA-32.
 - **Arch:** `LevelSolver` (pure, Game assembly): breadth-first search over board states with a visited hash
@@ -801,7 +760,7 @@ and (T-33) the solver from `ColorBlockJam.Game`, so the editor never has its own
 - **Sections:** how to open and run (Unity 2022.3.62f2, LFS, Play); how to open the editor and make a level
   (with screenshots); architecture decisions and the reason for each (DI scopes, signal bus, pure board
   model, ScriptableObject level format, animation separation, no per-frame code, cells-only data with the
-  2-unit art cell normalized at import — Design README §2.8); decisions made for unclear
+  2-unit art cell normalized at import — Design requirements §2.8); decisions made for unclear
   requirements (DA list summary); known problems and incomplete parts; asset feedback.
 - **Docs:** root `README.md`.
 

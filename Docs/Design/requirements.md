@@ -63,10 +63,10 @@ requirement keeps its id and is marked `Dropped`.
 | R-37 | Clear names, no dead code, consistent style | should | all; T-37 |
 | R-38 | No unnecessary allocation in the update loop; stable frame rate on a mid-range device | should | T-38 |
 | R-39 | A small and complete result before a large and incomplete one | should | §2 below |
-| R-40 | Problems found in the art set are logged in [asset-feedback.md](asset-feedback.md) | should | T-03, T-40 |
+| R-40 | Problems found in the art set are listed in the project README (§8) | should | T-03, T-40 |
 | R-41 | An unclear requirement gets a decision, registered as `DA-n`, and work continues | must | DA registry, T-40 |
 | R-42 | Touch and door feedback feel forgiving and clear: near-miss presses pick a block, wrong doors answer a push, doors open for a leaving block | should | T-43 |
-| R-43 | The game needs a working internet connection: without one, a full-screen "No internet connection" popup with a Retry button blocks the game at boot and during play, and closes itself once the connection is back | must | T-44, T-45, T-46 |
+| R-43 | The game knows whether it is online from a real request; it plays offline and shows no connection popup (developer, 2026-11-18) | must | T-44 |
 | R-44 | Wall-clock game features (lives refill, daily rewards) read a trusted time taken from the internet, never the device clock | should | T-44 |
 | R-45 | Changing the device clock cannot change the level timer | must | T-15 |
 | R-46 | The editor generates a level from settings (board size, colours, block count, difficulty, seed) that passes validation and can be finished | must | T-47 |
@@ -108,13 +108,12 @@ requirement keeps its id and is marked `Dropped`.
    class, `BoardSpace`, and reads `BoardViewConfig.CellSize`; no code assumes a cell is 1 unit. **Why:**
    the art convention stays an import detail, the world size is one tunable, and changing either never
    touches data or rules. The project README states this decision (T-40).
-9. **Online only** (R-43, developer decision 2026-11-17). A real request to a probe URL decides whether
+9. **Online detection, no offline gate** (R-43, developer decisions 2026-11-17 and 2026-11-18). A real request to a probe URL decides whether
    the game is online; Unity's `Application.internetReachability` only reports a network interface, so
    Wi-Fi without internet would pass it. The probe's response also carries the server's time (HTTP `Date`
    header), kept as the trusted wall clock (R-44). The level timer never needed it: it counts monotonic
-   real time, which the device clock does not move (R-45, T-15). The no-internet popup sits above every
-   scene and every other popup, so it lives on the Root scope, outside the scenes' one-popup
-   `IPopupService`. This replaces the rule that Splash never waits on the network (splash-boot.md §1).
+   real time, which the device clock does not move (R-45, T-15). The game never blocks on the network: there is no
+   no-internet popup, and Splash never waits on the network (splash-boot.md §1).
 10. **The level editor is one task chain on branch `feature/level_editor`** (developer, 2026-11-17): T-26 –
    T-31, the solver T-33 (pulled out of the optional scope: the developer wants every level proved
    finishable) and the generator T-47 land there and merge into `main` together.
@@ -182,8 +181,6 @@ task is marked `Dropped`, never deleted. Detail per task: [tasks.md](tasks.md).
 | T-41 | 12 | Android APK | APK installs and plays the full flow on a device | T-39 | Todo |
 | T-42 | 12 | Repository hygiene | Clean clone opens and runs; no Library, Temp or Build tracked | T-40, T-41 | Done |
 | T-44 | 4 | Connectivity probe and trusted time | Online state follows a real request; server time is readable once a probe succeeds | T-04 | Done |
-| T-45 | 5 | No-internet popup over every scene | Going offline anywhere shows the blocking popup; in gameplay the timer and input stop; back online closes it | T-44, T-05, T-15 | Todo |
-| T-46 | 5 | Boot waits for a connection | Splash does not reach Home offline; the popup's Retry or a returning connection continues the boot | T-44, T-45 | Todo |
 | T-47 | 8 | Level generator | Generate builds a valid, solvable level matching the chosen size, colours, block count and difficulty | T-33, T-28, T-29 | Done |
 | T-43 | 3 | Touch and door feel | Near-miss presses pick a block; wrong doors stop a block like a wall; doors open and close; close exits share one spray | T-12, T-13 | Done |
 | T-48 | 8 | Lives | Abandoned attempts cost a life; lives refill every 30 min of trusted time; no lives offers a coin refill | T-44, T-07 | Done |

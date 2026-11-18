@@ -1,6 +1,6 @@
 ---
 name: task-breakdown
-description: Turn a feature request or design change into a scoped, ordered task list in Docs/Design/README.md with stable ids, acceptance criteria, dependencies, open questions and registered assumptions. Use when a new feature or design change arrives, or when the user asks to plan, split or estimate work.
+description: Turn a feature request or design change into a scoped, ordered task list in Docs/Design/requirements.md with stable ids, acceptance criteria, dependencies, open questions and registered assumptions. Use when a new feature or design change arrives, or when the user asks to plan, split or estimate work.
 ---
 
 # Task Breakdown
@@ -11,7 +11,7 @@ only: no code changes in this skill.
 ## Inputs
 
 - The request: a file the user gives (Markdown, text) or pasted text.
-- `CLAUDE.md`, `Docs/General/architecture.md`, `Docs/Design/README.md` (current requirements and tasks),
+- `CLAUDE.md`, `Docs/General/architecture.md`, `Docs/Design/requirements.md` (current requirements and tasks),
   `Docs/General/development-assumptions.md`.
 
 ## Workflow
@@ -33,7 +33,7 @@ only: no code changes in this skill.
    then juice (animation, feedback, audio), then polish. Every task leaves `main` playable.
 5. **Map to the architecture.** For each task, note the scope (Root / Gameplay), new services, signals,
    configs and views, following `architecture.md`. Flag anything that breaks a rule in `CLAUDE.md`.
-6. **Update `Docs/Design/README.md`**: requirements (§1), scope decisions (§2), open questions (§3),
+6. **Update `Docs/Design/requirements.md`**: requirements (§1), scope decisions (§2), open questions (§3),
    tasks table (§4), and the task detail in `Docs/Design/tasks.md`. Register assumptions in
    `development-assumptions.md`. Add a QA checklist stub `Docs/testing/<area>-qa.md` per new area.
 7. **Report** to the user: the requirement list, the open questions (ask the blocking ones now), the

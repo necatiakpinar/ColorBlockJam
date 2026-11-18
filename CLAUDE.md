@@ -6,7 +6,7 @@ in sync (`cp CLAUDE.md AGENTS.md`).
 
 Subsystem detail lives in pages under `Docs/`. Wherever this file says **"Read X before touching Y"**,
 reading X is mandatory before changing Y. A rule in a linked page binds exactly like one written here.
-The index of every page is [Docs/README.md](Docs/README.md).
+The index of every page is [Docs/index.md](Docs/index.md).
 
 ## Project Overview
 
@@ -16,7 +16,7 @@ a typed signal bus, data-driven configs, separated animations, and Edit Mode + P
 
 - **Target:** mobile, portrait, URP (Mobile renderer). 60 FPS target via `ApplicationConfig`.
 - **Design authority:** the requirements and the task list derived from them, under
-  [Docs/Design/](Docs/Design/README.md). Every gameplay behavior must trace to a task there or to a
+  [Docs/Design/](Docs/Design/requirements.md). Every gameplay behavior must trace to a task there or to a
   registered assumption in [development-assumptions.md](Docs/General/development-assumptions.md).
 
 ## Repository-Local Skills
@@ -220,7 +220,7 @@ message (`ArchitectureTests.Code_ShouldHaveNoComments_WhenWritten` fails on any 
 
 - **Docs are part of the change.** A commit that changes a documented fact carries the doc edit.
 - This file is an index: add only rules that bind every change, or a one-line "Read X before touching
-  Y" trigger. Subsystem detail goes in its own page under `Docs/General/`, listed in `Docs/README.md`.
+  Y" trigger. Subsystem detail goes in its own page under `Docs/General/`, listed in `Docs/index.md`.
 - **Read [doc-authoring-rules.md](Docs/General/doc-authoring-rules.md) before writing any `.md`.**
 - A player-visible decision the design does not answer is never a silent default: register it in
   [development-assumptions.md](Docs/General/development-assumptions.md) as `DA-n` and cite the id in

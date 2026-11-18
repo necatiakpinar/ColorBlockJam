@@ -29,7 +29,7 @@ Before committing a change to a documented fact, search for every mention and up
 git grep -n "<TypeName>\|<file-name>\|<old wording>" -- '*.md'
 ```
 
-Also check `Docs/README.md` (new page listed?), `CLAUDE.md` (trigger still right?) and the area's QA
+Also check `Docs/index.md` (new page listed?), `CLAUDE.md` (trigger still right?) and the area's QA
 checklist.
 
 ## 4. Style

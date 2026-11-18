@@ -3,8 +3,9 @@
 > **Binding agent rules.** Read this page before touching `Scripts/Core/Network/`, `NetworkConfig` or
 > anything that reads the time of day.
 
-The game is online only (R-43, [Design §2](../Design/README.md#2-scope-decisions) item 9). This page covers
-how it decides it is online and where trusted time comes from.
+The game knows whether it is online but never blocks on it: there is no connection popup and it plays
+offline (R-43, [Design §2](../Design/requirements.md#2-scope-decisions) item 9). This page covers how it decides it
+is online and where trusted time comes from.
 
 ## 1. Connectivity
 

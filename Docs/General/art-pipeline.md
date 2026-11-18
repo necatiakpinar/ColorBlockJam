@@ -68,7 +68,7 @@ The art set is used as imported (R-3). `AssetImportTests` enforces §2 and §3.
 3. Board plane: X right, Z up the screen, Y towards the camera. The floor top is at Y = 0.
 4. **Code never assumes the cell size.** Grid ↔ world conversion goes through `BoardSpace`, which reads
    `BoardViewConfig.CellSize`; level data and rules stay in cell coordinates
-   ([Design README §2.8](../Design/README.md#2-scope-decisions)).
+   ([Design requirements §2.8](../Design/requirements.md#2-scope-decisions)).
 
 ## 4. Part prefabs
 

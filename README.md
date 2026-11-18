@@ -3,7 +3,7 @@
 A Unity 2022.3 LTS mobile puzzle game for portrait phones. The player drags coloured blocks across a
 walled board and out through doors of their colour before the timer runs out. A level editor lets
 designers make, check and play levels without writing code. The full design is in
-[Docs/Design/README.md](Docs/Design/README.md).
+[Docs/Design/requirements.md](Docs/Design/requirements.md).
 
 ## 1. Highlights
 
@@ -35,7 +35,7 @@ designers make, check and play levels without writing code. The full design is i
   through Splash, Home and Gameplay). Architecture tests enforce the rules: no per-frame code, Core never
   references Game, no raw logs, every scene reference set. A Play Mode test proves the drag allocates 0 B
   ([performance.md](Docs/General/performance.md)).
-- **Documented rules**: [CLAUDE.md](CLAUDE.md) (also [AGENTS.md](AGENTS.md)) and [Docs/](Docs/README.md),
+- **Documented rules**: [CLAUDE.md](CLAUDE.md) (also [AGENTS.md](AGENTS.md)) and [Docs/](Docs/index.md),
   plus repository-local agent workflows in `.claude/skills/`.
 
 ## 2. Tech
@@ -99,7 +99,7 @@ The handbook is [architecture.md](Docs/General/architecture.md).
 | **Flows orchestrate only.** A flow sequences presentation and routing; the owning service commits data first. | Game state is correct even if every animation is skipped or cut short. ([architecture.md](Docs/General/architecture.md) §4) |
 | **Pure board model.** `BoardState` is plain C# that holds every rule of one attempt and is built fresh on each start and restart. | Rules are Edit Mode tested, a restart cannot leak state, and the editor's solver reuses the same code. ([gameplay.md](Docs/General/gameplay.md) §3) |
 | **Cells only; `BoardSpace` converts.** Level data, rules and the editor work in cells; `BoardSpace` is the only cell ↔ world conversion. | The world size is one tunable (`BoardViewConfig.CellSize`); changing it never touches data or rules. ([gameplay.md](Docs/General/gameplay.md) §1) |
-| **The 2-unit art cell is normalized at import.** The models share a 2-unit cell and import at scale 0.5, so one cell is one world unit. | The art convention stays an import detail. ([Design README](Docs/Design/README.md) §2.8, [art-pipeline.md](Docs/General/art-pipeline.md) §3) |
+| **The 2-unit art cell is normalized at import.** The models share a 2-unit cell and import at scale 0.5, so one cell is one world unit. | The art convention stays an import detail. ([Design requirements](Docs/Design/requirements.md) §2.8, [art-pipeline.md](Docs/General/art-pipeline.md) §3) |
 | **ScriptableObject levels, JSON packs at runtime.** The editor authors `LevelDefinition` assets in a `LevelCatalog` and publishes them as `levels.json`; the game reads only packs. | Designers work in Unity with undo and git history, while levels can change from remote config without an app update. ([level-data.md](Docs/General/level-data.md), [level-packs.md](Docs/General/level-packs.md)) |
 | **The solver reads rules from `BoardState`.** It asks a real board once per level, records the answers as 128-bit cell masks and searches with bit operations. | The rules are never copied, so the solver cannot drift from the game, and the search stays fast. ([level-editor.md](Docs/General/level-editor.md) §3) |
 | **Separated animations.** Motion is a stateless `readonly struct` implementing `IAnimation<TConfig>`; no inline DOTween in views, flows or services. | Motion is reusable and tuned from configs; views only own the running sequence. ([architecture.md](Docs/General/architecture.md) §6) |
@@ -110,7 +110,7 @@ The handbook is [architecture.md](Docs/General/architecture.md).
 
 Each open product question got a decision, registered as `DA-n` and cited in the docs and commits. Why,
 alternatives and status: [development-assumptions.md](Docs/General/development-assumptions.md).
-Withdrawn entries (DA-9, DA-15, DA-16, DA-23, DA-30) are left out below.
+Withdrawn entries (DA-9, DA-15, DA-16, DA-23, DA-26, DA-30) are left out below.
 
 | Id | Decision |
 | --- | --- |
@@ -135,7 +135,6 @@ Withdrawn entries (DA-9, DA-15, DA-16, DA-23, DA-30) are left out below.
 | DA-22 | Pause, win or fail drops a held block; no restart after a win |
 | DA-24 | One arrow on each door, pointing out of the board |
 | DA-25 | Online is decided by a probe request with a `Date` header |
-| DA-26 | Offline in gameplay: the timer and input stop; nothing is lost |
 | DA-27 | Trusted time is the last probe's `Date` plus monotonic time since |
 | DA-28 | The gameplay HUD layout follows the reference; no lives in gameplay |
 | DA-29 | Pause opens the settings popup; closing it resumes |
@@ -159,7 +158,7 @@ Withdrawn entries (DA-9, DA-15, DA-16, DA-23, DA-30) are left out below.
 
 ## 7. Known problems and incomplete parts
 
-Open tasks from the [task table](Docs/Design/README.md) §4:
+Open tasks from the [task table](Docs/Design/requirements.md) §4:
 
 | Task | Status | What is missing |
 | --- | --- | --- |
@@ -167,15 +166,13 @@ Open tasks from the [task table](Docs/Design/README.md) §4:
 | T-38 | In progress | Profiling a full level on an Android device; the editor checks are done ([performance.md](Docs/General/performance.md)) |
 | T-39 | In progress | The manual (👁) QA cases at 1080x1920 and 20:9, in the Game view and on a device |
 | T-41 | Todo | Release APK installed and smoke-tested on a device |
-| T-45 | Todo | The no-internet popup over every scene |
-| T-46 | Todo | Boot waits for a connection |
 
 Other known gaps:
 
 - Nothing fetches remote config yet; `LevelPackService.TryStoreRemote` is the seam a fetcher calls
   ([level-packs.md](Docs/General/level-packs.md) §4).
 - The level editor window is checked by hand only ([level-editor-qa.md](Docs/testing/level-editor-qa.md)).
-- Several QA checklists are still stubs ([Docs/README.md](Docs/README.md)).
+- Several QA checklists are still stubs ([Docs/index.md](Docs/index.md)).
 - Editor screenshots are pending (§4).
 
 ### Found in the QA pass
@@ -194,8 +191,7 @@ Automated part of T-39, last run 2026-11-18 on a fresh clone of `origin/main`:
 
 ## 8. Asset feedback
 
-Problems found in the art set are logged in [asset-feedback.md](Docs/Design/asset-feedback.md), each
-with its workaround. In short:
+Problems found in the art set, each with its workaround:
 
 - **Scale and axes.** The models use an undocumented 2-unit cell (some also a 0.01 file scale), mix Z-up
   and Y-up, and `WallAndDoor.fbx` is exported upside down. Import settings and part prefabs correct all
@@ -217,8 +213,8 @@ Everything on screen comes from the given art set, plus two additions it does no
 
 | Page | Owns |
 | --- | --- |
-| [Docs/README.md](Docs/README.md) | the index of every page |
-| [Design/README.md](Docs/Design/README.md) | requirements, scope decisions, task status |
+| [Docs/index.md](Docs/index.md) | the index of every page |
+| [Design/requirements.md](Docs/Design/requirements.md) | requirements, scope decisions, task status |
 | [Design/tasks.md](Docs/Design/tasks.md) | subtasks and acceptance criteria per task |
 | [getting-started.md](Docs/General/getting-started.md) | setup, packages, Android build |
 | [architecture.md](Docs/General/architecture.md) | assemblies, DI scopes, signals, flows, animations |
@@ -254,6 +250,6 @@ The game was built in about **16 hours** with **Claude** (Claude Code) as the co
 | --- | --- |
 | Code and refactors | Claude wrote and changed the C# under the rules in [CLAUDE.md](CLAUDE.md); the developer set the design, reviewed every change and approved each commit. |
 | Tests | Claude wrote the Edit Mode and Play Mode tests that travel with each change and ran them headless. |
-| Docs | Claude kept the pages under [Docs/](Docs/README.md), the task list and the `DA-n` registry in step with the code. |
+| Docs | Claude kept the pages under [Docs/](Docs/index.md), the task list and the `DA-n` registry in step with the code. |
 | Reviews | Claude reviewed the code before commits, using the workflows in `.claude/skills/`. |
 | Sound effects | Claude synthesised the sound effects with `tools/synth_sfx.py`. |
