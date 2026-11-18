@@ -2,6 +2,7 @@ using NUnit.Framework;
 using ColorBlockJam.Core.Signals;
 using ColorBlockJam.Game.Home;
 using ColorBlockJam.Tests.EditMode.Helpers;
+using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,6 +13,7 @@ namespace ColorBlockJam.Tests.EditMode
     public sealed class HomeLayoutTests
     {
         const string HomeScene = "Assets/_Project/Scenes/Home.unity";
+        const string TabBarPrefab = "Assets/_Project/Prefabs/UI/Home/TabBar.prefab";
         const float MinimumGap = 5f;
         const float MinimumProfileSize = 200f;
         const float LowestTopBarCentre = -160f;
@@ -79,6 +81,29 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(coins.xMin - lives.xMax, Is.GreaterThanOrEqualTo(MinimumGap), "Lives to coins");
             if (openedHere)
                 EditorSceneManager.CloseScene(scene, true);
+        }
+
+        [Test]
+        public void TabBar_ShouldFitTheScreen_WhenThePhoneIs20By9()
+        {
+            const float referenceWidth = 1080f;
+            const float referenceHeight = 1920f;
+            const float phoneWidth = 1080f;
+            const float phoneHeight = 2400f;
+            const float match = 0.5f;
+            float scale = Mathf.Pow(2f, Mathf.Lerp(Mathf.Log(phoneWidth / referenceWidth, 2f),
+                Mathf.Log(phoneHeight / referenceHeight, 2f), match));
+            float halfWidth = phoneWidth / scale / 2f;
+            var bar = AssetDatabase.LoadAssetAtPath<GameObject>(TabBarPrefab).transform;
+
+            foreach (Transform child in bar)
+            {
+                if (child.GetComponent<Button>() == null)
+                    continue;
+                var tab = (RectTransform)child;
+                Assert.That(tab.anchorMin.x, Is.EqualTo(0.5f), child.name);
+                Assert.That(Mathf.Abs(tab.anchoredPosition.x) + tab.sizeDelta.x / 2f, Is.LessThanOrEqualTo(halfWidth), child.name);
+            }
         }
 
         [Test]

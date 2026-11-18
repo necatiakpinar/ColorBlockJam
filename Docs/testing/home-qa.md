@@ -10,6 +10,7 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 - [x] ⚙ The level button opens Gameplay — `HomeFlowTests.LevelButton_ShouldNavigateToGameplay_WhenTapped`
 - [x] ⚙ Every Home button gives press feedback — `SceneSetupTests`
 - [x] ⚙ The top bar sits high, the profile is at least 200 wide and no part of the top bar touches its neighbour — `HomeLayoutTests`
+- [x] ⚙ Every tab of the tab bar fits a 1080x2400 screen — `HomeLayoutTests.TabBar_ShouldFitTheScreen_WhenThePhoneIs20By9`
 - [x] ⚙ The current level's tile breathes while Home is shown — `HomeLayoutTests.ShowLevel_ShouldSetTheCurrentTileBreathing_WhenHomeShowsTheLevel`
 - [ ] 👁 The breathing reads as a gentle invitation, not a jitter, and stops cleanly when the level starts.
 - [ ] 👁 Compare Home with the reference screen at 1080x1920 and 20:9: top bar, level path, tab bar.

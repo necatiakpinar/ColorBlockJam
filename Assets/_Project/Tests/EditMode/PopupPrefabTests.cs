@@ -15,6 +15,7 @@ namespace ColorBlockJam.Tests.EditMode
         const string HomeConfigPath = "Assets/_Project/Configs/HomePopupConfig.asset";
         const string SettingsBasePath = "Assets/_Project/Prefabs/UI/Popups/SettingsPopup.prefab";
         const float PopupFaceBottom = 95f;
+        const float MinimumTouchHeight = 120f;
 
         static GameplayPopupConfig GameplayConfig => AssetDatabase.LoadAssetAtPath<GameplayPopupConfig>(GameplayConfigPath);
         static HomePopupConfig HomeConfig => AssetDatabase.LoadAssetAtPath<HomePopupConfig>(HomeConfigPath);
@@ -25,6 +26,28 @@ namespace ColorBlockJam.Tests.EditMode
             yield return GameplayConfig.WinPopup;
             yield return GameplayConfig.LevelFailedPopup;
             yield return HomeConfig.SettingsPopup;
+        }
+
+        [Test]
+        public void SettingToggles_ShouldTakeTapsAtLeastAFingerTall_InBothScenes()
+        {
+            foreach (SettingsPopupView popup in new SettingsPopupView[] { GameplayConfig.PausePopup, HomeConfig.SettingsPopup })
+                foreach (string toggle in new[] { "VibrationToggle", "SoundToggle", "MusicToggle" })
+                {
+                    Image image = FindDeep(popup.transform, toggle).GetComponent<Image>();
+                    Vector4 padding = image.raycastPadding;
+                    float height = image.rectTransform.rect.height - padding.y - padding.w;
+                    Assert.That(image.raycastTarget, Is.True, $"{popup.name}/{toggle}");
+                    Assert.That(height, Is.GreaterThanOrEqualTo(MinimumTouchHeight), $"{popup.name}/{toggle}");
+                }
+        }
+
+        static Transform FindDeep(Transform root, string name)
+        {
+            foreach (Transform child in root.GetComponentsInChildren<Transform>(true))
+                if (child.name == name)
+                    return child;
+            throw new AssertionException($"{root.name} has no {name}.");
         }
 
         [Test]

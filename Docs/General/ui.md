@@ -179,7 +179,10 @@ The top bar's four parts are centred 150 units below the safe area's top and spr
 margin each side in the reference's proportions: profile 220, lives 329, coins 261, settings 103. Neighbours
 sit close, as in the reference, but never touch: at least 5 units apart, measured on what is drawn (sprite
 padding excluded), counting the heart, the coin and the "+" badges that stick out of the bars
-(`HomeLayoutTests`). While Home is shown, `HomeView` plays
+(`HomeLayoutTests`). The tab bar's five tabs are 180 wide and centred at 0, ±198 and ±385, so they fit the
+966-unit width a 20:9 phone gives the canvas (`HomeLayoutTests.TabBar_ShouldFitTheScreen_WhenThePhoneIs20By9`).
+The settings switches are drawn 70 tall but take taps 130 tall (`Image.raycastPadding` of -30 on every side),
+so a finger never misses them. While Home is shown, `HomeView` plays
 `IdlePulseAnimation` on the current level's tile from `UiConfig.CurrentLevelPulse` (1.06 times its size and 10
 units up, 0.85 s each way, `InOutSine`, looping), restarted from rest whenever the level is shown and killed
 with the view.
