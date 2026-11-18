@@ -35,7 +35,7 @@ Assets/_Project/
 │   ├── UI/              safe area, button press feedback, popup service, PopupView, SettingToggleView
 │   ├── Gameplay/        GameplayFlow, signals, HUD, Board/ (rules, ActiveBoard), Input/ (touch, drag), Boosters/ (BoosterService, Commands/),
 │   │                    View/ (board, blocks, tiling, camera), Animations/
-│   └── Common/Animations/  reusable IAnimation structs
+│   └── Common/Animations/  reusable IAnimation structs (fade, punch, bar fill, idle pulse, ...)
 ├── Scripts/Editor/    ColorBlockJam.Editor   editor tooling: LevelEditing/ (level editor), Debugging/
 ├── Tests/EditMode/    ColorBlockJam.Tests.EditMode
 ├── Tests/PlayMode/    ColorBlockJam.Tests.PlayMode

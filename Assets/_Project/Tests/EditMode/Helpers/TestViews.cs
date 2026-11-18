@@ -31,13 +31,14 @@ namespace ColorBlockJam.Tests.EditMode.Helpers
             Assign(view, "_levelLabel", Label(root, "LevelLabel"));
             Assign(view, "_settingsButton", settingsButton);
             Assign(view, "_coins", CreateCoinText(root));
+            Assign(view, "_currentLevelTile", Child(root, "CurrentTile").AddComponent<RectTransform>());
             var serialized = new SerializedObject(view);
             SerializedProperty path = serialized.FindProperty("_pathLabels");
             path.arraySize = 3;
             for (int i = 0; i < 3; i++)
                 path.GetArrayElementAtIndex(i).objectReferenceValue = Label(root, "PathLabel" + i);
             serialized.ApplyModifiedPropertiesWithoutUndo();
-            view.Construct(signalBus);
+            view.Construct(signalBus, Track(ScriptableObject.CreateInstance<UiConfig>()));
             return view;
         }
 

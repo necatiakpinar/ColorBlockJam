@@ -1,4 +1,7 @@
 using NUnit.Framework;
+using ColorBlockJam.Core.Signals;
+using ColorBlockJam.Game.Home;
+using ColorBlockJam.Tests.EditMode.Helpers;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,6 +15,14 @@ namespace ColorBlockJam.Tests.EditMode
         const float MinimumGap = 5f;
         const float MinimumProfileSize = 200f;
         const float LowestTopBarCentre = -160f;
+
+        TestViews _views;
+
+        [SetUp]
+        public void SetUp() => _views = new TestViews();
+
+        [TearDown]
+        public void TearDown() => _views.Dispose();
 
         static Rect RectIn(RectTransform space, RectTransform target)
         {
@@ -68,6 +79,33 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(coins.xMin - lives.xMax, Is.GreaterThanOrEqualTo(MinimumGap), "Lives to coins");
             if (openedHere)
                 EditorSceneManager.CloseScene(scene, true);
+        }
+
+        [Test]
+        public void ShowLevel_ShouldSetTheCurrentTileBreathing_WhenHomeShowsTheLevel()
+        {
+            HomeView view = _views.CreateHomeView(new SignalBus(), out _);
+
+            view.ShowLevel(3);
+
+            Assert.That(view.IsCurrentLevelPulsing, Is.True);
+        }
+
+        [Test]
+        public void ShowLevel_ShouldRestartTheBreathFromRest_WhenCalledAgain()
+        {
+            HomeView view = _views.CreateHomeView(new SignalBus(), out _);
+            var tile = (RectTransform)view.transform.Find("CurrentTile");
+            Vector2 rest = tile.anchoredPosition;
+            view.ShowLevel(3);
+            tile.anchoredPosition = rest + Vector2.up * 40f;
+            tile.localScale = Vector3.one * 2f;
+
+            view.ShowLevel(4);
+
+            Assert.That(tile.anchoredPosition, Is.EqualTo(rest));
+            Assert.That(tile.localScale, Is.EqualTo(Vector3.one));
+            Assert.That(view.IsCurrentLevelPulsing, Is.True);
         }
 
         [TestCase("Background", "HomeBackground")]

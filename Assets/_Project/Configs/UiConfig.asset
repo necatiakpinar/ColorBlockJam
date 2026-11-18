@@ -22,4 +22,9 @@ MonoBehaviour:
     _duration: 0.25
     _fromScale: 0.85
     _ease: 27
+  _currentLevelPulse:
+    _peakScale: 1.06
+    _rise: 10
+    _halfPeriod: 0.85
+    _ease: 4
   _atlasAddress: UiAtlas

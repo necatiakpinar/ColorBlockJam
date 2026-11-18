@@ -1,7 +1,10 @@
 using System;
 using ColorBlockJam.Core.Persistence;
 using ColorBlockJam.Core.Signals;
+using ColorBlockJam.Game.Common.Animations;
+using ColorBlockJam.Game.Configs;
 using ColorBlockJam.Game.UI;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,6 +26,10 @@ namespace ColorBlockJam.Game.Home
         [SerializeField]
         TMP_Text[] _pathLabels;
 
+        [Tooltip("The current level's tile on the path; it breathes while Home is shown.")]
+        [SerializeField]
+        RectTransform _currentLevelTile;
+
         [SerializeField]
         CoinAmountText _coins;
 
@@ -30,14 +37,19 @@ namespace ColorBlockJam.Game.Home
         Button _settingsButton;
 
         SignalBus _signalBus;
+        UiConfig _config;
+        Vector2 _tileRest;
+        Sequence _pulse;
 
         public event Action LevelButtonClicked;
         public event Action SettingsButtonClicked;
 
         [Inject]
-        public void Construct(SignalBus signalBus)
+        public void Construct(SignalBus signalBus, UiConfig config)
         {
             _signalBus = signalBus;
+            _config = config;
+            _tileRest = _currentLevelTile.anchoredPosition;
             _signalBus.Subscribe<CoinsChangedSignal>(OnCoinsChanged);
             _levelButton.onClick.AddListener(OnLevelButtonClicked);
             _settingsButton.onClick.AddListener(OnSettingsButtonClicked);
@@ -48,11 +60,16 @@ namespace ColorBlockJam.Game.Home
 
         public string PathLabelText(int index) => _pathLabels[index].text;
 
+        public bool IsCurrentLevelPulsing => _pulse != null && _pulse.IsActive() && _pulse.IsPlaying();
+
         public void ShowLevel(int levelNumber)
         {
             _levelLabel.SetText(LevelLabelFormat, levelNumber);
             for (int i = 0; i < _pathLabels.Length; i++)
                 _pathLabels[i].SetText("{0}", levelNumber + i);
+            _pulse?.Kill();
+            _pulse = default(IdlePulseAnimation).Play(
+                new IdlePulseAnimation.Config(_currentLevelTile, _tileRest, _config.CurrentLevelPulse));
         }
 
         public void ShowCoins(int coins) => _coins.Show(coins);
@@ -65,6 +82,7 @@ namespace ColorBlockJam.Game.Home
 
         void OnDestroy()
         {
+            _pulse?.Kill();
             _signalBus.Unsubscribe<CoinsChangedSignal>(OnCoinsChanged);
             _levelButton.onClick.RemoveListener(OnLevelButtonClicked);
             _settingsButton.onClick.RemoveListener(OnSettingsButtonClicked);

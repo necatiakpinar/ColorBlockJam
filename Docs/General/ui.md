@@ -151,7 +151,7 @@ Change a part in its prefab:
 | `TopBar/Lives` | `bg_home_resource_holder`, `Heart`, "Full" and 5, green "+" | `LivesBarView`: lives, "Full" or the countdown; a tap anywhere on the bar opens the lives popup ([lives.md](lives.md)) |
 | `TopBar/Coins` | `bg_home_resource_holder`, `Coin_Single`, green "+" | balance (`CoinAmountText`); "+" is a placeholder |
 | `TopBar/SettingsButton` | `Settings_Icon` | opens the Home settings popup |
-| `LevelPath` | gold rails, `Btn_level_green` tile for the current level (`CurrentTile`), `Btn_settings_normal` + `lock` for the next two | numbers from the saved level |
+| `LevelPath` | gold rails, `Btn_level_green` tile for the current level (`CurrentTile`), `Btn_settings_normal` + `lock` for the next two | numbers from the saved level; the current tile breathes (DA-45) |
 | `LevelPath/LevelButton` | `Btn_level_green` (nine-sliced, art-pipeline.md §4), "Level N" | plays the current level |
 | `TabBar` | `bg_menu`, `bg_home_line` separators, `ActiveTab` under Home, `lock`, `shop`, `home_icon`, `block_collection`, `lock` "Lvl 50" | placeholders: press feedback only; Home stays active (DA-11) |
 
@@ -159,7 +159,10 @@ The top bar's four parts are centred 150 units below the safe area's top and spr
 margin each side in the reference's proportions: profile 220, lives 329, coins 261, settings 103. Neighbours
 sit close, as in the reference, but never touch: at least 5 units apart, measured on what is drawn (sprite
 padding excluded), counting the heart, the coin and the "+" badges that stick out of the bars
-(`HomeLayoutTests`).
+(`HomeLayoutTests`). While Home is shown, `HomeView` plays
+`IdlePulseAnimation` on the current level's tile from `UiConfig.CurrentLevelPulse` (1.06 times its size and 10
+units up, 0.85 s each way, `InOutSine`, looping), restarted from rest whenever the level is shown and killed
+with the view.
 
 The reference's chef portrait and its skull marker for hard levels have no art in the project, so the
 profile frame stays empty and locked tiles all look alike. `HomeFlow` shows the level and the balance on

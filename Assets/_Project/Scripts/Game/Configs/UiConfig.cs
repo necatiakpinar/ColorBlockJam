@@ -14,6 +14,10 @@ namespace ColorBlockJam.Game.Configs
         [SerializeField]
         FadeScaleInSettings _popupReveal = new(0.25f, 0.85f, Ease.OutBack);
 
+        [Tooltip("How the current level's tile on the Home path breathes: it grows and floats up, then back, forever.")]
+        [SerializeField]
+        IdlePulseSettings _currentLevelPulse = new(1.06f, 10f, 0.85f, Ease.InOutSine);
+
         [Tooltip("Addressables address of the late-bound UI atlas; it must equal the atlas name, the tag Unity requests.")]
         [SerializeField]
         string _atlasAddress = "UiAtlas";
@@ -21,5 +25,6 @@ namespace ColorBlockJam.Game.Configs
         public PressFeedbackSettings PressFeedback => _pressFeedback;
         public FadeScaleInSettings PopupReveal => _popupReveal;
         public string AtlasAddress => _atlasAddress;
+        public IdlePulseSettings CurrentLevelPulse => _currentLevelPulse;
     }
 }
