@@ -59,7 +59,7 @@ before writing a new fake.
 | `GameplayFlowTests` | start, HUD restart, pause opens the settings popup only while playing, close resumes, switches flip settings, Home, nothing after dispose (`RecordingPopupService`) |
 | `LevelResultFlowTests` | win popup after the delay with the reward; the counter held at the old balance; Continue flies the coins once, then goes Home; level failed at once with its life taken, Retry with a life, Retry without lives offering a refill, Home |
 | `GameplayDebugCommandsTests` | the debug shortcuts: win, run out of time, refused when not playing, timer, coins, boosters, jump to a level |
-| `PopupPrefabTests` | both settings popups are variants of the base prefab; the popup configs list every prefab; prefabs start hidden and full-screen; every popup button gives press feedback; every popup text auto-sizes |
+| `PopupPrefabTests` | both settings popups are variants of the base prefab; the settings buttons are chubby with room around their centred labels; the button sprites keep their gloss inside the corner slice; the popup configs list every prefab; prefabs start hidden and full-screen; every popup button gives press feedback; every popup text auto-sizes |
 | `LevelTimerTests` | full time on start, counting only from the first grab, one signal per second, stands still while paused or in the background, fails once at zero, stops on a win, full again on restart, stops when disposed (`FakeGameClock`) |
 | `GameplayHudViewTests` | the timer label reads `mm:ss`; the coin counter follows the wallet, or, held after a win, counts the flying coins in until the next level |
 | `LevelSessionTests` | the attempt's transition table, refused transitions, signal order, restart equal to a fresh start |

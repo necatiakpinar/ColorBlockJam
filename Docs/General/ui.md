@@ -50,7 +50,7 @@
    - **Texts fit their box:** every label stretches over the area it belongs to (anchors, not a fixed
      size) and auto-sizes between a minimum and a maximum, so nothing spills out of its button or panel.
    - **Sprite padding:** `bg_popup` has transparent margins (50 units left and right, 19 on top, 37 below),
-     so a panel's rect is its visible size plus (100, 56). The button and holder sprites have almost none.
+     so a panel's rect is its visible size plus (100, 56). Its inner face ends 95 units above the rect's bottom (margin plus rim): content centred in a panel centres between the header and that line. The button and holder sprites have almost none.
 3. A popup view only reports taps as C# events; a flow decides what they do (§2.3).
 
 ## 4. Configs
@@ -76,7 +76,7 @@ after the reference screens, sizes measured on them and scaled to the canvas (DA
 | `SafeArea/BoosterBanner`, `IceFrame`, `TopBar/TimePanel/FreezeMeter` | title and hint text; `icetexture` strips; `bg_gameplay_time_holder` track + `SquareRoundedMask` fill, both nine-sliced with a pixels-per-unit multiplier (2.6, 4) so their round ends fit the 44 px bar, the fill shrinking by its right anchor (`BarFillAnimation`), + `Clock_Freeze` | booster targeting and freeze looks ([boosters.md](boosters.md) §4) |
 | `PausePopup` prefab | "SETTINGS": vibration, sound and music switches, Legal Terms, Restore Purchases, Support, Language, Home | switches show and set `ISettingsService`; the four blue buttons are placeholders (DA-29) |
 | `WinPopup` prefab | "LEVEL COMPLETE", a pile of `Coin_Single` (`_coinPile`, the flight's start), Continue with the reward | Continue flies the coins to the HUD counter and goes Home (DA-12, T-51; [gameplay.md](gameplay.md) §7) |
-| `LevelFailedPopup` prefab | "Level Failed!" with `Heart` and "-1"; Retry (`Btn_popup_green`) above Return to Menu (`Btn_popup_blue`), centred | opens when the timer runs out; Retry restarts, or opens the lives popup with none left; Return to Menu and close go Home (DA-31) |
+| `LevelFailedPopup` prefab | "Level Failed!" with `Heart` and "-1"; Retry (`Btn_popup_green`) above Return to Menu (`Btn_popup_blue`), centred as a pair in the panel below the header | opens when the timer runs out; Retry restarts, or opens the lives popup with none left; Return to Menu and close go Home (DA-31) |
 | `LeaveLevelPopup` prefab | "Leave Level?", `Heart` with "-1", "You will lose a life!", Leave | Leave takes the life and goes Home; close goes back to pause (DA-38) |
 | `OutOfLivesPopup` prefab (Home and Gameplay) | "Out of Lives", `Heart` with the count, the next life's countdown, Refill with the price | fills every life for coins; in Gameplay close goes Home (DA-38) |
 | `BoosterPurchasePopup` prefab | the booster's title, icon, "x1", description, Buy with the price | buys one booster; close resumes (DA-36) |
@@ -95,6 +95,13 @@ the Home reference. It carries no view component; each scene uses a **prefab var
 | --- | --- | --- |
 | `HomeSettingsPopup` (`HomePopupConfig`) | `SettingsPopupView` | nothing: close returns to Home |
 | `GameplaySettingsPopup` (`GameplayPopupConfig`, the pause popup) | `PausePopupView : SettingsPopupView` | a taller panel and Home; close resumes |
+
+The four blue buttons are 430x168, about as wide as a switch row, 210 apart (`Btn_popup_blue`); Home in the
+pause popup is 430x172 (`Btn_popup_green`). Both are drawn at their sprite's vertical scale
+([art-pipeline.md](art-pipeline.md) §2). Labels are centred: a plain label stretches over the button with 45 units of
+margin each side; on Support and Home the icon and the label are centred together as one group, 18 units
+apart. Labels are at most 50 points (44 for the two-line Restore Purchases, 54 for Home), so the text never
+fills more than 80% of the button's width (`PopupPrefabTests`).
 
 A change to the shared layout goes in the base prefab and reaches both. `SettingsPopupView` shows the saved
 switches (`Refresh` before opening, `SettingChangedSignal` after) and reports taps; the flow sets

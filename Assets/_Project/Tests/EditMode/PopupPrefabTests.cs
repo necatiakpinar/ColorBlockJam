@@ -14,6 +14,7 @@ namespace ColorBlockJam.Tests.EditMode
         const string GameplayConfigPath = "Assets/_Project/Configs/GameplayPopupConfig.asset";
         const string HomeConfigPath = "Assets/_Project/Configs/HomePopupConfig.asset";
         const string SettingsBasePath = "Assets/_Project/Prefabs/UI/Popups/SettingsPopup.prefab";
+        const float PopupFaceBottom = 95f;
 
         static GameplayPopupConfig GameplayConfig => AssetDatabase.LoadAssetAtPath<GameplayPopupConfig>(GameplayConfigPath);
         static HomePopupConfig HomeConfig => AssetDatabase.LoadAssetAtPath<HomePopupConfig>(HomeConfigPath);
@@ -82,6 +83,95 @@ namespace ColorBlockJam.Tests.EditMode
                     Assert.That(text.enableAutoSizing, Is.True, $"{popup.name}/{text.name}");
                     Assert.That(text.fontSizeMin, Is.LessThan(text.fontSizeMax), $"{popup.name}/{text.name}");
                 }
+        }
+
+        [Test]
+        public void SettingsButtons_ShouldBeChubbyWithRoomAroundTheirLabel_InBothScenes()
+        {
+            foreach (RectTransform button in SettingsButtons())
+            {
+                var label = (RectTransform)button.Find("Label");
+                string where = $"{button.root.name}/{button.name}";
+
+                Assert.That(button.sizeDelta.y, Is.GreaterThanOrEqualTo(160f), where);
+                Assert.That(button.sizeDelta.x / button.sizeDelta.y, Is.InRange(2.4f, 2.8f), where);
+                Assert.That(label.GetComponent<TMP_Text>().fontSizeMax, Is.LessThanOrEqualTo(54f), where);
+                Assert.That(GroupWidth(button), Is.LessThanOrEqualTo(button.sizeDelta.x * 0.8f), where);
+            }
+        }
+
+        [Test]
+        public void SettingsButtonLabels_ShouldSitCentred_WithOrWithoutAnIcon()
+        {
+            foreach (RectTransform button in SettingsButtons())
+            {
+                var label = (RectTransform)button.Find("Label");
+                var icon = button.Find("Icon") as RectTransform;
+                string where = $"{button.root.name}/{button.name}";
+                Assert.That(label.GetComponent<TMP_Text>().alignment, Is.EqualTo(TextAlignmentOptions.Center), where);
+
+                if (icon == null)
+                {
+                    Assert.That(label.anchoredPosition.x, Is.EqualTo(0f), where);
+                    Assert.That(label.anchorMin.x + label.anchorMax.x, Is.EqualTo(1f), where);
+                    continue;
+                }
+
+                float left = icon.anchoredPosition.x - icon.sizeDelta.x / 2f;
+                float right = label.anchoredPosition.x + TextWidth(label) / 2f;
+                Assert.That(left + right, Is.EqualTo(0f).Within(8f), where);
+            }
+        }
+
+        static IEnumerable<RectTransform> SettingsButtons()
+        {
+            string[] names = { "LegalTermsButton", "RestorePurchasesButton", "SupportButton", "LanguageButton" };
+            foreach (PopupView popup in new PopupView[] { GameplayConfig.PausePopup, HomeConfig.SettingsPopup })
+                foreach (string name in names)
+                    yield return (RectTransform)popup.transform.Find("Panel/Content/" + name);
+            yield return (RectTransform)GameplayConfig.PausePopup.transform.Find("Panel/Content/HomeButton");
+        }
+
+        static float TextWidth(RectTransform label)
+        {
+            var text = label.GetComponent<TMP_Text>();
+            float size = text.fontSize;
+            text.fontSize = text.fontSizeMax;
+            float width = text.GetPreferredValues(text.text, 2000f, 200f).x;
+            text.fontSize = size;
+            return width;
+        }
+
+        static float GroupWidth(RectTransform button)
+        {
+            var icon = button.Find("Icon") as RectTransform;
+            float text = TextWidth((RectTransform)button.Find("Label"));
+            return icon == null ? text : icon.sizeDelta.x + text;
+        }
+
+        [TestCase("Btn_popup_blue", 70f, 82f)]
+        [TestCase("Btn_popup_green", 105f, 122f)]
+        public void PopupButtonSprites_ShouldKeepTheirHighlightInsideTheCornerSlice_WhenNineSliced(string sprite, float highlightRight, float highlightBottom)
+        {
+            var importer = (TextureImporter)AssetImporter.GetAtPath($"Assets/_Project/Art/UI/{sprite}.png");
+
+            Assert.That(importer.spriteBorder.x, Is.GreaterThan(highlightRight), "Left border");
+            Assert.That(importer.spriteBorder.w, Is.GreaterThan(highlightBottom), "Top border");
+        }
+
+        [Test]
+        public void LevelFailedButtons_ShouldSitCentredUnderTheHeader_WhenTheRestOfThePanelIsEmpty()
+        {
+            var panel = (RectTransform)GameplayConfig.LevelFailedPopup.transform.Find("Panel");
+            var header = (RectTransform)panel.Find("Header");
+            var retry = (RectTransform)panel.Find("RetryButton");
+            var home = (RectTransform)panel.Find("HomeButton");
+            float freeTop = header.anchoredPosition.y - header.sizeDelta.y / 2f;
+            float freeBottom = -panel.sizeDelta.y / 2f + PopupFaceBottom;
+            float groupTop = retry.anchoredPosition.y + retry.sizeDelta.y / 2f;
+            float groupBottom = home.anchoredPosition.y - home.sizeDelta.y / 2f;
+
+            Assert.That((groupTop + groupBottom) / 2f, Is.EqualTo((freeTop + freeBottom) / 2f).Within(10f));
         }
     }
 }

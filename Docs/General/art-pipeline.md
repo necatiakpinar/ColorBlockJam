@@ -38,8 +38,14 @@ The art set is used as imported (R-3). `AssetImportTests` enforces §2 and §3.
 5. Nine-slice borders are set on panels and stretchable buttons: `bg_popup`, `bg_popup_header`,
    `bg_popup_info_holder`, `bg_popup_info_holder_2`, `bg_menu`, `Btn_popup_green`, `Btn_popup_blue`,
    `bg_gameplay_time_holder`, `bg_home_coin_holder`, `bg_home_resource_holder`, `SquareRoundedMask`.
-   Borders sit 6 px inside the opaque corner radius. `Btn_levelBg_normal` is not sliceable (circle and
-   pattern); use it as `Simple` with `Preserve Aspect`.
+   Borders sit 6 px inside the opaque corner radius. Sprites with a vertical gradient (`Btn_popup_blue`,
+   `Btn_popup_green`) are drawn at their own vertical scale (multiplier = sprite height / rect height): only
+   their middle stretches, sideways, so the face never splits into a light and a dark band. A sprite with a
+   gloss mark near a corner keeps the whole mark inside its corner slice, or slicing stretches it into a
+   streak: `Btn_popup_blue` is sliced at left/right 74, top 86, bottom 50 and `Btn_popup_green` at 110, 125,
+   125 (`PopupPrefabTests.PopupButtonSprites_ShouldKeepTheirHighlightInsideTheCornerSlice_WhenNineSliced`).
+   `Btn_levelBg_normal` is not sliceable (circle and pattern); use it as `Simple` with `Preserve Aspect`.
+   Borders are edited in the Sprite Editor, which comes with the `com.unity.2d.sprite` package.
 
 ## 3. Models
 
