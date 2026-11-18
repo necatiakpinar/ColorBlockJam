@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Audio
+  m_EditorClassIdentifier: 
+  m_GroupName: Audio
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 22b05bbe670ab094c9f306635b935923
+  m_SerializeEntries:
+  - m_GUID: 03b4647201c995f4eafc5bf23ddc2603
+    m_Address: Audio/sfx_tick
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5029dbaa842f9a84584f23ddb54f7156
+    m_Address: Audio/sfx_tap
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5032c47d756197145b58d360347b07de
+    m_Address: Audio/sfx_fail
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5ee8a47ba5e2c2a45952c065022024cd
+    m_Address: Audio/sfx_win
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 874c5a24f435c5748b67e061ec148755
+    m_Address: Audio/sfx_exit
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cecb0651675083d4bbe3d16b8ac180b8
+    m_Address: Audio/sfx_grab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e70b1537292610c4a9a9ea6815cfae4a
+    m_Address: Audio/sfx_booster
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 2e82eff778ffdf743b5bef3a6b1b5661, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 9cef52e7048f4444a992ffe67189ed98, type: 2}
+    - {fileID: 11400000, guid: b77867d58bb433b46b7ea11e80d39c15, type: 2}
