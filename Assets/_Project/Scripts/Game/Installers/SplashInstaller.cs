@@ -9,6 +9,7 @@ namespace ColorBlockJam.Game.Installers
     {
         public void Install(IContainerBuilder builder)
         {
+            builder.Register<IBootStep, InitializeAssetsStep>(Lifetime.Singleton);
             builder.Register<IBootStep, ApplyApplicationSettingsStep>(Lifetime.Singleton);
             builder.Register<IBootStep, LoadLevelsStep>(Lifetime.Singleton);
             builder.Register<IBootStep, LoadPlayerDataStep>(Lifetime.Singleton);

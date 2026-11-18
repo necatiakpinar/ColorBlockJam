@@ -13,21 +13,23 @@ hand without playing a level to the end ([debug-tools.md](debug-tools.md)).
 | `ColorBlockJam.Tests.PlayMode` | `Assets/_Project/Tests/PlayMode/` | real scenes end to end |
 
 Shared fakes and builders live in `Tests/EditMode/Helpers/`: `InMemoryKeyValueStorage`,
-`RecordingLogger`, `FakeBootStep`, `RecordingProgress`, `RecordingNavigation`, `ControllableSceneLoader`,
-`RecordingPopup`, `LevelDataBuilder` (levels in one line), `TestCatalog` (in-memory catalogs) and
-`TestViews` (views with their serialized references wired). Play Mode tests drive the app through
-`SceneTestUtility` (`BootToHome`, `BootToGameplay`, `TapButton`). The Game assembly exposes a few
-internal view counters to the test assemblies (`Properties/AssemblyInfo.cs`). Reuse them before writing a
-new fake.
+`RecordingLogger`, `FakeBootStep`, `FakeAssetSource`, `RecordingProgress`, `RecordingNavigation`,
+`ControllableSceneLoader`, `RecordingPopup`, `LevelDataBuilder` (levels in one line), `TestCatalog`
+(in-memory catalogs) and `TestViews` (views with their serialized references wired). Play Mode tests
+drive the app through `SceneTestUtility` (`BootToHome`, `BootToGameplay`, `TapButton`). The Game assembly
+exposes a few internal view counters to the test assemblies (`Properties/AssemblyInfo.cs`). Reuse them
+before writing a new fake.
 
 ## 2. Current suite
 
 | Fixture | Pins |
 | --- | --- |
 | `SignalBusTests` | delivery, order, type isolation, duplicate guard, (un)subscribe during fire |
+| `AssetLoaderTests` | one backend load for repeat and concurrent asks; keys split by type; asset references; holder counting; a cancelled holder, a shared failure, a release refused mid-load; dispose releases loaded and in-flight assets ([addressables.md](addressables.md)) |
+| `InitializeAssetsStepTests` | the boot step initializes the asset source |
 | `BootSequenceTests` | step order, weighted progress, empty sequence, cancellation, weight validation |
 | `PlayerProgressServiceTests` | defaults, read-before-load, persist + flush, corrupt and invalid data, setting a level |
-| `InstallerResolutionTests` | every installer builds; one SignalBus; boot step order; board space cell size; one command per booster |
+| `InstallerResolutionTests` | every installer builds; one SignalBus; one `AssetLoader` per scope; boot step order; board space cell size; one command per booster |
 | `HomeFlowTests` | Home shows the level path and the balance; the level button routes to Gameplay; settings open showing the saved switches, a switch flips its setting, close closes |
 | `NavigationServiceTests` | each route loads its scene; a request during a load is ignored; a failed load frees the guard |
 | `PopupServiceTests` | one popup at a time; close allows the next |
@@ -78,6 +80,7 @@ new fake.
 | `BuildSettingsTests` | Splash first; every `SceneId` is a build scene; portrait; IL2CPP ARM64 |
 | `AssetImportTests` | UI sprites; atlas sources uncompressed, the atlas ASTC on Android and on one page; model scale, no tangents, not readable; floor tile size |
 | `SceneSetupTests` | every build scene: canvas scaler, safe area root, button feedback |
+| `AddressablesAssetSourceTests` (PlayMode) | the local catalog initializes without errors; an unknown key throws and Addressables logs `InvalidKeyException` |
 | `NavigationFlowTests` (PlayMode) | real boot reaches Home; Home ⇄ Gameplay round trip |
 | `ButtonPressFeedbackTests` (PlayMode) | press shrinks, release restores; non-interactable and disabled cases |
 | `GameplayBoardTests` (PlayMode) | every part and block drawn; the wall ring closes corner to corner without seams; every door has one centred arrow pointing out; swipes take blocks out and clear once; a wrong door holds; outline while held; reload mid-exit; a held block glides after a sudden finger move instead of jumping; the door opens and closes for a leaving block, the whole door for a narrower block; two blocks leaving one door together share one spray; an exiting block settles at its door before sliding in, and is cut at the door at full size while debris sprays; following and snapping allocate nothing |

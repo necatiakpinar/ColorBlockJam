@@ -21,6 +21,7 @@ SplashFlow.StartAsync
   ├─ SplashView.PlayIntro()                            logo fade + scale (FadeScaleInAnimation)
   ├─ start minimum-display timer                       SplashConfig.MinimumDisplaySeconds, realtime
   ├─ BootSequence.RunAsync(progress → SplashView)      steps in SplashInstaller order
+  │    InitializeAssetsStep          (weight 1)        Addressables catalog (addressables.md §3)
   │    ApplyApplicationSettingsStep  (weight 1)        Application.targetFrameRate
   │    LoadLevelsStep                (weight 1)        level pack: stored remote or bundled (level-packs.md)
   │    LoadPlayerDataStep            (weight 2)        progress, wallet, settings .Load()

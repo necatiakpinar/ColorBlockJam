@@ -6,6 +6,7 @@
         "ColorBlockJam.Game",
         "ColorBlockJam.Editor",
         "UniTask",
+        "Unity.Addressables",
         "VContainer",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",

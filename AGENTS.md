@@ -46,8 +46,8 @@ Validate skill frontmatter with `python tools/validate_skills.py`.
 ## Environment Setup
 
 - Unity **2022.3.62f2** (R-1). Open the repository root as the Unity project.
-- Packages resolve from Unity's registry and OpenUPM (scoped registry in `Packages/manifest.json`):
-  VContainer, UniTask. DOTween (free) is vendored under `Assets/Plugins/Demigiant/DOTween` with a
+- Packages resolve from Unity's registry (Addressables) and OpenUPM (VContainer, UniTask; scoped registry
+  in `Packages/manifest.json`). DOTween (free) is vendored under `Assets/Plugins/Demigiant/DOTween` with a
   hand-authored `DOTween.Modules` assembly definition.
 - Git LFS is required (`git lfs install`); binary art, audio, models and DLLs are LFS-tracked by
   `.gitattributes`.
@@ -73,7 +73,7 @@ an installer, the signal bus or scene loading.**
 
 | Assembly | Holds | May reference |
 | --- | --- | --- |
-| `ColorBlockJam.Core` | game-agnostic infrastructure: signals, boot sequence, scene loading, persistence, logging, `IAnimation<T>` | UniTask, VContainer, DOTween |
+| `ColorBlockJam.Core` | game-agnostic infrastructure: signals, boot sequence, scene loading, persistence, logging, asset loading, `IAnimation<T>` | UniTask, VContainer, DOTween, Addressables |
 | `ColorBlockJam.Game` | scopes, installers, configs, boot steps, splash, gameplay, views, animations | Core + packages |
 | `ColorBlockJam.Editor` | editor tooling | Core, Game |
 | `ColorBlockJam.Tests.EditMode` / `.PlayMode` | tests | everything above |
@@ -128,7 +128,8 @@ shortcut. Read [boosters.md](Docs/General/boosters.md) before touching a booster
 [audio.md](Docs/General/audio.md) before touching a sound, `Scripts/Game/Audio/` or `AudioConfig`.**
 
 **Read [network.md](Docs/General/network.md) before touching `Scripts/Core/Network/`, `NetworkConfig` or anything
-that reads the time of day.**
+that reads the time of day. Read [addressables.md](Docs/General/addressables.md) before touching
+`Scripts/Core/Assets/`, `Assets/AddressableAssetsData/` or loading an asset at runtime.**
 
 **Read [gameplay.md](Docs/General/gameplay.md) before touching `Scripts/Game/Gameplay/` or the Gameplay
 scene.** Level data and rules work in cells; `BoardSpace` is the only cell ↔ world conversion.

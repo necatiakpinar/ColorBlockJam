@@ -32,6 +32,7 @@ Pages marked **binding** carry rules agents must follow before touching the path
 | [General/level-packs.md](General/level-packs.md) | the level pack JSON the game plays, bundled or from remote config | yes |
 | [General/persistence.md](General/persistence.md) | saved player data: progress, wallet, settings | yes |
 | [General/economy.md](General/economy.md) | coins: win rewards by level difficulty | yes |
+| [General/addressables.md](General/addressables.md) | runtime asset loading: Addressables, `AssetLoader`, scopes, settings | yes |
 | [General/network.md](General/network.md) | online requirement: connectivity probe, trusted time | yes |
 | [General/art-pipeline.md](General/art-pipeline.md) | art folders, import rules, cell scale, part prefabs, materials | yes |
 | [General/development-assumptions.md](General/development-assumptions.md) | `DA-n` registry of unconfirmed product decisions | yes |
@@ -56,4 +57,5 @@ Pages marked **binding** carry rules agents must follow before touching the path
 | [testing/lives-qa.md](testing/lives-qa.md) | lives, their refill and the lives popup |
 | [testing/boosters-qa.md](testing/boosters-qa.md) | the four boosters, their stock, popup and looks |
 | [testing/audio-qa.md](testing/audio-qa.md) | sound effects, the low-time tick and flash, the sound toggle |
+| [testing/addressables-qa.md](testing/addressables-qa.md) | runtime asset loading through Addressables in the editor and on a device |
 | [testing/network-qa.md](testing/network-qa.md) | the online requirement: connectivity, trusted time, no-internet popup (stub) |

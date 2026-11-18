@@ -3,7 +3,10 @@
     "rootNamespace": "ColorBlockJam.Core",
     "references": [
         "UniTask",
-        "VContainer"
+        "UniTask.Addressables",
+        "VContainer",
+        "Unity.Addressables",
+        "Unity.ResourceManager"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

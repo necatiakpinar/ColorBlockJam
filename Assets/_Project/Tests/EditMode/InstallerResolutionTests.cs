@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using ColorBlockJam.Core.Assets;
 using ColorBlockJam.Core.Boot;
 using ColorBlockJam.Core.Logging;
 using ColorBlockJam.Core.Persistence;
@@ -133,6 +134,8 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(container.Resolve<ISettingsService>(), Is.Not.Null);
             Assert.That(container.Resolve<BoosterInventory>(), Is.Not.Null);
             Assert.That(container.Resolve<LivesService>(), Is.Not.Null);
+            Assert.That(container.Resolve<IAssetSource>(), Is.InstanceOf<AddressablesAssetSource>());
+            Assert.That(container.Resolve<AssetLoader>(), Is.Not.Null);
             Assert.That(container.Resolve<ISceneLoader>(), Is.Not.Null);
             Assert.That(container.Resolve<INavigationService>(), Is.Not.Null);
             Assert.That(container.Resolve<UiConfig>(), Is.Not.Null);
@@ -156,6 +159,24 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
+        public void CoreServicesInstaller_ShouldGiveEachSceneScopeItsOwnAssetLoader_WhenAChildScopeResolvesIt()
+        {
+            var builder = new ContainerBuilder();
+            new CoreServicesInstaller(Configs()).Install(builder);
+            using IObjectResolver root = builder.Build();
+            AssetLoader rootLoader = root.Resolve<AssetLoader>();
+            AssetLoader sceneLoader;
+            using (IScopedObjectResolver scene = root.CreateScope(_ => { }))
+            {
+                sceneLoader = scene.Resolve<AssetLoader>();
+                Assert.That(scene.Resolve<AssetLoader>(), Is.SameAs(sceneLoader));
+            }
+
+            Assert.That(sceneLoader, Is.Not.SameAs(rootLoader));
+            Assert.Throws<System.ObjectDisposedException>(() => sceneLoader.Release<Object>("any"));
+        }
+
+        [Test]
         public void SplashInstaller_ShouldRegisterBootStepsInExecutionOrder_WhenBuilt()
         {
             using IObjectResolver container = BuildCoreAndSplash();
@@ -164,6 +185,7 @@ namespace ColorBlockJam.Tests.EditMode
 
             Assert.That(steps.Select(step => step.GetType()), Is.EqualTo(new[]
             {
+                typeof(InitializeAssetsStep),
                 typeof(ApplyApplicationSettingsStep),
                 typeof(LoadLevelsStep),
                 typeof(LoadPlayerDataStep),

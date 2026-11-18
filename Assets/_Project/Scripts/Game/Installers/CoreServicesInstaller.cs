@@ -1,3 +1,4 @@
+using ColorBlockJam.Core.Assets;
 using ColorBlockJam.Core.Clock;
 using ColorBlockJam.Core.Haptics;
 using ColorBlockJam.Core.Logging;
@@ -39,6 +40,8 @@ namespace ColorBlockJam.Game.Installers
             builder.Register<BoosterInventory>(Lifetime.Singleton);
             builder.Register<LivesService>(Lifetime.Singleton);
             builder.Register<LevelPackService>(Lifetime.Singleton).As<ILevelSource>().AsSelf();
+            builder.Register<IAssetSource, AddressablesAssetSource>(Lifetime.Singleton);
+            builder.Register<AssetLoader>(Lifetime.Scoped);
             builder.Register<ISceneLoader, SceneLoader>(Lifetime.Singleton);
             builder.Register<INavigationService, NavigationService>(Lifetime.Singleton);
             builder.Register<IHapticService, MobileHapticService>(Lifetime.Singleton);

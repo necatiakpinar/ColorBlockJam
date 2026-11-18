@@ -6,6 +6,7 @@
         "UniTask",
         "UniTask.DOTween",
         "VContainer",
+        "Unity.Addressables",
         "DOTween.Modules",
         "Unity.TextMeshPro",
         "UnityEngine.UI"

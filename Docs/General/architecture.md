@@ -16,13 +16,14 @@ Assets/_Project/
 │   ├── Clock/           IGameClock, RealtimeGameClock
 │   ├── Lifecycle/       ApplicationPausedSignal, ApplicationPauseReporter (Root prefab component)
 │   ├── Network/         IConnectivityService, ConnectivityService, ITrustedClock, TrustedClock, probe
+│   ├── Assets/          IAssetSource, AddressablesAssetSource, AssetLoader
 │   └── Animation/       IAnimation<TConfig>
 ├── Scripts/Game/      ColorBlockJam.Game     this game
 │   ├── Scopes/          Root / Splash / Home / Gameplay LifetimeScopes
 │   ├── Installers/      CoreServicesInstaller, SplashInstaller, HomeInstaller, GameplayInstaller
 │   ├── Configs/         Application, Splash, Ui, Gameplay, BoardView configs (ScriptableObjects)
 │   ├── Navigation/      INavigationService, NavigationService
-│   ├── Boot/            boot steps, TweeningInitializer
+│   ├── Boot/            boot steps (InitializeAssetsStep first), TweeningInitializer
 │   ├── Splash/          SplashFlow, SplashView
 │   ├── Home/            HomeFlow, HomeView
 │   ├── Levels/          LevelData, LevelDefinition, LevelCatalog, LevelProvider, validator, BlockShape; Packs/ (level-packs.md)
@@ -81,6 +82,9 @@ RootLifetimeScope (prefab, VContainerSettings, DontDestroyOnLoad)
    `IReadOnlyList<T>`; registration order is resolution order.
 5. Never: a service locator, `static` singletons, `FindObjectOfType`/`FindFirstObjectByType`,
    `Camera.main`, `Resources.Load` for configs.
+6. A registration that must live and die with each scene scope is `Lifetime.Scoped` in a Root installer:
+   every scope that resolves it gets its own instance, disposed with that scope (`AssetLoader`,
+   [addressables.md](addressables.md) §2).
 
 ## 3. Signals
 
