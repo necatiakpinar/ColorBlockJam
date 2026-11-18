@@ -17,6 +17,9 @@ namespace ColorBlockJam.Tests.EditMode
         const float MinimumGap = 5f;
         const float MinimumProfileSize = 200f;
         const float LowestTopBarCentre = -160f;
+        const int MinimumMaskSoftness = 100;
+        const float LowestRailTop = 2400f;
+        const float HighestRailBottom = -1900f;
 
         TestViews _views;
 
@@ -165,6 +168,35 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(scroll.movementType, Is.EqualTo(ScrollRect.MovementType.Elastic));
             Assert.That(scroll.content.Find("CurrentTile"), Is.Not.Null, "The tiles move with the drag.");
             Assert.That(path.transform.Find("LevelButton"), Is.Not.Null, "The Level button stays put.");
+        }
+
+        [Test]
+        public void LevelPath_ShouldFadeOutBehindTheLevelButton_WhenMasked()
+        {
+            var path = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/UI/Home/LevelPath.prefab");
+            var scroll = path.GetComponent<ScrollRect>();
+            var mask = scroll.viewport.GetComponent<RectMask2D>();
+            var button = (RectTransform)path.transform.Find("LevelButton");
+
+            Assert.That(mask, Is.Not.Null);
+            Assert.That(mask.softness.y, Is.GreaterThanOrEqualTo(MinimumMaskSoftness));
+            Assert.That(scroll.viewport.anchorMin.y, Is.EqualTo(0.5f));
+            Assert.That(scroll.viewport.anchorMax.y, Is.EqualTo(1f));
+            Assert.That(scroll.viewport.offsetMin.y, Is.EqualTo(button.anchoredPosition.y), "The mask ends at the button's centre.");
+            Assert.That(scroll.viewport.offsetMin.y + scroll.content.sizeDelta.y * 0.5f, Is.EqualTo(0f), "The tiles stay centred on the safe area.");
+        }
+
+        [TestCase("Track")]
+        [TestCase("RailLeft")]
+        [TestCase("RailRight")]
+        public void LevelPathRails_ShouldReachFarPastTheMask_WhenDragged(string rail)
+        {
+            var path = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/UI/Home/LevelPath.prefab");
+            var rect = (RectTransform)path.GetComponent<ScrollRect>().content.Find(rail);
+            float half = rect.sizeDelta.y * 0.5f;
+
+            Assert.That(rect.anchoredPosition.y + half, Is.GreaterThanOrEqualTo(LowestRailTop));
+            Assert.That(rect.anchoredPosition.y - half, Is.LessThanOrEqualTo(HighestRailBottom));
         }
     }
 }

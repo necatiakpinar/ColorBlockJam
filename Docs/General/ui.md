@@ -172,6 +172,7 @@ Change a part in its prefab:
 | `TopBar/SettingsButton` | `Settings_Icon` | opens the Home settings popup |
 | `LevelPath` | gold rails, `Btn_level_green` tile for the current level (`CurrentTile`), `Btn_settings_normal` + `lock` for the next two | numbers from the saved level; the current tile breathes (DA-45) |
 | `LevelPath` (`ScrollRect`) | `Viewport` (a clear image that catches drags) and `Content` with the rails and tiles | vertical and elastic: the path stretches when dragged and springs back; there is nothing to scroll to yet, the `Level N` button stays put (DA-47) |
+| `LevelPath/Viewport` (`RectMask2D`) | none | clips the path from the safe area's top down to the `Level N` button's centre, fading 160 units at both edges, so the rails melt in behind the button and under the top bar. `Content` is an 898-unit band on the viewport's bottom, keeping the tiles centred on the safe area. The rails and track run from -2000 to 2600, far past the mask, so no end shows even on a long drag (`HomeLayoutTests`) |
 | `LevelPath/LevelButton` | `Btn_level_green` (nine-sliced, art-pipeline.md §4), "Level N" | plays the current level |
 | `TabBar` | `bg_menu`, `bg_home_line` separators, `ActiveTab` under Home, `lock`, `shop`, `home_icon`, `block_collection`, `lock` "Lvl 50" | placeholders: press feedback only; Home stays active (DA-11) |
 
