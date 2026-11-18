@@ -65,6 +65,7 @@ Tests: [testing.md](Docs/General/testing.md). Checking by hand without finishing
 
 Open **ColorBlockJam > Level Editor** (`Ctrl+Shift+L`). The left panel lists the levels in play order,
 the middle shows the board from above, the right panel holds the tools, checks and generator.
+Press **+ New** (`N`) under the list: it adds a small starter level at the end and opens it.
 
 1. **Board.** Set Width, Height, Timer and Difficulty under *Level*.
 2. **Doors.** Door tool (`3`): pick a colour, drag along a wall.
@@ -107,9 +108,9 @@ The handbook is [architecture.md](Docs/General/architecture.md).
 
 ## 6. Decisions for unclear requirements
 
-Each open product question got a decision, registered as `DA-n` and cited in code and commits. Why,
+Each open product question got a decision, registered as `DA-n` and cited in the docs and commits. Why,
 alternatives and status: [development-assumptions.md](Docs/General/development-assumptions.md).
-Withdrawn entries (DA-9, DA-15, DA-16, DA-23) are left out below.
+Withdrawn entries (DA-9, DA-15, DA-16, DA-23, DA-30) are left out below.
 
 | Id | Decision |
 | --- | --- |
@@ -121,11 +122,11 @@ Withdrawn entries (DA-9, DA-15, DA-16, DA-23) are left out below.
 | DA-6 | The timer starts at the first grab and freezes while paused or in the background |
 | DA-7 | Coins come only from wins: Normal 10, Hard 25, Very Hard 50 |
 | DA-8 | After the last level, levels loop while the shown number keeps rising |
-| DA-10 | Settings toggles save and show their state; nothing plays audio |
+| DA-10 | Settings toggles save and show their state; sound mutes the effects, vibration the haptics, music has nothing to control yet |
 | DA-11 | Home tabs give press feedback only |
 | DA-12 | The win popup shows the reward and one Continue button |
 | DA-13 | Levels are `LevelDefinition` assets in one `LevelCatalog` |
-| DA-14 | Leaving a level through Home keeps coins and level as before the attempt |
+| DA-14 | Leaving a level through Home keeps coins and level as before; a started attempt costs a life, after a confirmation |
 | DA-17 | Doors sit on the outer wall ring, never on corners, one colour each |
 | DA-18 | A block is one colour and any edge-connected shape |
 | DA-19 | The camera looks down steeply (72° tilt, 30° field of view) |
@@ -148,6 +149,13 @@ Withdrawn entries (DA-9, DA-15, DA-16, DA-23) are left out below.
 | DA-39 | An arrow block moves and leaves only along its axis |
 | DA-40 | The 20-level curve and how its hard levels and timers are made |
 | DA-41 | A remote level pack plays from the next launch, only if valid and not older |
+| DA-42 | The last 10 s flash the timer red and tick |
+| DA-43 | One short synthesized sound per action; the sound toggle mutes them all |
+| DA-44 | Haptics on grab, exit, win and fail; the vibration toggle silences them |
+| DA-45 | The current level's tile on Home breathes |
+| DA-46 | Every scene change fades through black |
+| DA-47 | Home's level path stretches like a scroll view |
+| DA-48 | A strip at the bottom of Gameplay stays free for an ad banner |
 
 ## 7. Known problems and incomplete parts
 
@@ -159,7 +167,6 @@ Open tasks from the [task table](Docs/Design/README.md) §4:
 | T-38 | In progress | Profiling a full level on an Android device; the editor checks are done ([performance.md](Docs/General/performance.md)) |
 | T-39 | In progress | The manual (👁) QA cases at 1080x1920 and 20:9, in the Game view and on a device |
 | T-41 | Todo | Release APK installed and smoke-tested on a device |
-| T-42 | Todo | Repository hygiene: a clean clone opens and runs |
 | T-45 | Todo | The no-internet popup over every scene |
 | T-46 | Todo | Boot waits for a connection |
 
@@ -167,15 +174,14 @@ Other known gaps:
 
 - Nothing fetches remote config yet; `LevelPackService.TryStoreRemote` is the seam a fetcher calls
   ([level-packs.md](Docs/General/level-packs.md) §4).
-- No audio; the settings toggles only save and show their state (DA-10).
 - The level editor window is checked by hand only ([level-editor-qa.md](Docs/testing/level-editor-qa.md)).
 - Several QA checklists are still stubs ([Docs/README.md](Docs/README.md)).
 - Editor screenshots are pending (§4).
 
 ### Found in the QA pass
 
-Automated part of T-39, 2026-11-17:
-- **Suites.** Edit Mode 455/455 and Play Mode 44/44 pass. Every ⚙ case on the QA pages is ticked.
+Automated part of T-39, last run 2026-11-18 on a fresh clone of `origin/main`:
+- **Suites.** Edit Mode 643/643 and Play Mode 49/49 pass. Every ⚙ case on the QA pages is ticked.
 - **Fixed: a test that depended on the save.** `BoosterFlowTests` hammered block 0 of whatever level the
   save held. On a level where that block is frozen, the hammer only breaks the ice (DA-37), so the test
   failed. It now picks a block without ice.
@@ -199,6 +205,13 @@ with its workaround. In short:
   wall pieces that show a small notch every half cell.
 - **Naming and slicing.** Inconsistent file-name prefixes, and a level button sprite that cannot be
   nine-sliced.
+
+Everything on screen comes from the given art set, plus two additions it does not cover:
+
+| Added | Why | Source |
+| --- | --- | --- |
+| Lilita One font (`Assets/_Project/Art/Fonts/LilitaOne`) | the set has no font; every text needs the rounded, bold look of the reference | Google Fonts, SIL Open Font License (`OFL.txt` beside it) |
+| Seven sound effects (`Assets/_Project/Audio/sfx_*.wav`) | the set has no audio (DA-43) | synthesized by `tools/synth_sfx.py` in this repository; no third-party audio |
 
 ## 9. Documentation map
 
@@ -232,3 +245,15 @@ Assets/_Project/
 Docs/               design, architecture, rules, tasks, QA checklists
 .claude/skills/     agent workflows (task breakdown, simplify, review, commit plan)
 ```
+
+## 11. AI tools and time
+
+The game was built in about **16 hours** with **Claude** (Claude Code) as the coding assistant.
+
+| Used for | How |
+| --- | --- |
+| Code and refactors | Claude wrote and changed the C# under the rules in [CLAUDE.md](CLAUDE.md); the developer set the design, reviewed every change and approved each commit. |
+| Tests | Claude wrote the Edit Mode and Play Mode tests that travel with each change and ran them headless. |
+| Docs | Claude kept the pages under [Docs/](Docs/README.md), the task list and the `DA-n` registry in step with the code. |
+| Reviews | Claude reviewed the code before commits, using the workflows in `.claude/skills/`. |
+| Sound effects | Claude synthesised the sound effects with `tools/synth_sfx.py`. |

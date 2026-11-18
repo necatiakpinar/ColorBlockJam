@@ -180,7 +180,7 @@ task is marked `Dropped`, never deleted. Detail per task: [tasks.md](tasks.md).
 | T-39 | 11 | Full QA pass on device and aspect ratios | Every QA checklist ticked at 1080x1920 and 20:9 | T-32 | In progress (automated cases ticked; manual and device left) |
 | T-40 | 12 | Project README | Open and run, level editor how-to, architecture decisions, known problems, asset feedback | T-39 | Done |
 | T-41 | 12 | Android APK | APK installs and plays the full flow on a device | T-39 | Todo |
-| T-42 | 12 | Repository hygiene | Clean clone opens and runs; no Library, Temp or Build tracked | T-40, T-41 | Todo |
+| T-42 | 12 | Repository hygiene | Clean clone opens and runs; no Library, Temp or Build tracked | T-40, T-41 | Done |
 | T-44 | 4 | Connectivity probe and trusted time | Online state follows a real request; server time is readable once a probe succeeds | T-04 | Done |
 | T-45 | 5 | No-internet popup over every scene | Going offline anywhere shows the blocking popup; in gameplay the timer and input stop; back online closes it | T-44, T-05, T-15 | Todo |
 | T-46 | 5 | Boot waits for a connection | Splash does not reach Home offline; the popup's Retry or a returning connection continues the boot | T-44, T-45 | Todo |

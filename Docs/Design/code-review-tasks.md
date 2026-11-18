@@ -36,7 +36,7 @@ be measured before they are fixed.
 | [CR-12](#cr-12-pack-revision-can-go-backwards) | P1 | Levels | Pack revision can go backwards | — | Todo |
 | [CR-13](#cr-13-arrow-overlay-is-not-clipped-at-the-door) | P1 | Views | Arrow overlay is not clipped at the door | — | Todo |
 | [CR-14](#cr-14-booster-button-scale-has-two-owners) | P1 | Views | Booster button scale has two owners | — | Todo |
-| [CR-15](#cr-15-level-editor-writes-edits-into-the-wrong-level) | P1 | Editor | Level editor writes edits into the wrong level | — | Todo |
+| [CR-15](#cr-15-level-editor-writes-edits-into-the-wrong-level) | P1 | Editor | Level editor writes edits into the wrong level | — | Done |
 | [CR-16](#cr-16-solver-and-generator-fail-past-their-limits) | P1 | Levels | Solver and generator fail past their limits | — | Todo |
 | [CR-17](#cr-17-saves-flush-playerprefs-on-every-change) | P2 | Persistence | Saves flush PlayerPrefs on every change | — | Todo |
 | [CR-18](#cr-18-split-leveltimer-countdown-and-freeze) | P2 | Session | Split `LevelTimer` countdown and freeze | — | Todo |
@@ -46,7 +46,7 @@ be measured before they are fixed.
 | [CR-22](#cr-22-one-home-for-each-level-rule) | P2 | Levels | One home for each level rule | — | Todo |
 | [CR-23](#cr-23-generation-tunables-into-config) | P2 | Levels | Generation tunables into config | — | Todo |
 | [CR-24](#cr-24-editor-tools-bypass-the-save-services) | P2 | Editor | Editor tools bypass the save services | — | Todo |
-| [CR-25](#cr-25-restart-leaves-debris-and-overlapping-tweens) | P3 | Views | Restart leaves debris and overlapping tweens | — | Todo |
+| [CR-25](#cr-25-restart-leaves-debris-and-overlapping-tweens) | P3 | Views | Restart leaves debris and overlapping tweens | — | Done |
 | [CR-26](#cr-26-small-cleanups) | P3 | Mixed | Small cleanups | — | Todo |
 
 ## 3. Product questions
@@ -256,6 +256,7 @@ be measured before they are fixed.
 - **Accept:** each scenario above leaves the other levels untouched.
 - **Tests:** level-editor-qa.md cases; Edit Mode tests where the logic moves out in CR-21.
 - **Docs:** level-editor.md.
+- **Done:** Save returns success and leaving waits for it; opening a level clears the draft undo and stops Generate and Make harder; shortcuts skip a focused text field. Also: New adds a valid starter level, the pack writer refuses a level with errors, Save asks while the solver is still running, and the window reopens its level after a reload (2026-11-18).
 
 ### CR-16 Solver and generator fail past their limits
 
@@ -375,12 +376,13 @@ be measured before they are fixed.
 - **Accept:** restart mid-exit shows a clean board.
 - **Tests:** `GameplayBoardTests` restart-mid-exit case.
 - **Docs:** none.
+- **Done:** ReleaseAll stops and releases every playing burst and shatter and clears the coalescing table; Leave kills the thaw and PlayExit uses Leave; a cancelled coin flight hides its coins and turns the blocker off (2026-11-18).
 
 ### CR-26 Small cleanups
 
 | Item | Where | Fix |
 | --- | --- | --- |
-| `LevelSession.Next` has no runtime caller (the win goes Home) | `Gameplay/Session/LevelSession.cs:61` | Remove with its test, or keep it for a "next level" route and say so in gameplay.md |
+| `LevelSession.Next` has no runtime caller (the win goes Home) | `Gameplay/Session/LevelSession.cs:61` | Done 2026-11-18: removed with its test |
 | `mm:ss` written three times, two behaviours (wrap at 100 vs clamp at 99) | `GameplayHudView.cs:94-101`, `LivesBarView.cs:56-63`, `OutOfLivesPopupView.cs:88-96` | One allocation-free clock-digits writer with tests |
 | Exit timing computed twice with different formulas | `BoardView.cs:183`, `BlockView.cs:161`, `BlockLayerView.cs:247` | `ExitPath.SlideSeconds(config, alreadyIn)` |
 | Player-facing text hard-coded in views; blocks DA-29 | `OutOfLivesPopupView.cs:35-38`, `LivesBarView.cs:13`, `HomeView.cs:12`, `OutOfTimePopupView.cs:12-13` | Text in prefabs or a config |

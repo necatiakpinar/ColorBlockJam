@@ -58,7 +58,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
 - [ ] [T-39 Full QA pass on device and aspect ratios](#t-39-full-qa-pass-on-device-and-aspect-ratios)
 - [x] [T-40 Project README](#t-40-project-readme)
 - [ ] [T-41 Android APK](#t-41-android-apk)
-- [ ] [T-42 Repository hygiene](#t-42-repository-hygiene)
+- [x] [T-42 Repository hygiene](#t-42-repository-hygiene)
 - [x] [T-43 Touch and door feel](#t-43-touch-and-door-feel)
 - [x] [T-44 Connectivity probe and trusted time](#t-44-connectivity-probe-and-trusted-time)
 - [ ] [T-45 No-internet popup over every scene](#t-45-no-internet-popup-over-every-scene)
@@ -818,8 +818,10 @@ and (T-33) the solver from `ColorBlockJam.Game`, so the editor never has its own
 
 - **Req:** R-5.
 - **Subtasks:**
-  - [ ] `.gitignore` excludes Library, Temp, Logs, Build, UserSettings, generated `.csproj`/`.sln`
-  every LFS file is a pointer; fresh clone into an empty folder opens and plays; all tests green.
+  - [x] `.gitignore` excludes Library, Temp, Logs, Build, UserSettings, generated `.csproj`/`.sln`
+  - [x] every LFS file is a pointer; a fresh clone into an empty folder opens and all tests pass
+    (2026-11-18: clone of `origin/main` at `d6e4550`, 71 LFS files fetched, headless Edit Mode and Play Mode
+    green; the Play Mode tests boot Splash, Home and Gameplay).
 
 ### T-48 Lives
 
