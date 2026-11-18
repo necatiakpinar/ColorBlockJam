@@ -48,7 +48,7 @@ MonoBehaviour:
   _framing:
     _side: 0.06
     _top: 0.22
-    _bottom: 0.16
+    _bottom: 0.24
   _framedHeight: 0.5
   _cornerTolerance: 0.4
   _holdGive: 0.12

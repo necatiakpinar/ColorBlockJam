@@ -112,7 +112,7 @@ shards, `M_IceShard`).
 | Material | Use |
 | --- | --- |
 | `M_Block` | base of every block colour; `ColorMaterialCache` makes one copy per palette colour |
-| `M_Floor`, `M_BoardBase`, `M_Wall` | floor tiles; the grid base; wall segments and corners |
+| `M_Floor`, `M_BoardBase`, `M_Wall` | floor tiles (dark slate `#707D9C`, which renders near the reference's `#6B7998`); the grid base, a shade darker (`#5E6A88`); wall segments and corners |
 | `M_Door`, `M_Arrow` | base of every door colour; arrows and door markers |
 | `M_SelectionOutline` | outline of a held block (`Art/Shaders/SelectionOutline.shader`, drawn over everything) |
 | `M_Ice` | ice blocker overlay, base map `icetexture.jpg` |

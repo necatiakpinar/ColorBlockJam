@@ -202,5 +202,29 @@ namespace ColorBlockJam.Tests.EditMode
             Assert.That(checkedIcons, Is.EqualTo(expected));
             Close(scene, openedHere);
         }
+
+        [Test]
+        public void BoosterBar_ShouldSitAboveTheBannerArea_WhenLaidOut()
+        {
+            Scene scene = Open(GameplayScene, out bool openedHere);
+            Transform safe = SafeArea(scene);
+            var banner = (RectTransform)safe.Find("BannerArea");
+            var bar = (RectTransform)safe.Find("BoosterBar");
+
+            Assert.That(banner, Is.Not.Null, "The bottom of the screen is kept for an ad banner.");
+            Assert.That(banner.anchorMin.y, Is.Zero);
+            Assert.That(bar.anchoredPosition.y, Is.GreaterThanOrEqualTo(banner.sizeDelta.y), "The boosters stay clear of the banner.");
+            Close(scene, openedHere);
+        }
+
+        [TestCase("M_Floor")]
+        [TestCase("M_BoardBase")]
+        public void BoardFloor_ShouldBeADarkSlate_WhenDrawn(string material)
+        {
+            var floor = AssetDatabase.LoadAssetAtPath<Material>($"Assets/_Project/Art/Materials/{material}.mat");
+            Color.RGBToHSV(floor.GetColor("_BaseColor"), out _, out _, out float value);
+
+            Assert.That(value, Is.LessThan(0.65f), "The floor reads dark under the bright blocks, as in the reference.");
+        }
     }
 }
