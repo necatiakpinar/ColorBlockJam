@@ -58,14 +58,6 @@ namespace ColorBlockJam.Game.Gameplay.Session
             return true;
         }
 
-        public bool Next(int levelNumber)
-        {
-            if (State != LevelState.Won)
-                return false;
-            Begin(levelNumber);
-            return true;
-        }
-
         public bool Fail()
         {
             if (State != LevelState.Playing)

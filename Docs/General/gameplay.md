@@ -194,18 +194,18 @@ so a double tap or a late timer cannot corrupt an attempt (`LevelSessionTests`).
 Loading --Start(n)--> Playing --Pause--> Paused --Resume--> Playing
 Playing --(BoardClearedSignal)--> Won          Playing --Fail--> Failed
 Playing | Paused | Failed --Restart--> Playing
-Won --Next(n)--> Playing
 ```
 
 | Transition | Signals |
 | --- | --- |
-| `Start(n)`, `Restart`, `Next(n)` | `BoardLoadedSignal` (a new `BoardState` from the level data), then `LevelStartedSignal` |
+| `Start(n)`, `Restart` | `BoardLoadedSignal` (a new `BoardState` from the level data), then `LevelStartedSignal` |
 | `Pause` / `Resume` | `LevelPausedSignal` / `LevelResumedSignal` |
 | board cleared while playing | `LevelCompletedSignal` (once) |
 | `Fail` (the timer, T-15) | `LevelFailedSignal` (once) |
 
 - Restart rebuilds everything from the level's data, so nothing of the previous attempt stays (DA-15); a
-  won level is not restarted, it moves on (T-17, T-21). A paused level cannot fail: its timer stands still.
+  won level is not restarted; the win goes Home, where the next level starts (T-17, T-21, DA-12).
+  A paused level cannot fail: its timer stands still.
 - **Progression:** `LevelWinService` (plain class, built by the scope's build callback) advances
   `IPlayerProgressService` on `LevelCompletedSignal`, together with the reward, before anything presents
   the win (T-17, [economy.md](economy.md) §2). The catalog loops (DA-8): after the last level the next

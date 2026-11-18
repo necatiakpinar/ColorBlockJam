@@ -112,26 +112,6 @@ namespace ColorBlockJam.Tests.EditMode
         }
 
         [Test]
-        public void Next_ShouldStartTheGivenLevel_OnlyAfterAWin()
-        {
-            var levels = new LevelProvider(_catalogs.Create(
-                new LevelDataBuilder(4, 4).Block(Red, 1, 1).Door(Left, 1, 1, Red).Build(),
-                new LevelDataBuilder(5, 5).Block(Blue, 1, 1).Door(Left, 1, 1, Blue).Build()));
-            using var session = new LevelSession(_board, levels, _bus);
-            session.Start(1);
-            Assert.That(session.Next(2), Is.False, "Not won yet.");
-            SlideOutFirstBlock();
-            _events.Clear();
-
-            Assert.That(session.Next(2), Is.True);
-
-            Assert.That(session.State, Is.EqualTo(LevelState.Playing));
-            Assert.That(session.LevelNumber, Is.EqualTo(2));
-            Assert.That(_board.Current.Width, Is.EqualTo(5), "The next level's board.");
-            Assert.That(_events, Is.EqualTo(new[] { "loaded", "started 2" }));
-        }
-
-        [Test]
         public void Fail_ShouldEndTheAttemptOnce_WhenPlaying()
         {
             _session.Start(2);
