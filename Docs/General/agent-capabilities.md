@@ -3,7 +3,7 @@
 Verified facts about what agents can and cannot do in this repository's environment. Read before probing
 a tool; update through the `record-agent-capabilities` skill. Never record secrets.
 
-Updated: 2026-11-17
+Updated: 2026-11-18
 
 ## 1. Unity
 
@@ -83,6 +83,25 @@ Updated: 2026-11-17
   throws `MissingComponentException`; test `== null` explicitly (2026-11-17).
 - `refresh_unity` with `scope: scripts` does not import a new `.cs` file (`CS0246` on its type); use
   `scope: all` after adding files (2026-11-17).
+
+- MCP `manage_packages` `search_packages` / `add_package` run as jobs; poll with `status` and the `job_id`.
+  On Unity 2022.3.62f2 the registry offers `com.unity.addressables` 1.29.0; the add finished in about 10 s
+  (2026-11-18).
+- `AddressableAssetSettingsDefaultObject.GetSettings(true)` from `execute_code` creates
+  `Assets/AddressableAssetsData/` (`Built In Data` and `Default Local Group`) and adds the
+  `com.unity.addressableassets` config object to `ProjectSettings/EditorBuildSettings.asset` (2026-11-18).
+- Addressables 1.29 logs an unknown key as `LogType.Error` (`InvalidKeyException`), not `LogType.Exception`;
+  a test that provokes it needs `LogAssert.Expect(LogType.Error, ...)` (2026-11-18).
+- UniTask 2.5.11: a `Preserve()`d task still pending accepts only one awaiter; a second throws "Already
+  continuation registered, can not await twice". Share one pending result through a
+  `UniTaskCompletionSource<T>` instead (2026-11-18).
+- `AddressableAssetSettings.BuildPlayerContent(out AddressablesPlayerBuildResult)` from `execute_code` (CodeDom;
+  Roslyn is not installed) built the Android content in 201 s on the first run and froze the editor meanwhile.
+  It leaves `Assets/AddressableAssetsData/Android/addressables_content_state.bin` (gitignored) and an
+  untracked `Android.meta`; delete that folder after a test build (2026-11-18).
+- Changing a serialized `AudioClip`/`TextAsset` field to `AssetReferenceT<T>` keeps the old YAML until the asset
+  is saved; migrate by writing each old GUID to `<field>.m_AssetGUID` through `SerializedObject` right after the
+  compile, then check the `.asset` diff (2026-11-18).
 
 ## 2. Shell (Windows, Git Bash)
 
