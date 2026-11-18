@@ -32,19 +32,27 @@ The art set is used as imported (R-3). `AssetImportTests` enforces §2 and §3.
    The atlas is **late-bound**: "Include in Build" is off and it is addressable as `UiAtlas` (`UI` group).
    UI keeps referencing the sprites; when Unity first asks for the atlas, `SpriteAtlasBinder` loads it
    through Addressables ([addressables.md](addressables.md) §7).
-4. Sprites outside the atlas (`bg_home_screen`, and the unused `bg_block_texture`, `Btn_levelBg_normal`,
+4. Sprites outside the atlas (`bg_home_screen`, and the unused `bg_block_texture`,
    `Lego_Brickv1`, `leaderboard`, `bg_popup_info_holder_2`) keep an Android ASTC 6x6 override. An unused
    sprite is not built into the player; it joins the atlas when a screen starts using it.
 5. Nine-slice borders are set on panels and stretchable buttons: `bg_popup`, `bg_popup_header`,
    `bg_popup_info_holder`, `bg_popup_info_holder_2`, `bg_menu`, `Btn_popup_green`, `Btn_popup_blue`,
-   `bg_gameplay_time_holder`, `bg_home_coin_holder`, `bg_home_resource_holder`, `SquareRoundedMask`.
-   Borders sit 6 px inside the opaque corner radius. Sprites with a vertical gradient (`Btn_popup_blue`,
-   `Btn_popup_green`) are drawn at their own vertical scale (multiplier = sprite height / rect height): only
-   their middle stretches, sideways, so the face never splits into a light and a dark band. A sprite with a
-   gloss mark near a corner keeps the whole mark inside its corner slice, or slicing stretches it into a
-   streak: `Btn_popup_blue` is sliced at left/right 74, top 86, bottom 50 and `Btn_popup_green` at 110, 125,
-   125 (`PopupPrefabTests.PopupButtonSprites_ShouldKeepTheirHighlightInsideTheCornerSlice_WhenNineSliced`).
-   `Btn_levelBg_normal` is not sliceable (circle and pattern); use it as `Simple` with `Preserve Aspect`.
+   `bg_gameplay_time_holder`, `bg_home_coin_holder`, `bg_home_resource_holder`, `SquareRoundedMask`,
+   `Btn_level_green`, `Btn_levelBg_normal`, `ActiveTab`. Borders sit 6 px inside the opaque corner radius.
+   A sliced image is drawn at a pixels-per-unit multiplier that fits its borders inside its rect
+   ((left + right) / multiplier within the width, (top + bottom) / multiplier within the height), or Unity
+   squeezes the corners. Sprites with a vertical gradient (`Btn_popup_blue`, `Btn_popup_green`,
+   `Btn_levelBg_normal`) are drawn at their own vertical scale (multiplier = sprite height / rect height):
+   only their middle stretches, sideways, so the face never splits into a light and a dark band.
+   A stretched `Simple` image keeps its sprite's aspect ratio within 6%; anything
+   stretched further is sliced (`UiSlicingTests`). A sprite with a gloss mark near a corner keeps the whole
+   mark inside its corner slice, or slicing stretches it into a streak: `Btn_popup_blue` is sliced at
+   left/right 74, top 86, bottom 50 and `Btn_popup_green` at 110, 125, 125
+   (`PopupPrefabTests.PopupButtonSprites_ShouldKeepTheirHighlightInsideTheCornerSlice_WhenNineSliced`).
+   `Btn_levelBg_normal` (the HUD's level and time bar) keeps its circle in the left slice (left 330, right
+   64, top and bottom 70), so only the patterned middle stretches, and only when the bar is wider than the
+   sprite's own aspect. `ActiveTab` keeps its light top cap in the top slice (top 82, sides and bottom 42).
+   `bg_home_line` is a plain alpha gradient and needs no slicing.
    Borders are edited in the Sprite Editor, which comes with the `com.unity.2d.sprite` package.
 
 ## 3. Models

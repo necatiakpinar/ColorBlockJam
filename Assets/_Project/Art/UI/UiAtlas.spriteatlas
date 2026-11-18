@@ -86,6 +86,7 @@ SpriteAtlas:
     - {fileID: 21300000, guid: b06bfbb9da2f4644db96a566e10a34d5, type: 3}
     - {fileID: 21300000, guid: 658822c9fb868ef478ef3e7c21498686, type: 3}
     - {fileID: 21300000, guid: 44fdcc0bc40ff7e41befa7739cdebd29, type: 3}
+    - {fileID: 2800000, guid: d2259c9f06523434a8a5a76829697811, type: 3}
     bindAsDefault: 0
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -130,6 +131,7 @@ SpriteAtlas:
     - 05ca062f42541074fb2da857279dd8cc: 21300000
     - cf7fb64f042580341bc41d495fb66498: 21300000
     - 63a0ef8fc1f7c874192adcba7bf6d9e4: 21300000
+    - d2259c9f06523434a8a5a76829697811: 21300000
     - 90bf76bfc9d56a14a8d9debf2757bf23: 21300000
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -173,6 +175,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 05ca062f42541074fb2da857279dd8cc, type: 3}
   - {fileID: 21300000, guid: cf7fb64f042580341bc41d495fb66498, type: 3}
   - {fileID: 21300000, guid: 63a0ef8fc1f7c874192adcba7bf6d9e4, type: 3}
+  - {fileID: 21300000, guid: d2259c9f06523434a8a5a76829697811, type: 3}
   - {fileID: 21300000, guid: 90bf76bfc9d56a14a8d9debf2757bf23, type: 3}
   m_PackedSpriteNamesToIndex:
   - block_collection
@@ -215,6 +218,7 @@ SpriteAtlas:
   - bg_popup_header
   - Btn_level_green
   - Blockjam_Settings_Music
+  - Btn_levelBg_normal
   - bg_home_line
   m_RenderDataMap: {}
   m_Tag: UiAtlas

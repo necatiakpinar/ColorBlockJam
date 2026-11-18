@@ -9,5 +9,6 @@ Every case is checked at 1080x1920 and 1080x2400 (20:9) unless it says otherwise
 - [x] ⚙ The balance follows every spend on Home, such as a lives refill — `HomeFlowTests.Refill_ShouldShowTheBalanceLeft_WhenLivesAreBought`
 - [x] ⚙ The level button opens Gameplay — `HomeFlowTests.LevelButton_ShouldNavigateToGameplay_WhenTapped`
 - [x] ⚙ Every Home button gives press feedback — `SceneSetupTests`
+- [x] ⚙ The top bar sits high, the profile is at least 200 wide and no part of the top bar touches its neighbour — `HomeLayoutTests`
 - [ ] 👁 Compare Home with the reference screen at 1080x1920 and 20:9: top bar, level path, tab bar.
 - [ ] 👁 Tabs, the "+" buttons and the profile only shrink when pressed; Home stays the active tab.

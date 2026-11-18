@@ -63,23 +63,53 @@
 
 ## 5. Gameplay HUD and popups
 
-The HUD is authored in `Gameplay.unity` under `HudCanvas`; the popups are prefabs (§3). Both are laid out
+The HUD is authored under `HudCanvas` in `Gameplay.unity` from prefabs in `Prefabs/UI/Hud/`: `TopBar.prefab`,
+`BoosterBar.prefab`, and the booster buttons in `Hud/Boosters/`. `BoosterButton.prefab` is their base (frame, empty icon slot,
+count and buy badges); `FreezeBoosterButton`, `RocketBoosterButton`, `HammerBoosterButton` and
+`VacuumBoosterButton` are its variants, each setting only its icon and `BoosterType`. `BoosterBar` places one
+of each and overrides nothing but their slot. A change to every booster button goes in the base; a new
+booster is a new variant. Change the HUD in its prefabs; the popups are prefabs too (§3). Both are laid out
 after the reference screens, sizes measured on them and scaled to the canvas (DA-28):
 
 | Part | Art | Behaviour |
 | --- | --- | --- |
-| `SafeArea/TopBar/LevelBadge` | `Btn_booster_normal`, "Level" and the number | `LevelStartedSignal` |
-| `TopBar/TimePanel` | `bg_popup`, `ic_time`, `bg_gameplay_time_holder` | `TimerChangedSignal`, `mm:ss` |
-| `TopBar/RestartButton`, `PauseButton` | `Btn_square_retry` + `ic_restart`, `Btn_settings_normal` + `ic_pause` | restart at once; pause opens the pause popup |
+| `SafeArea/TopBar/TimePanel/LevelBadge` | no art of its own: "Level" and the number over the bar's circle | `LevelStartedSignal` |
+| `TopBar/TimePanel` | `Btn_levelBg_normal` (circle and patterned bar in one sprite, nine-sliced), `ic_time`, `bg_gameplay_time_holder` | `TimerChangedSignal`, `mm:ss` |
+| `TopBar/SideButtons/RestartButton`, `PauseButton` | `Btn_square_retry` + `ic_restart`, `Btn_settings_normal` + `ic_pause` | restart at once; pause opens the pause popup |
 | `TopBar/CoinCounter` | `bg_home_coin_holder`, `Coin_Single`, `Btn_circle_green_small` + `ic_plus` | balance from `IWalletService` and `CoinsChangedSignal` ("1.28k" from 1000); "+" is a placeholder |
 | `SafeArea/BoosterBar` | `Btn_booster_normal` with `Clock_Freeze`, `Rocket_Purple_Icon`, `Hammer`, `Vacuum`, count badge `Btn_circle_blue_small`, buy badge `Btn_circle_green_small` + `ic_plus` | `BoosterBarView`: stock from `BoosterInventory`; taps use or offer a booster ([boosters.md](boosters.md)) |
-| `SafeArea/BoosterBanner`, `IceFrame`, `TopBar/TimePanel/FreezeMeter` | title and hint text; `icetexture` strips; `bg_gameplay_time_holder` track + `SquareRoundedMask` fill, both nine-sliced with a pixels-per-unit multiplier (2.6, 4) so their round ends fit the 44 px bar, the fill shrinking by its right anchor (`BarFillAnimation`), + `Clock_Freeze` | booster targeting and freeze looks ([boosters.md](boosters.md) §4) |
+| `SafeArea/BoosterBanner`, `IceFrame`, `TopBar/TimePanel/TimeArea/FreezeMeter` | title and hint text; `icetexture` strips; `bg_gameplay_time_holder` track + `SquareRoundedMask` fill, both nine-sliced with a pixels-per-unit multiplier (2.6, 4) so their round ends fit the 44 px bar, the fill shrinking by its right anchor (`BarFillAnimation`), + `Clock_Freeze` | booster targeting and freeze looks ([boosters.md](boosters.md) §4) |
 | `PausePopup` prefab | "SETTINGS": vibration, sound and music switches, Legal Terms, Restore Purchases, Support, Language, Home | switches show and set `ISettingsService`; the four blue buttons are placeholders (DA-29) |
 | `WinPopup` prefab | "LEVEL COMPLETE", a pile of `Coin_Single` (`_coinPile`, the flight's start), Continue with the reward | Continue flies the coins to the HUD counter and goes Home (DA-12, T-51; [gameplay.md](gameplay.md) §7) |
 | `LevelFailedPopup` prefab | "Level Failed!" with `Heart` and "-1"; Retry (`Btn_popup_green`) above Return to Menu (`Btn_popup_blue`), centred as a pair in the panel below the header | opens when the timer runs out; Retry restarts, or opens the lives popup with none left; Return to Menu and close go Home (DA-31) |
 | `LeaveLevelPopup` prefab | "Leave Level?", `Heart` with "-1", "You will lose a life!", Leave | Leave takes the life and goes Home; close goes back to pause (DA-38) |
 | `OutOfLivesPopup` prefab (Home and Gameplay) | "Out of Lives", `Heart` with the count, the next life's countdown, Refill with the price | fills every life for coins; in Gameplay close goes Home (DA-38) |
 | `BoosterPurchasePopup` prefab | the booster's title, icon, "x1", description, Buy with the price | buys one booster; close resumes (DA-36) |
+
+**Top bar layout** (`HudLayoutTests`):
+
+1. **Anchors follow the areas.** Each group is anchored where it sits: `TimePanel` and its bar to the top-left
+   corner, `SideButtons` (restart above pause, as tall as the bar) and `CoinCounter` to the top-right corner, the
+   four boosters to the quarter points of `BoosterBar`. Everything inside a group stretches over its own area
+   (anchors on its corners, no offsets): `LevelBadge` over the bar's circle, `TimeArea` over the bar right of
+   the circle with `TimeIcon`, `TimeTitle`, `TimeSlot` and `FreezeMeter` inside it, a button's icon and badges
+   over the button. Resizing a group moves and scales its contents with it; no part sits on a fixed point.
+2. `TimePanel` draws `Btn_levelBg_normal` at 788x290 from the top bar's corner, sliced at the sprite's own
+   scale (pixels-per-unit multiplier = sprite height / panel height), so neither the circle nor the pattern
+   stretches. `LevelBadge` covers the circle; its title (`ic_time` and "Time", centred together) and its
+   `TimeSlot` sit in one column centred in the bar right of the circle.
+3. `RestartButton` and `PauseButton` stack in `SideButtons` beside the panel: the restart's top lines up with the bar's
+   visible top and the pause's bottom with its visible bottom (the sprite has 31 px of margin above the
+   bar and 30 below).
+4. In `CoinCounter`, `Coin_Single` sits inside the holder's left end and the green "+" inside its right end,
+   both slightly smaller than the holder's height; the balance is centred between them.
+5. Every green "+" (the coin counters, the booster buy badge, the Home lives bar) is an instance of
+   `Prefabs/UI/Common/PlusButton.prefab`: `Btn_circle_green_small` with `ic_plus` stretched over 1.25 times
+   the button (the sprite carries about 42 px of transparent margin on each side, so the cross fills a little
+   over half of the circle) and centred at 59.5% of the button's height, on the raised face: the circle's
+   shadow and thick lower rim put its face 11.5 px above the sprite's centre, and the cross sits 2.5 px low
+   in its own sprite. An instance that is a button adds `Button` and `ButtonPressFeedback` to the prefab's
+   look; change the look in the prefab.
 
 Text uses `LiberationSans SDF` with the `LiberationSans SDF - Hud` material (outline and drop shadow) until
 the game has its own font. A switch's "off" look is a dark track with a plain knob, because the art has
@@ -109,18 +139,27 @@ switches (`Refresh` before opening, `SettingChangedSignal` after) and reports ta
 
 ## 7. Home screen
 
-Authored in `Home.unity` under `HomeCanvas`, laid out after the reference (T-23):
+Authored under `HomeCanvas` in `Home.unity` from prefabs in `Prefabs/UI/Home/`, laid out after the reference
+(T-23): `HomeBackground`, `HomeTopBar` (the scene object keeps the name `TopBar`), `LevelPath` and `TabBar`.
+`HomeView` stays on the canvas and references parts inside them; `Popups` is an empty layer the scope fills.
+Change a part in its prefab:
 
 | Part | Art | Behaviour |
 | --- | --- | --- |
 | `Background` | `bg_home_screen` | fills the screen, outside the safe area |
-| `TopBar/ProfileButton` | `profile_box_blue` | placeholder |
+| `TopBar/ProfileButton` | `profile_box_blue`, 220x220 | placeholder |
 | `TopBar/Lives` | `bg_home_resource_holder`, `Heart`, "Full" and 5, green "+" | `LivesBarView`: lives, "Full" or the countdown; a tap anywhere on the bar opens the lives popup ([lives.md](lives.md)) |
 | `TopBar/Coins` | `bg_home_resource_holder`, `Coin_Single`, green "+" | balance (`CoinAmountText`); "+" is a placeholder |
 | `TopBar/SettingsButton` | `Settings_Icon` | opens the Home settings popup |
-| `LevelPath` | gold rails, `Btn_level_green` tile for the current level, `Btn_settings_normal` + `lock` for the next two | numbers from the saved level |
+| `LevelPath` | gold rails, `Btn_level_green` tile for the current level (`CurrentTile`), `Btn_settings_normal` + `lock` for the next two | numbers from the saved level |
 | `LevelPath/LevelButton` | `Btn_level_green` (nine-sliced, art-pipeline.md §4), "Level N" | plays the current level |
 | `TabBar` | `bg_menu`, `bg_home_line` separators, `ActiveTab` under Home, `lock`, `shop`, `home_icon`, `block_collection`, `lock` "Lvl 50" | placeholders: press feedback only; Home stays active (DA-11) |
+
+The top bar's four parts are centred 150 units below the safe area's top and spread over it with 36 units of
+margin each side in the reference's proportions: profile 220, lives 329, coins 261, settings 103. Neighbours
+sit close, as in the reference, but never touch: at least 5 units apart, measured on what is drawn (sprite
+padding excluded), counting the heart, the coin and the "+" badges that stick out of the bars
+(`HomeLayoutTests`).
 
 The reference's chef portrait and its skull marker for hard levels have no art in the project, so the
 profile frame stays empty and locked tiles all look alike. `HomeFlow` shows the level and the balance on

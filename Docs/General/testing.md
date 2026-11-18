@@ -81,6 +81,9 @@ before writing a new fake.
 | `BoardSpaceTests` | cell ↔ world at cell size 1 and 2; edges; outside cells |
 | `BuildSettingsTests` | Splash first; every `SceneId` is a build scene; portrait; IL2CPP ARM64 |
 | `AssetImportTests` | UI sprites; atlas sources uncompressed, the atlas ASTC on Android and on one page; model scale, no tangents, not readable; floor tile size |
+| `UiSlicingTests` | in every scene and UI prefab, a sliced image has borders that fit its rect, a gradient button keeps its sprite's vertical scale, and an unsliced one keeps its sprite's aspect ratio (gradients excepted) |
+| `HomeLayoutTests` | the Home canvas parts are prefab instances; the Home top bar sits high, the profile is at least 200 wide and no part touches its neighbour |
+| `HudLayoutTests` | the top bar and booster bar are prefab instances; each booster slot is a variant of the one base button, on the bar's quarter points, with nothing overridden but its slot; HUD parts stretch over their area instead of sitting on a point; the level and time bar is `Btn_levelBg_normal`, sliced at its own scale; the restart and pause buttons span it; the time slot sits under its title; the coin sits inside its holder; every green "+" is the one `PlusButton` prefab, its cross big enough and on the button's face |
 | `SceneSetupTests` | every build scene: canvas scaler, safe area root, button feedback |
 | `AddressablesAssetSourceTests` (PlayMode) | the local catalog initializes without errors; an unknown key throws and Addressables logs `InvalidKeyException` |
 | `NavigationFlowTests` (PlayMode) | real boot reaches Home; Home ⇄ Gameplay round trip |
