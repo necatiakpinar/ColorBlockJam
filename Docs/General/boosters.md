@@ -74,7 +74,7 @@ seconds left, the total and whether it is counting.
 
 | Piece | Where | Shows |
 | --- | --- | --- |
-| `BoosterBarView` + four `BoosterButtonView` | `HudCanvas/SafeArea/BoosterBar` (`BoosterBar.prefab` with the four variants of `BoosterButton.prefab`, [ui.md](ui.md) §5) | the stock in a blue badge, or a green "+" when none are left; the booster choosing a target grows, the others fade; the freeze fades while it runs |
+| `BoosterBarView` + four `BoosterButtonView` | `HudCanvas/SafeArea/BoosterBar` (`BoosterBar.prefab` with the four variants of `BoosterButton.prefab`, [ui.md](ui.md) §6) | the stock in a blue badge, or a green "+" when none are left; the booster choosing a target grows, the others fade; the freeze fades while it runs |
 | `BoosterTargetingView` | `SafeArea/BoosterBanner` + `BoosterBackdrop` (scene root) | while choosing: the title and hint, the top bar parts faded, and a dark quad under the board that shades everything around it (`BoosterDimAnimation`) |
 | `FreezeView` | `HudCanvas/IceFrame` + `TopBar/TimePanel/TimeArea/FreezeMeter` | an ice frame (`icetexture`) around the screen and a meter under the timer that empties with the freeze |
 | `BlockLayerView` | `Blocks` | every block outlined while choosing; smash (`BlockSmashAnimation`) and a burst of cubes; the vacuum lifts blocks away in turn (`BlockVacuumAnimation`); a blasted cell rebuilds the block from the cells left |

@@ -509,8 +509,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Hammer
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: f1c685807d4b4094a88df78c1ffa7672, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: df85bdfc25fd4844ea40e6e97b881777, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 1078b50210ffdc84e91189df246258e2, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -674,8 +674,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Tap a block to smash it
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: f1c685807d4b4094a88df78c1ffa7672, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: df85bdfc25fd4844ea40e6e97b881777, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 1078b50210ffdc84e91189df246258e2, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

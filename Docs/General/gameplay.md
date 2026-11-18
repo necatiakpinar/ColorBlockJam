@@ -240,7 +240,7 @@ Won --Next(n)--> Playing
 
 ## 7. Popups and navigation
 
-Four flows route the HUD and the popups ([ui.md](ui.md) §5); the session, the wallet and the settings
+Four flows route the HUD and the popups ([ui.md](ui.md) §6); the session, the wallet and the settings
 own every change:
 
 - **`GameplayFlow`** (entry point) starts the level. HUD restart calls `LevelSession.Restart`. HUD pause

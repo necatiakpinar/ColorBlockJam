@@ -53,7 +53,26 @@
      so a panel's rect is its visible size plus (100, 56). Its inner face ends 95 units above the rect's bottom (margin plus rim): content centred in a panel centres between the header and that line. The button and holder sprites have almost none.
 3. A popup view only reports taps as C# events; a flow decides what they do (§2.3).
 
-## 4. Configs
+## 4. Text styles
+
+Every text in every scene and UI prefab, the board's ice counts included, is drawn in one font and one of two
+styles (`TextStyleTests`):
+
+| Style | Material | Look | Used for |
+| --- | --- | --- | --- |
+| Outlined | `LilitaOne SDF - Outlined` | chunky face (dilate 0.12), thick navy outline (0.24), navy drop shadow just below | every text on blue or coloured art: titles, HUD, buttons, badges, popups, the ice counts |
+| Plain | `LilitaOne SDF - Plain` | chunky face, no outline | dark text on light art: the Home lives and coin bars, the splash subtitle |
+
+- **Font:** `Art/Fonts/LilitaOne/LilitaOne SDF` (static SDF atlas built from `LilitaOne-Regular.ttf`, Lilita
+  One by Juan Montoreano, SIL Open Font License 1.1, `OFL.txt` beside it). It covers Basic Latin and Latin-1;
+  letters it lacks (Turkish ğ ş İ, ₺) fall back to `LiberationSans SDF`.
+- **Default:** `TMP Settings` makes it TextMeshPro's default font, so a new text starts in the game font; pick
+  one of the two materials as its preset.
+- **Colour** is the text's vertex colour (white by default, gold for a title, navy on a light bar); the
+  outline and shadow come from the style. Lilita is already bold: leave Font Style at Normal.
+- **A new style** is a new material made from the font asset, added to `TextStyleTests.Styles` and this table.
+
+## 5. Configs
 
 | Asset | Holds |
 | --- | --- |
@@ -61,7 +80,7 @@
 | `GameplayPopupConfig` (Gameplay) | the gameplay popup prefabs |
 | `HomePopupConfig` (Home) | the Home popup prefabs (the Home settings variant) |
 
-## 5. Gameplay HUD and popups
+## 6. Gameplay HUD and popups
 
 The HUD is authored under `HudCanvas` in `Gameplay.unity` from prefabs in `Prefabs/UI/Hud/`: `TopBar.prefab`,
 `BoosterBar.prefab`, and the booster buttons in `Hud/Boosters/`. `BoosterButton.prefab` is their base (frame, empty icon slot,
@@ -111,11 +130,10 @@ after the reference screens, sizes measured on them and scaled to the canvas (DA
    in its own sprite. An instance that is a button adds `Button` and `ButtonPressFeedback` to the prefab's
    look; change the look in the prefab.
 
-Text uses `LiberationSans SDF` with the `LiberationSans SDF - Hud` material (outline and drop shadow) until
-the game has its own font. A switch's "off" look is a dark track with a plain knob, because the art has
+A switch's "off" look is a dark track with a plain knob, because the art has
 only the "on" knob (asset-feedback.md A-1).
 
-## 6. Settings popup
+## 7. Settings popup
 
 One layout, two scenes. **`SettingsPopup.prefab`** is the base: panel, header, the vibration, sound and
 music switches, and the Legal Terms, Restore Purchases, Support and Language placeholders, laid out after
@@ -137,7 +155,7 @@ A change to the shared layout goes in the base prefab and reaches both. `Setting
 switches (`Refresh` before opening, `SettingChangedSignal` after) and reports taps; the flow sets
 `ISettingsService` (DA-10). `PopupPrefabTests` checks both are variants of the base.
 
-## 7. Home screen
+## 8. Home screen
 
 Authored under `HomeCanvas` in `Home.unity` from prefabs in `Prefabs/UI/Home/`, laid out after the reference
 (T-23): `HomeBackground`, `HomeTopBar` (the scene object keeps the name `TopBar`), `LevelPath` and `TabBar`.

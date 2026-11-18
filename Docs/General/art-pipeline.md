@@ -13,6 +13,7 @@ The art set is used as imported (R-3). `AssetImportTests` enforces §2 and §3.
 | `Art/Models/` | FBX files: `Arrows`, `BlockParts`, `GroundGrid`, `WallAndDoor` |
 | `Art/Textures/` | textures (`icetexture.jpg`) |
 | `Art/Materials/` | project materials (URP Simple Lit, GPU instancing on) |
+| `Art/Fonts/` | `LilitaOne/` (the game font: TTF, its OFL licence, the SDF font asset and its two style materials, [ui.md](ui.md) §4) and the older `LiberationSans SDF - Hud` material |
 | `Prefabs/Board/` | one prefab per mesh part, used by the board and block views |
 | `Audio/` | sound effects (`sfx_*.wav`, made by `tools/synth_sfx.py`); forced to mono, Decompress On Load, ADPCM ([audio.md](audio.md)) |
 

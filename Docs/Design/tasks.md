@@ -554,7 +554,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
   and coins.
 - **Accept:** layout matches at 1080x1920 and 1080x2400 with nothing clipped or overlapping; every button
   gives press feedback; Home tab stays highlighted.
-  - [x] Laid out after the reference screen with the project's art (ui.md §7); the portrait and the
+  - [x] Laid out after the reference screen with the project's art (ui.md §8); the portrait and the
     hard-level skull have no art.
 - **Tests:** `EM HomeFlowTests`, `PM HomeScreenTests`, `EM SceneSetupTests` (press feedback on every button).
 - **Docs:** `ui.md` §Home; `Docs/testing/home-qa.md`.
@@ -581,7 +581,7 @@ Tick a task when its acceptance criteria hold and its tests are green; tick subt
   same sprite greyed and knob position flipped (the art set has no off sprite — asset feedback). Placeholder
   buttons (e.g. Support with `Support_icon`) give feedback only. Close (`Popup_Close_Button`) returns Home.
   State read from and written to `ISettingsService`.
-  - [x] One base prefab (`SettingsPopup`) with a Home and a Gameplay variant (ui.md §6); the gameplay
+  - [x] One base prefab (`SettingsPopup`) with a Home and a Gameplay variant (ui.md §7); the gameplay
     variant is the pause popup.
 - **Accept:** each toggle visibly differs on vs off; state survives closing, reopening and app restart;
   close returns to Home with nothing else changed.
